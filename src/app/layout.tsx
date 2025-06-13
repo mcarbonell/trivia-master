@@ -8,23 +8,24 @@ import { ClientLocaleInitializer } from '@/components/ClientLocaleInitializer';
 // Define metadata function to allow dynamic title based on locale
 export async function generateMetadata(): Promise<Metadata> {
   const locale = await getLocale();
-  // Minimal messages for metadata, or fetch all and pick.
-  // For simplicity, hardcoding or fetching just the title.
-  // Ideally, you'd use getMessages and pick the title.
-  // const messages = await getMessages();
-  // const pageTitle = messages.pageTitle as string || 'AI Trivia Master';
   const pageTitle = locale === 'es' ? 'Maestro de Trivia IA' : 'AI Trivia Master';
 
   return {
     title: pageTitle,
     description: 'Test your knowledge with AI-generated trivia questions!',
+    manifest: '/manifest.json', // Added by next-pwa, but good for explicitness if needed
+    appleWebApp: {
+      capable: true,
+      statusBarStyle: 'default', // Or 'black', 'black-translucent'
+      title: pageTitle,
+    },
   };
 }
 
 export const viewport: Viewport = {
   themeColor: [
-    { media: '(prefers-color-scheme: light)', color: 'white' },
-    { media: '(prefers-color-scheme: dark)', color: 'black' },
+    { media: '(prefers-color-scheme: light)', color: '#F0F2F5' }, // Light theme background from globals.css
+    { media: '(prefers-color-scheme: dark)', color: '#1C1E24' },   // Dark theme background from globals.css
   ],
 }
 
@@ -43,6 +44,9 @@ export default async function RootLayout({
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
         <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+        {/* next-pwa should add manifest link automatically, but these are good for iOS */}
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="default" />
       </head>
       <body className="font-body antialiased">
         <NextIntlClientProvider locale={locale} messages={messages}>
