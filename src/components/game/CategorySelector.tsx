@@ -5,11 +5,12 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useTranslations } from "next-intl";
 
 interface Category {
-  name: string;
+  name: string; // This will now be the translated name
   icon: LucideIcon;
-  topicValue: string;
+  topicValue: string; // This remains the English value for the AI
 }
 
 interface CategorySelectorProps {
@@ -25,6 +26,8 @@ export function CategorySelector({
   onCustomTopicChange,
   onSelectTopic,
 }: CategorySelectorProps) {
+  const t = useTranslations();
+
   const handleCustomTopicSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (customTopicInput.trim()) {
@@ -35,14 +38,14 @@ export function CategorySelector({
   return (
     <Card className="w-full shadow-xl">
       <CardHeader>
-        <CardTitle className="font-headline text-3xl text-center text-primary">Choose a Category</CardTitle>
-        <CardDescription className="text-center">Or enter your own topic below.</CardDescription>
+        <CardTitle className="font-headline text-3xl text-center text-primary">{t('categorySelectorTitle')}</CardTitle>
+        <CardDescription className="text-center">{t('categorySelectorDescription')}</CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
           {predefinedCategories.map((category) => (
             <Button
-              key={category.name}
+              key={category.topicValue} // Use topicValue for key as name can change with locale
               variant="outline"
               className="flex flex-col items-center justify-center h-28 p-4 hover:bg-accent hover:text-accent-foreground transition-all duration-200 group"
               onClick={() => onSelectTopic(category.topicValue)}
@@ -54,18 +57,18 @@ export function CategorySelector({
         </div>
         <form onSubmit={handleCustomTopicSubmit} className="space-y-4">
           <div>
-            <Label htmlFor="custom-topic" className="font-semibold mb-1 block">Custom Topic</Label>
+            <Label htmlFor="custom-topic" className="font-semibold mb-1 block">{t('customTopicLabel')}</Label>
             <Input
               id="custom-topic"
               type="text"
-              placeholder="E.g., Ancient Rome, Quantum Physics"
+              placeholder={t('customTopicPlaceholder')}
               value={customTopicInput}
               onChange={(e) => onCustomTopicChange(e.target.value)}
               className="bg-input"
             />
           </div>
           <Button type="submit" className="w-full bg-primary hover:bg-primary/90 text-primary-foreground" disabled={!customTopicInput.trim()}>
-            Start with Custom Topic
+            {t('customTopicButton')}
           </Button>
         </form>
       </CardContent>

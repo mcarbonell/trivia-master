@@ -3,6 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { RefreshCw, CheckCircle, XCircle } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 interface ScoreDisplayProps {
   score: {
@@ -13,19 +14,20 @@ interface ScoreDisplayProps {
 }
 
 export function ScoreDisplay({ score, onNewGame }: ScoreDisplayProps) {
+  const t = useTranslations();
   return (
     <Card className="mb-6 w-full max-w-md shadow-lg">
       <CardContent className="p-4 flex flex-col sm:flex-row justify-between items-center space-y-3 sm:space-y-0">
         <div className="flex space-x-4 text-lg">
           <span className="font-semibold flex items-center text-success">
-            <CheckCircle className="mr-2 h-6 w-6" /> Correct: {score.correct}
+            <CheckCircle className="mr-2 h-6 w-6" /> {t('scoreCorrect')}: {score.correct}
           </span>
           <span className="font-semibold flex items-center text-destructive">
-            <XCircle className="mr-2 h-6 w-6" /> Incorrect: {score.incorrect}
+            <XCircle className="mr-2 h-6 w-6" /> {t('scoreIncorrect')}: {score.incorrect}
           </span>
         </div>
         <Button onClick={onNewGame} variant="outline" size="sm" className="text-primary border-primary hover:bg-primary/10">
-          <RefreshCw className="mr-2 h-4 w-4" /> New Game
+          <RefreshCw className="mr-2 h-4 w-4" /> {t('newGameButton')}
         </Button>
       </CardContent>
     </Card>

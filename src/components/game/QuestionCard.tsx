@@ -7,6 +7,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
 import { CheckCircle2, XCircle, ChevronRight, Info } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 interface QuestionCardProps {
   questionData: GenerateTriviaQuestionOutput;
@@ -25,6 +26,7 @@ export function QuestionCard({
   feedback,
   gameState,
 }: QuestionCardProps) {
+  const t = useTranslations();
   const { question, answers, correctAnswerIndex } = questionData;
 
   return (
@@ -47,7 +49,7 @@ export function QuestionCard({
               <div className="mt-3 pt-3 border-t border-border">
                 <p className="text-sm text-muted-foreground flex items-start">
                   <Info className="h-4 w-4 mr-2 mt-0.5 shrink-0 text-primary" />
-                  <span className="font-semibold mr-1">Explanation:</span>
+                  <span className="font-semibold mr-1">{t('explanation')}:</span>
                   {feedback.explanation}
                 </p>
               </div>
@@ -76,7 +78,6 @@ export function QuestionCard({
              buttonClasses = cn(buttonClasses, "bg-accent text-accent-foreground");
           }
 
-
           return (
             <Button
               key={index}
@@ -95,7 +96,7 @@ export function QuestionCard({
       {gameState === 'showing_feedback' && (
         <CardFooter className="flex justify-end">
           <Button onClick={onNextQuestion} className="bg-primary hover:bg-primary/90 text-primary-foreground">
-            Next Question <ChevronRight className="ml-2 h-5 w-5" />
+            {t('nextQuestionButton')} <ChevronRight className="ml-2 h-5 w-5" />
           </Button>
         </CardFooter>
       )}

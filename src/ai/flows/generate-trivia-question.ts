@@ -4,9 +4,9 @@
 /**
  * @fileOverview This file defines a Genkit flow for generating trivia questions and answers based on a given topic,
  * ensuring questions are not repeated within a session, providing explanations for correct answers,
- * and adapting difficulty based on user performance.
+ * and adapting difficulty based on user performance. It also supports generating questions in a specified language.
  *
- * The flow takes a topic, a list of previous questions, and user performance history as input,
+ * The flow takes a topic, a list of previous questions, user performance history, and language as input,
  * and returns a trivia question, four possible answers, the index of the correct answer, and an explanation.
  *
  * @interface GenerateTriviaQuestionInput - Input schema for the generateTriviaQuestion flow.
@@ -26,6 +26,7 @@ const GenerateTriviaQuestionInputSchema = z.object({
   topic: z.string().describe('The topic for the trivia question.'),
   previousQuestions: z.array(z.string()).optional().describe('A list of questions already asked on this topic in the current session, to avoid repetition and ensure variety.'),
   performanceHistory: z.array(PerformanceEntrySchema).optional().describe("A history of the user's answers to recent questions on this topic (question text and if answered correctly), to help adapt difficulty. Most recent answer last."),
+  language: z.string().optional().describe('The desired language for the question and answers (e.g., "en" for English, "es" for Spanish). Defaults to English if not specified.'),
 });
 export type GenerateTriviaQuestionInput = z.infer<typeof GenerateTriviaQuestionInputSchema>;
 
@@ -46,6 +47,12 @@ export async function generateTriviaQuestion(input: GenerateTriviaQuestionInput)
 }
 
 const promptTemplateString = `You are an expert trivia question generator. Given a topic, you will generate a trivia question, four possible answers, indicate the index of the correct answer, and provide a brief explanation for the correct answer.
+
+{{#if language}}
+IMPORTANT: Generate all content (question, answers, explanation) in {{language}}.
+{{else}}
+IMPORTANT: Generate all content (question, answers, explanation) in English.
+{{/if}}
 
 Topic: {{{topic}}}
 
@@ -105,6 +112,7 @@ const generateTriviaQuestionFlow = ai.defineFlow(
     console.log('\n--- Prompt Template Being Used ---');
     console.log(promptTemplateString);
     console.log('\n--- How Input Fills Template ---');
+    console.log(`The "{{#if language}}...{{/if}}" block will use: "${input.language || 'English (default)'}"`);
     console.log(`The "{{{topic}}}" placeholder will be replaced with: "${input.topic}"`);
     if (input.previousQuestions && input.previousQuestions.length > 0) {
       console.log('The "{{#if previousQuestions}}...{{/each}}{{/if}}" block will render the following list of previous questions into the prompt:');

@@ -8,6 +8,8 @@ import { QuestionCard } from "@/components/game/QuestionCard";
 import { ScoreDisplay } from "@/components/game/ScoreDisplay";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import { useTranslations, useLocale } from "next-intl";
 import {
   Lightbulb,
   Landmark,
@@ -19,21 +21,24 @@ import {
   AlertTriangle,
 } from "lucide-react";
 
-const PREDEFINED_CATEGORIES = [
-  { name: "Science", icon: Lightbulb, topicValue: "Science" },
-  { name: "History", icon: Landmark, topicValue: "World History" },
-  { name: "Sports", icon: Trophy, topicValue: "Sports" },
-  { name: "Movies", icon: Film, topicValue: "Movies" },
-  { name: "Geography", icon: Globe2, topicValue: "Geography" },
-  { name: "Music", icon: Music, topicValue: "Popular Music History" },
-];
+const MAX_PERFORMANCE_HISTORY = 10; 
 
 type GameState = 'category_selection' | 'loading_question' | 'playing' | 'showing_feedback' | 'error';
 type PerformanceHistoryEntry = { questionText: string; answeredCorrectly: boolean };
 
-const MAX_PERFORMANCE_HISTORY = 10; // Keep the last 10 results for adaptive difficulty
-
 export default function TriviaPage() {
+  const t = useTranslations();
+  const locale = useLocale();
+
+  const PREDEFINED_CATEGORIES = [
+    { name: t('categories.science'), icon: Lightbulb, topicValue: "Science" },
+    { name: t('categories.history'), icon: Landmark, topicValue: "World History" },
+    { name: t('categories.sports'), icon: Trophy, topicValue: "Sports" },
+    { name: t('categories.movies'), icon: Film, topicValue: "Movies" },
+    { name: t('categories.geography'), icon: Globe2, topicValue: "Geography" },
+    { name: t('categories.music'), icon: Music, topicValue: "Popular Music History" },
+  ];
+
   const [gameState, setGameState] = useState<GameState>('category_selection');
   const [currentTopic, setCurrentTopic] = useState<string>('');
   const [questionData, setQuestionData] = useState<GenerateTriviaQuestionOutput | null>(null);
@@ -43,6 +48,12 @@ export default function TriviaPage() {
   const [customTopicInput, setCustomTopicInput] = useState('');
   const [askedQuestions, setAskedQuestions] = useState<string[]>([]);
   const [performanceHistory, setPerformanceHistory] = useState<PerformanceHistoryEntry[]>([]);
+  const [currentYear, setCurrentYear] = useState<number | null>(null);
+
+  useEffect(() => {
+    setCurrentYear(new Date().getFullYear());
+  }, []);
+
 
   const fetchQuestion = async (topic: string) => {
     setGameState('loading_question');
@@ -51,7 +62,8 @@ export default function TriviaPage() {
 
     const inputForAI: GenerateTriviaQuestionInput = { 
       topic, 
-      previousQuestions: askedQuestions 
+      previousQuestions: askedQuestions,
+      language: locale, // Pass current locale
     };
     if (performanceHistory.length > 0) {
       inputForAI.performanceHistory = performanceHistory;
@@ -66,7 +78,7 @@ export default function TriviaPage() {
       setGameState('playing');
     } catch (err) {
       console.error("Failed to generate question:", err);
-      setFeedback({ message: "Error loading question.", detailedMessage: "Could not fetch a new question. Please check your connection or try a different topic.", isCorrect: false });
+      setFeedback({ message: t('errorLoadingQuestion'), detailedMessage: t('errorLoadingQuestionDetail'), isCorrect: false });
       setGameState('error');
     }
   };
@@ -96,12 +108,12 @@ export default function TriviaPage() {
 
     if (isCorrect) {
       setScore(prev => ({ ...prev, correct: prev.correct + 1 }));
-      setFeedback({ message: "Correct!", isCorrect: true, explanation: questionData.explanation });
+      setFeedback({ message: t('correct'), isCorrect: true, explanation: questionData.explanation });
     } else {
       setScore(prev => ({ ...prev, incorrect: prev.incorrect + 1 }));
       setFeedback({ 
-        message: "Incorrect!", 
-        detailedMessage: `The correct answer was: ${questionData.answers[questionData.correctAnswerIndex]}`, 
+        message: t('incorrect'), 
+        detailedMessage: t('correctAnswerWas', { answer: questionData.answers[questionData.correctAnswerIndex] }), 
         isCorrect: false,
         explanation: questionData.explanation
       });
@@ -127,9 +139,13 @@ export default function TriviaPage() {
 
   return (
     <div className="container mx-auto p-4 flex flex-col items-center min-h-screen text-foreground">
-      <header className="my-8 text-center">
-        <h1 className="text-4xl sm:text-5xl font-headline font-bold text-primary">AI Trivia Master</h1>
-        <p className="text-muted-foreground mt-1">Test your knowledge with AI-generated questions!</p>
+      <header className="my-6 sm:my-8 text-center w-full">
+        <div className="flex justify-between items-center mb-2 sm:mb-4">
+          <div></div> {/* Spacer */}
+          <h1 className="text-3xl sm:text-5xl font-headline font-bold text-primary">{t('pageTitle')}</h1>
+          <LanguageSwitcher />
+        </div>
+        <p className="text-muted-foreground mt-1 text-sm sm:text-base">{t('pageDescription')}</p>
       </header>
 
       {gameState !== 'category_selection' && gameState !== 'loading_question' && (
@@ -149,7 +165,7 @@ export default function TriviaPage() {
           <Card className="p-8 text-center animate-fadeIn shadow-xl">
             <CardContent className="flex flex-col items-center justify-center">
               <Loader2 className="h-16 w-16 animate-spin text-primary mx-auto" />
-              <p className="mt-6 text-xl font-semibold text-muted-foreground">Generating your question on "{currentTopic}"...</p>
+              <p className="mt-6 text-xl font-semibold text-muted-foreground">{t('loadingQuestion', { topic: currentTopic })}</p>
             </CardContent>
           </Card>
         )}
@@ -173,17 +189,16 @@ export default function TriviaPage() {
               <p className="text-muted-foreground">{feedback.detailedMessage || "An unexpected error occurred."}</p>
             </CardContent>
             <CardFooter className="flex flex-col sm:flex-row justify-center gap-2">
-              {currentTopic && <Button onClick={() => fetchQuestion(currentTopic)} variant="outline">Try Again Topic: "{currentTopic}"</Button>}
-              <Button onClick={handleNewGame} className="bg-primary hover:bg-primary/90 text-primary-foreground">Choose New Topic</Button>
+              {currentTopic && <Button onClick={() => fetchQuestion(currentTopic)} variant="outline">{t('errorTryAgainTopic', {topic: currentTopic})}</Button>}
+              <Button onClick={handleNewGame} className="bg-primary hover:bg-primary/90 text-primary-foreground">{t('errorChooseNewTopic')}</Button>
             </CardFooter>
           </Card>
         )}
       </main>
 
       <footer className="mt-auto pt-8 pb-4 text-center text-sm text-muted-foreground">
-        <p>&copy; {new Date().getFullYear()} AI Trivia Master. Powered by GenAI.</p>
+        {currentYear !== null && <p>{t('footerText', { year: currentYear })}</p>}
       </footer>
     </div>
   );
 }
-
