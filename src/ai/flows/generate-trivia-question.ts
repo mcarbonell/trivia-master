@@ -3,10 +3,11 @@
 
 /**
  * @fileOverview This file defines a Genkit flow for generating trivia questions and answers based on a given topic,
- * ensuring questions are not repeated within a session and providing explanations for correct answers.
+ * ensuring questions are not repeated within a session, providing explanations for correct answers,
+ * and adapting difficulty based on user performance.
  *
- * The flow takes a topic and a list of previous questions as input, and returns a trivia question,
- * four possible answers, the index of the correct answer, and an explanation.
+ * The flow takes a topic, a list of previous questions, and user performance history as input,
+ * and returns a trivia question, four possible answers, the index of the correct answer, and an explanation.
  *
  * @interface GenerateTriviaQuestionInput - Input schema for the generateTriviaQuestion flow.
  * @interface GenerateTriviaQuestionOutput - Output schema for the generateTriviaQuestion flow.
@@ -16,9 +17,15 @@
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
 
+const PerformanceEntrySchema = z.object({
+  questionText: z.string().describe('The text of the question that was asked.'),
+  answeredCorrectly: z.boolean().describe('Whether the user answered this question correctly.'),
+});
+
 const GenerateTriviaQuestionInputSchema = z.object({
   topic: z.string().describe('The topic for the trivia question.'),
   previousQuestions: z.array(z.string()).optional().describe('A list of questions already asked on this topic in the current session, to avoid repetition and ensure variety.'),
+  performanceHistory: z.array(PerformanceEntrySchema).optional().describe("A history of the user's answers to recent questions on this topic (question text and if answered correctly), to help adapt difficulty. Most recent answer last."),
 });
 export type GenerateTriviaQuestionInput = z.infer<typeof GenerateTriviaQuestionInputSchema>;
 
@@ -53,6 +60,20 @@ The following questions have already been asked on this topic in the current ses
 {{/each}}
 {{/if}}
 
+{{#if performanceHistory}}
+ADAPTIVE DIFFICULTY:
+The user's recent performance on this topic is as follows (most recent answer is last in the list):
+{{#each performanceHistory}}
+- Question: "{{this.questionText}}" - User answered: {{#if this.answeredCorrectly}}Correctly{{else}}Incorrectly{{/if}}
+{{/each}}
+
+Based on this performance, please adjust the difficulty of the NEXT question:
+- If the user has been answering most recent questions correctly, make the new question moderately more challenging.
+- If the user has been struggling with recent questions, make the new question moderately easier.
+- Your goal is to create an engaging experience by gradually guiding the difficulty so the user has a chance to learn and feel challenged, ideally answering about 50-70% of questions correctly in the long run.
+- Avoid drastic jumps in difficulty. Strive for a smooth progression.
+{{/if}}
+
 Your response should be formatted as a JSON object with the following keys:
 - question: The trivia question.
 - answers: An array of four strings, representing the possible answers.
@@ -81,7 +102,6 @@ const generateTriviaQuestionFlow = ai.defineFlow(
   async input => {
     console.log('generateTriviaQuestionFlow input:', JSON.stringify(input, null, 2));
 
-    // Log the prompt template and how input fills it
     console.log('\n--- Prompt Template Being Used ---');
     console.log(promptTemplateString);
     console.log('\n--- How Input Fills Template ---');
@@ -90,7 +110,13 @@ const generateTriviaQuestionFlow = ai.defineFlow(
       console.log('The "{{#if previousQuestions}}...{{/each}}{{/if}}" block will render the following list of previous questions into the prompt:');
       input.previousQuestions.forEach(q => console.log(`- "${q}"`));
     } else {
-      console.log('The "{{#if previousQuestions}}...{{/each}}{{/if}}" block will not render as no previous questions were provided.');
+      console.log('The "{{#if previousQuestions}}...{{/each}}{{/if}}" block does not render as no previous questions were provided.');
+    }
+     if (input.performanceHistory && input.performanceHistory.length > 0) {
+      console.log('The "{{#if performanceHistory}}...{{/each}}{{/if}}" block will render the following performance history into the prompt:');
+      input.performanceHistory.forEach(h => console.log(`- Question: "${h.questionText}" - User answered: ${h.answeredCorrectly ? 'Correctly' : 'Incorrectly'}`));
+    } else {
+      console.log('The "{{#if performanceHistory}}...{{/each}}{{/if}}" block does not render as no performance history was provided.');
     }
     console.log('--- End of Prompt Explanation ---\n');
 

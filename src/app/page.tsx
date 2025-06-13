@@ -2,7 +2,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { generateTriviaQuestion, type GenerateTriviaQuestionOutput } from "@/ai/flows/generate-trivia-question";
+import { generateTriviaQuestion, type GenerateTriviaQuestionOutput, type GenerateTriviaQuestionInput } from "@/ai/flows/generate-trivia-question";
 import { CategorySelector } from "@/components/game/CategorySelector";
 import { QuestionCard } from "@/components/game/QuestionCard";
 import { ScoreDisplay } from "@/components/game/ScoreDisplay";
@@ -29,6 +29,9 @@ const PREDEFINED_CATEGORIES = [
 ];
 
 type GameState = 'category_selection' | 'loading_question' | 'playing' | 'showing_feedback' | 'error';
+type PerformanceHistoryEntry = { questionText: string; answeredCorrectly: boolean };
+
+const MAX_PERFORMANCE_HISTORY = 10; // Keep the last 10 results for adaptive difficulty
 
 export default function TriviaPage() {
   const [gameState, setGameState] = useState<GameState>('category_selection');
@@ -39,13 +42,23 @@ export default function TriviaPage() {
   const [feedback, setFeedback] = useState<{ message: string; isCorrect: boolean; detailedMessage?: string; explanation?: string } | null>(null);
   const [customTopicInput, setCustomTopicInput] = useState('');
   const [askedQuestions, setAskedQuestions] = useState<string[]>([]);
+  const [performanceHistory, setPerformanceHistory] = useState<PerformanceHistoryEntry[]>([]);
 
   const fetchQuestion = async (topic: string) => {
     setGameState('loading_question');
     setSelectedAnswerIndex(null);
     setFeedback(null);
+
+    const inputForAI: GenerateTriviaQuestionInput = { 
+      topic, 
+      previousQuestions: askedQuestions 
+    };
+    if (performanceHistory.length > 0) {
+      inputForAI.performanceHistory = performanceHistory;
+    }
+
     try {
-      const data = await generateTriviaQuestion({ topic, previousQuestions: askedQuestions });
+      const data = await generateTriviaQuestion(inputForAI);
       setQuestionData(data);
       if (data.question) {
         setAskedQuestions(prev => [...prev, data.question]);
@@ -62,6 +75,7 @@ export default function TriviaPage() {
     setCurrentTopic(topic);
     setScore({ correct: 0, incorrect: 0 }); 
     setAskedQuestions([]); 
+    setPerformanceHistory([]);
     fetchQuestion(topic);
   };
 
@@ -71,6 +85,15 @@ export default function TriviaPage() {
     setSelectedAnswerIndex(answerIndex);
     const isCorrect = answerIndex === questionData.correctAnswerIndex;
     
+    const newHistoryEntry: PerformanceHistoryEntry = { 
+      questionText: questionData.question, 
+      answeredCorrectly: isCorrect 
+    };
+    setPerformanceHistory(prev => {
+      const updatedHistory = [...prev, newHistoryEntry];
+      return updatedHistory.slice(-MAX_PERFORMANCE_HISTORY); 
+    });
+
     if (isCorrect) {
       setScore(prev => ({ ...prev, correct: prev.correct + 1 }));
       setFeedback({ message: "Correct!", isCorrect: true, explanation: questionData.explanation });
@@ -99,6 +122,7 @@ export default function TriviaPage() {
     setCurrentTopic('');
     setCustomTopicInput('');
     setAskedQuestions([]);
+    setPerformanceHistory([]);
   };
 
   return (
@@ -162,3 +186,4 @@ export default function TriviaPage() {
     </div>
   );
 }
+
