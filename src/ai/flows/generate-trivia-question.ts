@@ -38,14 +38,7 @@ export async function generateTriviaQuestion(input: GenerateTriviaQuestionInput)
   return generateTriviaQuestionFlow(input);
 }
 
-const generateTriviaQuestionPrompt = ai.definePrompt({
-  name: 'generateTriviaQuestionPrompt',
-  input: {schema: GenerateTriviaQuestionInputSchema},
-  output: {schema: GenerateTriviaQuestionOutputSchema},
-  config: {
-    temperature: 1.0,
-  },
-  prompt: `You are an expert trivia question generator. Given a topic, you will generate a trivia question, four possible answers, indicate the index of the correct answer, and provide a brief explanation for the correct answer.
+const promptTemplateString = `You are an expert trivia question generator. Given a topic, you will generate a trivia question, four possible answers, indicate the index of the correct answer, and provide a brief explanation for the correct answer.
 
 Topic: {{{topic}}}
 
@@ -67,7 +60,16 @@ Your response should be formatted as a JSON object with the following keys:
 - explanation: A brief explanation (1-2 sentences) of why the correct answer is correct.
 
 Make sure that only one answer is correct.
-`,
+`;
+
+const generateTriviaQuestionPrompt = ai.definePrompt({
+  name: 'generateTriviaQuestionPrompt',
+  input: {schema: GenerateTriviaQuestionInputSchema},
+  output: {schema: GenerateTriviaQuestionOutputSchema},
+  config: {
+    temperature: 1.0,
+  },
+  prompt: promptTemplateString,
 });
 
 const generateTriviaQuestionFlow = ai.defineFlow(
@@ -78,6 +80,20 @@ const generateTriviaQuestionFlow = ai.defineFlow(
   },
   async input => {
     console.log('generateTriviaQuestionFlow input:', JSON.stringify(input, null, 2));
+
+    // Log the prompt template and how input fills it
+    console.log('\n--- Prompt Template Being Used ---');
+    console.log(promptTemplateString);
+    console.log('\n--- How Input Fills Template ---');
+    console.log(`The "{{{topic}}}" placeholder will be replaced with: "${input.topic}"`);
+    if (input.previousQuestions && input.previousQuestions.length > 0) {
+      console.log('The "{{#if previousQuestions}}...{{/each}}{{/if}}" block will render the following list of previous questions into the prompt:');
+      input.previousQuestions.forEach(q => console.log(`- "${q}"`));
+    } else {
+      console.log('The "{{#if previousQuestions}}...{{/each}}{{/if}}" block will not render as no previous questions were provided.');
+    }
+    console.log('--- End of Prompt Explanation ---\n');
+
     const {output} = await generateTriviaQuestionPrompt(input);
     return output!;
   }
