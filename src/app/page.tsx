@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useEffect } from "react";
@@ -35,16 +36,20 @@ export default function TriviaPage() {
   const [questionData, setQuestionData] = useState<GenerateTriviaQuestionOutput | null>(null);
   const [selectedAnswerIndex, setSelectedAnswerIndex] = useState<number | null>(null);
   const [score, setScore] = useState({ correct: 0, incorrect: 0 });
-  const [feedback, setFeedback] = useState<{ message: string; isCorrect: boolean; detailedMessage?: string } | null>(null);
+  const [feedback, setFeedback] = useState<{ message: string; isCorrect: boolean; detailedMessage?: string; explanation?: string } | null>(null);
   const [customTopicInput, setCustomTopicInput] = useState('');
+  const [askedQuestions, setAskedQuestions] = useState<string[]>([]);
 
   const fetchQuestion = async (topic: string) => {
     setGameState('loading_question');
     setSelectedAnswerIndex(null);
     setFeedback(null);
     try {
-      const data = await generateTriviaQuestion({ topic });
+      const data = await generateTriviaQuestion({ topic, previousQuestions: askedQuestions });
       setQuestionData(data);
+      if (data.question) {
+        setAskedQuestions(prev => [...prev, data.question]);
+      }
       setGameState('playing');
     } catch (err) {
       console.error("Failed to generate question:", err);
@@ -55,7 +60,8 @@ export default function TriviaPage() {
 
   const handleStartGame = (topic: string) => {
     setCurrentTopic(topic);
-    setScore({ correct: 0, incorrect: 0 }); // Reset score for a new topic game
+    setScore({ correct: 0, incorrect: 0 }); 
+    setAskedQuestions([]); 
     fetchQuestion(topic);
   };
 
@@ -67,13 +73,14 @@ export default function TriviaPage() {
     
     if (isCorrect) {
       setScore(prev => ({ ...prev, correct: prev.correct + 1 }));
-      setFeedback({ message: "Correct!", isCorrect: true });
+      setFeedback({ message: "Correct!", isCorrect: true, explanation: questionData.explanation });
     } else {
       setScore(prev => ({ ...prev, incorrect: prev.incorrect + 1 }));
       setFeedback({ 
         message: "Incorrect!", 
         detailedMessage: `The correct answer was: ${questionData.answers[questionData.correctAnswerIndex]}`, 
-        isCorrect: false 
+        isCorrect: false,
+        explanation: questionData.explanation
       });
     }
     setGameState('showing_feedback');
@@ -91,6 +98,7 @@ export default function TriviaPage() {
     setFeedback(null);
     setCurrentTopic('');
     setCustomTopicInput('');
+    setAskedQuestions([]);
   };
 
   return (

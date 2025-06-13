@@ -1,17 +1,19 @@
+
 "use client";
 
 import type { GenerateTriviaQuestionOutput } from "@/ai/flows/generate-trivia-question";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
-import { CheckCircle2, XCircle, ChevronRight } from "lucide-react";
+import { CheckCircle2, XCircle, ChevronRight, Info } from "lucide-react";
 
 interface QuestionCardProps {
   questionData: GenerateTriviaQuestionOutput;
   onAnswerSelect: (answerIndex: number) => void;
   onNextQuestion: () => void;
   selectedAnswerIndex: number | null;
-  feedback: { message: string; isCorrect: boolean; detailedMessage?: string } | null; // Added detailedMessage here
+  feedback: { message: string; isCorrect: boolean; detailedMessage?: string; explanation?: string } | null;
   gameState: 'playing' | 'showing_feedback';
 }
 
@@ -30,16 +32,27 @@ export function QuestionCard({
       <CardHeader>
         <CardTitle className="font-headline text-2xl md:text-3xl text-center text-primary">{question}</CardTitle>
         {feedback && gameState === 'showing_feedback' && (
-           <CardDescription className={cn(
-            "text-center text-lg font-semibold mt-2 animate-pulseOnce",
-            feedback.isCorrect ? "text-success" : "text-destructive"
-          )}>
-            {feedback.isCorrect ? <CheckCircle2 className="inline-block mr-2 h-6 w-6" /> : <XCircle className="inline-block mr-2 h-6 w-6" />}
-            {feedback.message}
-            {!feedback.isCorrect && feedback.detailedMessage && (
-              <span className="block text-sm font-normal text-muted-foreground mt-1">{feedback.detailedMessage}</span>
+          <>
+            <CardDescription className={cn(
+              "text-center text-lg font-semibold mt-2 animate-pulseOnce",
+              feedback.isCorrect ? "text-success" : "text-destructive"
+            )}>
+              {feedback.isCorrect ? <CheckCircle2 className="inline-block mr-2 h-6 w-6" /> : <XCircle className="inline-block mr-2 h-6 w-6" />}
+              {feedback.message}
+              {!feedback.isCorrect && feedback.detailedMessage && (
+                <span className="block text-sm font-normal text-muted-foreground mt-1">{feedback.detailedMessage}</span>
+              )}
+            </CardDescription>
+            {feedback.explanation && (
+              <div className="mt-3 pt-3 border-t border-border">
+                <p className="text-sm text-muted-foreground flex items-start">
+                  <Info className="h-4 w-4 mr-2 mt-0.5 shrink-0 text-primary" />
+                  <span className="font-semibold mr-1">Explanation:</span>
+                  {feedback.explanation}
+                </p>
+              </div>
             )}
-          </CardDescription>
+          </>
         )}
       </CardHeader>
       <CardContent className="space-y-3">
