@@ -18,8 +18,8 @@ export function ScoreDisplay({ score, onNewGame }: ScoreDisplayProps) {
   const t = useTranslations();
   return (
     <Card className="mb-6 w-full max-w-md shadow-lg">
-      <CardContent className="p-5 flex flex-col sm:flex-row justify-between items-center gap-3 sm:gap-4">
-        <div className="flex items-center space-x-6 text-lg">
+      <CardContent className="p-5 flex flex-col sm:flex-row justify-between items-center gap-3 sm:gap-2">
+        <div className="flex items-center space-x-3 text-lg"> {/* Reduced from space-x-6 to space-x-3 */}
           <span className="font-semibold flex items-center text-success">
             <CheckCircle className="mr-2 h-5 w-5 sm:h-6 sm:w-6" />
             <span className="mr-1.5">{t('scoreCorrect')}:</span>
@@ -38,4 +38,3 @@ export function ScoreDisplay({ score, onNewGame }: ScoreDisplayProps) {
     </Card>
   );
 }
-
