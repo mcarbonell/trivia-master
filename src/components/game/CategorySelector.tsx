@@ -1,3 +1,4 @@
+
 "use client";
 
 import type { LucideIcon } from "lucide-react";
@@ -50,7 +51,7 @@ export function CategorySelector({
               className="flex flex-col items-center justify-center h-28 p-4 hover:bg-accent hover:text-accent-foreground transition-all duration-200 group"
               onClick={() => onSelectTopic(category.topicValue)}
             >
-              <category.icon className="h-8 w-8 mb-2 text-primary group-hover:text-accent-foreground transition-colors" />
+              <category.icon className="h-10 w-10 mb-2 text-primary group-hover:text-accent-foreground transition-colors" />
               <span className="text-sm font-medium text-center">{category.name}</span>
             </Button>
           ))}
@@ -75,3 +76,4 @@ export function CategorySelector({
     </Card>
   );
 }
+
