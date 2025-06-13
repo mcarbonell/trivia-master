@@ -48,10 +48,10 @@ export function CategorySelector({
             <Button
               key={category.topicValue} // Use topicValue for key as name can change with locale
               variant="outline"
-              className="flex flex-col items-center justify-center h-28 p-4 hover:bg-accent hover:text-accent-foreground transition-all duration-200 group [&_svg]:h-12 [&_svg]:w-12"
+              className="flex flex-col items-center justify-center h-28 p-4 hover:bg-accent hover:text-accent-foreground transition-all duration-200 group [&_svg]:h-8 [&_svg]:w-8"
               onClick={() => onSelectTopic(category.topicValue)}
             >
-              <category.icon className="h-12 w-12 mb-2 text-primary group-hover:text-accent-foreground transition-colors" />
+              <category.icon className="mb-2 text-primary group-hover:text-accent-foreground transition-colors h-8 w-8" />
               <span className="text-sm font-medium text-center">{category.name}</span>
             </Button>
           ))}
