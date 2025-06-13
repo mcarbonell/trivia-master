@@ -31,10 +31,16 @@ export function ScoreDisplay({ score, onNewGame }: ScoreDisplayProps) {
             {score.incorrect}
           </span>
         </div>
-        <Button onClick={onNewGame} variant="outline" size="sm" className="text-primary border-primary hover:bg-primary/10 whitespace-nowrap">
+        <Button 
+          onClick={onNewGame} 
+          variant="outline" 
+          size="sm" 
+          className="text-primary border-primary hover:bg-primary/10 whitespace-nowrap px-2" // Added px-2 here
+        >
           <RefreshCw className="mr-2 h-4 w-4" /> {t('newGameButton')}
         </Button>
       </CardContent>
     </Card>
   );
 }
+
