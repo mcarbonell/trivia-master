@@ -18,7 +18,7 @@ import {z} from 'genkit';
 
 const GenerateTriviaQuestionInputSchema = z.object({
   topic: z.string().describe('The topic for the trivia question.'),
-  previousQuestions: z.array(z.string()).optional().describe('A list of questions already asked on this topic in the current session, to avoid repetition.'),
+  previousQuestions: z.array(z.string()).optional().describe('A list of questions already asked on this topic in the current session, to avoid repetition and ensure variety.'),
 });
 export type GenerateTriviaQuestionInput = z.infer<typeof GenerateTriviaQuestionInputSchema>;
 
@@ -46,8 +46,12 @@ const generateTriviaQuestionPrompt = ai.definePrompt({
 
 Topic: {{{topic}}}
 
+IMPORTANT INSTRUCTIONS FOR QUESTION VARIETY:
+1. If the topic is broad (e.g., "Geography", "Science", "History"), ensure the questions cover DIFFERENT ASPECTS or SUB-TOPICS. For example, for "Geography", ask about capitals, mountains, oceans, deserts, etc., not just rivers repeatedly.
+2. The new question MUST be SIGNIFICANTLY DIFFERENT from any previous questions. Avoid asking about the same specific entity or concept even if worded differently.
+
 {{#if previousQuestions}}
-IMPORTANT: The following questions have already been asked on this topic in the current session. You MUST generate a NEW and DIFFERENT question. DO NOT repeat any of the following:
+The following questions have already been asked on this topic in the current session. You MUST generate a NEW and DIFFERENT question that explores a new facet of the topic. DO NOT repeat or ask very similar questions to any of the following:
 {{#each previousQuestions}}
 - "{{this}}"
 {{/each}}
@@ -74,3 +78,4 @@ const generateTriviaQuestionFlow = ai.defineFlow(
     return output!;
   }
 );
+
