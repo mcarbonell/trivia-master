@@ -47,7 +47,7 @@ const generateTriviaQuestionPrompt = ai.definePrompt({
 Topic: {{{topic}}}
 
 {{#if previousQuestions}}
-Please ensure the new question is different from the following questions that have already been asked on this topic:
+IMPORTANT: The following questions have already been asked on this topic in the current session. You MUST generate a NEW and DIFFERENT question. DO NOT repeat any of the following:
 {{#each previousQuestions}}
 - "{{this}}"
 {{/each}}
