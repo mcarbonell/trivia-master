@@ -3,11 +3,11 @@
 
 /**
  * @fileOverview This file defines a Genkit flow for generating trivia questions and answers based on a given topic,
- * ensuring questions are not repeated within a session, providing explanations for correct answers,
+ * ensuring questions and their correct answers are not repeated within a session, providing explanations for correct answers,
  * and adapting difficulty based on user performance. It also supports generating questions in a specified language.
  *
- * The flow takes a topic, a list of previous questions, user performance history, and language as input,
- * and returns a trivia question, four possible answers, the index of the correct answer, and an explanation.
+ * The flow takes a topic, a list of previous questions, a list of previous correct answers, user performance history, 
+ * and language as input, and returns a trivia question, four possible answers, the index of the correct answer, and an explanation.
  *
  * @interface GenerateTriviaQuestionInput - Input schema for the generateTriviaQuestion flow.
  * @interface GenerateTriviaQuestionOutput - Output schema for the generateTriviaQuestion flow.
@@ -25,6 +25,7 @@ const PerformanceEntrySchema = z.object({
 const GenerateTriviaQuestionInputSchema = z.object({
   topic: z.string().describe('The topic for the trivia question.'),
   previousQuestions: z.array(z.string()).optional().describe('A list of questions already asked on this topic in the current session, to avoid repetition and ensure variety.'),
+  previousCorrectAnswers: z.array(z.string()).optional().describe('A list of correct answers from questions already asked on this topic in the current session, to ensure variety in the subject matter of the questions.'),
   performanceHistory: z.array(PerformanceEntrySchema).optional().describe("A history of the user's answers to recent questions on this topic (question text and if answered correctly), to help adapt difficulty. Most recent answer last."),
   language: z.string().optional().describe('The desired language for the question and answers (e.g., "en" for English, "es" for Spanish). Defaults to English if not specified.'),
 });
@@ -67,6 +68,14 @@ The following questions have already been asked on this topic in the current ses
 {{/each}}
 {{/if}}
 
+{{#if previousCorrectAnswers}}
+Furthermore, the correct answer for the new question MUST NOT be one of the following, nor should it be a trivial variation of them. Aim for questions that test different facts or concepts related to the topic.
+Previously correct answers for this topic in this session:
+{{#each previousCorrectAnswers}}
+- "{{this}}"
+{{/each}}
+{{/if}}
+
 {{#if performanceHistory}}
 ADAPTIVE DIFFICULTY:
 The user's recent performance on this topic is as follows (most recent answer is last in the list):
@@ -95,7 +104,7 @@ const generateTriviaQuestionPrompt = ai.definePrompt({
   input: {schema: GenerateTriviaQuestionInputSchema},
   output: {schema: GenerateTriviaQuestionOutputSchema},
   config: {
-    temperature: 1.0,
+    temperature: 1.0, // Keep temperature slightly higher for creativity, but repetition avoidance should guide it.
   },
   prompt: promptTemplateString,
 });

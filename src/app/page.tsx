@@ -47,6 +47,7 @@ export default function TriviaPage() {
   const [feedback, setFeedback] = useState<{ message: string; isCorrect: boolean; detailedMessage?: string; explanation?: string } | null>(null);
   const [customTopicInput, setCustomTopicInput] = useState('');
   const [askedQuestions, setAskedQuestions] = useState<string[]>([]);
+  const [askedCorrectAnswers, setAskedCorrectAnswers] = useState<string[]>([]);
   const [performanceHistory, setPerformanceHistory] = useState<PerformanceHistoryEntry[]>([]);
   const [currentYear, setCurrentYear] = useState<number | null>(null);
 
@@ -63,7 +64,8 @@ export default function TriviaPage() {
     const inputForAI: GenerateTriviaQuestionInput = { 
       topic, 
       previousQuestions: askedQuestions,
-      language: locale, // Pass current locale
+      previousCorrectAnswers: askedCorrectAnswers,
+      language: locale, 
     };
     if (performanceHistory.length > 0) {
       inputForAI.performanceHistory = performanceHistory;
@@ -87,6 +89,7 @@ export default function TriviaPage() {
     setCurrentTopic(topic);
     setScore({ correct: 0, incorrect: 0 }); 
     setAskedQuestions([]); 
+    setAskedCorrectAnswers([]);
     setPerformanceHistory([]);
     fetchQuestion(topic);
   };
@@ -96,6 +99,7 @@ export default function TriviaPage() {
 
     setSelectedAnswerIndex(answerIndex);
     const isCorrect = answerIndex === questionData.correctAnswerIndex;
+    const correctAnswerText = questionData.answers[questionData.correctAnswerIndex];
     
     const newHistoryEntry: PerformanceHistoryEntry = { 
       questionText: questionData.question, 
@@ -109,11 +113,12 @@ export default function TriviaPage() {
     if (isCorrect) {
       setScore(prev => ({ ...prev, correct: prev.correct + 1 }));
       setFeedback({ message: t('correct'), isCorrect: true, explanation: questionData.explanation });
+      setAskedCorrectAnswers(prev => [...prev, correctAnswerText]);
     } else {
       setScore(prev => ({ ...prev, incorrect: prev.incorrect + 1 }));
       setFeedback({ 
         message: t('incorrect'), 
-        detailedMessage: t('correctAnswerWas', { answer: questionData.answers[questionData.correctAnswerIndex] }), 
+        detailedMessage: t('correctAnswerWas', { answer: correctAnswerText }), 
         isCorrect: false,
         explanation: questionData.explanation
       });
@@ -134,6 +139,7 @@ export default function TriviaPage() {
     setCurrentTopic('');
     setCustomTopicInput('');
     setAskedQuestions([]);
+    setAskedCorrectAnswers([]);
     setPerformanceHistory([]);
   };
 
