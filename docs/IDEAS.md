@@ -36,6 +36,30 @@ Este documento recopila ideas para futuras mejoras de la aplicación AI Trivia M
 8.  **Modo "Revisión":**
     *   Al final de una partida, permitir al usuario revisar las preguntas que falló, junto con las explicaciones.
 
+9.  **Imágenes Ilustrativas para Preguntas:**
+    *   **Concepto:** Mostrar una imagen relevante junto a cada pregunta para hacer la experiencia más visual y atractiva.
+    *   **Generación de Imágenes:**
+        *   **Opción A (IA de texto genera prompt):** La misma IA que genera la pregunta podría también generar un prompt descriptivo para una IA de generación de imágenes (ej. "Una foto de un astronauta en la luna para una pregunta sobre el Apollo 11").
+        *   **Opción B (IA de arte directa):** Utilizar la pregunta o elementos clave de ella como entrada directa para una IA generadora de imágenes.
+        *   Se podrían usar modelos de Genkit capaces de generar imágenes (como Gemini 2.0 Flash experimental).
+    *   **Almacenamiento (para preguntas predefinidas):**
+        *   Las imágenes generadas para las categorías predefinidas se podrían almacenar en Firebase Storage.
+        *   La URL de la imagen se almacenaría junto con la pregunta en Firestore.
+    *   **Implementación en la UI:**
+        *   El componente `QuestionCard` mostraría la imagen.
+    *   **Consideraciones para Temas Personalizados:**
+        *   La generación de imágenes en tiempo real para temas personalizados sería más costosa y lenta. Se podría optar por:
+            *   Generarlas y que el usuario espere.
+            *   Omitir imágenes para temas personalizados.
+            *   Usar un placeholder genérico o un icono basado en el tema.
+    *   **Beneficios:**
+        *   Mejora estética y de engagement.
+        *   Puede ayudar a contextualizar la pregunta.
+    *   **Desafíos:**
+        *   Costo y latencia de la generación de imágenes AI.
+        *   Necesidad de prompts de buena calidad para las IAs de arte.
+        *   Aumento del espacio de almacenamiento requerido.
+
 ## ¿Sería fácil convertirla en una app de Android?
 
 Convertir una aplicación web Next.js directamente en una aplicación nativa de Android (escrita en Kotlin o Java) **no es un proceso directo de "un clic"**. Son tecnologías fundamentalmente diferentes. Sin embargo, hay varias estrategias para llevar tu aplicación web a Android, con diferentes niveles de esfuerzo y "nativismo":
@@ -185,4 +209,5 @@ Esta es una optimización significativa que puede mejorar drásticamente el rend
 *   **Complejidad de Implementación:** Configurar Service Workers, IndexedDB y la lógica de sincronización requiere un esfuerzo de desarrollo inicial mayor.
 *   **Gestión de Datos:** Definir el proceso para generar, almacenar y actualizar las preguntas pre-generadas.
 *   **Experiencia de Usuario (UX):** Proveer feedback claro al usuario sobre el estado de la conexión, el progreso de las descargas y qué contenido está disponible offline.
-```
+
+    
