@@ -77,8 +77,8 @@ const generateTriviaQuestionFlow = ai.defineFlow(
     outputSchema: GenerateTriviaQuestionOutputSchema,
   },
   async input => {
+    console.log('generateTriviaQuestionFlow input:', JSON.stringify(input, null, 2));
     const {output} = await generateTriviaQuestionPrompt(input);
     return output!;
   }
 );
-
