@@ -64,8 +64,22 @@ Convertir una aplicación web Next.js directamente en una aplicación nativa de 
 
 Independientemente del enfoque que elijas para el frontend en Android, tus flujos de Genkit (`generateTriviaQuestion`, etc.) son lógica de servidor. La aplicación de Android (ya sea PWA, WebView o nativa) necesitará hacer peticiones de red a estos flujos, que deberían estar desplegados como endpoints de API accesibles (por ejemplo, a través de Firebase Functions o cualquier otro servicio de backend que aloje tus flujos Genkit).
 
+### Estrategia de Localización para Android
+
+A la hora de publicar en Android, es **altamente recomendable crear una única aplicación multi-idioma** en lugar de mantener dos o más aplicaciones separadas (una para cada idioma). Las razones principales son:
+
+*   **Mantenimiento Simplificado:** Una única base de código reduce drásticamente el esfuerzo de actualización y corrección de errores.
+*   **Mejor Experiencia de Usuario:** Las apps suelen adaptarse al idioma del dispositivo o permitir un cambio interno, lo cual es más conveniente para el usuario.
+*   **Optimización en App Stores:** Google Play Store está diseñado para manejar una sola app con múltiples localizaciones para su ficha (descripción, imágenes, etc.).
+*   **Alcance de Mercado Unificado:** Facilita llegar a una audiencia más amplia.
+*   **Soporte Nativo en Android:** Android provee herramientas robustas para la internacionalización (uso de archivos de recursos como `strings.xml` por idioma).
+
+Crear aplicaciones separadas por idioma conlleva duplicación de esfuerzos, mayor complejidad en la gestión y una experiencia de usuario fragmentada.
+
 ### Resumen para Android
 
 *   **Ruta más sencilla y rápida:** PWA.
 *   **Para Play Store con acceso a funciones nativas:** Capacitor (empaquetando la web).
 *   **Mejor experiencia nativa y rendimiento:** Reescritura nativa o con React Native/Flutter (mayor esfuerzo).
+*   **Localización:** Optar siempre por una única app multi-idioma.
+```
