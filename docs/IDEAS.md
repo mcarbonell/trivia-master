@@ -123,6 +123,7 @@ Existen varias vías para monetizar una aplicación como "AI Trivia Master":
 *   **Valor Percibido:** Los usuarios deben sentir que obtienen un valor real por lo que pagan.
 *   **Pruebas A/B:** Experimentar con diferentes modelos y precios para ver qué funciona mejor.
 *   **Cumplimiento de Políticas:** Adherirse a las políticas de Google Play Store (y Apple App Store si se decide publicar allí).
+*   **Diferenciación de Costos (Temas Personalizados vs. Predefinidos):** Los temas personalizados generados por IA tienen un costo de API por cada uso, mientras que las categorías predefinidas (con preguntas pre-generadas y almacenadas) tienen un costo operativo mucho menor. Esto sugiere que la funcionalidad de **temas personalizados es ideal para un modelo premium, una suscripción, o para ofrecer un número limitado de usos gratuitos** antes de requerir un pago.
 
 ## Mejora: Experiencia Offline Avanzada con Preguntas Pre-generadas
 
@@ -169,7 +170,7 @@ Esta es una optimización significativa que puede mejorar drásticamente el rend
 
 ### Consideraciones para Temas Personalizados:
 
-*   Los temas personalizados, al ser generados dinámicamente por la IA, **seguirían requiriendo una conexión a internet.** Es importante comunicar esto claramente al usuario en la interfaz cuando esté offline.
+*   Los temas personalizados, al ser generados dinámicamente por la IA, **seguirían requiriendo una conexión a internet y consumirían llamadas a la API de Genkit.** Es importante comunicar esto claramente al usuario en la interfaz cuando esté offline. Dado el costo de API asociado, esta funcionalidad es una candidata ideal para ser una característica premium o tener un uso limitado para cuentas gratuitas.
 *   Para una experiencia offline muy básica con temas personalizados, se podría considerar empaquetar un conjunto muy pequeño y genérico de preguntas que no dependan de un tema específico, pero esto limitaría mucho la naturaleza "personalizada".
 
 ### Beneficios Clave:
