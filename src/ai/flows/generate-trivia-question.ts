@@ -107,27 +107,6 @@ const generateTriviaQuestionFlow = ai.defineFlow(
     outputSchema: GenerateTriviaQuestionOutputSchema,
   },
   async input => {
-    console.log('generateTriviaQuestionFlow input:', JSON.stringify(input, null, 2));
-
-    console.log('\n--- Prompt Template Being Used ---');
-    console.log(promptTemplateString);
-    console.log('\n--- How Input Fills Template ---');
-    console.log(`The "{{#if language}}...{{/if}}" block will use: "${input.language || 'English (default)'}"`);
-    console.log(`The "{{{topic}}}" placeholder will be replaced with: "${input.topic}"`);
-    if (input.previousQuestions && input.previousQuestions.length > 0) {
-      console.log('The "{{#if previousQuestions}}...{{/each}}{{/if}}" block will render the following list of previous questions into the prompt:');
-      input.previousQuestions.forEach(q => console.log(`- "${q}"`));
-    } else {
-      console.log('The "{{#if previousQuestions}}...{{/each}}{{/if}}" block does not render as no previous questions were provided.');
-    }
-     if (input.performanceHistory && input.performanceHistory.length > 0) {
-      console.log('The "{{#if performanceHistory}}...{{/each}}{{/if}}" block will render the following performance history into the prompt:');
-      input.performanceHistory.forEach(h => console.log(`- Question: "${h.questionText}" - User answered: ${h.answeredCorrectly ? 'Correctly' : 'Incorrectly'}`));
-    } else {
-      console.log('The "{{#if performanceHistory}}...{{/each}}{{/if}}" block does not render as no performance history was provided.');
-    }
-    console.log('--- End of Prompt Explanation ---\n');
-
     const {output} = await generateTriviaQuestionPrompt(input);
     return output!;
   }
