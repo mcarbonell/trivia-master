@@ -1,3 +1,4 @@
+
 {
   "pageTitle": "Maestro de Trivia IA",
   "pageDescription": "¡Pon a prueba tus conocimientos con preguntas de trivia generadas por IA!",
@@ -22,7 +23,7 @@
   "footerText": "© {year} Maestro de Trivia IA. Potenciado por GenAI.",
   "languageSwitcherDescription": "Cambiar idioma de la aplicación.",
   "english": "Inglés",
-  "spanish": "Spanish",
+  "spanish": "Español",
   "categories": {
     "science": "Ciencia",
     "history": "Historia",
