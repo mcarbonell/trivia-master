@@ -1,25 +1,28 @@
 
 import {getRequestConfig} from 'next-intl/server';
-import {cookies} from 'next/headers';
-import {defaultLocale, supportedLocales, localeCookieName, type AppLocale} from '@/lib/i18n-config';
+import {defaultLocale} from '@/lib/i18n-config';
 
-export default getRequestConfig(async () => {
-  const cookieStore = cookies();
-  let locale = cookieStore.get(localeCookieName)?.value as AppLocale | undefined;
+// Import message files statically
+import enMessages from '@/messages/en.json';
+// Import esMessages as well, though we won't use it in this simplified version immediately
+// This ensures it's still part of the build if needed later, and confirms path resolution.
+import esMessages from '@/messages/es.json';
 
-  if (!locale || !supportedLocales.includes(locale)) {
-    // Fallback to default locale if no valid cookie is found
-    // We could also check 'Accept-Language' header here, but for simplicity,
-    // we'll rely on ClientLocaleInitializer to set the cookie based on browser language.
-    locale = defaultLocale;
-  }
+export default getRequestConfig(async ({locale: localeFromNextIntl}) => {
+  // For now, always serve English to test if the config file is found and processed at all.
+  // We're ignoring localeFromNextIntl and any cookie logic for this test.
+  let messages = enMessages;
+  let resolvedLocale = defaultLocale; // Or simply 'en'
 
-  // Load messages for the determined locale.
-  // Using an alias for robust path resolution.
-  const messages = (await import(`@/messages/${locale}.json`)).default;
+  // Basic example of how you might select messages if you were using localeFromNextIntl:
+  // if (localeFromNextIntl === 'es') {
+  //   messages = esMessages;
+  //   resolvedLocale = 'es';
+  // }
 
   return {
-    locale,
-    messages
+    locale: resolvedLocale,
+    messages: messages,
   };
 });
+
