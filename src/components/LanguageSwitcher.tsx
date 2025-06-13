@@ -1,8 +1,8 @@
 'use client';
 
 import { useLocale, useTranslations } from 'next-intl';
-import { useRouter } from 'next/navigation'; // Using next/navigation for App Router
-import { localeCookieName } from '@/i18n';
+import { useRouter } from 'next/navigation'; 
+import { localeCookieName } from '@/lib/i18n-config';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -22,8 +22,6 @@ export function LanguageSwitcher() {
       const expiryDate = new Date();
       expiryDate.setDate(expiryDate.getDate() + 30); // Cookie expires in 30 days
       document.cookie = `${localeCookieName}=${newLocale};path=/;expires=${expiryDate.toUTCString()};SameSite=Lax`;
-      // Instead of full reload, router.refresh() re-renders Server Components
-      // and allows next-intl to pick up the new locale from the cookie.
       router.refresh(); 
     }
   };

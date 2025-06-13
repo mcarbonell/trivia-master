@@ -1,10 +1,7 @@
 'use client';
 
 import { useEffect } from 'react';
-import { localeCookieName } from '@/i18n'; // Using the constant
-
-const supportedLocales = ['en', 'es'];
-const defaultLocale = 'en';
+import { localeCookieName, supportedLocales, defaultLocale, type AppLocale } from '@/lib/i18n-config';
 
 export function ClientLocaleInitializer() {
   useEffect(() => {
@@ -14,7 +11,7 @@ export function ClientLocaleInitializer() {
     
     if (!currentCookie) {
       let browserLang = navigator.language.split('-')[0];
-      if (!supportedLocales.includes(browserLang)) {
+      if (!supportedLocales.includes(browserLang as AppLocale)) {
         browserLang = defaultLocale;
       }
       const expiryDate = new Date();
@@ -23,8 +20,6 @@ export function ClientLocaleInitializer() {
       
       // Refresh to apply the new locale if it differs from what might have been SSR'd
       // This is important for the very first load.
-      // Check if a refresh is truly needed to avoid unnecessary reloads if possible.
-      // For now, a reload ensures consistency on first visit if browser lang differs from default.
       window.location.reload();
     }
   }, []);
