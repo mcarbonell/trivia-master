@@ -82,4 +82,45 @@ Crear aplicaciones separadas por idioma conlleva duplicación de esfuerzos, mayo
 *   **Para Play Store con acceso a funciones nativas:** Capacitor (empaquetando la web).
 *   **Mejor experiencia nativa y rendimiento:** Reescritura nativa o con React Native/Flutter (mayor esfuerzo).
 *   **Localización:** Optar siempre por una única app multi-idioma.
+
+## Potencial de Monetización para "AI Trivia Master"
+
+Existen varias vías para monetizar una aplicación como "AI Trivia Master":
+
+1.  **Publicidad (Ads):**
+    *   **Banners:** Anuncios discretos en la parte superior o inferior.
+    *   **Anuncios Intersticiales:** Anuncios a pantalla completa entre transiciones (ej. después de X preguntas, al finalizar una ronda). Usar con moderación.
+    *   **Vídeos Bonificados (Rewarded Ads):** El usuario elige ver un anuncio a cambio de una recompensa.
+        *   *Posibles recompensas:* Obtener una pista, desbloquear temporalmente una categoría premium, "vidas" extra.
+
+2.  **Compras Dentro de la Aplicación (In-App Purchases - IAPs):**
+    *   **Versión Sin Anuncios:** Un pago único para eliminar toda la publicidad.
+    *   **Paquetes de Pistas:** Vender conjuntos de pistas.
+    *   **Desbloqueo de Categorías Premium:** Ofrecer categorías base gratuitas y categorías especiales de pago.
+    *   **Personalización (futuro):** Avatares, temas de colores, insignias (si se añaden perfiles de usuario).
+
+3.  **Modelo de Suscripción (Freemium):**
+    *   **Nivel Gratuito:** Funcionalidad básica, con anuncios, quizás límites (ej. partidas diarias, acceso limitado a categorías).
+    *   **Nivel Premium (Suscripción mensual/anual):**
+        *   Sin anuncios.
+        *   Acceso ilimitado a todas las categorías.
+        *   Estadísticas avanzadas.
+        *   Acceso anticipado a nuevas funciones.
+        *   Número de pistas gratuitas al mes.
+
+4.  **Contenido Patrocinado (Más avanzado):**
+    *   Colaborar con marcas para crear categorías temáticas patrocinadas (requiere una base de usuarios considerable).
+
+### Combinación Sugerida para Empezar:
+
+*   **Gratis con Anuncios:** Banners discretos y vídeos bonificados para obtener pistas.
+*   **IAP para "Eliminar Anuncios":** Un pago único para una experiencia sin publicidad.
+*   **IAP para "Paquetes de Categorías Premium":** Algunas categorías muy atractivas o especializadas.
+
+### Consideraciones Importantes para la Monetización:
+
+*   **Experiencia del Usuario (UX):** La monetización no debe ser intrusiva ni arruinar la diversión.
+*   **Valor Percibido:** Los usuarios deben sentir que obtienen un valor real por lo que pagan.
+*   **Pruebas A/B:** Experimentar con diferentes modelos y precios para ver qué funciona mejor.
+*   **Cumplimiento de Políticas:** Adherirse a las políticas de Google Play Store (y Apple App Store si se decide publicar allí).
 ```
