@@ -42,6 +42,9 @@ const generateTriviaQuestionPrompt = ai.definePrompt({
   name: 'generateTriviaQuestionPrompt',
   input: {schema: GenerateTriviaQuestionInputSchema},
   output: {schema: GenerateTriviaQuestionOutputSchema},
+  config: {
+    temperature: 1.0,
+  },
   prompt: `You are an expert trivia question generator. Given a topic, you will generate a trivia question, four possible answers, indicate the index of the correct answer, and provide a brief explanation for the correct answer.
 
 Topic: {{{topic}}}
