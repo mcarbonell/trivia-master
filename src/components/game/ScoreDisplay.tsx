@@ -17,10 +17,10 @@ export function ScoreDisplay({ score, onNewGame }: ScoreDisplayProps) {
     <Card className="mb-6 w-full max-w-md shadow-lg">
       <CardContent className="p-4 flex flex-col sm:flex-row justify-between items-center space-y-3 sm:space-y-0">
         <div className="flex space-x-4 text-lg">
-          <span className="font-semibold flex items-center text-green-600">
+          <span className="font-semibold flex items-center text-success">
             <CheckCircle className="mr-2 h-6 w-6" /> Correct: {score.correct}
           </span>
-          <span className="font-semibold flex items-center text-red-600">
+          <span className="font-semibold flex items-center text-destructive">
             <XCircle className="mr-2 h-6 w-6" /> Incorrect: {score.incorrect}
           </span>
         </div>

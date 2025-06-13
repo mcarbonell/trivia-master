@@ -11,7 +11,7 @@ interface QuestionCardProps {
   onAnswerSelect: (answerIndex: number) => void;
   onNextQuestion: () => void;
   selectedAnswerIndex: number | null;
-  feedback: { message: string; isCorrect: boolean } | null;
+  feedback: { message: string; isCorrect: boolean; detailedMessage?: string } | null; // Added detailedMessage here
   gameState: 'playing' | 'showing_feedback';
 }
 
@@ -32,10 +32,13 @@ export function QuestionCard({
         {feedback && gameState === 'showing_feedback' && (
            <CardDescription className={cn(
             "text-center text-lg font-semibold mt-2 animate-pulseOnce",
-            feedback.isCorrect ? "text-green-600" : "text-red-600"
+            feedback.isCorrect ? "text-success" : "text-destructive"
           )}>
             {feedback.isCorrect ? <CheckCircle2 className="inline-block mr-2 h-6 w-6" /> : <XCircle className="inline-block mr-2 h-6 w-6" />}
             {feedback.message}
+            {!feedback.isCorrect && feedback.detailedMessage && (
+              <span className="block text-sm font-normal text-muted-foreground mt-1">{feedback.detailedMessage}</span>
+            )}
           </CardDescription>
         )}
       </CardHeader>
@@ -50,9 +53,9 @@ export function QuestionCard({
 
           if (isRevealed) {
             if (isCorrect) {
-              buttonClasses = cn(buttonClasses, "bg-green-500 hover:bg-green-600 text-white border-green-700");
+              buttonClasses = cn(buttonClasses, "bg-success hover:bg-success/90 text-success-foreground border-success/70");
             } else if (isSelected && !isCorrect) {
-              buttonClasses = cn(buttonClasses, "bg-red-500 hover:bg-red-600 text-white border-red-700");
+              buttonClasses = cn(buttonClasses, "bg-destructive hover:bg-destructive/90 text-destructive-foreground border-destructive/70");
             } else {
                buttonClasses = cn(buttonClasses, "bg-muted/50");
             }
@@ -86,20 +89,3 @@ export function QuestionCard({
     </Card>
   );
 }
-
-// Add this to your globals.css or a style tag for subtle animations
-/*
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-.animate-fadeIn { animation: fadeIn 0.5s ease-out forwards; }
-
-@keyframes pulseOnce {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.05); }
-  100% { transform: scale(1); }
-}
-.animate-pulseOnce { animation: pulseOnce 0.6s ease-in-out; }
-*/
-

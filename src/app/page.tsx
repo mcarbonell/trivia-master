@@ -92,36 +92,6 @@ export default function TriviaPage() {
     setCurrentTopic('');
     setCustomTopicInput('');
   };
-  
-  // Add keyframes and animation classes to globals.css or a <style jsx global> tag if preferred.
-  // For simplicity, they could be in globals.css.
-  // Example:
-  // @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-  // .animate-fadeIn { animation: fadeIn 0.5s ease-out forwards; }
-  // @keyframes pulseOnce { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
-  // .animate-pulseOnce { animation: pulseOnce 0.6s ease-in-out; }
-  useEffect(() => {
-    const style = document.createElement('style');
-    style.textContent = `
-      @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(10px); }
-        to { opacity: 1; transform: translateY(0); }
-      }
-      .animate-fadeIn { animation: fadeIn 0.5s ease-out forwards; }
-
-      @keyframes pulseOnce {
-        0% { transform: scale(1); }
-        50% { transform: scale(1.05); }
-        100% { transform: scale(1); }
-      }
-      .animate-pulseOnce { animation: pulseOnce 0.6s ease-in-out; }
-    `;
-    document.head.appendChild(style);
-    return () => {
-      document.head.removeChild(style);
-    };
-  }, []);
-
 
   return (
     <div className="container mx-auto p-4 flex flex-col items-center min-h-screen text-foreground">

@@ -20,6 +20,8 @@
     --accent-foreground: 0 0% 98%; /* Near white for text on Teal */
     --destructive: 0 84.2% 60.2%; /* Red */
     --destructive-foreground: 0 0% 98%; /* Near white */
+    --success: 130 65% 50%; /* Green */
+    --success-foreground: 0 0% 98%; /* Near white */
     --border: 220 15% 88%;     /* Gray border */
     --input: 0 0% 100%;         /* White input background */
     --ring: 217 90% 61%;       /* Primary color for ring */
@@ -55,6 +57,8 @@
     --accent-foreground: 187 90% 10%;
     --destructive: 0 70% 50%;
     --destructive-foreground: 0 0% 98%;
+    --success: 130 55% 55%;
+    --success-foreground: 0 0% 10%;
     --border: 220 12% 22%;
     --input: 220 12% 20%;
     --ring: 217 80% 65%;
