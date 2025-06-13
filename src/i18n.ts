@@ -1,21 +1,25 @@
 
 import {getRequestConfig} from 'next-intl/server';
-
-// Can be imported from a shared config
-// For now, to ensure no external dependencies are causing issues in config loading:
-// import {defaultLocale, type AppLocale} from '@/lib/i18n-config';
+import {cookies} from 'next/headers';
+import {defaultLocale, supportedLocales, localeCookieName, type AppLocale} from '@/lib/i18n-config';
 
 export default getRequestConfig(async () => {
-  // For extreme debugging: Temporarily hardcode the locale directly.
-  const locale = 'en';
+  const cookieStore = cookies();
+  let locale = cookieStore.get(localeCookieName)?.value as AppLocale | undefined;
 
-  // Load messages for the hardcoded locale.
-  // The path is relative from this file (src/i18n.ts) to src/messages/en.json
-  const messages = (await import(`./messages/${locale}.json`)).default;
+  if (!locale || !supportedLocales.includes(locale)) {
+    // Fallback to default locale if no valid cookie is found
+    // We could also check 'Accept-Language' header here, but for simplicity,
+    // we'll rely on ClientLocaleInitializer to set the cookie based on browser language.
+    locale = defaultLocale;
+  }
+
+  // Load messages for the determined locale.
+  // Using an alias for robust path resolution.
+  const messages = (await import(`@/messages/${locale}.json`)).default;
 
   return {
     locale,
     messages
   };
 });
-
