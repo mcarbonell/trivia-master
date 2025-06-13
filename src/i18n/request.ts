@@ -10,7 +10,7 @@ const messages: Record<string, any> = {
   es: messagesEs,
 };
 
-export default getRequestConfig(async ({locale: localeFromNextIntl}) => {
+export default getRequestConfig(async () => {
   // Attempt to get locale from cookie
   // Await cookies() to satisfy Next.js warning: https://nextjs.org/docs/messages/sync-dynamic-apis
   const cookieStore = await cookies(); 
@@ -20,11 +20,8 @@ export default getRequestConfig(async ({locale: localeFromNextIntl}) => {
 
   if (cookieLocale && supportedLocales.includes(cookieLocale)) {
     resolvedLocale = cookieLocale;
-  } else if (supportedLocales.includes(localeFromNextIntl as AppLocale)) {
-    // Use the locale passed by next-intl if cookie is not set or invalid
-    resolvedLocale = localeFromNextIntl as AppLocale;
   }
-  // If neither cookie nor next-intl locale is valid, resolvedLocale remains defaultLocale
+  // No fallback to localeFromNextIntl as it's not in the function signature for this setup type
 
   return {
     locale: resolvedLocale,
