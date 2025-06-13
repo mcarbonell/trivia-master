@@ -24,7 +24,7 @@ const PerformanceEntrySchema = z.object({
 
 const GenerateTriviaQuestionInputSchema = z.object({
   topic: z.string().describe('The topic for the trivia question.'),
-  previousQuestions: z.array(z.string()).optional().describe('A list of questions already asked on this topic in the current session, to avoid repetition and ensure variety.'),
+  previousQuestions: z.array(z.string()).optional().describe('A list of questions already asked on this topic in the current session, to avoid repetition.'),
   previousCorrectAnswers: z.array(z.string()).optional().describe('A list of correct answers from questions already asked on this topic in the current session, to ensure variety in the subject matter of the questions.'),
   performanceHistory: z.array(PerformanceEntrySchema).optional().describe("A history of the user's answers to recent questions on this topic (question text and if answered correctly), to help adapt difficulty. Most recent answer last."),
   language: z.string().optional().describe('The desired language for the question and answers (e.g., "en" for English, "es" for Spanish). Defaults to English if not specified.'),
@@ -58,7 +58,7 @@ IMPORTANT: Generate all content (question, answers, explanation) in English.
 Topic: {{{topic}}}
 
 IMPORTANT INSTRUCTIONS FOR QUESTION VARIETY:
-1. If the topic is broad (e.g., "Geography", "Science", "History"), ensure the questions cover DIFFERENT ASPECTS or SUB-TOPICS. For example, for "Geography", ask about capitals, mountains, oceans, deserts, etc., not just rivers repeatedly.
+1. If the topic is broad (e.g., "Geography", "Science", "History", "Chess"), ensure the questions cover DIFFERENT ASPECTS or SUB-TOPICS. For example, for "Geography", ask about capitals, mountains, oceans, deserts, etc., not just rivers repeatedly. For "Chess", consider aspects like its history, famous players, championships, different openings, common endgames, tactical motifs, in addition to basic rules.
 2. The new question MUST be SIGNIFICANTLY DIFFERENT from any previous questions. Avoid asking about the same specific entity or concept even if worded differently.
 
 {{#if previousQuestions}}
@@ -104,7 +104,7 @@ const generateTriviaQuestionPrompt = ai.definePrompt({
   input: {schema: GenerateTriviaQuestionInputSchema},
   output: {schema: GenerateTriviaQuestionOutputSchema},
   config: {
-    temperature: 1.0, // Keep temperature slightly higher for creativity, but repetition avoidance should guide it.
+    temperature: 1.0, 
   },
   prompt: promptTemplateString,
 });
