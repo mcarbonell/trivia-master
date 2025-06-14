@@ -41,5 +41,7 @@
     "hard": "Hard",
     "very hard": "Very Hard"
   },
-  "currentDifficulty": "Current Difficulty"
+  "currentDifficulty": "Current Difficulty",
+  "showHintButton": "Show Hint",
+  "hintLabel": "Hint"
 }

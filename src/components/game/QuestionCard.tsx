@@ -1,21 +1,24 @@
 
 "use client";
 
+import { useState, useEffect } from "react";
+import type { DifficultyLevel } from "@/ai/flows/generate-trivia-question"; // Assuming this type is still relevant
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
+import { cn } from "@/lib/utils";
+import { CheckCircle2, XCircle, ChevronRight, Info, Lightbulb } from "lucide-react";
+import { useTranslations } from "next-intl";
+
 // Expect a simple (monolingual) structure for display purposes
 interface LocalizedQuestionData {
   question: string;
   answers: string[];
   correctAnswerIndex: number;
   explanation: string;
-  difficulty: "very easy" | "easy" | "medium" | "hard" | "very hard";
-  hint: string; // Added hint field
+  difficulty: DifficultyLevel; // Keep if used for display, or remove
+  hint?: string; // Hint is optional as older questions might not have it
 }
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
-import { cn } from "@/lib/utils";
-import { CheckCircle2, XCircle, ChevronRight, Info } from "lucide-react";
-import { useTranslations } from "next-intl";
 
 interface QuestionCardProps {
   questionData: LocalizedQuestionData; 
@@ -35,7 +38,20 @@ export function QuestionCard({
   gameState,
 }: QuestionCardProps) {
   const t = useTranslations();
-  const { question, answers, correctAnswerIndex, hint } = questionData; // Destructure hint, though not used in UI yet
+  const { question, answers, correctAnswerIndex, explanation, hint } = questionData;
+
+  const [isHintVisible, setIsHintVisible] = useState(false);
+
+  // Reset hint visibility when the question changes
+  useEffect(() => {
+    setIsHintVisible(false);
+  }, [question]);
+
+  const handleShowHint = () => {
+    setIsHintVisible(true);
+    // Potentially, in a competitive game, clicking hint could affect score or disable achievements.
+    // For now, just reveal it.
+  };
 
   return (
     <Card className="w-full shadow-xl animate-fadeIn">
@@ -58,7 +74,7 @@ export function QuestionCard({
                 <p className="text-sm text-muted-foreground flex items-start">
                   <Info className="h-4 w-4 mr-2 mt-0.5 shrink-0 text-primary" />
                   <span className="font-semibold mr-1">{t('explanation')}:</span>
-                  {feedback.explanation}
+                  {explanation}
                 </p>
               </div>
             )}
@@ -100,10 +116,29 @@ export function QuestionCard({
             </Button>
           );
         })}
+
+        {/* Hint Section */}
+        {hint && gameState === 'playing' && !isHintVisible && (
+          <div className="pt-3 mt-3 border-t border-border flex justify-center">
+            <Button variant="outline" onClick={handleShowHint} className="text-primary border-primary hover:bg-primary/10">
+              <Lightbulb className="mr-2 h-4 w-4" />
+              {t('showHintButton')}
+            </Button>
+          </div>
+        )}
+        {isHintVisible && hint && (
+          <div className="pt-3 mt-3 border-t border-border">
+            <p className="text-sm text-muted-foreground flex items-start">
+              <Lightbulb className="h-4 w-4 mr-2 mt-0.5 shrink-0 text-primary" />
+              <span className="font-semibold mr-1">{t('hintLabel')}:</span>
+              {hint}
+            </p>
+          </div>
+        )}
       </CardContent>
-      {/* UI for displaying hint will be added in a future step */}
+      
       {gameState === 'showing_feedback' && (
-        <CardFooter className="flex justify-end">
+        <CardFooter className="flex justify-end pt-4">
           <Button onClick={onNextQuestion} className="bg-primary hover:bg-primary/90 text-primary-foreground">
             {t('nextQuestionButton')} <ChevronRight className="ml-2 h-5 w-5" />
           </Button>
@@ -112,4 +147,3 @@ export function QuestionCard({
     </Card>
   );
 }
-

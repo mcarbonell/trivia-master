@@ -41,5 +41,7 @@
     "hard": "Difícil",
     "very hard": "Muy Difícil"
   },
-  "currentDifficulty": "Dificultad Actual"
+  "currentDifficulty": "Dificultad Actual",
+  "showHintButton": "Mostrar Pista",
+  "hintLabel": "Pista"
 }
