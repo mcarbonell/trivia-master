@@ -3,6 +3,7 @@
 
 import { useState, useEffect } from "react";
 import { generateTriviaQuestion, type GenerateTriviaQuestionOutput, type GenerateTriviaQuestionInput } from "@/ai/flows/generate-trivia-question";
+import { getPredefinedQuestion, type PredefinedQuestion } from "@/services/triviaService";
 import { CategorySelector } from "@/components/game/CategorySelector";
 import { QuestionCard } from "@/components/game/QuestionCard";
 import { ScoreDisplay } from "@/components/game/ScoreDisplay";
@@ -38,6 +39,7 @@ export default function TriviaPage() {
     { name: t('categories.geography'), icon: Globe2, topicValue: "Geography" },
     { name: t('categories.music'), icon: Music, topicValue: "Popular Music History" },
   ];
+  const predefinedTopicValues = PREDEFINED_CATEGORIES.map(c => c.topicValue);
 
   const [gameState, setGameState] = useState<GameState>('category_selection');
   const [currentTopic, setCurrentTopic] = useState<string>('');
@@ -55,31 +57,62 @@ export default function TriviaPage() {
     setCurrentYear(new Date().getFullYear());
   }, []);
 
-
   const fetchQuestion = async (topic: string) => {
     setGameState('loading_question');
     setSelectedAnswerIndex(null);
     setFeedback(null);
 
-    const inputForAI: GenerateTriviaQuestionInput = { 
-      topic, 
-      previousQuestions: askedQuestions,
-      previousCorrectAnswers: askedCorrectAnswers,
-      language: locale, 
-    };
-    if (performanceHistory.length > 0) {
-      inputForAI.performanceHistory = performanceHistory;
+    let newQuestionData: GenerateTriviaQuestionOutput | null = null;
+    const isPredefinedTopic = predefinedTopicValues.includes(topic);
+
+    if (isPredefinedTopic) {
+      try {
+        console.log(`Fetching predefined question for topic: ${topic}, lang: ${locale}, asked: ${askedQuestions.length}`);
+        newQuestionData = await getPredefinedQuestion(topic, locale, askedQuestions);
+        if (newQuestionData) {
+          console.log("Predefined question found:", newQuestionData.question);
+        } else {
+          console.log("No suitable predefined question found, falling back to Genkit.");
+        }
+      } catch (firestoreError) {
+        console.error("Error fetching from Firestore, falling back to Genkit:", firestoreError);
+      }
     }
 
-    try {
-      const data = await generateTriviaQuestion(inputForAI);
-      setQuestionData(data);
-      if (data.question) {
-        setAskedQuestions(prev => [...prev, data.question]);
+    // If not a predefined topic, or if fetching from Firestore failed/returned null
+    if (!newQuestionData) {
+      const inputForAI: GenerateTriviaQuestionInput = { 
+        topic, 
+        previousQuestions: askedQuestions,
+        previousCorrectAnswers: askedCorrectAnswers, // Pass correct answers to AI to ensure variety
+        language: locale, 
+      };
+      if (performanceHistory.length > 0) {
+        inputForAI.performanceHistory = performanceHistory;
       }
+      try {
+        console.log("Generating question with Genkit for topic:", topic);
+        newQuestionData = await generateTriviaQuestion(inputForAI);
+        if (newQuestionData && newQuestionData.answers && newQuestionData.answers[newQuestionData.correctAnswerIndex]) {
+           // Only add to askedCorrectAnswers if it's AI generated and we want AI to avoid it
+           // For Firestore, variety is handled by not re-fetching the same question.
+           setAskedCorrectAnswers(prev => [...prev, newQuestionData!.answers[newQuestionData!.correctAnswerIndex]!]);
+        }
+      } catch (genkitError) {
+        console.error("Failed to generate question with Genkit:", genkitError);
+        setFeedback({ message: t('errorLoadingQuestion'), detailedMessage: t('errorLoadingQuestionDetail'), isCorrect: false });
+        setGameState('error');
+        return;
+      }
+    }
+
+    if (newQuestionData) {
+      setQuestionData(newQuestionData);
+      setAskedQuestions(prev => [...prev, newQuestionData!.question]);
       setGameState('playing');
-    } catch (err) {
-      console.error("Failed to generate question:", err);
+    } else {
+      // This case should ideally be rare if Genkit fallback works
+      console.error("No question data could be obtained.");
       setFeedback({ message: t('errorLoadingQuestion'), detailedMessage: t('errorLoadingQuestionDetail'), isCorrect: false });
       setGameState('error');
     }
@@ -113,7 +146,9 @@ export default function TriviaPage() {
     if (isCorrect) {
       setScore(prev => ({ ...prev, correct: prev.correct + 1 }));
       setFeedback({ message: t('correct'), isCorrect: true, explanation: questionData.explanation });
-      setAskedCorrectAnswers(prev => [...prev, correctAnswerText]);
+      // We add correct answer text to askedCorrectAnswers only if it was AI generated.
+      // This is handled within fetchQuestion for AI generated questions.
+      // For Firestore questions, we rely on not re-fetching the same question.
     } else {
       setScore(prev => ({ ...prev, incorrect: prev.incorrect + 1 }));
       setFeedback({ 
