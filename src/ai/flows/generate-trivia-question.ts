@@ -2,12 +2,14 @@
 'use server';
 
 /**
- * @fileOverview This file defines a Genkit flow for generating trivia questions and answers based on a given topic,
- * ensuring questions and their correct answers are not repeated within a session, providing explanations for correct answers,
- * and adapting difficulty based on user performance. It also supports generating questions in a specified language and assigning a difficulty level.
+ * @fileOverview This file defines a Genkit flow for generating bilingual (English and Spanish) trivia questions.
+ * It ensures questions and their correct answers are not repeated within a session, provides explanations,
+ * and adapts difficulty based on user performance.
  *
- * The flow takes a topic, a list of previous questions, a list of previous correct answers, user performance history, 
- * and language as input, and returns a trivia question, four possible answers, the index of the correct answer, an explanation, and a difficulty level.
+ * The flow takes a topic, a list of previous questions (texts), a list of previous correct answers (texts),
+ * and user performance history as input.
+ * It returns a trivia question object containing English and Spanish versions for question, answers, and explanation,
+ * along with the correct answer index and difficulty level.
  *
  * @interface GenerateTriviaQuestionInput - Input schema for the generateTriviaQuestion flow.
  * @interface GenerateTriviaQuestionOutput - Output schema for the generateTriviaQuestion flow.
@@ -18,37 +20,46 @@ import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
 
 const PerformanceEntrySchema = z.object({
-  questionText: z.string().describe('The text of the question that was asked.'),
+  questionText: z.string().describe('The text of the question that was asked (in the language it was asked).'),
   answeredCorrectly: z.boolean().describe('Whether the user answered this question correctly.'),
 });
 
 const DifficultyLevelSchema = z.enum([
-  "very easy", 
-  "easy", 
-  "medium", 
-  "hard", 
+  "very easy",
+  "easy",
+  "medium",
+  "hard",
   "very hard"
 ]).describe("The assessed difficulty level of the question.");
 export type DifficultyLevel = z.infer<typeof DifficultyLevelSchema>;
 
+const BilingualTextSchema = z.object({
+  en: z.string().describe('English version of the text.'),
+  es: z.string().describe('Spanish version of the text.'),
+});
+
+const BilingualAnswerSchema = z.object({
+  en: z.string().describe('English version of the answer.'),
+  es: z.string().describe('Spanish version of the answer.'),
+});
+
 const GenerateTriviaQuestionInputSchema = z.object({
   topic: z.string().describe('The topic for the trivia question.'),
-  previousQuestions: z.array(z.string()).optional().describe('A list of questions already asked on this topic in the current session, to avoid repetition.'),
-  previousCorrectAnswers: z.array(z.string()).optional().describe('A list of correct answers from questions already asked on this topic in the current session, to ensure variety in the subject matter of the questions.'),
+  previousQuestions: z.array(z.string()).optional().describe('A list of question texts (can be in English or Spanish, or a mix if user switched languages) already asked on this topic in the current session, to avoid repetition of the same conceptual question. The AI should consider these as distinct concepts already covered.'),
+  previousCorrectAnswers: z.array(z.string()).optional().describe('A list of correct answer texts (can be in English or Spanish) from questions already asked on this topic, to ensure variety in the subject matter. The AI should avoid these concepts as correct answers for the new question.'),
   performanceHistory: z.array(PerformanceEntrySchema).optional().describe("A history of the user's answers to recent questions on this topic (question text and if answered correctly), to help adapt difficulty. Most recent answer last."),
-  language: z.string().optional().describe('The desired language for the question and answers (e.g., "en" for English, "es" for Spanish). Defaults to English if not specified.'),
 });
 export type GenerateTriviaQuestionInput = z.infer<typeof GenerateTriviaQuestionInputSchema>;
 
 const GenerateTriviaQuestionOutputSchema = z.object({
-  question: z.string().describe('The trivia question.'),
-  answers: z.array(z.string()).length(4).describe('Four possible answers to the question.'),
+  question: BilingualTextSchema.describe('The trivia question in English and Spanish.'),
+  answers: z.array(BilingualAnswerSchema).length(4).describe('Four possible answers to the question, each in English and Spanish.'),
   correctAnswerIndex: z
     .number()
     .min(0)
     .max(3)
-    .describe('The index (0-3) of the correct answer in the answers array.'),
-  explanation: z.string().describe('A brief explanation (1-2 sentences) of why the correct answer is correct.'),
+    .describe('The index (0-3) of the correct answer in the answers array. This index applies to both language versions of the answers.'),
+  explanation: BilingualTextSchema.describe('A brief explanation (1-2 sentences) of why the correct answer is correct, in English and Spanish.'),
   difficulty: DifficultyLevelSchema,
 });
 export type GenerateTriviaQuestionOutput = z.infer<typeof GenerateTriviaQuestionOutputSchema>;
@@ -59,28 +70,24 @@ export async function generateTriviaQuestion(input: GenerateTriviaQuestionInput)
 
 const promptTemplateString = `You are an expert trivia question generator. Given a topic, you will generate a trivia question, four possible answers, indicate the index of the correct answer, provide a brief explanation for the correct answer, and assess its difficulty level.
 
-{{#if language}}
-IMPORTANT: Generate all content (question, answers, explanation) in {{language}}.
-{{else}}
-IMPORTANT: Generate all content (question, answers, explanation) in English.
-{{/if}}
+IMPORTANT: You MUST generate all textual content (question, each of the four answers, and the explanation) in BOTH English (en) and Spanish (es).
 
 Topic: {{{topic}}}
 
 IMPORTANT INSTRUCTIONS FOR QUESTION VARIETY:
-1. If the topic is broad (e.g., "Geography", "Science", "History", "Chess"), ensure the questions cover DIFFERENT ASPECTS or SUB-TOPICS. For example, for "Geography", ask about capitals, mountains, oceans, deserts, etc., not just rivers repeatedly. For "Chess", consider aspects like its history, famous players, championships, different openings, common endgames, tactical motifs, in addition to basic rules.
-2. The new question MUST be SIGNIFICANTLY DIFFERENT from any previous questions. Avoid asking about the same specific entity or concept even if worded differently.
+1. If the topic is broad (e.g., "Geography", "Science", "History", "Chess"), ensure the questions cover DIFFERENT ASPECTS or SUB-TOPICS. For "Chess", consider aspects like its history, famous players, championships, different openings, common endgames, tactical motifs, in addition to basic rules.
+2. The new question MUST be SIGNIFICANTLY DIFFERENT from any previous questions. Avoid asking about the same specific entity or concept even if worded differently or in another language.
 
 {{#if previousQuestions}}
-The following questions have already been asked on this topic in the current session. You MUST generate a NEW and DIFFERENT question that explores a new facet of the topic. DO NOT repeat or ask very similar questions to any of the following:
+The following question texts (which might be in English or Spanish) have already been asked on this topic in the current session. You MUST generate a NEW and DIFFERENT question that explores a new facet of the topic. DO NOT repeat or ask very similar questions to any of the following concepts:
 {{#each previousQuestions}}
 - "{{this}}"
 {{/each}}
 {{/if}}
 
 {{#if previousCorrectAnswers}}
-Furthermore, the correct answer for the new question MUST NOT be one of the following, nor should it be a trivial variation of them. Aim for questions that test different facts or concepts related to the topic.
-Previously correct answers for this topic in this session:
+Furthermore, the correct answer for the new question MUST NOT cover the same concept as any of the following, nor should it be a trivial variation of them, regardless of language. Aim for questions that test different facts or concepts related to the topic.
+Previously correct answer concepts (texts might be in English or Spanish) for this topic in this session:
 {{#each previousCorrectAnswers}}
 - "{{this}}"
 {{/each}}
@@ -91,7 +98,7 @@ You MUST assess the difficulty of the question you generate. Assign it one of th
 
 {{#if performanceHistory}}
 ADAPTIVE DIFFICULTY (Question Content):
-The user's recent performance on this topic is as follows (most recent answer is last in the list):
+The user's recent performance on this topic is as follows (most recent answer is last in the list, question text was in the language user saw):
 {{#each performanceHistory}}
 - Question: "{{this.questionText}}" - User answered: {{#if this.answeredCorrectly}}Correctly{{else}}Incorrectly{{/if}}
 {{/each}}
@@ -99,19 +106,16 @@ The user's recent performance on this topic is as follows (most recent answer is
 Based on this performance, please adjust the difficulty of the NEXT question's CONTENT:
 - If the user has been answering most recent questions correctly, make the new question's content moderately more challenging.
 - If the user has been struggling with recent questions, make the new question's content moderately easier.
-- Your goal is to create an engaging experience by gradually guiding the difficulty so the user has a chance to learn and feel challenged, ideally answering about 50-70% of questions correctly in the long run.
-- Avoid drastic jumps in difficulty. Strive for a smooth progression.
-- The 'difficulty' field you assign should reflect the question's inherent difficulty, regardless of this adaptive adjustment to the question's content.
+- Your goal is to create an engaging experience by gradually guiding the difficulty so the user has a chance to learn and feel challenged.
+- The 'difficulty' field you assign should reflect the question's inherent difficulty, regardless of this adaptive adjustment.
 {{/if}}
 
-Your response should be formatted as a JSON object with the following keys:
-- question: The trivia question.
-- answers: An array of four strings, representing the possible answers.
-- correctAnswerIndex: An integer between 0 and 3 (inclusive), indicating the index of the correct answer in the answers array.
-- explanation: A brief explanation (1-2 sentences) of why the correct answer is correct.
-- difficulty: A string, one of "very easy", "easy", "medium", "hard", "very hard".
+Your response should be a JSON object. The 'question', 'explanation' fields should be objects with 'en' and 'es' properties. The 'answers' field should be an array of 4 objects, where each object has 'en' and 'es' properties.
 
-Make sure that only one answer is correct.
+Example for a single answer object within the 'answers' array: { "en": "Answer A", "es": "Respuesta A" }
+Example for the 'question' object: { "en": "What is the capital of France?", "es": "¿Cuál es la capital de Francia?" }
+
+Make sure that only one answer is correct (indicated by correctAnswerIndex).
 `;
 
 const generateTriviaQuestionPrompt = ai.definePrompt({
@@ -119,7 +123,7 @@ const generateTriviaQuestionPrompt = ai.definePrompt({
   input: {schema: GenerateTriviaQuestionInputSchema},
   output: {schema: GenerateTriviaQuestionOutputSchema},
   config: {
-    temperature: 1.0, 
+    temperature: 1.0,
   },
   prompt: promptTemplateString,
 });
@@ -135,4 +139,3 @@ const generateTriviaQuestionFlow = ai.defineFlow(
     return output!;
   }
 );
-

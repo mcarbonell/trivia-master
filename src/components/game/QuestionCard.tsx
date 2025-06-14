@@ -1,7 +1,14 @@
 
 "use client";
 
-import type { GenerateTriviaQuestionOutput } from "@/ai/flows/generate-trivia-question";
+// Expect a simple (monolingual) structure for display purposes
+interface LocalizedQuestionData {
+  question: string;
+  answers: string[];
+  correctAnswerIndex: number;
+  explanation: string;
+  difficulty: "very easy" | "easy" | "medium" | "hard" | "very hard";
+}
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
@@ -10,11 +17,11 @@ import { CheckCircle2, XCircle, ChevronRight, Info } from "lucide-react";
 import { useTranslations } from "next-intl";
 
 interface QuestionCardProps {
-  questionData: GenerateTriviaQuestionOutput;
+  questionData: LocalizedQuestionData; // Now expects already localized data for display
   onAnswerSelect: (answerIndex: number) => void;
   onNextQuestion: () => void;
   selectedAnswerIndex: number | null;
-  feedback: { message: string; isCorrect: boolean; detailedMessage?: string; explanation?: string } | null;
+  feedback: { message: string; isCorrect: boolean; detailedMessage?: string; explanation?: string } | null; // Feedback messages are already localized
   gameState: 'playing' | 'showing_feedback';
 }
 
@@ -27,6 +34,7 @@ export function QuestionCard({
   gameState,
 }: QuestionCardProps) {
   const t = useTranslations();
+  // questionData now directly contains localized strings
   const { question, answers, correctAnswerIndex } = questionData;
 
   return (
@@ -45,6 +53,7 @@ export function QuestionCard({
                 <span className="block text-sm font-normal text-muted-foreground mt-1">{feedback.detailedMessage}</span>
               )}
             </CardDescription>
+            {/* Feedback.explanation is already localized from page.tsx */}
             {feedback.explanation && (
               <div className="mt-3 pt-3 border-t border-border">
                 <p className="text-sm text-muted-foreground flex items-start">
@@ -81,7 +90,7 @@ export function QuestionCard({
           return (
             <Button
               key={index}
-              variant={buttonVariant as any} 
+              variant={buttonVariant as any}
               className={buttonClasses}
               onClick={() => onAnswerSelect(index)}
               disabled={gameState === 'showing_feedback'}

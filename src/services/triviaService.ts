@@ -3,44 +3,39 @@
 'use server';
 
 import { db } from '@/lib/firebase';
-import { collection, query, where, getDocs, limit, orderBy, startAt, DocumentData } from 'firebase/firestore';
+import { collection, query, where, getDocs, limit, DocumentData } from 'firebase/firestore';
 import type { GenerateTriviaQuestionOutput } from '@/ai/flows/generate-trivia-question';
 
+// PredefinedQuestion now directly uses the bilingual GenerateTriviaQuestionOutput structure
+// and adds Firestore document ID and the original topicValue.
 export interface PredefinedQuestion extends GenerateTriviaQuestionOutput {
   id: string; // Firestore document ID
-  topicValue: string;
-  language: string;
+  topicValue: string; // The original topic value used for querying (e.g., "Science")
 }
 
 const PREDEFINED_QUESTIONS_COLLECTION = 'predefinedTriviaQuestions';
 const BATCH_SIZE = 10; // Number of questions to fetch in a batch
 
 /**
- * Fetches a batch of predefined trivia questions from Firestore for a given topic and language,
- * excluding questions whose text is in askedQuestionTexts.
+ * Fetches a batch of predefined bilingual trivia questions from Firestore for a given topicValue,
+ * excluding questions whose Firestore ID is in askedQuestionIds.
  * It then randomly picks one suitable question from the fetched batch.
  * @param topicValue The topic of the question (e.g., "Science").
- * @param language The language of the question (e.g., "en", "es").
- * @param askedQuestionTexts An array of question texts that have already been asked in the current session.
- * @returns A PredefinedQuestion or null if no suitable question is found.
+ * @param askedQuestionIds An array of Firestore document IDs for questions already asked.
+ * @returns A PredefinedQuestion (bilingual) or null if no suitable question is found.
  */
 export async function getPredefinedQuestion(
   topicValue: string,
-  language: string,
-  askedQuestionTexts: string[]
+  askedQuestionIds: string[]
 ): Promise<PredefinedQuestion | null> {
   try {
     const questionsRef = collection(db, PREDEFINED_QUESTIONS_COLLECTION);
     
-    // We fetch a batch of questions and filter client-side because complex "not-in" queries are limited in Firestore,
-    // and "askedQuestionTexts" could grow.
-    // For true randomness over a large dataset without re-fetching everything, more complex strategies
-    // would be needed (e.g., random document ID generation within a range, Cloud Function for random pick).
-    // This approach is a practical compromise.
+    // Fetch a batch of questions for the given topic.
+    // Filtering by askedQuestionIds will happen client-side on this batch.
     const q = query(
       questionsRef,
       where('topicValue', '==', topicValue),
-      where('language', '==', language),
       limit(BATCH_SIZE) // Fetch a small batch
     );
 
@@ -48,31 +43,31 @@ export async function getPredefinedQuestion(
     const potentialQuestions: PredefinedQuestion[] = [];
 
     querySnapshot.forEach((doc) => {
-      const data = doc.data() as DocumentData;
+      const data = doc.data() as DocumentData; // Firestore data
+      // Construct the PredefinedQuestion, assuming data matches GenerateTriviaQuestionOutput structure + topicValue
       potentialQuestions.push({
         id: doc.id,
-        question: data.question,
-        answers: data.answers,
+        question: data.question, // e.g., { en: "...", es: "..." }
+        answers: data.answers,   // e.g., [ { en: "...", es: "..." }, ... ]
         correctAnswerIndex: data.correctAnswerIndex,
-        explanation: data.explanation,
-        topicValue: data.topicValue,
-        language: data.language,
+        explanation: data.explanation, // e.g., { en: "...", es: "..." }
+        difficulty: data.difficulty,
+        topicValue: data.topicValue, // Persisted topicValue from script
       });
     });
 
     const unaskedQuestions = potentialQuestions.filter(
-      (pq) => !askedQuestionTexts.includes(pq.question)
+      (pq) => !askedQuestionIds.includes(pq.id)
     );
 
     if (unaskedQuestions.length > 0) {
-      // Pick a random question from the unasked ones in the batch
       const randomIndex = Math.floor(Math.random() * unaskedQuestions.length);
       return unaskedQuestions[randomIndex]!;
     }
 
-    return null; // No unasked questions found in this batch
+    return null; 
   } catch (error) {
-    console.error("Error fetching predefined question from Firestore:", error);
+    console.error("Error fetching predefined bilingual question from Firestore:", error);
     return null;
   }
 }
