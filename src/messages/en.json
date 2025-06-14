@@ -43,5 +43,7 @@
   },
   "currentDifficulty": "Current Difficulty",
   "showHintButton": "Show Hint",
-  "hintLabel": "Hint"
+  "hintLabel": "Hint",
+  "timesUp": "Time's Up!",
+  "timeLeft": "Time Left: {seconds}s"
 }

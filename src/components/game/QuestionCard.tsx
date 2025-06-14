@@ -2,22 +2,21 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import type { DifficultyLevel } from "@/ai/flows/generate-trivia-question"; // Assuming this type is still relevant
+import type { DifficultyLevel } from "@/ai/flows/generate-trivia-question";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
+import { Progress } from "@/components/ui/progress";
 import { cn } from "@/lib/utils";
-import { CheckCircle2, XCircle, ChevronRight, Info, Lightbulb } from "lucide-react";
+import { CheckCircle2, XCircle, ChevronRight, Info, Lightbulb, Clock } from "lucide-react";
 import { useTranslations } from "next-intl";
 
-// Expect a simple (monolingual) structure for display purposes
 interface LocalizedQuestionData {
   question: string;
   answers: string[];
   correctAnswerIndex: number;
   explanation: string;
-  difficulty: DifficultyLevel; // Keep if used for display, or remove
-  hint?: string; // Hint is optional as older questions might not have it
+  difficulty: DifficultyLevel;
+  hint?: string;
 }
 
 interface QuestionCardProps {
@@ -27,6 +26,8 @@ interface QuestionCardProps {
   selectedAnswerIndex: number | null;
   feedback: { message: string; isCorrect: boolean; detailedMessage?: string; explanation?: string } | null; 
   gameState: 'playing' | 'showing_feedback';
+  timeLeft: number | null;
+  questionTimeLimitSeconds: number;
 }
 
 export function QuestionCard({
@@ -36,22 +37,25 @@ export function QuestionCard({
   selectedAnswerIndex,
   feedback,
   gameState,
+  timeLeft,
+  questionTimeLimitSeconds,
 }: QuestionCardProps) {
   const t = useTranslations();
   const { question, answers, correctAnswerIndex, explanation, hint } = questionData;
 
   const [isHintVisible, setIsHintVisible] = useState(false);
 
-  // Reset hint visibility when the question changes
   useEffect(() => {
     setIsHintVisible(false);
   }, [question]);
 
   const handleShowHint = () => {
     setIsHintVisible(true);
-    // Potentially, in a competitive game, clicking hint could affect score or disable achievements.
-    // For now, just reveal it.
   };
+
+  const progressValue = timeLeft !== null && questionTimeLimitSeconds > 0 
+    ? (timeLeft / questionTimeLimitSeconds) * 100 
+    : 0;
 
   return (
     <Card className="w-full shadow-xl animate-fadeIn">
@@ -82,6 +86,17 @@ export function QuestionCard({
         )}
       </CardHeader>
       <CardContent className="space-y-3">
+        {gameState === 'playing' && timeLeft !== null && (
+          <div className="my-4">
+            <Progress value={progressValue} className="w-full h-2.5 rounded-full" 
+              aria-label={t('timeLeft', { seconds: timeLeft })}
+            />
+            <p className="text-sm text-muted-foreground text-center mt-1.5 flex items-center justify-center">
+              <Clock className="h-4 w-4 mr-1.5"/> {t('timeLeft', { seconds: timeLeft })}
+            </p>
+          </div>
+        )}
+
         {answers.map((answer, index) => {
           const isSelected = selectedAnswerIndex === index;
           const isCorrect = index === correctAnswerIndex;
@@ -117,7 +132,6 @@ export function QuestionCard({
           );
         })}
 
-        {/* Hint Section */}
         {hint && gameState === 'playing' && !isHintVisible && (
           <div className="pt-3 mt-3 border-t border-border flex justify-center">
             <Button variant="outline" onClick={handleShowHint} className="text-primary border-primary hover:bg-primary/10">

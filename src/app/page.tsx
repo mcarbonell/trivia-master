@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { generateTriviaQuestion, type GenerateTriviaQuestionOutput, type GenerateTriviaQuestionInput, type DifficultyLevel } from "@/ai/flows/generate-trivia-question";
 import { getPredefinedQuestion, type PredefinedQuestion } from "@/services/triviaService";
 import { CategorySelector } from "@/components/game/CategorySelector";
@@ -31,6 +31,7 @@ type GameState = 'category_selection' | 'loading_question' | 'playing' | 'showin
 type CurrentQuestionData = GenerateTriviaQuestionOutput & { id?: string };
 
 const DIFFICULTY_LEVELS_ORDER: DifficultyLevel[] = ["very easy", "easy", "medium", "hard", "very hard"];
+const QUESTION_TIME_LIMIT_SECONDS = 30;
 
 export default function TriviaPage() {
   const t = useTranslations();
@@ -60,28 +61,91 @@ export default function TriviaPage() {
   const [currentDifficultyLevel, setCurrentDifficultyLevel] = useState<DifficultyLevel>("medium");
   const [currentYear, setCurrentYear] = useState<number | null>(null);
 
+  const [timeLeft, setTimeLeft] = useState<number | null>(null);
+  const timerIntervalRef = useRef<NodeJS.Timeout | null>(null);
+
   useEffect(() => {
     setCurrentYear(new Date().getFullYear());
   }, []);
+
+  const clearTimer = useCallback(() => {
+    if (timerIntervalRef.current) {
+      clearInterval(timerIntervalRef.current);
+      timerIntervalRef.current = null;
+    }
+  }, []);
+
+  const startTimer = useCallback(() => {
+    clearTimer(); 
+    setTimeLeft(QUESTION_TIME_LIMIT_SECONDS);
+    timerIntervalRef.current = setInterval(() => {
+      setTimeLeft((prevTime) => {
+        if (prevTime === null || prevTime <= 1) {
+          clearTimer();
+          return 0; 
+        }
+        return prevTime - 1;
+      });
+    }, 1000);
+  }, [clearTimer]);
+  
+  const handleTimeout = useCallback(() => {
+    if (!questionData || gameState !== 'playing') return; 
+
+    clearTimer(); 
+    setSelectedAnswerIndex(null); // No answer was selected
+    setScore(prev => ({ ...prev, incorrect: prev.incorrect + 1 }));
+    
+    const correctAnswerText = questionData.answers[questionData.correctAnswerIndex]?.[locale] ?? t('errorLoadingQuestionDetail');
+    const explanationText = questionData.explanation?.[locale] ?? '';
+
+    setFeedback({
+      message: t('timesUp'),
+      detailedMessage: t('correctAnswerWas', { answer: correctAnswerText }),
+      isCorrect: false,
+      explanation: explanationText
+    });
+
+    const currentIndex = DIFFICULTY_LEVELS_ORDER.indexOf(currentDifficultyLevel);
+    if (currentIndex > 0) {
+      setCurrentDifficultyLevel(DIFFICULTY_LEVELS_ORDER[currentIndex - 1]!);
+    }
+    setGameState('showing_feedback');
+  }, [questionData, gameState, clearTimer, currentDifficultyLevel, locale, t, setScore, setFeedback, setCurrentDifficultyLevel, setGameState, setSelectedAnswerIndex]);
+
+
+  useEffect(() => {
+    if (timeLeft === 0 && gameState === 'playing') {
+      handleTimeout();
+    }
+  }, [timeLeft, gameState, handleTimeout]);
+
+  useEffect(() => {
+    if (gameState === 'playing' && questionData) {
+      startTimer();
+    } else {
+      clearTimer();
+      setTimeLeft(null); 
+    }
+    return () => {
+      clearTimer();
+    };
+  }, [gameState, questionData, startTimer, clearTimer]);
+
 
   const fetchQuestion = useCallback(async (topic: string, difficulty: DifficultyLevel) => {
     setGameState('loading_question');
     setSelectedAnswerIndex(null);
     setFeedback(null);
+    setTimeLeft(null); // Reset timer when fetching new question
 
     let newQuestionData: CurrentQuestionData | null = null;
     const isPredefinedTopic = predefinedTopicValues.includes(topic);
 
     if (isPredefinedTopic) {
       try {
-        console.log(`Fetching predefined question for topic: ${topic}, difficulty: ${difficulty}, asked IDs: ${askedQuestionIdentifiers.filter(id => !id.startsWith("genkit_")).length}`);
         const predefinedIds = askedQuestionIdentifiers.filter(id => !id.includes("genkit_question_"));
         newQuestionData = await getPredefinedQuestion(topic, predefinedIds, difficulty);
-        if (newQuestionData) {
-          console.log(`Predefined question (difficulty: ${newQuestionData.difficulty}) found: ${newQuestionData.question.en.substring(0,30)}...`);
-        } else {
-          console.log(`No suitable predefined question for difficulty ${difficulty}, falling back to Genkit for this difficulty.`);
-        }
       } catch (firestoreError) {
         console.error("Error fetching from Firestore, falling back to Genkit:", firestoreError);
       }
@@ -95,11 +159,10 @@ export default function TriviaPage() {
         targetDifficulty: difficulty,
       };
       try {
-        console.log(`Generating question with Genkit for topic: "${topic}", target difficulty: "${difficulty}"`);
         newQuestionData = await generateTriviaQuestion(inputForAI);
-        if (newQuestionData && newQuestionData.answers && newQuestionData.answers[newQuestionData.correctAnswerIndex]) {
+        if (newQuestionData && newQuestionData.answers && typeof newQuestionData.correctAnswerIndex === 'number' && newQuestionData.answers[newQuestionData.correctAnswerIndex]) {
            const correctAnswerTextInLocale = newQuestionData.answers[newQuestionData.correctAnswerIndex]![locale];
-           if(!newQuestionData.id) {
+           if(!newQuestionData.id) { // Only track for genkit questions, firestore questions use ID
              setAskedCorrectAnswerTexts(prev => [...new Set([...prev, correctAnswerTextInLocale])]);
            }
         }
@@ -113,18 +176,17 @@ export default function TriviaPage() {
 
     if (newQuestionData) {
       setQuestionData(newQuestionData);
-      if (newQuestionData.id) {
+      if (newQuestionData.id) { // Predefined question from Firestore
         setAskedQuestionIdentifiers(prev => [...new Set([...prev, newQuestionData!.id!])]);
-      } else {
+      } else { // Question generated by Genkit
         setAskedQuestionIdentifiers(prev => [...new Set([...prev, `genkit_question_${newQuestionData!.question[locale]}`])]);
       }
-      setGameState('playing');
+      setGameState('playing'); // Timer will start via useEffect watching gameState and questionData
     } else {
-      console.error("No question data could be obtained.");
-      setFeedback({ message: t('errorLoadingQuestion'), detailedMessage: t('errorNoQuestionForDifficulty', {difficulty: difficulty}), isCorrect: false });
+      setFeedback({ message: t('errorLoadingQuestion'), detailedMessage: t('errorNoQuestionForDifficulty', {difficulty: t(`difficultyLevels.${difficulty}` as any) as string }), isCorrect: false });
       setGameState('error');
     }
-  }, [locale, askedQuestionIdentifiers, askedCorrectAnswerTexts, predefinedTopicValues, t]);
+  }, [locale, askedQuestionIdentifiers, askedCorrectAnswerTexts, predefinedTopicValues, t, startTimer]); // Added startTimer
 
   const handleStartGame = (topic: string) => {
     setCurrentTopic(topic);
@@ -139,6 +201,7 @@ export default function TriviaPage() {
   const handleAnswerSelect = (answerIndex: number) => {
     if (!questionData || gameState !== 'playing') return;
 
+    clearTimer(); // Stop timer as soon as an answer is selected
     setSelectedAnswerIndex(answerIndex);
     const isCorrect = answerIndex === questionData.correctAnswerIndex;
     const correctAnswerTextInLocale = questionData.answers[questionData.correctAnswerIndex]![locale];
@@ -182,6 +245,8 @@ export default function TriviaPage() {
     setAskedQuestionIdentifiers([]);
     setAskedCorrectAnswerTexts([]);
     setCurrentDifficultyLevel("medium");
+    setTimeLeft(null); // Reset timer state
+    // clearTimer(); // Will be handled by gameState change effect
   };
   
   const DifficultyIndicator = () => {
@@ -210,14 +275,13 @@ export default function TriviaPage() {
     );
 };
 
-
   const localizedQuestionCardData = questionData ? {
     question: questionData.question[locale],
     answers: questionData.answers.map(ans => ans[locale]),
     correctAnswerIndex: questionData.correctAnswerIndex,
     explanation: questionData.explanation[locale],
     difficulty: questionData.difficulty,
-    hint: questionData.hint ? questionData.hint[locale] : undefined, // Safely access hint
+    hint: questionData.hint ? questionData.hint[locale] : undefined,
   } : null;
 
 
@@ -273,6 +337,8 @@ export default function TriviaPage() {
             selectedAnswerIndex={selectedAnswerIndex}
             feedback={feedback}
             gameState={gameState}
+            timeLeft={timeLeft}
+            questionTimeLimitSeconds={QUESTION_TIME_LIMIT_SECONDS}
           />
         )}
          {gameState === 'error' && feedback && (
@@ -282,7 +348,7 @@ export default function TriviaPage() {
               <CardTitle className="font-headline text-2xl text-destructive">{feedback.message}</CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-muted-foreground">{feedback.detailedMessage || "An unexpected error occurred."}</p>
+              <p className="text-muted-foreground">{feedback.detailedMessage || t('errorLoadingQuestionDetail')}</p>
             </CardContent>
             <CardFooter className="flex flex-col sm:flex-row justify-center gap-2">
               {currentTopic && <Button onClick={() => fetchQuestion(currentTopic, currentDifficultyLevel)} variant="outline">{t('errorTryAgainTopic', {topic: currentTopic})}</Button>}
@@ -298,4 +364,3 @@ export default function TriviaPage() {
     </div>
   );
 }
-

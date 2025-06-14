@@ -43,5 +43,7 @@
   },
   "currentDifficulty": "Dificultad Actual",
   "showHintButton": "Mostrar Pista",
-  "hintLabel": "Pista"
+  "hintLabel": "Pista",
+  "timesUp": "¡Se Acabó el Tiempo!",
+  "timeLeft": "Tiempo Restante: {seconds}s"
 }
