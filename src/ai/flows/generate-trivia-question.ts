@@ -4,10 +4,10 @@
 /**
  * @fileOverview This file defines a Genkit flow for generating trivia questions and answers based on a given topic,
  * ensuring questions and their correct answers are not repeated within a session, providing explanations for correct answers,
- * and adapting difficulty based on user performance. It also supports generating questions in a specified language.
+ * and adapting difficulty based on user performance. It also supports generating questions in a specified language and assigning a difficulty level.
  *
  * The flow takes a topic, a list of previous questions, a list of previous correct answers, user performance history, 
- * and language as input, and returns a trivia question, four possible answers, the index of the correct answer, and an explanation.
+ * and language as input, and returns a trivia question, four possible answers, the index of the correct answer, an explanation, and a difficulty level.
  *
  * @interface GenerateTriviaQuestionInput - Input schema for the generateTriviaQuestion flow.
  * @interface GenerateTriviaQuestionOutput - Output schema for the generateTriviaQuestion flow.
@@ -21,6 +21,15 @@ const PerformanceEntrySchema = z.object({
   questionText: z.string().describe('The text of the question that was asked.'),
   answeredCorrectly: z.boolean().describe('Whether the user answered this question correctly.'),
 });
+
+const DifficultyLevelSchema = z.enum([
+  "very easy", 
+  "easy", 
+  "medium", 
+  "hard", 
+  "very hard"
+]).describe("The assessed difficulty level of the question.");
+export type DifficultyLevel = z.infer<typeof DifficultyLevelSchema>;
 
 const GenerateTriviaQuestionInputSchema = z.object({
   topic: z.string().describe('The topic for the trivia question.'),
@@ -40,6 +49,7 @@ const GenerateTriviaQuestionOutputSchema = z.object({
     .max(3)
     .describe('The index (0-3) of the correct answer in the answers array.'),
   explanation: z.string().describe('A brief explanation (1-2 sentences) of why the correct answer is correct.'),
+  difficulty: DifficultyLevelSchema,
 });
 export type GenerateTriviaQuestionOutput = z.infer<typeof GenerateTriviaQuestionOutputSchema>;
 
@@ -47,7 +57,7 @@ export async function generateTriviaQuestion(input: GenerateTriviaQuestionInput)
   return generateTriviaQuestionFlow(input);
 }
 
-const promptTemplateString = `You are an expert trivia question generator. Given a topic, you will generate a trivia question, four possible answers, indicate the index of the correct answer, and provide a brief explanation for the correct answer.
+const promptTemplateString = `You are an expert trivia question generator. Given a topic, you will generate a trivia question, four possible answers, indicate the index of the correct answer, provide a brief explanation for the correct answer, and assess its difficulty level.
 
 {{#if language}}
 IMPORTANT: Generate all content (question, answers, explanation) in {{language}}.
@@ -76,18 +86,22 @@ Previously correct answers for this topic in this session:
 {{/each}}
 {{/if}}
 
+DIFFICULTY ASSESSMENT:
+You MUST assess the difficulty of the question you generate. Assign it one of the following five levels: "very easy", "easy", "medium", "hard", "very hard". This should be based on how common the knowledge is for an average adult interested in the topic.
+
 {{#if performanceHistory}}
-ADAPTIVE DIFFICULTY:
+ADAPTIVE DIFFICULTY (Question Content):
 The user's recent performance on this topic is as follows (most recent answer is last in the list):
 {{#each performanceHistory}}
 - Question: "{{this.questionText}}" - User answered: {{#if this.answeredCorrectly}}Correctly{{else}}Incorrectly{{/if}}
 {{/each}}
 
-Based on this performance, please adjust the difficulty of the NEXT question:
-- If the user has been answering most recent questions correctly, make the new question moderately more challenging.
-- If the user has been struggling with recent questions, make the new question moderately easier.
+Based on this performance, please adjust the difficulty of the NEXT question's CONTENT:
+- If the user has been answering most recent questions correctly, make the new question's content moderately more challenging.
+- If the user has been struggling with recent questions, make the new question's content moderately easier.
 - Your goal is to create an engaging experience by gradually guiding the difficulty so the user has a chance to learn and feel challenged, ideally answering about 50-70% of questions correctly in the long run.
 - Avoid drastic jumps in difficulty. Strive for a smooth progression.
+- The 'difficulty' field you assign should reflect the question's inherent difficulty, regardless of this adaptive adjustment to the question's content.
 {{/if}}
 
 Your response should be formatted as a JSON object with the following keys:
@@ -95,6 +109,7 @@ Your response should be formatted as a JSON object with the following keys:
 - answers: An array of four strings, representing the possible answers.
 - correctAnswerIndex: An integer between 0 and 3 (inclusive), indicating the index of the correct answer in the answers array.
 - explanation: A brief explanation (1-2 sentences) of why the correct answer is correct.
+- difficulty: A string, one of "very easy", "easy", "medium", "hard", "very hard".
 
 Make sure that only one answer is correct.
 `;
@@ -120,3 +135,4 @@ const generateTriviaQuestionFlow = ai.defineFlow(
     return output!;
   }
 );
+
