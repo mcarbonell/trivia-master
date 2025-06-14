@@ -39,7 +39,7 @@ const PREDEFINED_CATEGORIES_FOR_SCRIPT: PredefinedCategory[] = [
 const LANGUAGES_FOR_SCRIPT = ['en', 'es'];
 const TARGET_QUESTIONS_PER_CATEGORY_LANG = 20; // Target number of questions per category/language combination
 const MAX_NEW_QUESTIONS_PER_RUN_PER_CATEGORY_LANG = 5; // Max new questions to generate in one script run for each combo
-const GENKIT_API_CALL_DELAY_MS = 2000; // Delay between Genkit API calls (2 seconds)
+const GENKIT_API_CALL_DELAY_MS = 7000; // Delay between Genkit API calls (7 seconds)
 
 async function populateQuestions() {
   console.log('Starting Firestore question population script...');
