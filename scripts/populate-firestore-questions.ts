@@ -37,8 +37,8 @@ const PREDEFINED_CATEGORIES_FOR_SCRIPT: PredefinedCategory[] = [
 
 const ALL_DIFFICULTY_LEVELS: DifficultyLevel[] = ["very easy", "easy", "medium", "hard", "very hard"];
 
-const TARGET_QUESTIONS_PER_CATEGORY_DIFFICULTY = 5; // Target number of questions per category AND per difficulty
-const MAX_NEW_QUESTIONS_PER_RUN_PER_DIFFICULTY = 2; // Max new questions to generate in one script run for each category/difficulty combo
+const TARGET_QUESTIONS_PER_CATEGORY_DIFFICULTY = 100; // Target number of questions per category AND per difficulty
+const MAX_NEW_QUESTIONS_PER_RUN_PER_DIFFICULTY = 20; // Max new questions to generate in one script run for each category/difficulty combo
 const GENKIT_API_CALL_DELAY_MS = 7000; // Delay between Genkit API calls (7 seconds)
 
 async function populateQuestions() {
