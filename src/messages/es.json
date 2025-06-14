@@ -35,11 +35,11 @@
     "music": "Música"
   },
   "difficultyLevels": {
-    "very_easy": "Muy Fácil",
+    "very easy": "Muy Fácil",
     "easy": "Fácil",
     "medium": "Medio",
     "hard": "Difícil",
-    "very_hard": "Muy Difícil"
+    "very hard": "Muy Difícil"
   },
   "currentDifficulty": "Dificultad Actual"
 }
