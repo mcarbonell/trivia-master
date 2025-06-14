@@ -99,7 +99,6 @@ export default function TriviaPage() {
         newQuestionData = await generateTriviaQuestion(inputForAI);
         if (newQuestionData && newQuestionData.answers && newQuestionData.answers[newQuestionData.correctAnswerIndex]) {
            const correctAnswerTextInLocale = newQuestionData.answers[newQuestionData.correctAnswerIndex]![locale];
-           // Only add correct answer text for Genkit questions if not already covered by an ID
            if(!newQuestionData.id) {
              setAskedCorrectAnswerTexts(prev => [...new Set([...prev, correctAnswerTextInLocale])]);
            }
@@ -148,7 +147,6 @@ export default function TriviaPage() {
     if (isCorrect) {
       setScore(prev => ({ ...prev, correct: prev.correct + 1 }));
       setFeedback({ message: t('correct'), isCorrect: true, explanation: explanationInLocale });
-      // Adjust difficulty up
       const currentIndex = DIFFICULTY_LEVELS_ORDER.indexOf(currentDifficultyLevel);
       if (currentIndex < DIFFICULTY_LEVELS_ORDER.length - 1) {
         setCurrentDifficultyLevel(DIFFICULTY_LEVELS_ORDER[currentIndex + 1]!);
@@ -161,7 +159,6 @@ export default function TriviaPage() {
         isCorrect: false,
         explanation: explanationInLocale
       });
-      // Adjust difficulty down
       const currentIndex = DIFFICULTY_LEVELS_ORDER.indexOf(currentDifficultyLevel);
       if (currentIndex > 0) {
         setCurrentDifficultyLevel(DIFFICULTY_LEVELS_ORDER[currentIndex - 1]!);
@@ -190,17 +187,17 @@ export default function TriviaPage() {
   const DifficultyIndicator = () => {
     let Icon = Minus;
     let color = "text-muted-foreground";
-    let text = t(`difficultyLevels.${currentDifficultyLevel}` as any); // Assuming keys like difficultyLevels.easy
+    let text = t(`difficultyLevels.${currentDifficultyLevel}` as any); 
 
     const levelIndex = DIFFICULTY_LEVELS_ORDER.indexOf(currentDifficultyLevel);
 
-    if (levelIndex <= 1) { // very easy, easy
+    if (levelIndex <= 1) { 
         Icon = ChevronDown;
         color = "text-green-500";
-    } else if (levelIndex === 2) { // medium
+    } else if (levelIndex === 2) { 
         Icon = Minus;
         color = "text-yellow-500";
-    } else { // hard, very hard
+    } else { 
         Icon = ChevronUp;
         color = "text-red-500";
     }
@@ -220,6 +217,7 @@ export default function TriviaPage() {
     correctAnswerIndex: questionData.correctAnswerIndex,
     explanation: questionData.explanation[locale],
     difficulty: questionData.difficulty,
+    hint: questionData.hint[locale], // Add hint for the current locale
   } : null;
 
 
@@ -227,7 +225,7 @@ export default function TriviaPage() {
     <div className="container mx-auto p-4 flex flex-col items-center min-h-screen text-foreground">
       <header className="my-6 sm:my-8 text-center w-full">
         <div className="flex justify-between items-center mb-2 sm:mb-4">
-          <div></div> {/* Spacer */}
+          <div></div> 
           <h1 className="text-3xl sm:text-5xl font-headline font-bold text-primary">{t('pageTitle')}</h1>
           <LanguageSwitcher />
         </div>
@@ -267,7 +265,8 @@ export default function TriviaPage() {
                 answers: localizedQuestionCardData.answers,
                 correctAnswerIndex: localizedQuestionCardData.correctAnswerIndex,
                 explanation: localizedQuestionCardData.explanation,
-                difficulty: localizedQuestionCardData.difficulty, // This is the AI's assessed difficulty for the current Q
+                difficulty: localizedQuestionCardData.difficulty, 
+                hint: localizedQuestionCardData.hint,
             }}
             onAnswerSelect={handleAnswerSelect}
             onNextQuestion={handleNextQuestion}
@@ -299,3 +298,4 @@ export default function TriviaPage() {
     </div>
   );
 }
+

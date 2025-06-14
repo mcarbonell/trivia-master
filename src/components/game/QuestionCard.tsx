@@ -8,6 +8,7 @@ interface LocalizedQuestionData {
   correctAnswerIndex: number;
   explanation: string;
   difficulty: "very easy" | "easy" | "medium" | "hard" | "very hard";
+  hint: string; // Added hint field
 }
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -17,11 +18,11 @@ import { CheckCircle2, XCircle, ChevronRight, Info } from "lucide-react";
 import { useTranslations } from "next-intl";
 
 interface QuestionCardProps {
-  questionData: LocalizedQuestionData; // Now expects already localized data for display
+  questionData: LocalizedQuestionData; 
   onAnswerSelect: (answerIndex: number) => void;
   onNextQuestion: () => void;
   selectedAnswerIndex: number | null;
-  feedback: { message: string; isCorrect: boolean; detailedMessage?: string; explanation?: string } | null; // Feedback messages are already localized
+  feedback: { message: string; isCorrect: boolean; detailedMessage?: string; explanation?: string } | null; 
   gameState: 'playing' | 'showing_feedback';
 }
 
@@ -34,8 +35,7 @@ export function QuestionCard({
   gameState,
 }: QuestionCardProps) {
   const t = useTranslations();
-  // questionData now directly contains localized strings
-  const { question, answers, correctAnswerIndex } = questionData;
+  const { question, answers, correctAnswerIndex, hint } = questionData; // Destructure hint, though not used in UI yet
 
   return (
     <Card className="w-full shadow-xl animate-fadeIn">
@@ -53,7 +53,6 @@ export function QuestionCard({
                 <span className="block text-sm font-normal text-muted-foreground mt-1">{feedback.detailedMessage}</span>
               )}
             </CardDescription>
-            {/* Feedback.explanation is already localized from page.tsx */}
             {feedback.explanation && (
               <div className="mt-3 pt-3 border-t border-border">
                 <p className="text-sm text-muted-foreground flex items-start">
@@ -102,6 +101,7 @@ export function QuestionCard({
           );
         })}
       </CardContent>
+      {/* UI for displaying hint will be added in a future step */}
       {gameState === 'showing_feedback' && (
         <CardFooter className="flex justify-end">
           <Button onClick={onNextQuestion} className="bg-primary hover:bg-primary/90 text-primary-foreground">
@@ -112,3 +112,4 @@ export function QuestionCard({
     </Card>
   );
 }
+

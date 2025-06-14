@@ -3,12 +3,12 @@
 
 /**
  * @fileOverview This file defines a Genkit flow for generating bilingual (English and Spanish) trivia questions.
- * It ensures questions and their correct answers are not repeated within a session, provides explanations,
+ * It ensures questions and their correct answers are not repeated within a session, provides explanations, hints,
  * and generates questions of a specified or assessed difficulty level.
  *
  * The flow takes a topic, a list of previous questions (texts), a list of previous correct answers (texts),
  * and an optional target difficulty as input.
- * It returns a trivia question object containing English and Spanish versions for question, answers, and explanation,
+ * It returns a trivia question object containing English and Spanish versions for question, answers, explanation, and hint,
  * along with the correct answer index and difficulty level.
  *
  * @interface GenerateTriviaQuestionInput - Input schema for the generateTriviaQuestion flow.
@@ -55,6 +55,7 @@ const GenerateTriviaQuestionOutputSchema = z.object({
     .max(3)
     .describe('The index (0-3) of the correct answer in the answers array. This index applies to both language versions of the answers.'),
   explanation: BilingualTextSchema.describe('A brief explanation (1-2 sentences) of why the correct answer is correct, in English and Spanish.'),
+  hint: BilingualTextSchema.describe('A concise hint (1 short sentence) to help the user deduce the answer without revealing it directly, in English and Spanish.'),
   difficulty: DifficultyLevelSchema,
 });
 export type GenerateTriviaQuestionOutput = z.infer<typeof GenerateTriviaQuestionOutputSchema>;
@@ -63,9 +64,9 @@ export async function generateTriviaQuestion(input: GenerateTriviaQuestionInput)
   return generateTriviaQuestionFlow(input);
 }
 
-const promptTemplateString = `You are an expert trivia question generator. Given a topic, you will generate a trivia question, four possible answers, indicate the index of the correct answer, provide a brief explanation for the correct answer, and assess its difficulty level.
+const promptTemplateString = `You are an expert trivia question generator. Given a topic, you will generate a trivia question, four possible answers, indicate the index of the correct answer, provide a brief explanation for the correct answer, a concise hint, and assess its difficulty level.
 
-IMPORTANT: You MUST generate all textual content (question, each of the four answers, and the explanation) in BOTH English (en) and Spanish (es).
+IMPORTANT: You MUST generate all textual content (question, each of the four answers, the explanation, and the hint) in BOTH English (en) and Spanish (es).
 
 Topic: {{{topic}}}
 
@@ -88,13 +89,19 @@ Previously correct answer concepts (texts might be in English or Spanish) for th
 {{/each}}
 {{/if}}
 
+HINT GUIDELINES:
+- The hint MUST be provided in BOTH English (en) and Spanish (es).
+- It should be a single, short, and concise sentence.
+- It should guide the user towards the correct answer without explicitly stating it or making it too obvious.
+- It should relate to the core subject of the question.
+
 DIFFICULTY GUIDELINES AND ASSESSMENT:
 You MUST assess the difficulty of the question you generate and assign it to the 'difficulty' output field. Use the following five levels:
-- "very easy": Knowledge typically acquired in primary school. Simple, common facts.
-- "easy": Knowledge typically acquired in primary or early secondary school. Common knowledge for most people.
-- "medium": Knowledge typically acquired in secondary school or through general cultural awareness. Requires some specific knowledge.
-- "hard": Knowledge typically associated with higher education (university level) or specialized interest in a topic.
-- "very hard": Knowledge typically associated with advanced degrees (e.g., PhD level) or very deep, niche expertise in a topic.
+- "very easy": Knowledge typically acquired in primary school (e.g., simple common facts like 'What color is the sky?').
+- "easy": Knowledge typically acquired in primary or early secondary school (e.g., 'What is the capital of France?'). Common knowledge for most people.
+- "medium": Knowledge typically acquired in secondary school or through general cultural awareness (e.g., 'Who painted the Mona Lisa?'). Requires some specific knowledge.
+- "hard": Knowledge typically associated with higher education (university level) or specialized interest in a topic (e.g., 'What is the Chandrasekhar limit?').
+- "very hard": Knowledge typically associated with advanced degrees (e.g., PhD level) or very deep, niche expertise in a topic (e.g., 'Explain the P vs NP problem in computer science.').
 
 {{#if targetDifficulty}}
 The user has requested a question of "{{targetDifficulty}}" difficulty. Please try to generate a question that matches this level based on the guidelines above. The 'difficulty' field in your output MUST reflect this targetDifficulty.
@@ -102,10 +109,11 @@ The user has requested a question of "{{targetDifficulty}}" difficulty. Please t
 Please assess the inherent difficulty of the question you generate based on the guidelines above and set the 'difficulty' field in your output accordingly.
 {{/if}}
 
-Your response should be a JSON object. The 'question', 'explanation' fields should be objects with 'en' and 'es' properties. The 'answers' field should be an array of 4 objects, where each object has 'en' and 'es' properties.
+Your response should be a JSON object. The 'question', 'explanation', and 'hint' fields should be objects with 'en' and 'es' properties. The 'answers' field should be an array of 4 objects, where each object has 'en' and 'es' properties.
 
 Example for a single answer object within the 'answers' array: { "en": "Answer A", "es": "Respuesta A" }
 Example for the 'question' object: { "en": "What is the capital of France?", "es": "¿Cuál es la capital de Francia?" }
+Example for the 'hint' object: { "en": "It's a famous European city known for a tall iron tower.", "es": "Es una famosa ciudad europea conocida por una alta torre de hierro." }
 
 Make sure that only one answer is correct (indicated by correctAnswerIndex).
 `;
@@ -131,3 +139,4 @@ const generateTriviaQuestionFlow = ai.defineFlow(
     return output!;
   }
 );
+
