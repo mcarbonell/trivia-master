@@ -4,55 +4,54 @@
 
 import { db } from '@/lib/firebase';
 import { collection, query, where, getDocs, limit, DocumentData } from 'firebase/firestore';
-import type { GenerateTriviaQuestionOutput } from '@/ai/flows/generate-trivia-question';
+import type { GenerateTriviaQuestionOutput, DifficultyLevel } from '@/ai/flows/generate-trivia-question';
 
-// PredefinedQuestion now directly uses the bilingual GenerateTriviaQuestionOutput structure
-// and adds Firestore document ID and the original topicValue.
 export interface PredefinedQuestion extends GenerateTriviaQuestionOutput {
-  id: string; // Firestore document ID
-  topicValue: string; // The original topic value used for querying (e.g., "Science")
+  id: string;
+  topicValue: string;
 }
 
 const PREDEFINED_QUESTIONS_COLLECTION = 'predefinedTriviaQuestions';
-const BATCH_SIZE = 10; // Number of questions to fetch in a batch
+const BATCH_SIZE_PER_DIFFICULTY = 5; // Fetch a smaller batch if filtering by difficulty
 
 /**
- * Fetches a batch of predefined bilingual trivia questions from Firestore for a given topicValue,
- * excluding questions whose Firestore ID is in askedQuestionIds.
- * It then randomly picks one suitable question from the fetched batch.
- * @param topicValue The topic of the question (e.g., "Science").
+ * Fetches a predefined bilingual trivia question from Firestore for a given topicValue and targetDifficulty.
+ * Excludes questions whose Firestore ID is in askedQuestionIds.
+ * If no question of the exact difficulty is found, it returns null.
+ * @param topicValue The topic of the question.
  * @param askedQuestionIds An array of Firestore document IDs for questions already asked.
- * @returns A PredefinedQuestion (bilingual) or null if no suitable question is found.
+ * @param targetDifficulty The desired difficulty level.
+ * @returns A PredefinedQuestion (bilingual) or null.
  */
 export async function getPredefinedQuestion(
   topicValue: string,
-  askedQuestionIds: string[]
+  askedQuestionIds: string[],
+  targetDifficulty: DifficultyLevel
 ): Promise<PredefinedQuestion | null> {
   try {
     const questionsRef = collection(db, PREDEFINED_QUESTIONS_COLLECTION);
     
-    // Fetch a batch of questions for the given topic.
-    // Filtering by askedQuestionIds will happen client-side on this batch.
+    // Query for questions matching topic AND difficulty
     const q = query(
       questionsRef,
       where('topicValue', '==', topicValue),
-      limit(BATCH_SIZE) // Fetch a small batch
+      where('difficulty', '==', targetDifficulty),
+      limit(BATCH_SIZE_PER_DIFFICULTY) 
     );
 
     const querySnapshot = await getDocs(q);
     const potentialQuestions: PredefinedQuestion[] = [];
 
     querySnapshot.forEach((doc) => {
-      const data = doc.data() as DocumentData; // Firestore data
-      // Construct the PredefinedQuestion, assuming data matches GenerateTriviaQuestionOutput structure + topicValue
+      const data = doc.data() as DocumentData;
       potentialQuestions.push({
         id: doc.id,
-        question: data.question, // e.g., { en: "...", es: "..." }
-        answers: data.answers,   // e.g., [ { en: "...", es: "..." }, ... ]
+        question: data.question,
+        answers: data.answers,
         correctAnswerIndex: data.correctAnswerIndex,
-        explanation: data.explanation, // e.g., { en: "...", es: "..." }
+        explanation: data.explanation,
         difficulty: data.difficulty,
-        topicValue: data.topicValue, // Persisted topicValue from script
+        topicValue: data.topicValue,
       });
     });
 
@@ -65,9 +64,12 @@ export async function getPredefinedQuestion(
       return unaskedQuestions[randomIndex]!;
     }
 
+    // If no exact match for difficulty, we could implement logic to try +/- 1 difficulty,
+    // but for now, we return null and let Genkit handle it with the targetDifficulty.
+    console.log(`No predefined question found for topic "${topicValue}" and difficulty "${targetDifficulty}". Falling back to Genkit.`);
     return null; 
   } catch (error) {
-    console.error("Error fetching predefined bilingual question from Firestore:", error);
+    console.error(`Error fetching predefined question (topic: ${topicValue}, difficulty: ${targetDifficulty}):`, error);
     return null;
   }
 }

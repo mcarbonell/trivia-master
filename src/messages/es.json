@@ -8,6 +8,7 @@
   "customTopicPlaceholder": "Ej: Antigua Roma, Física Cuántica",
   "customTopicButton": "Comenzar con Tema Personalizado",
   "loadingQuestion": "Generando tu pregunta sobre \"{topic}\"...",
+  "loadingQuestionWithDifficulty": "Generando tu pregunta de nivel \"{difficulty}\" sobre \"{topic}\"...",
   "correct": "¡Correcto!",
   "incorrect": "¡Incorrecto!",
   "correctAnswerWas": "La respuesta correcta era: {answer}",
@@ -18,6 +19,7 @@
   "newGameButton": "Nuevo Juego",
   "errorLoadingQuestion": "Error al cargar la pregunta.",
   "errorLoadingQuestionDetail": "No se pudo obtener una nueva pregunta. Por favor, revisa tu conexión o intenta con un tema diferente.",
+  "errorNoQuestionForDifficulty": "No se pudo obtener una nueva pregunta para el nivel \"{difficulty}\". Por favor, intenta de nuevo o con un tema diferente.",
   "errorTryAgainTopic": "Reintentar Tema: \"{topic}\"",
   "errorChooseNewTopic": "Elegir Nuevo Tema",
   "footerText": "© {year} Maestro de Trivia IA. Potenciado por GenAI.",
@@ -31,5 +33,13 @@
     "movies": "Películas",
     "geography": "Geografía",
     "music": "Música"
-  }
+  },
+  "difficultyLevels": {
+    "very_easy": "Muy Fácil",
+    "easy": "Fácil",
+    "medium": "Medio",
+    "hard": "Difícil",
+    "very_hard": "Muy Difícil"
+  },
+  "currentDifficulty": "Dificultad Actual"
 }

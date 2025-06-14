@@ -1,3 +1,4 @@
+
 {
   "pageTitle": "AI Trivia Master",
   "pageDescription": "Test your knowledge with AI-generated trivia questions!",
@@ -7,6 +8,7 @@
   "customTopicPlaceholder": "E.g., Ancient Rome, Quantum Physics",
   "customTopicButton": "Start with Custom Topic",
   "loadingQuestion": "Generating your question on \"{topic}\"...",
+  "loadingQuestionWithDifficulty": "Generating your \"{difficulty}\" question on \"{topic}\"...",
   "correct": "Correct!",
   "incorrect": "Incorrect!",
   "correctAnswerWas": "The correct answer was: {answer}",
@@ -17,6 +19,7 @@
   "newGameButton": "New Game",
   "errorLoadingQuestion": "Error loading question.",
   "errorLoadingQuestionDetail": "Could not fetch a new question. Please check your connection or try a different topic.",
+  "errorNoQuestionForDifficulty": "Could not fetch a new question for the \"{difficulty}\" level. Please try again or a different topic.",
   "errorTryAgainTopic": "Try Again Topic: \"{topic}\"",
   "errorChooseNewTopic": "Choose New Topic",
   "footerText": "© {year} AI Trivia Master. Powered by GenAI.",
@@ -30,5 +33,13 @@
     "movies": "Movies",
     "geography": "Geography",
     "music": "Music"
-  }
+  },
+  "difficultyLevels": {
+    "very_easy": "Very Easy",
+    "easy": "Easy",
+    "medium": "Medium",
+    "hard": "Hard",
+    "very_hard": "Very Hard"
+  },
+  "currentDifficulty": "Current Difficulty"
 }

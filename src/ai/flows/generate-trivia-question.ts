@@ -4,10 +4,10 @@
 /**
  * @fileOverview This file defines a Genkit flow for generating bilingual (English and Spanish) trivia questions.
  * It ensures questions and their correct answers are not repeated within a session, provides explanations,
- * and adapts difficulty based on user performance.
+ * and generates questions of a specified or assessed difficulty level.
  *
  * The flow takes a topic, a list of previous questions (texts), a list of previous correct answers (texts),
- * and user performance history as input.
+ * and an optional target difficulty as input.
  * It returns a trivia question object containing English and Spanish versions for question, answers, and explanation,
  * along with the correct answer index and difficulty level.
  *
@@ -19,18 +19,13 @@
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
 
-const PerformanceEntrySchema = z.object({
-  questionText: z.string().describe('The text of the question that was asked (in the language it was asked).'),
-  answeredCorrectly: z.boolean().describe('Whether the user answered this question correctly.'),
-});
-
 const DifficultyLevelSchema = z.enum([
   "very easy",
   "easy",
   "medium",
   "hard",
   "very hard"
-]).describe("The assessed difficulty level of the question.");
+]).describe("The assessed or targeted difficulty level of the question.");
 export type DifficultyLevel = z.infer<typeof DifficultyLevelSchema>;
 
 const BilingualTextSchema = z.object({
@@ -47,7 +42,7 @@ const GenerateTriviaQuestionInputSchema = z.object({
   topic: z.string().describe('The topic for the trivia question.'),
   previousQuestions: z.array(z.string()).optional().describe('A list of question texts (can be in English or Spanish, or a mix if user switched languages) already asked on this topic in the current session, to avoid repetition of the same conceptual question. The AI should consider these as distinct concepts already covered.'),
   previousCorrectAnswers: z.array(z.string()).optional().describe('A list of correct answer texts (can be in English or Spanish) from questions already asked on this topic, to ensure variety in the subject matter. The AI should avoid these concepts as correct answers for the new question.'),
-  performanceHistory: z.array(PerformanceEntrySchema).optional().describe("A history of the user's answers to recent questions on this topic (question text and if answered correctly), to help adapt difficulty. Most recent answer last."),
+  targetDifficulty: DifficultyLevelSchema.optional().describe('If provided, the AI should attempt to generate a question of this specific difficulty level. If not provided, the AI will assess and assign a difficulty level based on the content and its guidelines.'),
 });
 export type GenerateTriviaQuestionInput = z.infer<typeof GenerateTriviaQuestionInputSchema>;
 
@@ -93,21 +88,18 @@ Previously correct answer concepts (texts might be in English or Spanish) for th
 {{/each}}
 {{/if}}
 
-DIFFICULTY ASSESSMENT:
-You MUST assess the difficulty of the question you generate. Assign it one of the following five levels: "very easy", "easy", "medium", "hard", "very hard". This should be based on how common the knowledge is for an average adult interested in the topic.
+DIFFICULTY GUIDELINES AND ASSESSMENT:
+You MUST assess the difficulty of the question you generate and assign it to the 'difficulty' output field. Use the following five levels:
+- "very easy": Knowledge typically acquired in primary school. Simple, common facts.
+- "easy": Knowledge typically acquired in primary or early secondary school. Common knowledge for most people.
+- "medium": Knowledge typically acquired in secondary school or through general cultural awareness. Requires some specific knowledge.
+- "hard": Knowledge typically associated with higher education (university level) or specialized interest in a topic.
+- "very hard": Knowledge typically associated with advanced degrees (e.g., PhD level) or very deep, niche expertise in a topic.
 
-{{#if performanceHistory}}
-ADAPTIVE DIFFICULTY (Question Content):
-The user's recent performance on this topic is as follows (most recent answer is last in the list, question text was in the language user saw):
-{{#each performanceHistory}}
-- Question: "{{this.questionText}}" - User answered: {{#if this.answeredCorrectly}}Correctly{{else}}Incorrectly{{/if}}
-{{/each}}
-
-Based on this performance, please adjust the difficulty of the NEXT question's CONTENT:
-- If the user has been answering most recent questions correctly, make the new question's content moderately more challenging.
-- If the user has been struggling with recent questions, make the new question's content moderately easier.
-- Your goal is to create an engaging experience by gradually guiding the difficulty so the user has a chance to learn and feel challenged.
-- The 'difficulty' field you assign should reflect the question's inherent difficulty, regardless of this adaptive adjustment.
+{{#if targetDifficulty}}
+The user has requested a question of "{{targetDifficulty}}" difficulty. Please try to generate a question that matches this level based on the guidelines above. The 'difficulty' field in your output MUST reflect this targetDifficulty.
+{{else}}
+Please assess the inherent difficulty of the question you generate based on the guidelines above and set the 'difficulty' field in your output accordingly.
 {{/if}}
 
 Your response should be a JSON object. The 'question', 'explanation' fields should be objects with 'en' and 'es' properties. The 'answers' field should be an array of 4 objects, where each object has 'en' and 'es' properties.

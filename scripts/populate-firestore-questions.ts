@@ -3,7 +3,7 @@ import { config } from 'dotenv';
 config(); // Load environment variables from .env file
 
 import admin from 'firebase-admin';
-import { generateTriviaQuestion, type GenerateTriviaQuestionInput, type GenerateTriviaQuestionOutput } from '../src/ai/flows/generate-trivia-question';
+import { generateTriviaQuestion, type GenerateTriviaQuestionInput, type GenerateTriviaQuestionOutput, type DifficultyLevel } from '../src/ai/flows/generate-trivia-question';
 import { ai } from '../src/ai/genkit'; // Ensure Genkit is initialized
 
 // Initialize Firebase Admin SDK
@@ -40,7 +40,7 @@ const MAX_NEW_QUESTIONS_PER_RUN_PER_CATEGORY = 5; // Max new questions to genera
 const GENKIT_API_CALL_DELAY_MS = 7000; // Delay between Genkit API calls (7 seconds)
 
 async function populateQuestions() {
-  console.log('Starting Firestore question population script (bilingual)...');
+  console.log('Starting Firestore question population script (bilingual, with difficulty assessment)...');
 
   for (const category of PREDEFINED_CATEGORIES_FOR_SCRIPT) {
     console.log(`\nProcessing Category: "${category.name}" (Topic: ${category.topicValue})`);
@@ -50,23 +50,23 @@ async function populateQuestions() {
       .where('topicValue', '==', category.topicValue)
       .get();
 
-    const existingQuestionConceptTexts: string[] = []; // Store a canonical version (e.g., English) or both
+    const existingQuestionConceptTexts: string[] = [];
     const existingCorrectAnswerConceptTexts: string[] = [];
 
     querySnapshot.forEach(doc => {
-      const data = doc.data() as GenerateTriviaQuestionOutput & { topicValue: string }; // Assuming structure from Genkit + topicValue
-      if (data.question && data.question.en) {
-        existingQuestionConceptTexts.push(data.question.en); // Add English version
-        if (data.question.es) existingQuestionConceptTexts.push(data.question.es); // Add Spanish version if present
+      const data = doc.data() as GenerateTriviaQuestionOutput & { topicValue: string };
+      if (data.question) { // Bilingual structure
+        if (data.question.en) existingQuestionConceptTexts.push(data.question.en);
+        if (data.question.es) existingQuestionConceptTexts.push(data.question.es);
       }
       if (data.answers && typeof data.correctAnswerIndex === 'number' && data.answers[data.correctAnswerIndex]) {
-        const correctAnswer = data.answers[data.correctAnswerIndex]!;
+        const correctAnswer = data.answers[data.correctAnswerIndex]!; // Bilingual structure
         if (correctAnswer.en) existingCorrectAnswerConceptTexts.push(correctAnswer.en);
         if (correctAnswer.es) existingCorrectAnswerConceptTexts.push(correctAnswer.es);
       }
     });
 
-    const numExisting = querySnapshot.size; // Each document is one conceptual question
+    const numExisting = querySnapshot.size;
     console.log(`Found ${numExisting} existing conceptual questions for ${category.name}. Target is ${TARGET_QUESTIONS_PER_CATEGORY}.`);
 
     if (numExisting >= TARGET_QUESTIONS_PER_CATEGORY) {
@@ -87,7 +87,7 @@ async function populateQuestions() {
           topic: category.topicValue,
           previousQuestions: [...existingQuestionConceptTexts],
           previousCorrectAnswers: [...existingCorrectAnswerConceptTexts],
-          // Performance history is not relevant for batch generation
+          // targetDifficulty is not specified here; AI will assess.
         };
 
         console.log(`Generating conceptual question ${i + 1} of ${numToGenerate} for ${category.name}...`);
@@ -95,16 +95,16 @@ async function populateQuestions() {
         
         const newQuestionData: GenerateTriviaQuestionOutput = await generateTriviaQuestion(input);
 
-        if (newQuestionData && newQuestionData.question && newQuestionData.answers) {
+        if (newQuestionData && newQuestionData.question && newQuestionData.answers && newQuestionData.difficulty) {
           const questionToSave = {
             ...newQuestionData,
-            topicValue: category.topicValue, // Keep topicValue for querying
+            topicValue: category.topicValue,
             createdAt: admin.firestore.FieldValue.serverTimestamp(),
-            source: 'batch-script-aitrivia-bilingual-v1'
+            source: 'batch-script-aitrivia-bilingual-difficulty-v1'
           };
 
           await questionsRef.add(questionToSave);
-          console.log(`Successfully generated and saved bilingual question: "${newQuestionData.question.en.substring(0,50)}..." / "${newQuestionData.question.es.substring(0,50)}..."`);
+          console.log(`Successfully generated and saved bilingual question (Difficulty: ${newQuestionData.difficulty}): "${newQuestionData.question.en.substring(0,50)}..." / "${newQuestionData.question.es.substring(0,50)}..."`);
           
           if (newQuestionData.question.en) existingQuestionConceptTexts.push(newQuestionData.question.en);
           if (newQuestionData.question.es) existingQuestionConceptTexts.push(newQuestionData.question.es);
@@ -116,7 +116,7 @@ async function populateQuestions() {
           }
 
         } else {
-          console.warn('Genkit returned empty or invalid data for bilingual question.');
+          console.warn('Genkit returned empty or invalid data for bilingual question with difficulty.');
         }
       } catch (error) {
         console.error(`Error generating bilingual question for ${category.name}:`, error);
@@ -128,7 +128,7 @@ async function populateQuestions() {
     }
     console.log(`Finished generation for ${category.name} for this run.`);
   }
-  console.log('\nBilingual question population script finished.');
+  console.log('\nBilingual question population script (with difficulty) finished.');
 }
 
 populateQuestions().catch(error => {

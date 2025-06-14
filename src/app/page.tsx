@@ -21,20 +21,20 @@ import {
   Music,
   Loader2,
   AlertTriangle,
+  ChevronUp,
+  ChevronDown,
+  Minus,
 } from "lucide-react";
 
-const MAX_PERFORMANCE_HISTORY = 10;
-
 type GameState = 'category_selection' | 'loading_question' | 'playing' | 'showing_feedback' | 'error';
-type PerformanceHistoryEntry = { questionText: string; answeredCorrectly: boolean };
 
-// QuestionData will now hold the bilingual structure from GenerateTriviaQuestionOutput
-// or PredefinedQuestion (which extends it)
-type CurrentQuestionData = GenerateTriviaQuestionOutput & { id?: string }; // id is optional, present for Firestore questions
+type CurrentQuestionData = GenerateTriviaQuestionOutput & { id?: string };
+
+const DIFFICULTY_LEVELS_ORDER: DifficultyLevel[] = ["very easy", "easy", "medium", "hard", "very hard"];
 
 export default function TriviaPage() {
   const t = useTranslations();
-  const locale = useLocale() as AppLocale; // Ensure locale is typed for indexing
+  const locale = useLocale() as AppLocale;
 
   const PREDEFINED_CATEGORIES = [
     { name: t('categories.science'), icon: Lightbulb, topicValue: "Science" },
@@ -54,19 +54,17 @@ export default function TriviaPage() {
   const [feedback, setFeedback] = useState<{ message: string; isCorrect: boolean; detailedMessage?: string; explanation?: string } | null>(null);
   const [customTopicInput, setCustomTopicInput] = useState('');
   
-  // askedQuestionIdentifiers: stores Firestore IDs for predefined, or question text (current locale) for Genkit Qs
   const [askedQuestionIdentifiers, setAskedQuestionIdentifiers] = useState<string[]>([]);
-  // askedCorrectAnswerTexts: stores correct answer texts in current locale for Genkit Qs previousCorrectAnswers
   const [askedCorrectAnswerTexts, setAskedCorrectAnswerTexts] = useState<string[]>([]);
 
-  const [performanceHistory, setPerformanceHistory] = useState<PerformanceHistoryEntry[]>([]);
+  const [currentDifficultyLevel, setCurrentDifficultyLevel] = useState<DifficultyLevel>("medium");
   const [currentYear, setCurrentYear] = useState<number | null>(null);
 
   useEffect(() => {
     setCurrentYear(new Date().getFullYear());
   }, []);
 
-  const fetchQuestion = useCallback(async (topic: string) => {
+  const fetchQuestion = useCallback(async (topic: string, difficulty: DifficultyLevel) => {
     setGameState('loading_question');
     setSelectedAnswerIndex(null);
     setFeedback(null);
@@ -76,14 +74,13 @@ export default function TriviaPage() {
 
     if (isPredefinedTopic) {
       try {
-        console.log(`Fetching predefined question for topic: ${topic}, asked IDs: ${askedQuestionIdentifiers.filter(id => !id.startsWith("genkit_")).length}`);
-        // Pass only Firestore IDs for predefined question fetching
+        console.log(`Fetching predefined question for topic: ${topic}, difficulty: ${difficulty}, asked IDs: ${askedQuestionIdentifiers.filter(id => !id.startsWith("genkit_")).length}`);
         const predefinedIds = askedQuestionIdentifiers.filter(id => !id.includes("genkit_question_"));
-        newQuestionData = await getPredefinedQuestion(topic, predefinedIds);
+        newQuestionData = await getPredefinedQuestion(topic, predefinedIds, difficulty);
         if (newQuestionData) {
-          console.log("Predefined bilingual question found:", newQuestionData.question.en.substring(0,30)+"...");
+          console.log(`Predefined question (difficulty: ${newQuestionData.difficulty}) found: ${newQuestionData.question.en.substring(0,30)}...`);
         } else {
-          console.log("No suitable predefined question found, falling back to Genkit.");
+          console.log(`No suitable predefined question for difficulty ${difficulty}, falling back to Genkit for this difficulty.`);
         }
       } catch (firestoreError) {
         console.error("Error fetching from Firestore, falling back to Genkit:", firestoreError);
@@ -91,25 +88,24 @@ export default function TriviaPage() {
     }
 
     if (!newQuestionData) {
-      // For Genkit, previousQuestions and previousCorrectAnswers are simple text arrays (current lang)
       const inputForAI: GenerateTriviaQuestionInput = {
         topic,
-        previousQuestions: askedQuestionIdentifiers.filter(id => id.startsWith("genkit_question_")).map(id => id.replace("genkit_question_", "")), // Only pass texts of genkit questions
-        previousCorrectAnswers: askedCorrectAnswerTexts, // Only pass texts of genkit answers
+        previousQuestions: askedQuestionIdentifiers.filter(id => id.startsWith("genkit_question_")).map(id => id.replace("genkit_question_", "")),
+        previousCorrectAnswers: askedCorrectAnswerTexts,
+        targetDifficulty: difficulty,
       };
-      if (performanceHistory.length > 0) {
-        inputForAI.performanceHistory = performanceHistory;
-      }
       try {
-        console.log("Generating bilingual question with Genkit for topic:", topic);
+        console.log(`Generating question with Genkit for topic: "${topic}", target difficulty: "${difficulty}"`);
         newQuestionData = await generateTriviaQuestion(inputForAI);
-        // For Genkit questions, we'll use its current language text for askedCorrectAnswerTexts
         if (newQuestionData && newQuestionData.answers && newQuestionData.answers[newQuestionData.correctAnswerIndex]) {
            const correctAnswerTextInLocale = newQuestionData.answers[newQuestionData.correctAnswerIndex]![locale];
-           setAskedCorrectAnswerTexts(prev => [...prev, correctAnswerTextInLocale]);
+           // Only add correct answer text for Genkit questions if not already covered by an ID
+           if(!newQuestionData.id) {
+             setAskedCorrectAnswerTexts(prev => [...new Set([...prev, correctAnswerTextInLocale])]);
+           }
         }
       } catch (genkitError) {
-        console.error("Failed to generate bilingual question with Genkit:", genkitError);
+        console.error(`Failed to generate question with Genkit (difficulty: ${difficulty}):`, genkitError);
         setFeedback({ message: t('errorLoadingQuestion'), detailedMessage: t('errorLoadingQuestionDetail'), isCorrect: false });
         setGameState('error');
         return;
@@ -118,26 +114,27 @@ export default function TriviaPage() {
 
     if (newQuestionData) {
       setQuestionData(newQuestionData);
-      if (newQuestionData.id) { // Predefined question from Firestore
-        setAskedQuestionIdentifiers(prev => [...prev, newQuestionData!.id!]);
-      } else { // Question from Genkit
-        setAskedQuestionIdentifiers(prev => [...prev, `genkit_question_${newQuestionData!.question[locale]}`]);
+      if (newQuestionData.id) {
+        setAskedQuestionIdentifiers(prev => [...new Set([...prev, newQuestionData!.id!])]);
+      } else {
+        setAskedQuestionIdentifiers(prev => [...new Set([...prev, `genkit_question_${newQuestionData!.question[locale]}`])]);
       }
       setGameState('playing');
     } else {
       console.error("No question data could be obtained.");
-      setFeedback({ message: t('errorLoadingQuestion'), detailedMessage: t('errorLoadingQuestionDetail'), isCorrect: false });
+      setFeedback({ message: t('errorLoadingQuestion'), detailedMessage: t('errorNoQuestionForDifficulty', {difficulty: difficulty}), isCorrect: false });
       setGameState('error');
     }
-  }, [locale, askedQuestionIdentifiers, askedCorrectAnswerTexts, performanceHistory, predefinedTopicValues, t]);
+  }, [locale, askedQuestionIdentifiers, askedCorrectAnswerTexts, predefinedTopicValues, t]);
 
   const handleStartGame = (topic: string) => {
     setCurrentTopic(topic);
     setScore({ correct: 0, incorrect: 0 });
     setAskedQuestionIdentifiers([]);
     setAskedCorrectAnswerTexts([]);
-    setPerformanceHistory([]);
-    fetchQuestion(topic);
+    const initialDifficulty: DifficultyLevel = "medium";
+    setCurrentDifficultyLevel(initialDifficulty);
+    fetchQuestion(topic, initialDifficulty);
   };
 
   const handleAnswerSelect = (answerIndex: number) => {
@@ -148,20 +145,14 @@ export default function TriviaPage() {
     const correctAnswerTextInLocale = questionData.answers[questionData.correctAnswerIndex]![locale];
     const explanationInLocale = questionData.explanation[locale];
     
-    const newHistoryEntry: PerformanceHistoryEntry = {
-      questionText: questionData.question[locale],
-      answeredCorrectly: isCorrect
-    };
-    setPerformanceHistory(prev => {
-      const updatedHistory = [...prev, newHistoryEntry];
-      return updatedHistory.slice(-MAX_PERFORMANCE_HISTORY);
-    });
-
     if (isCorrect) {
       setScore(prev => ({ ...prev, correct: prev.correct + 1 }));
       setFeedback({ message: t('correct'), isCorrect: true, explanation: explanationInLocale });
-      // For Genkit generated questions, correct answer text added to askedCorrectAnswerTexts in fetchQuestion
-      // For Firestore questions, repetition is handled by ID.
+      // Adjust difficulty up
+      const currentIndex = DIFFICULTY_LEVELS_ORDER.indexOf(currentDifficultyLevel);
+      if (currentIndex < DIFFICULTY_LEVELS_ORDER.length - 1) {
+        setCurrentDifficultyLevel(DIFFICULTY_LEVELS_ORDER[currentIndex + 1]!);
+      }
     } else {
       setScore(prev => ({ ...prev, incorrect: prev.incorrect + 1 }));
       setFeedback({
@@ -170,12 +161,17 @@ export default function TriviaPage() {
         isCorrect: false,
         explanation: explanationInLocale
       });
+      // Adjust difficulty down
+      const currentIndex = DIFFICULTY_LEVELS_ORDER.indexOf(currentDifficultyLevel);
+      if (currentIndex > 0) {
+        setCurrentDifficultyLevel(DIFFICULTY_LEVELS_ORDER[currentIndex - 1]!);
+      }
     }
     setGameState('showing_feedback');
   };
 
   const handleNextQuestion = () => {
-    fetchQuestion(currentTopic);
+    fetchQuestion(currentTopic, currentDifficultyLevel);
   };
 
   const handleNewGame = () => {
@@ -188,16 +184,42 @@ export default function TriviaPage() {
     setCustomTopicInput('');
     setAskedQuestionIdentifiers([]);
     setAskedCorrectAnswerTexts([]);
-    setPerformanceHistory([]);
+    setCurrentDifficultyLevel("medium");
   };
+  
+  const DifficultyIndicator = () => {
+    let Icon = Minus;
+    let color = "text-muted-foreground";
+    let text = t(`difficultyLevels.${currentDifficultyLevel}` as any); // Assuming keys like difficultyLevels.easy
 
-  // Extracted question data for the current locale to pass to QuestionCard
+    const levelIndex = DIFFICULTY_LEVELS_ORDER.indexOf(currentDifficultyLevel);
+
+    if (levelIndex <= 1) { // very easy, easy
+        Icon = ChevronDown;
+        color = "text-green-500";
+    } else if (levelIndex === 2) { // medium
+        Icon = Minus;
+        color = "text-yellow-500";
+    } else { // hard, very hard
+        Icon = ChevronUp;
+        color = "text-red-500";
+    }
+
+    return (
+        <div className={`flex items-center text-sm ${color} font-medium`}>
+            <Icon className="h-5 w-5 mr-1" />
+            {text}
+        </div>
+    );
+};
+
+
   const localizedQuestionCardData = questionData ? {
     question: questionData.question[locale],
     answers: questionData.answers.map(ans => ans[locale]),
     correctAnswerIndex: questionData.correctAnswerIndex,
-    explanation: questionData.explanation[locale], // Pass localized explanation
-    difficulty: questionData.difficulty, // Difficulty is not localized
+    explanation: questionData.explanation[locale],
+    difficulty: questionData.difficulty,
   } : null;
 
 
@@ -213,7 +235,12 @@ export default function TriviaPage() {
       </header>
 
       {gameState !== 'category_selection' && gameState !== 'loading_question' && (
-        <ScoreDisplay score={score} onNewGame={handleNewGame} />
+        <div className="w-full max-w-2xl mb-4">
+           <ScoreDisplay score={score} onNewGame={handleNewGame} />
+           <div className="flex justify-center mt-2">
+             <DifficultyIndicator />
+           </div>
+        </div>
       )}
 
       <main className="w-full max-w-2xl flex-grow flex flex-col justify-center">
@@ -229,24 +256,23 @@ export default function TriviaPage() {
           <Card className="p-8 text-center animate-fadeIn shadow-xl">
             <CardContent className="flex flex-col items-center justify-center">
               <Loader2 className="h-16 w-16 animate-spin text-primary mx-auto" />
-              <p className="mt-6 text-xl font-semibold text-muted-foreground">{t('loadingQuestion', { topic: currentTopic })}</p>
+              <p className="mt-6 text-xl font-semibold text-muted-foreground">{t('loadingQuestionWithDifficulty', { topic: currentTopic, difficulty: t(`difficultyLevels.${currentDifficultyLevel}` as any) })}</p>
             </CardContent>
           </Card>
         )}
         {(gameState === 'playing' || gameState === 'showing_feedback') && localizedQuestionCardData && (
           <QuestionCard
-            // Pass the localized data structure to QuestionCard
             questionData={{
                 question: localizedQuestionCardData.question,
                 answers: localizedQuestionCardData.answers,
                 correctAnswerIndex: localizedQuestionCardData.correctAnswerIndex,
                 explanation: localizedQuestionCardData.explanation,
-                difficulty: localizedQuestionCardData.difficulty,
+                difficulty: localizedQuestionCardData.difficulty, // This is the AI's assessed difficulty for the current Q
             }}
             onAnswerSelect={handleAnswerSelect}
             onNextQuestion={handleNextQuestion}
             selectedAnswerIndex={selectedAnswerIndex}
-            feedback={feedback} // Feedback messages are already translated by useTranslations
+            feedback={feedback}
             gameState={gameState}
           />
         )}
@@ -260,7 +286,7 @@ export default function TriviaPage() {
               <p className="text-muted-foreground">{feedback.detailedMessage || "An unexpected error occurred."}</p>
             </CardContent>
             <CardFooter className="flex flex-col sm:flex-row justify-center gap-2">
-              {currentTopic && <Button onClick={() => fetchQuestion(currentTopic)} variant="outline">{t('errorTryAgainTopic', {topic: currentTopic})}</Button>}
+              {currentTopic && <Button onClick={() => fetchQuestion(currentTopic, currentDifficultyLevel)} variant="outline">{t('errorTryAgainTopic', {topic: currentTopic})}</Button>}
               <Button onClick={handleNewGame} className="bg-primary hover:bg-primary/90 text-primary-foreground">{t('errorChooseNewTopic')}</Button>
             </CardFooter>
           </Card>
