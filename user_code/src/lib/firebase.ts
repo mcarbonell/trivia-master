@@ -37,4 +37,3 @@ const db: Firestore = getFirestore(app);
 // }
 
 export { app, db }; // Optionally export analytics
-
