@@ -1,7 +1,63 @@
-# Settings to manage and configure a Firebase App Hosting backend.
-# https://firebase.google.com/docs/app-hosting/configure
-
+# Settings for Backend (on Cloud Run).
+# See https://firebase.google.com/docs/app-hosting/configure#cloud-run
 runConfig:
-  # Increase this value if you'd like to automatically spin up
-  # more instances in response to increased traffic.
+  minInstances: 0
   maxInstances: 1
+  # concurrency: 80
+  # cpu: 1
+  # memoryMiB: 512
+
+# Environment variables and secrets.
+env:
+  # Configure environment variables.
+  # See https://firebase.google.com/docs/app-hosting/configure#user-defined-environment
+ - variable: NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN
+   value: ai-trivia-master.firebaseapp.com
+   availability:
+     - BUILD
+     - RUNTIME
+
+ - variable: NEXT_PUBLIC_FIREBASE_PROJECT_ID
+   value: ai-trivia-master
+   availability:
+     - BUILD
+     - RUNTIME
+
+ - variable: NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET
+   value: ai-trivia-master.firebasestorage.app
+   availability:
+     - BUILD
+     - RUNTIME
+
+ - variable: NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID
+   value: 896181469032
+   availability:
+     - BUILD
+     - RUNTIME
+
+ - variable: NEXT_PUBLIC_FIREBASE_APP_ID
+   value: 1:896181469032:web:c2619d6f3a60a874bc20dd
+   availability:
+     - BUILD
+     - RUNTIME
+
+ - variable: NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID
+   value: G-5CLYDH9JGF
+   availability:
+     - BUILD
+     - RUNTIME
+
+     
+  # Grant access to secrets in Cloud Secret Manager.
+  # See https://firebase.google.com/docs/app-hosting/configure#secret-parameters
+ - variable: NEXT_PUBLIC_FIREBASE_API_KEY
+   secret: firebase-api-key
+   availability:
+     - BUILD
+     - RUNTIME
+
+ - variable: GOOGLE_API_KEY
+   secret: google-api-key
+   availability:
+     - BUILD
+     - RUNTIME     
