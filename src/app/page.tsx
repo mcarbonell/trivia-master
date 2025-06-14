@@ -217,7 +217,7 @@ export default function TriviaPage() {
     correctAnswerIndex: questionData.correctAnswerIndex,
     explanation: questionData.explanation[locale],
     difficulty: questionData.difficulty,
-    hint: questionData.hint[locale], // Add hint for the current locale
+    hint: questionData.hint ? questionData.hint[locale] : undefined, // Safely access hint
   } : null;
 
 
