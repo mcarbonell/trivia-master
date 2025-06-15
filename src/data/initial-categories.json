@@ -6,11 +6,9 @@
     "icon": "FlaskConical",
     "detailedPromptInstructions": "Generate questions covering various branches of science including physics, chemistry, biology, astronomy, and earth sciences. Questions should test knowledge of fundamental concepts, historical discoveries, important figures, and recent advancements. Examples: 'What is the process by which plants convert light energy into chemical energy?' or 'Who developed the theory of general relativity?'",
     "difficultySpecificGuidelines": {
-      "very easy": "Focus on common, everyday science facts, observable phenomena, or very basic definitions usually learned in early primary school. Example: 'What color is the sky on a sunny day?' or 'How many legs does a spider have?'",
       "easy": "Target general science knowledge typically covered in late primary or early secondary school. Example: 'What is the chemical symbol for water?' or 'What force pulls objects towards the Earth?'",
       "medium": "Cover concepts from standard secondary school science curricula. Example: 'What is photosynthesis?' or 'Name the planets in our solar system in order from the Sun.'",
-      "hard": "Focus on specific theories, complex biological processes, advanced physics concepts not typically covered in high school, or detailed chemical reactions. Example: 'Explain the significance of the Hubble constant in cosmology.'",
-      "very hard": "Delve into niche subfields, cutting-edge research topics, complex mathematical formulations in physics, or intricate biochemical pathways. Questions might require understanding of multiple advanced concepts. Example: 'Describe the mechanism and implications of CRISPR-Cas9 gene editing technology.'"
+      "hard": "Focus on specific theories, complex biological processes, advanced physics concepts not typically covered in high school, or detailed chemical reactions. Example: 'Explain the significance of the Hubble constant in cosmology.'"
     }
   },
   {
@@ -19,11 +17,9 @@
     "icon": "ScrollText",
     "detailedPromptInstructions": "Generate questions about significant historical events, periods, figures, and civilizations from around the world. Include ancient, medieval, and modern history. Examples: 'Who was the first Roman Emperor?' or 'What event is considered the start of World War II?'",
     "difficultySpecificGuidelines": {
-      "very easy": "Questions about widely known historical figures or events, often taught in primary school. Example: 'Who discovered America in 1492 (from European perspective)?' or 'In which country are the pyramids of Giza?'",
       "easy": "Focus on major historical events or figures generally known by those with basic secondary education. Example: 'What was the Renaissance?' or 'Who was Martin Luther King Jr.?'",
       "medium": "Cover specific details of major historical periods, causes/effects of significant events, or notable but not universally known figures. Example: 'What were the main causes of the French Revolution?' or 'Who was Genghis Khan?'",
-      "hard": "Questions requiring deeper knowledge of specific historical contexts, lesser-known events or figures, or analysis of historical trends. Example: 'Discuss the socio-economic impact of the Black Death in 14th century Europe.'",
-      "very hard": "Delve into historiographical debates, nuanced interpretations of historical events, or very specific details of obscure historical periods or figures. Example: 'Analyze the primary motivations behind the Peloponnesian War according to Thucydides versus modern interpretations.'"
+      "hard": "Questions requiring deeper knowledge of specific historical contexts, lesser-known events or figures, or analysis of historical trends. Example: 'Discuss the socio-economic impact of the Black Death in 14th century Europe.'"
     }
   },
   {
@@ -32,11 +28,9 @@
     "icon": "Goal",
     "detailedPromptInstructions": "Generate questions about various sports including rules, famous athletes, major tournaments, and historical moments in sports like soccer, basketball, tennis, olympics, etc. Examples: 'Which country won the FIFA World Cup in 2022?' or 'How many points is a touchdown worth in American football?'",
     "difficultySpecificGuidelines": {
-      "very easy": "Extremely common sports knowledge. Example: 'What sport is played with a black and white ball and goals?' or 'How many players are on a basketball team on the court?'",
       "easy": "Well-known athletes, popular sports rules, or major international competitions. Example: 'Who is considered one of the greatest basketball players of all time, known for playing for the Chicago Bulls?' or 'How often are the Summer Olympics held?'",
       "medium": "Specific records, details about less globally popular sports, or notable achievements by athletes. Example: 'Which tennis player holds the record for the most Grand Slam singles titles (male or female)?' or 'What is a hat-trick in soccer?'",
-      "hard": "Questions about historical sports figures, specific rules nuances, or details from past major tournaments. Example: 'In what year did Roger Bannister break the four-minute mile barrier?' or 'Explain the offside rule in soccer.'",
-      "very hard": "Focus on obscure sports, very specific historical details, or complex strategic elements of sports. Example: 'Who won the first ever FIFA World Cup in 1930?' or 'Describe the different types of pitches a baseball pitcher might throw and their typical effects.'"
+      "hard": "Questions about historical sports figures, specific rules nuances, or details from past major tournaments. Example: 'In what year did Roger Bannister break the four-minute mile barrier?' or 'Explain the offside rule in soccer.'"
     }
   },
   {
@@ -45,11 +39,9 @@
     "icon": "Film",
     "detailedPromptInstructions": "Generate questions about famous movies, directors, actors, awards (e.g., Oscars), genres, and memorable quotes or scenes. Cover a range from classic cinema to contemporary films. Examples: 'Which movie won the Best Picture Oscar in 2020?' or 'Who directed the movie Pulp Fiction?'",
     "difficultySpecificGuidelines": {
-      "very easy": "Questions about extremely famous movies or characters known by almost everyone. Example: 'What is the name of the young wizard in the Harry Potter series?' or 'In Star Wars, what color is Darth Vader's lightsaber?'",
       "easy": "Focus on iconic movies, very famous actors/directors, or major awards. Example: 'Which movie features the line, \"Here's looking at you, kid\"?' or 'Who played Jack Dawson in the movie Titanic?'",
       "medium": "Cover well-known films from various genres, significant awards for specific roles/films, or identifying directors of popular movies. Example: 'Which film won the Palme d'Or at the Cannes Film Festival in 1994?' or 'Name three movies directed by Steven Spielberg.'",
-      "hard": "Questions about influential classic films, specific cinematic techniques used in a film, or identifying supporting actors or crew members from famous movies. Example: 'What is a MacGuffin in filmmaking, a term popularized by Alfred Hitchcock?' or 'Who composed the score for the movie \"The Good, the Bad and the Ugly\"?'",
-      "very hard": "Delve into arthouse cinema, obscure cult films, specific details about film movements, or technical aspects of filmmaking in relation to specific movies. Example: 'Explain the Kuleshov Effect and name a director who extensively used it.' or 'Who was the cinematographer for the movie \"Citizen Kane\"?'"
+      "hard": "Questions about influential classic films, specific cinematic techniques used in a film, or identifying supporting actors or crew members from famous movies. Example: 'What is a MacGuffin in filmmaking, a term popularized by Alfred Hitchcock?' or 'Who composed the score for the movie \"The Good, the Bad and the Ugly\"?'"
     }
   },
   {
@@ -58,11 +50,9 @@
     "icon": "Map",
     "detailedPromptInstructions": "Generate questions about countries, capitals, flags, famous landmarks, continents, oceans, mountains, rivers, and general geographical concepts. Examples: 'What is the capital of Japan?' or 'Which is the longest river in the world?'",
     "difficultySpecificGuidelines": {
-      "very easy": "Basic geographical facts, like naming continents or very famous countries/landmarks. Example: 'How many continents are there?' or 'Paris is the capital of which country?'",
       "easy": "Capitals of well-known countries, major rivers or mountains, or identifying flags of prominent nations. Example: 'What is the largest desert in the world?' or 'Which ocean is between Europe and North America?'",
       "medium": "Questions about specific geographical features, climate zones, less common capitals, or locations of specific landmarks. Example: 'Mount Kilimanjaro is located in which African country?' or 'What is the Ring of Fire?'",
-      "hard": "Detailed knowledge of topography, specific international borders, demographic geography, or smaller countries and their capitals. Example: 'What is the term for a body of land completely surrounded by water but smaller than a continent?' or 'Name the two countries that share the longest continuous international border.'",
-      "very hard": "Focus on obscure geographical facts, complex geopolitical boundaries, specific details of remote regions, or understanding complex geographical phenomena. Example: 'Explain the orographic effect and provide an example of a region significantly impacted by it.' or 'What is the capital of Kiribati?'"
+      "hard": "Detailed knowledge of topography, specific international borders, demographic geography, or smaller countries and their capitals. Example: 'What is the term for a body of land completely surrounded by water but smaller than a continent?' or 'Name the two countries that share the longest continuous international border.'"
     }
   },
   {
@@ -71,11 +61,9 @@
     "icon": "Music2",
     "detailedPromptInstructions": "Generate questions about various music genres, famous artists, bands, albums, songs, musical instruments, and music history. Cover classical, pop, rock, jazz, hip-hop, etc. Examples: 'Who is known as the \"King of Pop\"?' or 'What instrument did Jimi Hendrix famously play?'",
     "difficultySpecificGuidelines": {
-      "very easy": "Questions about extremely famous artists or songs, or basic musical concepts. Example: 'Name a song by The Beatles.' or 'What do you use to listen to music (e.g., part of your body)?'",
       "easy": "Identify iconic artists, major music genres, or very popular songs/albums. Example: 'Which band released the album \"Dark Side of the Moon\"?' or 'What genre of music is typically associated with artists like Louis Armstrong and Duke Ellington?'",
       "medium": "Questions about specific song lyrics, band members (other than lead singer), or identifying instruments in a less common context. Example: 'Complete the lyric: \"Yesterday, all my troubles seemed so...\"' or 'Who was the drummer for the band Led Zeppelin?'",
-      "hard": "Knowledge of music theory, influential albums from niche genres, or details about music history. Example: 'What is a common time signature for a waltz?' or 'Which artist is credited with pioneering the \"Wall of Sound\" production technique?'",
-      "very hard": "Focus on obscure artists, complex musical structures, specific details of music production, or deep cuts from influential artists. Example: 'Identify three characteristics of modal jazz.' or 'What year was the Moog synthesizer first commercially released?'"
+      "hard": "Knowledge of music theory, influential albums from niche genres, or details about music history. Example: 'What is a common time signature for a waltz?' or 'Which artist is credited with pioneering the \"Wall of Sound\" production technique?'"
     }
   }
 ]

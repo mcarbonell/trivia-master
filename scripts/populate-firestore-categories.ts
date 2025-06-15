@@ -64,17 +64,23 @@ async function populateCategories() {
       if (categoryData.difficultySpecificGuidelines) {
         const guidelines: { [key: string]: string } = {};
         let validGuidelines = true;
+        // Only accept "easy", "medium", "hard" keys
+        const allowedDifficulties: (keyof CategoryDefinition['difficultySpecificGuidelines'])[] = ['easy', 'medium', 'hard'];
+        
         for (const key in categoryData.difficultySpecificGuidelines) {
-          if (typeof categoryData.difficultySpecificGuidelines[key] === 'string') {
+          if (allowedDifficulties.includes(key as any) && typeof categoryData.difficultySpecificGuidelines[key] === 'string') {
             guidelines[key] = categoryData.difficultySpecificGuidelines[key];
+          } else if (!allowedDifficulties.includes(key as any)) {
+            console.warn(`Invalid difficulty key "${key}" in difficultySpecificGuidelines for ${categoryData.topicValue}. Allowed keys are: ${allowedDifficulties.join(', ')}. Skipping this guideline.`);
+            // validGuidelines = false; // Optionally mark as invalid if strictness is needed
           } else {
-            console.warn(`Invalid guideline for ${categoryData.topicValue} - ${key}: not a string.`);
-            validGuidelines = false; // Mark as invalid to potentially skip this part
+            console.warn(`Invalid guideline value for ${categoryData.topicValue} - ${key}: not a string.`);
+            validGuidelines = false; 
             break; 
           }
         }
         if (validGuidelines && Object.keys(guidelines).length > 0) {
-          categoryToSave.difficultySpecificGuidelines = guidelines;
+          categoryToSave.difficultySpecificGuidelines = guidelines as Required<CategoryDefinition>['difficultySpecificGuidelines'];
         } else if (!validGuidelines) {
             console.warn(`Skipping difficultySpecificGuidelines for ${categoryData.topicValue} due to invalid entries.`);
         }

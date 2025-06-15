@@ -23,7 +23,7 @@ try {
 const db = admin.firestore();
 const PREDEFINED_QUESTIONS_COLLECTION = 'predefinedTriviaQuestions';
 
-const ALL_DIFFICULTY_LEVELS: DifficultyLevel[] = ["very easy", "easy", "medium", "hard", "very hard"];
+const ALL_DIFFICULTY_LEVELS: DifficultyLevel[] = ["easy", "medium", "hard"];
 
 const TARGET_QUESTIONS_PER_CATEGORY_DIFFICULTY = 5; 
 const MAX_NEW_QUESTIONS_PER_RUN_PER_DIFFICULTY = 2; 
@@ -113,7 +113,7 @@ async function populateQuestions() {
               ...newQuestionData,
               topicValue: category.topicValue, 
               createdAt: admin.firestore.FieldValue.serverTimestamp(),
-              source: 'batch-script-aitrivia-english-instr-target-difficulty-v4-category-prompts'
+              source: 'batch-script-aitrivia-english-instr-target-difficulty-v5-category-prompts-3levels'
             };
 
             await questionsRef.add(questionToSave);

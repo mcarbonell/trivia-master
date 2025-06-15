@@ -1,6 +1,6 @@
 // src/types/index.ts
 
-export type DifficultyLevel = "very easy" | "easy" | "medium" | "hard" | "very hard";
+export type DifficultyLevel = "easy" | "medium" | "hard";
 
 export interface BilingualText {
   en: string;
@@ -17,10 +17,8 @@ export interface CategoryDefinition {
   icon: string; // Lucide icon name, e.g., "Lightbulb"
   detailedPromptInstructions: string; // English-only detailed general instructions for this category
   difficultySpecificGuidelines?: { // Optional: more specific English-only instructions per difficulty
-    "very easy"?: CategoryDifficultyGuideline;
     "easy"?: CategoryDifficultyGuideline;
     "medium"?: CategoryDifficultyGuideline;
     "hard"?: CategoryDifficultyGuideline;
-    "very hard"?: CategoryDifficultyGuideline;
   };
 }

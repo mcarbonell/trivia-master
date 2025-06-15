@@ -27,7 +27,7 @@ type GameState = 'loading_categories' | 'category_selection' | 'loading_question
 
 type CurrentQuestionData = GenerateTriviaQuestionOutput & { id?: string }; // id for Firestore questions
 
-const DIFFICULTY_LEVELS_ORDER: DifficultyLevel[] = ["very easy", "easy", "medium", "hard", "very hard"];
+const DIFFICULTY_LEVELS_ORDER: DifficultyLevel[] = ["easy", "medium", "hard"];
 const QUESTION_TIME_LIMIT_SECONDS = 30;
 
 export default function TriviaPage() {
@@ -161,9 +161,9 @@ export default function TriviaPage() {
       };
 
       if (categoryDetails) { 
-        inputForAI.categoryInstructions = categoryDetails.detailedPromptInstructions; // This is now a string (English)
+        inputForAI.categoryInstructions = categoryDetails.detailedPromptInstructions; 
         if (categoryDetails.difficultySpecificGuidelines && categoryDetails.difficultySpecificGuidelines[difficulty]) {
-          inputForAI.difficultySpecificInstruction = categoryDetails.difficultySpecificGuidelines[difficulty]; // Also a string (English)
+          inputForAI.difficultySpecificInstruction = categoryDetails.difficultySpecificGuidelines[difficulty]; 
         }
       }
       
@@ -207,7 +207,7 @@ export default function TriviaPage() {
     setScore({ correct: 0, incorrect: 0 });
     setAskedQuestionIdentifiers([]);
     setAskedCorrectAnswerTexts([]);
-    const initialDifficulty: DifficultyLevel = "medium";
+    const initialDifficulty: DifficultyLevel = "medium"; // Start at medium
     setCurrentDifficultyLevel(initialDifficulty);
     fetchQuestion(topicOrTopicValue, initialDifficulty, selectedPredefinedCategory || null);
   };
@@ -259,7 +259,7 @@ export default function TriviaPage() {
     setCurrentCategoryDetails(null);
     setAskedQuestionIdentifiers([]);
     setAskedCorrectAnswerTexts([]);
-    setCurrentDifficultyLevel("medium");
+    setCurrentDifficultyLevel("medium"); // Reset to medium
     setTimeLeft(null); 
   };
   
@@ -270,13 +270,13 @@ export default function TriviaPage() {
 
     const levelIndex = DIFFICULTY_LEVELS_ORDER.indexOf(currentDifficultyLevel);
 
-    if (levelIndex <= 1) { 
+    if (levelIndex === 0) { // Easy
         Icon = ChevronDown;
         color = "text-green-500";
-    } else if (levelIndex === 2) { 
+    } else if (levelIndex === 1) { // Medium
         Icon = Minus;
         color = "text-yellow-500";
-    } else { 
+    } else { // Hard (levelIndex === 2)
         Icon = ChevronUp;
         color = "text-red-500";
     }

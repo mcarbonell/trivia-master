@@ -16,11 +16,9 @@ import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
 
 const DifficultyLevelSchema = z.enum([
-  "very easy",
   "easy",
   "medium",
-  "hard",
-  "very hard"
+  "hard"
 ]).describe("The assessed or targeted difficulty level of the question.");
 export type DifficultyLevel = z.infer<typeof DifficultyLevelSchema>;
 
@@ -108,12 +106,10 @@ HINT GUIDELINES:
 - It should relate to the core subject of the question.
 
 DIFFICULTY GUIDELINES AND ASSESSMENT:
-You MUST assess the difficulty of the question you generate and assign it to the 'difficulty' output field. Use the following five levels:
-- "very easy": Knowledge typically acquired in primary school (e.g., simple common facts like 'What color is the sky?').
+You MUST assess the difficulty of the question you generate and assign it to the 'difficulty' output field. Use the following three levels:
 - "easy": Knowledge typically acquired in primary or early secondary school (e.g., 'What is the capital of France?'). Common knowledge for most people.
 - "medium": Knowledge typically acquired in secondary school or through general cultural awareness (e.g., 'Who painted the Mona Lisa?'). Requires some specific knowledge.
-- "hard": Knowledge typically associated with higher education (university level) or specialized interest in a topic (e.g., 'What is the Chandrasekhar limit?').
-- "very hard": Knowledge typically associated with advanced degrees (e.g., PhD level) or very deep, niche expertise in a topic (e.g., 'Explain the P vs NP problem in computer science.').
+- "hard": Knowledge typically associated with higher education (university level) or specialized interest in a topic (e.g., 'What is the Chandrasekhar limit?'). Questions at this level should be challenging but answerable by someone well-versed in the subject.
 
 {{#if targetDifficulty}}
 The user has requested a question of "{{targetDifficulty}}" difficulty. Please try to generate a question that matches this level based on the guidelines above AND any difficulty-specific instructions provided. The 'difficulty' field in your output MUST reflect this targetDifficulty.

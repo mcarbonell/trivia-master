@@ -39,11 +39,9 @@
     "music": "Music"
   },
   "difficultyLevels": {
-    "very easy": "Very Easy",
     "easy": "Easy",
     "medium": "Medium",
-    "hard": "Hard",
-    "very hard": "Very Hard"
+    "hard": "Hard"
   },
   "currentDifficulty": "Current Difficulty",
   "showHintButton": "Show Hint",

@@ -39,11 +39,9 @@
     "music": "Música"
   },
   "difficultyLevels": {
-    "very easy": "Muy Fácil",
     "easy": "Fácil",
     "medium": "Medio",
-    "hard": "Difícil",
-    "very hard": "Muy Difícil"
+    "hard": "Difícil"
   },
   "currentDifficulty": "Dificultad Actual",
   "showHintButton": "Mostrar Pista",
