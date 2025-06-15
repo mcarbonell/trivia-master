@@ -9,7 +9,8 @@
       "easy": "Target general science knowledge typically covered in late primary or early secondary school. Example: 'What is the chemical symbol for water?' or 'What force pulls objects towards the Earth?'",
       "medium": "Cover concepts from standard secondary school science curricula. Example: 'What is photosynthesis?' or 'Name the planets in our solar system in order from the Sun.'",
       "hard": "Focus on specific theories, complex biological processes, advanced physics concepts not typically covered in high school, or detailed chemical reactions. Example: 'Explain the significance of the Hubble constant in cosmology.'"
-    }
+    },
+    "isPredefined": true
   },
   {
     "topicValue": "History",
@@ -20,7 +21,8 @@
       "easy": "Focus on major historical events or figures generally known by those with basic secondary education. Example: 'What was the Renaissance?' or 'Who was Martin Luther King Jr.?'",
       "medium": "Cover specific details of major historical periods, causes/effects of significant events, or notable but not universally known figures. Example: 'What were the main causes of the French Revolution?' or 'Who was Genghis Khan?'",
       "hard": "Questions requiring deeper knowledge of specific historical contexts, lesser-known events or figures, or analysis of historical trends. Example: 'Discuss the socio-economic impact of the Black Death in 14th century Europe.'"
-    }
+    },
+    "isPredefined": true
   },
   {
     "topicValue": "Sports",
@@ -31,7 +33,8 @@
       "easy": "Well-known athletes, popular sports rules, or major international competitions. Example: 'Who is considered one of the greatest basketball players of all time, known for playing for the Chicago Bulls?' or 'How often are the Summer Olympics held?'",
       "medium": "Specific records, details about less globally popular sports, or notable achievements by athletes. Example: 'Which tennis player holds the record for the most Grand Slam singles titles (male or female)?' or 'What is a hat-trick in soccer?'",
       "hard": "Questions about historical sports figures, specific rules nuances, or details from past major tournaments. Example: 'In what year did Roger Bannister break the four-minute mile barrier?' or 'Explain the offside rule in soccer.'"
-    }
+    },
+    "isPredefined": true
   },
   {
     "topicValue": "Movies",
@@ -42,7 +45,8 @@
       "easy": "Focus on iconic movies, very famous actors/directors, or major awards. Example: 'Which movie features the line, \"Here's looking at you, kid\"?' or 'Who played Jack Dawson in the movie Titanic?'",
       "medium": "Cover well-known films from various genres, significant awards for specific roles/films, or identifying directors of popular movies. Example: 'Which film won the Palme d'Or at the Cannes Film Festival in 1994?' or 'Name three movies directed by Steven Spielberg.'",
       "hard": "Questions about influential classic films, specific cinematic techniques used in a film, or identifying supporting actors or crew members from famous movies. Example: 'What is a MacGuffin in filmmaking, a term popularized by Alfred Hitchcock?' or 'Who composed the score for the movie \"The Good, the Bad and the Ugly\"?'"
-    }
+    },
+    "isPredefined": true
   },
   {
     "topicValue": "Geography",
@@ -53,7 +57,8 @@
       "easy": "Capitals of well-known countries, major rivers or mountains, or identifying flags of prominent nations. Example: 'What is the largest desert in the world?' or 'Which ocean is between Europe and North America?'",
       "medium": "Questions about specific geographical features, climate zones, less common capitals, or locations of specific landmarks. Example: 'Mount Kilimanjaro is located in which African country?' or 'What is the Ring of Fire?'",
       "hard": "Detailed knowledge of topography, specific international borders, demographic geography, or smaller countries and their capitals. Example: 'What is the term for a body of land completely surrounded by water but smaller than a continent?' or 'Name the two countries that share the longest continuous international border.'"
-    }
+    },
+    "isPredefined": true
   },
   {
     "topicValue": "Music",
@@ -64,6 +69,79 @@
       "easy": "Identify iconic artists, major music genres, or very popular songs/albums. Example: 'Which band released the album \"Dark Side of the Moon\"?' or 'What genre of music is typically associated with artists like Louis Armstrong and Duke Ellington?'",
       "medium": "Questions about specific song lyrics, band members (other than lead singer), or identifying instruments in a less common context. Example: 'Complete the lyric: \"Yesterday, all my troubles seemed so...\"' or 'Who was the drummer for the band Led Zeppelin?'",
       "hard": "Knowledge of music theory, influential albums from niche genres, or details about music history. Example: 'What is a common time signature for a waltz?' or 'Which artist is credited with pioneering the \"Wall of Sound\" production technique?'"
-    }
+    },
+    "isPredefined": true
+  },
+  {
+    "topicValue": "Art_Literature",
+    "name": { "en": "Art & Literature", "es": "Arte y Literatura" },
+    "icon": "Palette",
+    "detailedPromptInstructions": "Generate questions about famous painters, sculptors, artistic movements (e.g., Impressionism, Surrealism), classic and contemporary authors, famous novels, poems, and literary periods. Examples: 'Who painted the Mona Lisa?' or 'Which novel begins with the line \"Call me Ishmael\"?'",
+    "difficultySpecificGuidelines": {
+      "easy": "Recognizing very famous artists/authors or their most iconic works. Example: 'Who wrote Romeo and Juliet?'",
+      "medium": "Identifying specific art movements, literary genres, or characters from well-known books/plays. Example: 'What art movement is Salvador Dalí associated with?'",
+      "hard": "Questions about literary theory, specific artistic techniques, or less mainstream authors/works. Example: 'What is meant by 'stream of consciousness' in literature?'"
+    },
+    "isPredefined": true
+  },
+  {
+    "topicValue": "Food_Drink",
+    "name": { "en": "Food & Drink", "es": "Comida y Bebida" },
+    "icon": "CookingPot",
+    "detailedPromptInstructions": "Generate questions about international cuisines, famous dishes, ingredients, cooking techniques, types of beverages (alcoholic and non-alcoholic), and culinary history. Examples: 'What is the main ingredient in guacamole?' or 'Which country is famous for originating sushi?'",
+    "difficultySpecificGuidelines": {
+      "easy": "Identifying common foods, famous national dishes, or basic ingredients. Example: 'What type of pasta is typically used in lasagna?'",
+      "medium": "Questions about specific cooking methods, regional specialties, or origins of particular dishes. Example: 'What does 'al dente' mean in cooking?'",
+      "hard": "Detailed knowledge of gastronomy, rare ingredients, oenology, or historical food origins. Example: 'What are the five 'mother sauces' of French cuisine?'"
+    },
+    "isPredefined": true
+  },
+  {
+    "topicValue": "Mythology",
+    "name": { "en": "Mythology", "es": "Mitología" },
+    "icon": "Swords",
+    "detailedPromptInstructions": "Generate questions about gods, goddesses, heroes, mythical creatures, and epic tales from various mythologies (e.g., Greek, Roman, Norse, Egyptian, Celtic). Examples: 'Who is the Greek god of the sea?' or 'What creature in Norse mythology is a giant wolf destined to kill Odin during Ragnarök?'",
+    "difficultySpecificGuidelines": {
+      "easy": "Identifying major gods/goddesses or very famous mythical figures/stories. Example: 'Zeus is the king of the gods in which mythology?'",
+      "medium": "Questions about specific myths, relationships between mythological figures, or attributes of lesser-known deities. Example: 'Who was Persephone in Greek mythology?'",
+      "hard": "Detailed knowledge of specific epic poems, comparative mythology, or obscure mythological figures. Example: 'What are the Twelve Labours of Heracles?'"
+    },
+    "isPredefined": true
+  },
+  {
+    "topicValue": "Technology",
+    "name": { "en": "Technology", "es": "Tecnología" },
+    "icon": "Cpu",
+    "detailedPromptInstructions": "Generate questions about the history of technology, famous inventors, breakthroughs in computing, the internet, software, hardware, and emerging technologies. Examples: 'Who is considered one of the co-founders of Apple Inc.?' or 'What does CPU stand for?'",
+    "difficultySpecificGuidelines": {
+      "easy": "Basic tech terms, very famous inventors, or widely used technologies. Example: 'What company developed the Windows operating system?'",
+      "medium": "Understanding specific technological concepts, historical milestones, or key figures in tech development. Example: 'What is Moore's Law?'",
+      "hard": "Detailed knowledge of programming concepts, specific hardware architectures, or the history of niche technologies. Example: 'Explain the difference between TCP and UDP protocols.'"
+    },
+    "isPredefined": true
+  },
+  {
+    "topicValue": "Animals",
+    "name": { "en": "Animals", "es": "Animales" },
+    "icon": "PawPrint",
+    "detailedPromptInstructions": "Generate questions about different animal species, their habitats, behaviors, classifications (mammals, reptiles, insects, etc.), endangered species, and unique animal facts. Examples: 'What is the largest land animal?' or 'Which bird is known for its ability to mimic human speech?'",
+    "difficultySpecificGuidelines": {
+      "easy": "Identifying common animals, basic animal facts, or well-known animal characteristics. Example: 'What sound does a dog make?'",
+      "medium": "Questions about specific animal classifications, habitats, or unique behaviors. Example: 'Are dolphins mammals or fish?'",
+      "hard": "Detailed knowledge of zoology, specific scientific names, or complex animal behaviors/adaptations. Example: 'What is echolocation and which animals use it?'"
+    },
+    "isPredefined": true
+  },
+  {
+    "topicValue": "General_Knowledge",
+    "name": { "en": "General Knowledge", "es": "Conocimiento General" },
+    "icon": "Brain",
+    "detailedPromptInstructions": "Generate questions covering a wide array of topics not strictly fitting into other categories. This can include current events, miscellaneous facts, common sense questions, basic world knowledge, recognizing symbols or logos, or general awareness. Aim for questions that are interesting and test broad awareness. Examples: 'How many colors are there in a rainbow?' or 'What is the currency of the United Kingdom?'",
+    "difficultySpecificGuidelines": {
+      "easy": "Very common knowledge facts that most people would know. Example: 'How many days are in a week?'",
+      "medium": "Facts that are generally known but may require a moment of thought. Example: 'What is the capital of Australia?'",
+      "hard": "Less common facts or those requiring connections between different pieces of information. Example: 'What do the five Olympic rings represent?'"
+    },
+    "isPredefined": true
   }
 ]

@@ -46,9 +46,10 @@ async function populateCategories() {
         !categoryData.topicValue || typeof categoryData.topicValue !== 'string' ||
         !categoryData.name || typeof categoryData.name.en !== 'string' || typeof categoryData.name.es !== 'string' ||
         !categoryData.icon || typeof categoryData.icon !== 'string' ||
-        !categoryData.detailedPromptInstructions || typeof categoryData.detailedPromptInstructions !== 'string'
+        !categoryData.detailedPromptInstructions || typeof categoryData.detailedPromptInstructions !== 'string' ||
+        (categoryData.hasOwnProperty('isPredefined') && typeof categoryData.isPredefined !== 'boolean') // Validate isPredefined
       ) {
-        console.warn(`Skipping category due to missing/invalid required fields (topicValue, name, icon, detailedPromptInstructions as string): ${JSON.stringify(categoryData)}`);
+        console.warn(`Skipping category due to missing/invalid required fields (topicValue, name, icon, detailedPromptInstructions as string, isPredefined as boolean): ${JSON.stringify(categoryData)}`);
         continue;
       }
 
@@ -58,21 +59,19 @@ async function populateCategories() {
         name: categoryData.name,
         icon: categoryData.icon,
         detailedPromptInstructions: categoryData.detailedPromptInstructions,
+        isPredefined: categoryData.isPredefined === undefined ? true : categoryData.isPredefined, // Default to true if not specified
       };
       
-      // Validate difficultySpecificGuidelines if present
       if (categoryData.difficultySpecificGuidelines) {
         const guidelines: { [key: string]: string } = {};
         let validGuidelines = true;
-        // Only accept "easy", "medium", "hard" keys
-        const allowedDifficulties: (keyof CategoryDefinition['difficultySpecificGuidelines'])[] = ['easy', 'medium', 'hard'];
+        const allowedDifficulties: (keyof Required<CategoryDefinition>['difficultySpecificGuidelines'])[] = ['easy', 'medium', 'hard'];
         
         for (const key in categoryData.difficultySpecificGuidelines) {
           if (allowedDifficulties.includes(key as any) && typeof categoryData.difficultySpecificGuidelines[key] === 'string') {
             guidelines[key] = categoryData.difficultySpecificGuidelines[key];
           } else if (!allowedDifficulties.includes(key as any)) {
             console.warn(`Invalid difficulty key "${key}" in difficultySpecificGuidelines for ${categoryData.topicValue}. Allowed keys are: ${allowedDifficulties.join(', ')}. Skipping this guideline.`);
-            // validGuidelines = false; // Optionally mark as invalid if strictness is needed
           } else {
             console.warn(`Invalid guideline value for ${categoryData.topicValue} - ${key}: not a string.`);
             validGuidelines = false; 
@@ -113,3 +112,4 @@ populateCategories().catch(error => {
   console.error("Unhandled error in populateCategories script:", error);
   process.exit(1);
 });
+

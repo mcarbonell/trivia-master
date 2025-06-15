@@ -21,4 +21,6 @@ export interface CategoryDefinition {
     "medium"?: CategoryDifficultyGuideline;
     "hard"?: CategoryDifficultyGuideline;
   };
+  isPredefined?: boolean; // True if the category comes from the initial set
 }
+
