@@ -95,6 +95,7 @@
     "tableTopicValue": "Valor del Tema (ID)",
     "tableIcon": "Icono",
     "tableIsPredefined": "Predefinida",
+    "tableQuestionCounts": "Nº Preguntas",
     "tableActions": "Acciones",
     "editButton": "Editar",
     "deleteButton": "Eliminar",
@@ -103,6 +104,13 @@
     "retryButton": "Reintentar",
     "yes": "Sí",
     "no": "No",
+    "difficultyShort": {
+      "easy": "F",
+      "medium": "M",
+      "hard": "D"
+    },
+    "noCounts": "Sin recuentos",
+    "notApplicableShort": "N/A",
     "addDialogTitle": "Añadir Nueva Categoría",
     "addDialogDescription": "Completa los detalles para la nueva categoría.",
     "editDialogTitle": "Editar Categoría",

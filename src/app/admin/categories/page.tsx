@@ -6,7 +6,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { getAppCategories, addCategory, updateCategory, deleteCategory } from '@/services/categoryService';
-import type { CategoryDefinition, BilingualText } from '@/types';
+import type { CategoryDefinition, BilingualText, DifficultyLevel } from '@/types';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
@@ -16,10 +16,12 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
-import { Loader2, PlusCircle, Edit, Trash2, AlertTriangle } from 'lucide-react';
+import { Loader2, PlusCircle, Edit, Trash2, AlertTriangle, RefreshCw } from 'lucide-react'; // Added RefreshCw
 import { useTranslations, useLocale } from 'next-intl';
 import type { AppLocale } from '@/lib/i18n-config';
 import { useToast } from '@/hooks/use-toast';
+import { db } from '@/lib/firebase'; // Import db for Firestore queries
+import { collection, query, where, getCountFromServer } from 'firebase/firestore';
 
 const categoryFormSchema = z.object({
   topicValue: z.string().min(1, { message: "Topic Value is required." }).max(100, { message: "Topic Value must be 100 characters or less." }),
@@ -34,18 +36,31 @@ const categoryFormSchema = z.object({
 });
 export type CategoryFormData = z.infer<typeof categoryFormSchema>;
 
+interface QuestionCounts {
+  easy: number;
+  medium: number;
+  hard: number;
+}
+
+interface CategoryWithCounts extends CategoryDefinition {
+  questionCounts?: QuestionCounts;
+  isLoadingCounts?: boolean;
+}
+
+const DIFFICULTIES: DifficultyLevel[] = ['easy', 'medium', 'hard'];
+
 export default function AdminCategoriesPage() {
   const t = useTranslations('AdminCategoriesPage');
-  const tCommon = useTranslations(); // For common terms like "Save", "Cancel"
+  const tCommon = useTranslations();
   const locale = useLocale() as AppLocale;
   const { toast } = useToast();
 
-  const [categories, setCategories] = useState<CategoryDefinition[]>([]);
+  const [categories, setCategories] = useState<CategoryWithCounts[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [currentCategory, setCurrentCategory] = useState<CategoryDefinition | null>(null);
+  const [currentCategory, setCurrentCategory] = useState<CategoryWithCounts | null>(null);
   const [formMode, setFormMode] = useState<'add' | 'edit'>('add');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -64,26 +79,58 @@ export default function AdminCategoriesPage() {
     },
   });
 
-  const fetchCategories = useCallback(async () => {
+  const fetchCategoriesAndCounts = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
       const fetchedCategories = await getAppCategories();
-      setCategories(fetchedCategories);
+      // Initialize categories with isLoadingCounts true for predefined ones
+      const categoriesWithLoadingState: CategoryWithCounts[] = fetchedCategories.map(cat => ({
+        ...cat,
+        isLoadingCounts: cat.isPredefined, 
+      }));
+      setCategories(categoriesWithLoadingState);
+      setLoading(false); // Base categories loaded
+
+      // Now fetch counts for predefined categories
+      const countPromises = fetchedCategories.map(async (category) => {
+        if (!category.isPredefined) {
+          return { ...category, isLoadingCounts: false };
+        }
+
+        try {
+          const counts: Partial<QuestionCounts> = {};
+          const questionsRef = collection(db, 'predefinedTriviaQuestions');
+          
+          for (const diff of DIFFICULTIES) {
+            const q = query(questionsRef, where('topicValue', '==', category.topicValue), where('difficulty', '==', diff));
+            const snapshot = await getCountFromServer(q);
+            counts[diff] = snapshot.data().count;
+          }
+          return { ...category, questionCounts: counts as QuestionCounts, isLoadingCounts: false };
+        } catch (countError) {
+          console.error(`Error fetching counts for category ${category.topicValue}:`, countError);
+          // Keep category but mark as error for counts or just no counts
+          return { ...category, questionCounts: undefined, isLoadingCounts: false }; 
+        }
+      });
+
+      const categoriesWithCounts = await Promise.all(countPromises);
+      setCategories(categoriesWithCounts as CategoryWithCounts[]);
+
     } catch (err) {
       console.error("Error fetching categories:", err);
       setError(t('errorLoading'));
       toast({ variant: "destructive", title: t('toastErrorTitle'), description: t('errorLoading') });
-    } finally {
-      setLoading(false);
+      setLoading(false); 
     }
   }, [t, toast]);
 
   useEffect(() => {
-    fetchCategories();
-  }, [fetchCategories]);
+    fetchCategoriesAndCounts();
+  }, [fetchCategoriesAndCounts]);
 
-  const handleOpenDialog = (mode: 'add' | 'edit', category?: CategoryDefinition) => {
+  const handleOpenDialog = (mode: 'add' | 'edit', category?: CategoryWithCounts) => {
     setFormMode(mode);
     setCurrentCategory(category || null);
     form.reset(category ? {
@@ -124,11 +171,9 @@ export default function AdminCategoriesPage() {
         ...(data.difficultyHard && { hard: data.difficultyHard }),
       },
     };
-    // Remove empty guidelines
     if (Object.keys(categoryDataToSave.difficultySpecificGuidelines || {}).length === 0) {
         delete categoryDataToSave.difficultySpecificGuidelines;
     }
-
 
     try {
       if (formMode === 'add') {
@@ -138,7 +183,7 @@ export default function AdminCategoriesPage() {
         await updateCategory(currentCategory.id, categoryDataToSave);
         toast({ title: t('toastSuccessTitle'), description: t('toastUpdateSuccess') });
       }
-      await fetchCategories(); // Refresh list
+      await fetchCategoriesAndCounts(); 
       setIsDialogOpen(false);
     } catch (err: any) {
       console.error("Error saving category:", err);
@@ -153,14 +198,14 @@ export default function AdminCategoriesPage() {
     try {
       await deleteCategory(categoryId);
       toast({ title: t('toastSuccessTitle'), description: t('toastDeleteSuccess', { name: categoryName }) });
-      await fetchCategories(); // Refresh list
+      await fetchCategoriesAndCounts(); 
     } catch (err) {
       console.error("Error deleting category:", err);
       toast({ variant: "destructive", title: t('toastErrorTitle'), description: t('toastDeleteError') });
     }
   };
   
-  if (loading) {
+  if (loading) { // Initial loading for categories
     return (
       <div className="flex items-center justify-center py-10">
         <Loader2 className="h-12 w-12 animate-spin text-primary" />
@@ -178,7 +223,7 @@ export default function AdminCategoriesPage() {
           <p className="text-destructive">{error}</p>
         </CardContent>
         <CardFooter>
-            <Button onClick={fetchCategories} variant="outline">
+            <Button onClick={fetchCategoriesAndCounts} variant="outline">
                 <RefreshCw className="mr-2 h-4 w-4" />
                 {t('retryButton')}
             </Button>
@@ -216,6 +261,7 @@ export default function AdminCategoriesPage() {
                   <TableHead>{t('tableTopicValue')}</TableHead>
                   <TableHead className="hidden md:table-cell">{t('tableIcon')}</TableHead>
                   <TableHead className="text-center hidden sm:table-cell">{t('tableIsPredefined')}</TableHead>
+                  <TableHead className="hidden lg:table-cell">{t('tableQuestionCounts')}</TableHead>
                   <TableHead className="text-right">{t('tableActions')}</TableHead>
                 </TableRow>
               </TableHeader>
@@ -226,6 +272,21 @@ export default function AdminCategoriesPage() {
                     <TableCell>{category.topicValue}</TableCell>
                     <TableCell className="hidden md:table-cell">{category.icon}</TableCell>
                     <TableCell className="text-center hidden sm:table-cell">{category.isPredefined ? t('yes') : t('no')}</TableCell>
+                    <TableCell className="hidden lg:table-cell text-xs">
+                      {category.isLoadingCounts ? (
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                      ) : category.questionCounts ? (
+                        <div className="flex flex-col">
+                          <span>{t('difficultyShort.easy')}: {category.questionCounts.easy}</span>
+                          <span>{t('difficultyShort.medium')}: {category.questionCounts.medium}</span>
+                          <span>{t('difficultyShort.hard')}: {category.questionCounts.hard}</span>
+                        </div>
+                      ) : category.isPredefined ? (
+                        t('noCounts')
+                      ) : (
+                        t('notApplicableShort')
+                      )}
+                    </TableCell>
                     <TableCell className="text-right space-x-2">
                       <Button variant="outline" size="icon" onClick={() => handleOpenDialog('edit', category)} className="h-8 w-8">
                         <Edit className="h-4 w-4" />

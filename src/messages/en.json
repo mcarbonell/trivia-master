@@ -95,6 +95,7 @@
     "tableTopicValue": "Topic Value (ID)",
     "tableIcon": "Icon",
     "tableIsPredefined": "Predefined",
+    "tableQuestionCounts": "Question Counts",
     "tableActions": "Actions",
     "editButton": "Edit",
     "deleteButton": "Delete",
@@ -103,6 +104,13 @@
     "retryButton": "Retry",
     "yes": "Yes",
     "no": "No",
+    "difficultyShort": {
+      "easy": "E",
+      "medium": "M",
+      "hard": "H"
+    },
+    "noCounts": "No counts",
+    "notApplicableShort": "N/A",
     "addDialogTitle": "Add New Category",
     "addDialogDescription": "Fill in the details for the new category.",
     "editDialogTitle": "Edit Category",
