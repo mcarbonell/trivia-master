@@ -2,8 +2,10 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef } from "react";
-import { generateTriviaQuestion, type GenerateTriviaQuestionOutput, type GenerateTriviaQuestionInput, type DifficultyLevel } from "@/ai/flows/generate-trivia-question";
+import { generateTriviaQuestion, type GenerateTriviaQuestionOutput, type GenerateTriviaQuestionInput, type DifficultyLevel, type BilingualText } from "@/ai/flows/generate-trivia-question";
 import { getPredefinedQuestion, type PredefinedQuestion } from "@/services/triviaService";
+import { getAppCategories } from "@/services/categoryService";
+import type { CategoryDefinition } from "@/types";
 import { CategorySelector } from "@/components/game/CategorySelector";
 import { QuestionCard } from "@/components/game/QuestionCard";
 import { ScoreDisplay } from "@/components/game/ScoreDisplay";
@@ -13,12 +15,6 @@ import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { useTranslations, useLocale } from "next-intl";
 import type { AppLocale } from "@/lib/i18n-config";
 import {
-  Lightbulb,
-  Landmark,
-  Trophy,
-  Film,
-  Globe2,
-  Music,
   Loader2,
   AlertTriangle,
   ChevronUp,
@@ -26,9 +22,10 @@ import {
   Minus,
 } from "lucide-react";
 
-type GameState = 'category_selection' | 'loading_question' | 'playing' | 'showing_feedback' | 'error';
 
-type CurrentQuestionData = GenerateTriviaQuestionOutput & { id?: string };
+type GameState = 'loading_categories' | 'category_selection' | 'loading_question' | 'playing' | 'showing_feedback' | 'error';
+
+type CurrentQuestionData = GenerateTriviaQuestionOutput & { id?: string }; // id for Firestore questions
 
 const DIFFICULTY_LEVELS_ORDER: DifficultyLevel[] = ["very easy", "easy", "medium", "hard", "very hard"];
 const QUESTION_TIME_LIMIT_SECONDS = 30;
@@ -37,18 +34,11 @@ export default function TriviaPage() {
   const t = useTranslations();
   const locale = useLocale() as AppLocale;
 
-  const PREDEFINED_CATEGORIES = [
-    { name: t('categories.science'), icon: Lightbulb, topicValue: "Science" },
-    { name: t('categories.history'), icon: Landmark, topicValue: "World History" },
-    { name: t('categories.sports'), icon: Trophy, topicValue: "Sports" },
-    { name: t('categories.movies'), icon: Film, topicValue: "Movies" },
-    { name: t('categories.geography'), icon: Globe2, topicValue: "Geography" },
-    { name: t('categories.music'), icon: Music, topicValue: "Popular Music History" },
-  ];
-  const predefinedTopicValues = PREDEFINED_CATEGORIES.map(c => c.topicValue);
-
-  const [gameState, setGameState] = useState<GameState>('category_selection');
-  const [currentTopic, setCurrentTopic] = useState<string>('');
+  const [appCategories, setAppCategories] = useState<CategoryDefinition[]>([]);
+  const [gameState, setGameState] = useState<GameState>('loading_categories');
+  const [currentTopic, setCurrentTopic] = useState<string>(''); // This will be the topicValue for AI
+  const [currentCategoryDetails, setCurrentCategoryDetails] = useState<CategoryDefinition | null>(null);
+  
   const [questionData, setQuestionData] = useState<CurrentQuestionData | null>(null);
   const [selectedAnswerIndex, setSelectedAnswerIndex] = useState<number | null>(null);
   const [score, setScore] = useState({ correct: 0, incorrect: 0 });
@@ -66,7 +56,19 @@ export default function TriviaPage() {
 
   useEffect(() => {
     setCurrentYear(new Date().getFullYear());
-  }, []);
+
+    const fetchCategories = async () => {
+      const categories = await getAppCategories();
+      setAppCategories(categories);
+      if (categories.length > 0) {
+        setGameState('category_selection');
+      } else {
+        setFeedback({ message: t('errorLoadingCategories'), detailedMessage: t('errorLoadingCategoriesDetail'), isCorrect: false });
+        setGameState('error');
+      }
+    };
+    fetchCategories();
+  }, [t]);
 
   const clearTimer = useCallback(() => {
     if (timerIntervalRef.current) {
@@ -93,7 +95,7 @@ export default function TriviaPage() {
     if (!questionData || gameState !== 'playing') return; 
 
     clearTimer(); 
-    setSelectedAnswerIndex(null); // No answer was selected
+    setSelectedAnswerIndex(null); 
     setScore(prev => ({ ...prev, incorrect: prev.incorrect + 1 }));
     
     const correctAnswerText = questionData.answers[questionData.correctAnswerIndex]?.[locale] ?? t('errorLoadingQuestionDetail');
@@ -133,24 +135,25 @@ export default function TriviaPage() {
   }, [gameState, questionData, startTimer, clearTimer]);
 
 
-  const fetchQuestion = useCallback(async (topic: string, difficulty: DifficultyLevel) => {
+  const fetchQuestion = useCallback(async (topic: string, difficulty: DifficultyLevel, categoryDetails: CategoryDefinition | null) => {
     setGameState('loading_question');
     setSelectedAnswerIndex(null);
     setFeedback(null);
-    setTimeLeft(null); // Reset timer when fetching new question
+    setTimeLeft(null); 
 
     let newQuestionData: CurrentQuestionData | null = null;
-    const isPredefinedTopic = predefinedTopicValues.includes(topic);
+    const isPredefinedTopic = appCategories.some(cat => cat.topicValue === topic);
 
     if (isPredefinedTopic) {
       try {
-        const predefinedIds = askedQuestionIdentifiers.filter(id => !id.includes("genkit_question_"));
-        newQuestionData = await getPredefinedQuestion(topic, predefinedIds, difficulty);
+        // Pass difficulty to getPredefinedQuestion
+        newQuestionData = await getPredefinedQuestion(topic, askedQuestionIdentifiers, difficulty);
       } catch (firestoreError) {
-        console.error("Error fetching from Firestore, falling back to Genkit:", firestoreError);
+        console.warn("Error fetching from Firestore, falling back to Genkit for predefined topic:", firestoreError);
       }
     }
 
+    // If no predefined question found (or it's a custom topic), generate with Genkit
     if (!newQuestionData) {
       const inputForAI: GenerateTriviaQuestionInput = {
         topic,
@@ -158,16 +161,24 @@ export default function TriviaPage() {
         previousCorrectAnswers: askedCorrectAnswerTexts,
         targetDifficulty: difficulty,
       };
+
+      if (categoryDetails) { // Pass detailed instructions if available (for predefined categories)
+        inputForAI.categoryInstructions = categoryDetails.detailedPromptInstructions;
+        if (categoryDetails.difficultySpecificGuidelines && categoryDetails.difficultySpecificGuidelines[difficulty]) {
+          inputForAI.difficultySpecificInstruction = categoryDetails.difficultySpecificGuidelines[difficulty];
+        }
+      }
+      
       try {
         newQuestionData = await generateTriviaQuestion(inputForAI);
-        if (newQuestionData && newQuestionData.answers && typeof newQuestionData.correctAnswerIndex === 'number' && newQuestionData.answers[newQuestionData.correctAnswerIndex]) {
+         if (newQuestionData && newQuestionData.answers && typeof newQuestionData.correctAnswerIndex === 'number' && newQuestionData.answers[newQuestionData.correctAnswerIndex]) {
            const correctAnswerTextInLocale = newQuestionData.answers[newQuestionData.correctAnswerIndex]![locale];
-           if(!newQuestionData.id) { // Only track for genkit questions, firestore questions use ID
+           if(!newQuestionData.id) { 
              setAskedCorrectAnswerTexts(prev => [...new Set([...prev, correctAnswerTextInLocale])]);
            }
         }
       } catch (genkitError) {
-        console.error(`Failed to generate question with Genkit (difficulty: ${difficulty}):`, genkitError);
+        console.error(`Failed to generate question with Genkit (topic: ${topic}, difficulty: ${difficulty}):`, genkitError);
         setFeedback({ message: t('errorLoadingQuestion'), detailedMessage: t('errorLoadingQuestionDetail'), isCorrect: false });
         setGameState('error');
         return;
@@ -176,32 +187,36 @@ export default function TriviaPage() {
 
     if (newQuestionData) {
       setQuestionData(newQuestionData);
-      if (newQuestionData.id) { // Predefined question from Firestore
+      if (newQuestionData.id) { 
         setAskedQuestionIdentifiers(prev => [...new Set([...prev, newQuestionData!.id!])]);
-      } else { // Question generated by Genkit
+      } else { 
         setAskedQuestionIdentifiers(prev => [...new Set([...prev, `genkit_question_${newQuestionData!.question[locale]}`])]);
       }
-      setGameState('playing'); // Timer will start via useEffect watching gameState and questionData
+      setGameState('playing'); 
     } else {
       setFeedback({ message: t('errorLoadingQuestion'), detailedMessage: t('errorNoQuestionForDifficulty', {difficulty: t(`difficultyLevels.${difficulty}` as any) as string }), isCorrect: false });
       setGameState('error');
     }
-  }, [locale, askedQuestionIdentifiers, askedCorrectAnswerTexts, predefinedTopicValues, t, startTimer]); // Added startTimer
+  }, [locale, askedQuestionIdentifiers, askedCorrectAnswerTexts, appCategories, t]); 
 
-  const handleStartGame = (topic: string) => {
-    setCurrentTopic(topic);
+  const handleStartGame = (topicOrTopicValue: string) => {
+    const selectedPredefinedCategory = appCategories.find(cat => cat.topicValue === topicOrTopicValue);
+    
+    setCurrentTopic(topicOrTopicValue); // Always set currentTopic to the topicValue
+    setCurrentCategoryDetails(selectedPredefinedCategory || null); // Store full details if predefined
+    
     setScore({ correct: 0, incorrect: 0 });
     setAskedQuestionIdentifiers([]);
     setAskedCorrectAnswerTexts([]);
     const initialDifficulty: DifficultyLevel = "medium";
     setCurrentDifficultyLevel(initialDifficulty);
-    fetchQuestion(topic, initialDifficulty);
+    fetchQuestion(topicOrTopicValue, initialDifficulty, selectedPredefinedCategory || null);
   };
 
   const handleAnswerSelect = (answerIndex: number) => {
     if (!questionData || gameState !== 'playing') return;
 
-    clearTimer(); // Stop timer as soon as an answer is selected
+    clearTimer(); 
     setSelectedAnswerIndex(answerIndex);
     const isCorrect = answerIndex === questionData.correctAnswerIndex;
     const correctAnswerTextInLocale = questionData.answers[questionData.correctAnswerIndex]![locale];
@@ -231,22 +246,22 @@ export default function TriviaPage() {
   };
 
   const handleNextQuestion = () => {
-    fetchQuestion(currentTopic, currentDifficultyLevel);
+    fetchQuestion(currentTopic, currentDifficultyLevel, currentCategoryDetails);
   };
 
   const handleNewGame = () => {
-    setGameState('category_selection');
+    setGameState('category_selection'); // Or 'loading_categories' if categories might change
     setScore({ correct: 0, incorrect: 0 });
     setQuestionData(null);
     setSelectedAnswerIndex(null);
     setFeedback(null);
     setCurrentTopic('');
     setCustomTopicInput('');
+    setCurrentCategoryDetails(null);
     setAskedQuestionIdentifiers([]);
     setAskedCorrectAnswerTexts([]);
     setCurrentDifficultyLevel("medium");
-    setTimeLeft(null); // Reset timer state
-    // clearTimer(); // Will be handled by gameState change effect
+    setTimeLeft(null); 
   };
   
   const DifficultyIndicator = () => {
@@ -280,7 +295,7 @@ export default function TriviaPage() {
     answers: questionData.answers.map(ans => ans[locale]),
     correctAnswerIndex: questionData.correctAnswerIndex,
     explanation: questionData.explanation[locale],
-    difficulty: questionData.difficulty,
+    difficulty: questionData.difficulty, 
     hint: questionData.hint ? questionData.hint[locale] : undefined,
   } : null;
 
@@ -296,7 +311,7 @@ export default function TriviaPage() {
         <p className="text-muted-foreground mt-1 text-sm sm:text-base">{t('pageDescription')}</p>
       </header>
 
-      {gameState !== 'category_selection' && gameState !== 'loading_question' && (
+      {gameState !== 'category_selection' && gameState !== 'loading_question' && gameState !== 'loading_categories' && (
         <div className="w-full max-w-2xl mb-4">
            <ScoreDisplay score={score} onNewGame={handleNewGame} />
            <div className="flex justify-center mt-2">
@@ -306,19 +321,28 @@ export default function TriviaPage() {
       )}
 
       <main className="w-full max-w-2xl flex-grow flex flex-col justify-center">
-        {gameState === 'category_selection' && (
+        {gameState === 'loading_categories' && (
+           <Card className="p-8 text-center shadow-xl">
+            <CardContent className="flex flex-col items-center justify-center">
+              <Loader2 className="h-16 w-16 animate-spin text-primary mx-auto" />
+              <p className="mt-6 text-xl font-semibold text-muted-foreground">{t('loadingCategories')}</p>
+            </CardContent>
+          </Card>
+        )}
+        {gameState === 'category_selection' && appCategories.length > 0 && (
           <CategorySelector
-            predefinedCategories={PREDEFINED_CATEGORIES}
+            predefinedCategories={appCategories}
             customTopicInput={customTopicInput}
             onCustomTopicChange={setCustomTopicInput}
-            onSelectTopic={handleStartGame}
+            onSelectTopic={handleStartGame} // handleStartGame now expects topicValue
+            currentLocale={locale}
           />
         )}
         {gameState === 'loading_question' && (
           <Card className="p-8 text-center animate-fadeIn shadow-xl">
             <CardContent className="flex flex-col items-center justify-center">
               <Loader2 className="h-16 w-16 animate-spin text-primary mx-auto" />
-              <p className="mt-6 text-xl font-semibold text-muted-foreground">{t('loadingQuestionWithDifficulty', { topic: currentTopic, difficulty: t(`difficultyLevels.${currentDifficultyLevel}` as any) })}</p>
+              <p className="mt-6 text-xl font-semibold text-muted-foreground">{t('loadingQuestionWithDifficulty', { topic: currentCategoryDetails?.name[locale] || currentTopic, difficulty: t(`difficultyLevels.${currentDifficultyLevel}` as any) })}</p>
             </CardContent>
           </Card>
         )}
@@ -351,8 +375,10 @@ export default function TriviaPage() {
               <p className="text-muted-foreground">{feedback.detailedMessage || t('errorLoadingQuestionDetail')}</p>
             </CardContent>
             <CardFooter className="flex flex-col sm:flex-row justify-center gap-2">
-              {currentTopic && <Button onClick={() => fetchQuestion(currentTopic, currentDifficultyLevel)} variant="outline">{t('errorTryAgainTopic', {topic: currentTopic})}</Button>}
-              <Button onClick={handleNewGame} className="bg-primary hover:bg-primary/90 text-primary-foreground">{t('errorChooseNewTopic')}</Button>
+              {currentTopic && gameState === 'error' && !feedback.message.includes(t('errorLoadingCategories')) && (
+                <Button onClick={() => fetchQuestion(currentTopic, currentDifficultyLevel, currentCategoryDetails)} variant="outline">{t('errorTryAgainTopic', {topic: currentCategoryDetails?.name[locale] || currentTopic})}</Button>
+              )}
+              <Button onClick={handleNewGame} className="bg-primary hover:bg-primary/90 text-primary-foreground">{t('errorChooseNewTopicOrRefresh')}</Button>
             </CardFooter>
           </Card>
         )}

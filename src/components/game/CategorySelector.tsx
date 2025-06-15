@@ -1,24 +1,29 @@
 
 "use client";
 
+import { useMemo } from 'react';
 import type { LucideIcon } from "lucide-react";
+import * as LucideIcons from "lucide-react"; // Import all icons
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useTranslations } from "next-intl";
+import type { CategoryDefinition } from "@/types";
+import type { AppLocale } from '@/lib/i18n-config';
 
-interface Category {
-  name: string; // This will now be the translated name
-  icon: LucideIcon;
-  topicValue: string; // This remains the English value for the AI
-}
+// Helper to get Lucide icon component by name
+const getIcon = (iconName: string): LucideIcon => {
+  const IconComponent = (LucideIcons as any)[iconName];
+  return IconComponent || LucideIcons.HelpCircle; // Fallback icon
+};
 
 interface CategorySelectorProps {
-  predefinedCategories: Category[];
+  predefinedCategories: CategoryDefinition[];
   customTopicInput: string;
   onCustomTopicChange: (value: string) => void;
-  onSelectTopic: (topic: string) => void;
+  onSelectTopic: (topicValue: string) => void; // Changed to topicValue
+  currentLocale: AppLocale;
 }
 
 export function CategorySelector({
@@ -26,6 +31,7 @@ export function CategorySelector({
   customTopicInput,
   onCustomTopicChange,
   onSelectTopic,
+  currentLocale,
 }: CategorySelectorProps) {
   const t = useTranslations();
 
@@ -36,6 +42,14 @@ export function CategorySelector({
     }
   };
 
+  // Memoize icons to avoid re-calling getIcon on every render
+  const categoryIcons = useMemo(() => {
+    return predefinedCategories.map(category => ({
+      ...category,
+      ResolvedIcon: getIcon(category.icon),
+    }));
+  }, [predefinedCategories]);
+
   return (
     <Card className="w-full shadow-xl">
       <CardHeader>
@@ -44,15 +58,15 @@ export function CategorySelector({
       </CardHeader>
       <CardContent className="space-y-6">
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-          {predefinedCategories.map((category) => (
+          {categoryIcons.map((category) => (
             <Button
-              key={category.topicValue} // Use topicValue for key as name can change with locale
+              key={category.topicValue}
               variant="outline"
               className="flex flex-col items-center justify-center h-28 p-4 hover:bg-accent hover:text-accent-foreground transition-all duration-200 group [&_svg]:h-8 [&_svg]:w-8"
               onClick={() => onSelectTopic(category.topicValue)}
             >
-              <category.icon className="mb-2 text-primary group-hover:text-accent-foreground transition-colors h-8 w-8" />
-              <span className="text-sm font-medium text-center">{category.name}</span>
+              <category.ResolvedIcon className="mb-2 text-primary group-hover:text-accent-foreground transition-colors h-8 w-8" />
+              <span className="text-sm font-medium text-center">{category.name[currentLocale]}</span>
             </Button>
           ))}
         </div>

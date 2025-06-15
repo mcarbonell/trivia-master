@@ -5,11 +5,7 @@
  * @fileOverview This file defines a Genkit flow for generating bilingual (English and Spanish) trivia questions.
  * It ensures questions and their correct answers are not repeated within a session, provides explanations, hints,
  * and generates questions of a specified or assessed difficulty level.
- *
- * The flow takes a topic, a list of previous questions (texts), a list of previous correct answers (texts),
- * and an optional target difficulty as input.
- * It returns a trivia question object containing English and Spanish versions for question, answers, explanation, and hint,
- * along with the correct answer index and difficulty level.
+ * It can now accept detailed category-specific and difficulty-specific instructions to guide generation.
  *
  * @interface GenerateTriviaQuestionInput - Input schema for the generateTriviaQuestion flow.
  * @interface GenerateTriviaQuestionOutput - Output schema for the generateTriviaQuestion flow.
@@ -32,6 +28,8 @@ const BilingualTextSchema = z.object({
   en: z.string().describe('English version of the text.'),
   es: z.string().describe('Spanish version of the text.'),
 });
+export type BilingualText = z.infer<typeof BilingualTextSchema>;
+
 
 const BilingualAnswerSchema = z.object({
   en: z.string().describe('English version of the answer.'),
@@ -39,10 +37,12 @@ const BilingualAnswerSchema = z.object({
 });
 
 const GenerateTriviaQuestionInputSchema = z.object({
-  topic: z.string().describe('The topic for the trivia question.'),
+  topic: z.string().describe('The topic for the trivia question. This will be the general theme, e.g., "Science", "Movies".'),
   previousQuestions: z.array(z.string()).optional().describe('A list of question texts (can be in English or Spanish, or a mix if user switched languages) already asked on this topic in the current session, to avoid repetition of the same conceptual question. The AI should consider these as distinct concepts already covered.'),
   previousCorrectAnswers: z.array(z.string()).optional().describe('A list of correct answer texts (can be in English or Spanish) from questions already asked on this topic, to ensure variety in the subject matter. The AI should avoid these concepts as correct answers for the new question.'),
   targetDifficulty: DifficultyLevelSchema.optional().describe('If provided, the AI should attempt to generate a question of this specific difficulty level. If not provided, the AI will assess and assign a difficulty level based on the content and its guidelines.'),
+  categoryInstructions: BilingualTextSchema.optional().describe('Detailed instructions for the AI on how to generate questions for this specific category. Provided in English and Spanish.'),
+  difficultySpecificInstruction: BilingualTextSchema.optional().describe('More granular instructions for the AI, specific to the target difficulty level within this category. Provided in English and Spanish.')
 });
 export type GenerateTriviaQuestionInput = z.infer<typeof GenerateTriviaQuestionInputSchema>;
 
@@ -70,8 +70,22 @@ IMPORTANT: You MUST generate all textual content (question, each of the four ans
 
 Topic: {{{topic}}}
 
+{{#if categoryInstructions}}
+SPECIFIC INSTRUCTIONS FOR THE CATEGORY "{{topic}}":
+English Context: {{{categoryInstructions.en}}}
+Spanish Context: {{{categoryInstructions.es}}}
+You should prioritize these category-specific instructions when generating the question.
+{{/if}}
+
+{{#if difficultySpecificInstruction}}
+SPECIFIC INSTRUCTIONS FOR THE TARGETED DIFFICULTY LEVEL:
+English Context: {{{difficultySpecificInstruction.en}}}
+Spanish Context: {{{difficultySpecificInstruction.es}}}
+These difficulty-specific instructions are very important for tailoring the question appropriately.
+{{/if}}
+
 IMPORTANT INSTRUCTIONS FOR QUESTION VARIETY:
-1. If the topic is broad (e.g., "Geography", "Science", "History", "Chess"), ensure the questions cover DIFFERENT ASPECTS or SUB-TOPICS. For "Chess", consider aspects like its history, famous players, championships, different openings, common endgames, tactical motifs, in addition to basic rules.
+1. If the topic is broad (e.g., "Geography", "Science", "History", "Chess") and no specific category instructions are given, ensure the questions cover DIFFERENT ASPECTS or SUB-TOPICS. For "Chess", consider aspects like its history, famous players, championships, different openings, common endgames, tactical motifs, in addition to basic rules.
 2. The new question MUST be SIGNIFICANTLY DIFFERENT from any previous questions. Avoid asking about the same specific entity or concept even if worded differently or in another language.
 
 {{#if previousQuestions}}
@@ -104,9 +118,9 @@ You MUST assess the difficulty of the question you generate and assign it to the
 - "very hard": Knowledge typically associated with advanced degrees (e.g., PhD level) or very deep, niche expertise in a topic (e.g., 'Explain the P vs NP problem in computer science.').
 
 {{#if targetDifficulty}}
-The user has requested a question of "{{targetDifficulty}}" difficulty. Please try to generate a question that matches this level based on the guidelines above. The 'difficulty' field in your output MUST reflect this targetDifficulty.
+The user has requested a question of "{{targetDifficulty}}" difficulty. Please try to generate a question that matches this level based on the guidelines above AND any difficulty-specific instructions provided. The 'difficulty' field in your output MUST reflect this targetDifficulty.
 {{else}}
-Please assess the inherent difficulty of the question you generate based on the guidelines above and set the 'difficulty' field in your output accordingly.
+Please assess the inherent difficulty of the question you generate based on the guidelines above AND any difficulty-specific instructions provided, and set the 'difficulty' field in your output accordingly.
 {{/if}}
 
 Your response should be a JSON object. The 'question', 'explanation', and 'hint' fields should be objects with 'en' and 'es' properties. The 'answers' field should be an array of 4 objects, where each object has 'en' and 'es' properties.
@@ -123,7 +137,7 @@ const generateTriviaQuestionPrompt = ai.definePrompt({
   input: {schema: GenerateTriviaQuestionInputSchema},
   output: {schema: GenerateTriviaQuestionOutputSchema},
   config: {
-    temperature: 1.0,
+    temperature: 0.9, // Slightly lower temperature for more focused generation with detailed prompts
   },
   prompt: promptTemplateString,
 });
@@ -139,4 +153,3 @@ const generateTriviaQuestionFlow = ai.defineFlow(
     return output!;
   }
 );
-
