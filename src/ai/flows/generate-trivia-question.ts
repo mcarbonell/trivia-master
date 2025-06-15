@@ -77,8 +77,6 @@ Given a topic, you will generate a specified number of distinct trivia questions
 - A concise hint (1 short sentence).
 - An assessed difficulty level ("easy", "medium", or "hard").
 
-IMPORTANT: You MUST generate all textual content (question, each of the four answers, the explanation, and the hint) in BOTH English (en) and Spanish (es).
-
 Topic: {{{topic}}}
 Number of distinct questions to generate: {{{count}}}
 
@@ -132,7 +130,10 @@ The user has requested questions of "{{targetDifficulty}}" difficulty. Please tr
 Please assess the inherent difficulty of each question you generate based on the guidelines above AND any difficulty-specific instructions provided, and set the 'difficulty' field in each question's output accordingly.
 {{/if}}
 
-Your response should be a JSON object containing a single key "questions_batch", which is an array of question objects. Each question object in the array must conform to the following structure:
+Your response should be a JSON object containing a single key "questions_batch", which is an array of question objects.
+CRITICALLY IMPORTANT FORMATTING RULE: For each question object in the "questions_batch" array, the 'question' field, 'explanation' field, 'hint' field, AND EACH of the four 'answers' objects within the 'answers' array, MUST BE JSON OBJECTS. These objects MUST contain two string properties: "en" for the English text and "es" for the Spanish text.
+
+Each question object in the array must conform to the following structure:
 {
   "question": { "en": "English Question Text", "es": "Spanish Question Text" },
   "answers": [
@@ -141,10 +142,10 @@ Your response should be a JSON object containing a single key "questions_batch",
     { "en": "Answer C en", "es": "Respuesta C es" },
     { "en": "Answer D en", "es": "Respuesta D es" }
   ],
-  "correctAnswerIndex": 0, // (0-3)
+  "correctAnswerIndex": 0,
   "explanation": { "en": "English Explanation", "es": "Spanish Explanation" },
   "hint": { "en": "English Hint", "es": "Spanish Hint (optional)" },
-  "difficulty": "easy" // or "medium", "hard"
+  "difficulty": "easy" 
 }
 Ensure the entire response is a single JSON object like: { "questions_batch": [ {question1_object}, {question2_object}, ... ] }
 The number of question objects in the "questions_batch" array SHOULD ideally match the requested "{{count}}", but it is more important that each object is valid.
@@ -160,7 +161,7 @@ const generateTriviaQuestionsPrompt = ai.definePrompt({
   input: {schema: GenerateTriviaQuestionsInputSchema},
   output: {schema: LLMOutputStructureSchema}, // Expecting the raw batch structure
   config: {
-    temperature: 0.9, // Keep temperature a bit high for creativity in questions
+    temperature: 0.5, // Reduced temperature for better format adherence
   },
   prompt: promptTemplateString,
 });
@@ -199,10 +200,14 @@ const generateTriviaQuestionsFlow = ai.defineFlow(
       }
     }
     
-    if (validQuestions.length !== effectiveInput.count) {
-      console.warn(`[generateTriviaQuestionsFlow] LLM was asked for ${effectiveInput.count} questions, returned ${llmReturnedCount} raw items, and ${validQuestions.length} were valid. For topic: ${effectiveInput.topic}`);
+    if (validQuestions.length !== effectiveInput.count && llmReturnedCount >= effectiveInput.count) {
+      console.warn(`[generateTriviaQuestionsFlow] LLM was asked for ${effectiveInput.count} questions, returned ${llmReturnedCount} raw items, and ${validQuestions.length} were valid. This means ${llmReturnedCount - validQuestions.length} items failed individual validation. For topic: ${effectiveInput.topic}`);
+    } else if (llmReturnedCount < effectiveInput.count) {
+      console.warn(`[generateTriviaQuestionsFlow] LLM was asked for ${effectiveInput.count} questions but only returned ${llmReturnedCount} raw items, of which ${validQuestions.length} were valid. For topic: ${effectiveInput.topic}`);
     }
+
 
     return validQuestions;
   }
 );
+
