@@ -4,9 +4,8 @@ config(); // Load environment variables from .env file
 
 import admin from 'firebase-admin';
 import { generateTriviaQuestions, type GenerateTriviaQuestionsInput, type GenerateTriviaQuestionOutput, type DifficultyLevel } from '../src/ai/flows/generate-trivia-question'; // Updated import
-import { ai } from '../src/ai/genkit'; // Ensure Genkit is initialized
-import { getAppCategories } from '../src/services/categoryService'; 
-import type { CategoryDefinition } from '../src/types';
+// Removed: import { getAppCategories } from '../src/services/categoryService'; 
+import type { CategoryDefinition, BilingualText } from '../src/types'; // Ensure BilingualText is imported if needed for CategoryDefinition structure
 
 // Initialize Firebase Admin SDK
 try {
@@ -22,26 +21,109 @@ try {
 
 const db = admin.firestore();
 const PREDEFINED_QUESTIONS_COLLECTION = 'predefinedTriviaQuestions';
+const CATEGORIES_COLLECTION = 'triviaCategories';
+
 
 const ALL_DIFFICULTY_LEVELS: DifficultyLevel[] = ["easy", "medium", "hard"];
 
 const TARGET_QUESTIONS_PER_CATEGORY_DIFFICULTY = 5; 
-const MAX_NEW_QUESTIONS_TO_FETCH_PER_RUN_PER_DIFFICULTY_TARGET = 2; // Max new questions to try and fetch if below target
-const QUESTIONS_TO_GENERATE_PER_API_CALL = 5; // How many questions to ask Genkit for in one batch
+const MAX_NEW_QUESTIONS_TO_FETCH_PER_RUN_PER_DIFFICULTY_TARGET = 2;
+const QUESTIONS_TO_GENERATE_PER_API_CALL = 5; 
 const GENKIT_API_CALL_DELAY_MS = 7000; 
+
+/**
+ * Fetches all category definitions from Firestore using Firebase Admin SDK.
+ * This function is specifically for use within Node.js scripts.
+ * @returns A promise that resolves to an array of CategoryDefinition.
+ */
+async function fetchCategoriesWithAdminSDK(): Promise<CategoryDefinition[]> {
+  try {
+    const categoriesRef = db.collection(CATEGORIES_COLLECTION);
+    const querySnapshot = await categoriesRef.get();
+    
+    console.log(`[AdminScript] Fetched ${querySnapshot.size} documents from "${CATEGORIES_COLLECTION}".`);
+
+    const categories: CategoryDefinition[] = [];
+    querySnapshot.forEach((doc) => {
+      const data = doc.data();
+      // Basic check for required fields to ensure data integrity before pushing
+      if (
+        data.topicValue && typeof data.topicValue === 'string' &&
+        data.name && typeof data.name.en === 'string' && typeof data.name.es === 'string' &&
+        data.icon && typeof data.icon === 'string' &&
+        data.detailedPromptInstructions && typeof data.detailedPromptInstructions === 'string' && // Now a string
+        (data.hasOwnProperty('isPredefined') ? typeof data.isPredefined === 'boolean' : true)
+      ) { 
+        
+        const categoryToAdd: CategoryDefinition = {
+          id: doc.id,
+          topicValue: data.topicValue,
+          name: data.name as BilingualText, // name is still BilingualText
+          icon: data.icon,
+          detailedPromptInstructions: data.detailedPromptInstructions, // English string
+          isPredefined: data.isPredefined === undefined ? true : data.isPredefined,
+        };
+
+        if (data.difficultySpecificGuidelines) {
+          const validatedGuidelines: { [key: string]: string } = {};
+          const allowedDifficulties: DifficultyLevel[] = ['easy', 'medium', 'hard'];
+
+          for (const key in data.difficultySpecificGuidelines) {
+            if (allowedDifficulties.includes(key as DifficultyLevel) && typeof data.difficultySpecificGuidelines[key] === 'string') {
+              validatedGuidelines[key] = data.difficultySpecificGuidelines[key];
+            } else if (!allowedDifficulties.includes(key as DifficultyLevel)) {
+              console.warn(`[AdminScript] Document ${doc.id}, invalid difficulty key "${key}" in difficultySpecificGuidelines for ${categoryToAdd.topicValue}. Allowed: ${allowedDifficulties.join(', ')}. Skipping.`);
+            } else {
+              console.warn(`[AdminScript] Document ${doc.id}, difficultySpecificGuidelines for key "${key}" is not a string. Skipping this guideline.`);
+            }
+          }
+          if(Object.keys(validatedGuidelines).length > 0){
+             categoryToAdd.difficultySpecificGuidelines = validatedGuidelines;
+          } else if (Object.keys(data.difficultySpecificGuidelines).length > 0) {
+             console.warn(`[AdminScript] Document ${doc.id} had difficultySpecificGuidelines for ${categoryToAdd.topicValue} but none were valid strings or matched allowed difficulties. It will be omitted.`);
+          }
+        }
+        
+        categories.push(categoryToAdd);
+
+      } else {
+        console.warn(`[AdminScript] Document ${doc.id} in "${CATEGORIES_COLLECTION}" is missing one or more required fields or they are not in the expected format. Skipping.`);
+        console.warn(`[AdminScript] Problematic data for doc ${doc.id}:`, JSON.stringify(data));
+      }
+    });
+    
+    console.log('[AdminScript] Processed categories: ', categories.map(c => ({ id: c.id, name: c.name.en, isPredefined: c.isPredefined })));
+    
+    if (querySnapshot.size > 0 && categories.length === 0) {
+        console.warn(`[AdminScript] All documents fetched from "${CATEGORIES_COLLECTION}" were skipped due to missing fields or incorrect format. Please check Firestore data and structure definitions.`);
+    }
+    
+    return categories;
+  } catch (error) {
+    console.error(`[AdminScript] Error fetching app categories from Firestore collection "${CATEGORIES_COLLECTION}" using Admin SDK:`, error);
+    return []; // Return empty array on error
+  }
+}
+
 
 async function populateQuestions() {
   console.log(`Starting Firestore question population script (Batch generation, target: ${QUESTIONS_TO_GENERATE_PER_API_CALL} per call)...`);
 
-  const appCategories = await getAppCategories();
+  const appCategories = await fetchCategoriesWithAdminSDK(); // Use the new Admin SDK based fetcher
   if (!appCategories || appCategories.length === 0) {
-    console.error("No categories found in Firestore 'triviaCategories' collection. Please populate it first.");
+    console.error("No categories found in Firestore 'triviaCategories' collection. Please populate it first using 'npm run populate:categories'.");
     return;
   }
   console.log(`Found ${appCategories.length} categories to process.`);
 
   for (const category of appCategories) {
+    // Only process if isPredefined is true or undefined (defaulting to true behavior)
+    if (category.isPredefined === false) { 
+        console.log(`\nSkipping Category: "${category.name.en}" (TopicValue: ${category.topicValue}) as it is not marked for predefined question population.`);
+        continue;
+    }
     console.log(`\nProcessing Category: "${category.name.en}" (TopicValue: ${category.topicValue})`);
+    
 
     for (const difficulty of ALL_DIFFICULTY_LEVELS) {
       console.log(`  Targeting Difficulty: "${difficulty}" for category "${category.name.en}"`);
@@ -82,7 +164,6 @@ async function populateQuestions() {
         TARGET_QUESTIONS_PER_CATEGORY_DIFFICULTY - numExistingForDifficulty
       );
       
-      // Determine actual number to request in this API call, up to batch size
       const actualQuestionsToRequestInBatch = Math.min(numToPotentiallyGenerateThisRun, QUESTIONS_TO_GENERATE_PER_API_CALL);
 
 
@@ -99,22 +180,22 @@ async function populateQuestions() {
           previousQuestions: [...existingQuestionConceptTexts], 
           previousCorrectAnswers: [...existingCorrectAnswerConceptTexts], 
           targetDifficulty: difficulty,
-          categoryInstructions: category.detailedPromptInstructions, 
-          count: actualQuestionsToRequestInBatch, // Request the determined batch size
+          categoryInstructions: category.detailedPromptInstructions, // English string
+          count: actualQuestionsToRequestInBatch, 
         };
         
         if (category.difficultySpecificGuidelines && category.difficultySpecificGuidelines[difficulty]) {
-          input.difficultySpecificInstruction = category.difficultySpecificGuidelines[difficulty];
+          input.difficultySpecificInstruction = category.difficultySpecificGuidelines[difficulty]; // English string
         }
 
         console.log(`  Generating a batch of ${input.count} questions for ${category.name.en} - ${difficulty}...`);
         
-        const newQuestionsArray: GenerateTriviaQuestionOutput[] = await generateTriviaQuestions(input); // Updated call
+        const newQuestionsArray: GenerateTriviaQuestionOutput[] = await generateTriviaQuestions(input);
 
         if (newQuestionsArray && newQuestionsArray.length > 0) {
           let questionsSavedThisBatch = 0;
           for (const newQuestionData of newQuestionsArray) {
-            if (questionsSavedThisBatch >= numToPotentiallyGenerateThisRun) break; // Stop if we've hit the run target
+            if (questionsSavedThisBatch >= numToPotentiallyGenerateThisRun) break;
 
             if (newQuestionData && newQuestionData.question && newQuestionData.answers && newQuestionData.difficulty) {
               if (newQuestionData.difficulty !== difficulty) {
@@ -125,7 +206,7 @@ async function populateQuestions() {
                 ...newQuestionData,
                 topicValue: category.topicValue, 
                 createdAt: admin.firestore.FieldValue.serverTimestamp(),
-                source: 'batch-script-v2-target-difficulty-category-prompts' // Updated source
+                source: 'batch-script-v3-target-difficulty-category-prompts-admin-fetch' 
               };
 
               await questionsRef.add(questionToSave);
@@ -157,9 +238,6 @@ async function populateQuestions() {
 
     } 
     console.log(`Finished all difficulty levels for category: ${category.name.en}.`);
-     if (appCategories.indexOf(category) < appCategories.length - 1) {
-        // No extra delay here, already delayed after each difficulty
-     }
   } 
   console.log('\nBatch question population script finished.');
 }
