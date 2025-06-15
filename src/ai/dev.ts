@@ -1,4 +1,4 @@
 import { config } from 'dotenv';
 config();
 
-import '@/ai/flows/generate-trivia-question.ts';
+import '@/ai/flows/generate-trivia-question.ts'; // Keep the filename as is, but it now contains generateTriviaQuestions

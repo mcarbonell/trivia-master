@@ -2,7 +2,7 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef } from "react";
-import { generateTriviaQuestion, type GenerateTriviaQuestionOutput, type GenerateTriviaQuestionInput, type DifficultyLevel } from "@/ai/flows/generate-trivia-question";
+import { generateTriviaQuestions, type GenerateTriviaQuestionOutput, type GenerateTriviaQuestionsInput, type DifficultyLevel } from "@/ai/flows/generate-trivia-question";
 import { getPredefinedQuestion, type PredefinedQuestion } from "@/services/triviaService";
 import { getAppCategories } from "@/services/categoryService";
 import type { CategoryDefinition } from "@/types";
@@ -141,23 +141,27 @@ export default function TriviaPage() {
     setFeedback(null);
     setTimeLeft(null); 
 
+    let newQuestionArray: GenerateTriviaQuestionOutput[] | null = null;
     let newQuestionData: CurrentQuestionData | null = null;
     const isPredefinedTopic = appCategories.some(cat => cat.topicValue === topic);
 
     if (isPredefinedTopic) {
       try {
+        // getPredefinedQuestion still returns a single question or null
         newQuestionData = await getPredefinedQuestion(topic, askedQuestionIdentifiers, difficulty);
       } catch (firestoreError) {
         console.warn("Error fetching from Firestore, falling back to Genkit for predefined topic:", firestoreError);
       }
     }
 
+    // If no predefined question was found (or it's a custom topic), generate with AI
     if (!newQuestionData) {
-      const inputForAI: GenerateTriviaQuestionInput = {
+      const inputForAI: GenerateTriviaQuestionsInput = {
         topic,
         previousQuestions: askedQuestionIdentifiers.filter(id => id.startsWith("genkit_question_")).map(id => id.replace("genkit_question_", "")),
         previousCorrectAnswers: askedCorrectAnswerTexts,
         targetDifficulty: difficulty,
+        count: 1, // For interactive play, we only want one question
       };
 
       if (categoryDetails) { 
@@ -168,12 +172,15 @@ export default function TriviaPage() {
       }
       
       try {
-        newQuestionData = await generateTriviaQuestion(inputForAI);
-         if (newQuestionData && newQuestionData.answers && typeof newQuestionData.correctAnswerIndex === 'number' && newQuestionData.answers[newQuestionData.correctAnswerIndex]) {
-           const correctAnswerTextInLocale = newQuestionData.answers[newQuestionData.correctAnswerIndex]![locale];
-           if(!newQuestionData.id) { 
-             setAskedCorrectAnswerTexts(prev => [...new Set([...prev, correctAnswerTextInLocale])]);
-           }
+        newQuestionArray = await generateTriviaQuestions(inputForAI);
+        if (newQuestionArray && newQuestionArray.length > 0) {
+            newQuestionData = newQuestionArray[0]!; // Take the first (and only) question
+             if (newQuestionData.answers && typeof newQuestionData.correctAnswerIndex === 'number' && newQuestionData.answers[newQuestionData.correctAnswerIndex]) {
+               const correctAnswerTextInLocale = newQuestionData.answers[newQuestionData.correctAnswerIndex]![locale];
+               if(!newQuestionData.id) { 
+                 setAskedCorrectAnswerTexts(prev => [...new Set([...prev, correctAnswerTextInLocale])]);
+               }
+            }
         }
       } catch (genkitError) {
         console.error(`Failed to generate question with Genkit (topic: ${topic}, difficulty: ${difficulty}):`, genkitError);
@@ -184,9 +191,9 @@ export default function TriviaPage() {
     }
 
     if (newQuestionData) {
-      setQuestionData(newQuestionData);
-      if (newQuestionData.id) { 
-        setAskedQuestionIdentifiers(prev => [...new Set([...prev, newQuestionData!.id!])]);
+      setQuestionData(newQuestionData as CurrentQuestionData); // Cast as it could be PredefinedQuestion or GenerateTriviaQuestionOutput
+      if ((newQuestionData as CurrentQuestionData).id) { 
+        setAskedQuestionIdentifiers(prev => [...new Set([...prev, (newQuestionData as CurrentQuestionData).id!])]);
       } else { 
         const questionTextIdentifier = newQuestionData.question?.[locale] || `genkit_q_${Date.now()}`;
         setAskedQuestionIdentifiers(prev => [...new Set([...prev, `genkit_question_${questionTextIdentifier}`])]);
@@ -389,3 +396,4 @@ export default function TriviaPage() {
     </div>
   );
 }
+
