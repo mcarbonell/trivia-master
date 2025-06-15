@@ -4,6 +4,7 @@ import { Toaster } from "@/components/ui/toaster";
 import {NextIntlClientProvider} from 'next-intl';
 import {getLocale, getMessages} from 'next-intl/server';
 import { ClientLocaleInitializer } from '@/components/ClientLocaleInitializer';
+import { AuthProvider } from '@/contexts/AuthContext';
 
 // Define metadata function to allow dynamic title based on locale
 export async function generateMetadata(): Promise<Metadata> {
@@ -50,9 +51,11 @@ export default async function RootLayout({
       </head>
       <body className="font-body antialiased">
         <NextIntlClientProvider locale={locale} messages={messages}>
-          <ClientLocaleInitializer />
-          {children}
-          <Toaster />
+          <AuthProvider>
+            <ClientLocaleInitializer />
+            {children}
+            <Toaster />
+          </AuthProvider>
         </NextIntlClientProvider>
       </body>
     </html>

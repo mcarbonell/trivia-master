@@ -68,26 +68,22 @@ export async function generateTriviaQuestions(input: GenerateTriviaQuestionsInpu
   return generateTriviaQuestionsFlow(input);
 }
 
-const promptTemplateString = `You are an expert trivia question generator.
-Given a topic, you will generate a specified number of distinct trivia questions. For each question, provide:
-- The question text.
-- Four possible answer texts.
-- The 0-indexed integer for the correct answer.
-- A brief explanation (1-2 sentences) of why the correct answer is correct.
-- A concise hint (1 short sentence).
-- An assessed difficulty level ("easy", "medium", or "hard").
+const promptTemplateString = `You are an expert trivia question generator. Given a topic, you will generate a trivia question, four possible answers, indicate the index of the correct answer, provide a brief explanation for the correct answer, a concise hint, and assess its difficulty level.
+
+IMPORTANT: You MUST generate all textual content (question, each of the four answers, the explanation, and the hint) in BOTH English (en) and Spanish (es).
+
 
 Topic: {{{topic}}}
 Number of distinct questions to generate: {{{count}}}
 
 {{#if categoryInstructions}}
-SPECIFIC ENGLISH-ONLY INSTRUCTIONS FOR THE CATEGORY "{{topic}}":
+SPECIFIC INSTRUCTIONS FOR THE CATEGORY "{{topic}}":
 {{{categoryInstructions}}}
 You should prioritize these category-specific instructions when generating the questions.
 {{/if}}
 
 {{#if difficultySpecificInstruction}}
-SPECIFIC ENGLISH-ONLY INSTRUCTIONS FOR THE TARGETED DIFFICULTY LEVEL:
+SPECIFIC INSTRUCTIONS FOR THE TARGETED DIFFICULTY LEVEL:
 {{{difficultySpecificInstruction}}}
 These difficulty-specific instructions are very important for tailoring the questions appropriately.
 {{/if}}
@@ -120,9 +116,9 @@ HINT GUIDELINES (for each question):
 
 DIFFICULTY GUIDELINES AND ASSESSMENT (for each question):
 You MUST assess the difficulty of each question you generate and assign it to its 'difficulty' output field. Use the following three levels:
-- "easy": Knowledge typically acquired in primary or early secondary school. Common knowledge.
+- "easy": Knowledge typically acquired in primary or early secondary school. Common knowledge for most people.
 - "medium": Knowledge typically acquired in secondary school or through general cultural awareness. Requires some specific knowledge.
-- "hard": Knowledge typically associated with higher education or specialized interest. Challenging but answerable by someone well-versed.
+- "hard": Knowledge typically associated with higher education or specialized interest. Questions at this level should be challenging but answerable by someone well-versed in the subject.
 
 {{#if targetDifficulty}}
 The user has requested questions of "{{targetDifficulty}}" difficulty. Please try to generate questions that match this level based on the guidelines above AND any difficulty-specific instructions provided. Each question's 'difficulty' field in your output MUST reflect this targetDifficulty.
@@ -148,20 +144,27 @@ Each question object in the array must conform to the following structure:
   "difficulty": "easy" 
 }
 Ensure the entire response is a single JSON object like: { "questions_batch": [ {question1_object}, {question2_object}, ... ] }
+
+Example for a single answer object within the 'answers' array: { "en": "Answer A", "es": "Respuesta A" }
+Example for the 'question' object: { "en": "What is the capital of France?", "es": "¿Cuál es la capital de Francia?" }
+Example for the 'hint' object: { "en": "It's a famous European city known for a tall iron tower.", "es": "Es una famosa ciudad europea conocida por una alta torre de hierro." }
+
+Make sure that only one answer is correct (indicated by correctAnswerIndex).
+
 The number of question objects in the "questions_batch" array SHOULD ideally match the requested "{{count}}", but it is more important that each object is valid.
 `;
 
 // Zod schema for the direct output from the LLM: an object with a "questions_batch" field containing an array of unknown items.
 const LLMOutputStructureSchema = z.object({
-  questions_batch: z.array(z.unknown()), // We will validate each item in the array individually
+  questions_batch: z.array(GenerateTriviaQuestionOutputSchema), // We will validate each item in the array individually
 });
 
 const generateTriviaQuestionsPrompt = ai.definePrompt({
   name: 'generateTriviaQuestionsPrompt',
   input: {schema: GenerateTriviaQuestionsInputSchema},
-  output: {schema: LLMOutputStructureSchema}, // Expecting the raw batch structure
+  output: {schema: GenerateTriviaQuestionsOutputSchema}, // Expecting the raw batch structure
   config: {
-    temperature: 0.5, // Reduced temperature for better format adherence
+    temperature: 1, // Reduced temperature for better format adherence
   },
   prompt: promptTemplateString,
 });
@@ -177,25 +180,25 @@ const generateTriviaQuestionsFlow = ai.defineFlow(
 
     const {output} = await generateTriviaQuestionsPrompt(effectiveInput);
     
-    if (!output || !Array.isArray(output.questions_batch)) {
-      console.error('LLM did not return the expected "questions_batch" array structure. Input:', JSON.stringify(effectiveInput), 'LLM Output:', JSON.stringify(output));
+    if (!output || !Array.isArray(output)) {
+      console.error('LLM did not return the expected array structure. Input:', JSON.stringify(effectiveInput), 'LLM Output:', JSON.stringify(output));
       throw new Error('Failed to parse questions array from LLM response.');
     }
 
     const validQuestions: GenerateTriviaQuestionOutput[] = [];
     let llmReturnedCount = 0;
 
-    if (output.questions_batch) {
-      llmReturnedCount = output.questions_batch.length;
-      for (let i = 0; i < output.questions_batch.length; i++) {
-        const rawQuestion = output.questions_batch[i];
+    if (output) {
+      llmReturnedCount = output.length;
+      for (let i = 0; i < output.length; i++) {
+        const rawQuestion = output[i];
         const parsedQuestion = GenerateTriviaQuestionOutputSchema.safeParse(rawQuestion);
 
         if (parsedQuestion.success) {
           validQuestions.push(parsedQuestion.data);
         } else {
           console.warn(`[generateTriviaQuestionsFlow] Discarding malformed question object at index ${i} from LLM batch. Errors:`, parsedQuestion.error.flatten().fieldErrors);
-          // console.warn(`[generateTriviaQuestionsFlow] Malformed question data:`, JSON.stringify(rawQuestion)); // Uncomment for deep debugging
+          console.warn(`[generateTriviaQuestionsFlow] Malformed question data:`, JSON.stringify(rawQuestion)); // Uncomment for deep debugging
         }
       }
     }

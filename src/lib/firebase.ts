@@ -1,9 +1,7 @@
-
 // src/lib/firebase.ts
 import { initializeApp, getApps, type FirebaseApp } from "firebase/app";
 import { getFirestore, type Firestore } from "firebase/firestore";
-// Optionally, import analytics if you want to use it explicitly
-// import { getAnalytics, type Analytics } from "firebase/analytics";
+import { getAuth, type Auth } from "firebase/auth";
 
 // Your web app's Firebase configuration
 // IMPORTANT: Replace with your actual Firebase project configuration.
@@ -15,7 +13,7 @@ const firebaseConfig = {
   storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
   messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
-  measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID, // Added Measurement ID
+  measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
 };
 
 // Initialize Firebase
@@ -27,14 +25,6 @@ if (!getApps().length) {
 }
 
 const db: Firestore = getFirestore(app);
+const auth: Auth = getAuth(app);
 
-// Optionally, initialize Analytics
-// let analytics: Analytics | undefined;
-// if (typeof window !== 'undefined') {
-//   if (process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID) {
-//     analytics = getAnalytics(app);
-//   }
-// }
-
-export { app, db }; // Optionally export analytics
-
+export { app, db, auth };

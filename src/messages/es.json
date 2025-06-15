@@ -47,5 +47,26 @@
   "showHintButton": "Mostrar Pista",
   "hintLabel": "Pista",
   "timesUp": "¡Se Acabó el Tiempo!",
-  "timeLeft": "Tiempo Restante: {seconds}s"
+  "timeLeft": "Tiempo Restante: {seconds}s",
+
+  "LoginPage": {
+    "title": "Acceso de Administrador",
+    "description": "Por favor, ingresa tus credenciales para acceder al panel de administración.",
+    "emailLabel": "Correo Electrónico",
+    "emailPlaceholder": "admin@ejemplo.com",
+    "passwordLabel": "Contraseña",
+    "passwordPlaceholder": "••••••••",
+    "submitButton": "Ingresar",
+    "errorInvalidCredentials": "Correo electrónico o contraseña incorrectos. Por favor, inténtalo de nuevo.",
+    "errorGeneric": "Ocurrió un error inesperado. Por favor, inténtalo más tarde.",
+    "adminOnly": "Esta área es solo para administradores."
+  },
+  "AdminDashboardPage": {
+    "title": "Panel de Administración",
+    "welcome": "¡Bienvenido, {email}!",
+    "description": "Este es el panel de administración. Gestiona la configuración de tu aplicación aquí.",
+    "moreFeaturesSoon": "Más funcionalidades estarán disponibles pronto.",
+    "logoutButton": "Cerrar Sesión",
+    "footerText": "© {year} Maestro de Trivia IA - Panel de Admin"
+  }
 }

@@ -47,5 +47,26 @@
   "showHintButton": "Show Hint",
   "hintLabel": "Hint",
   "timesUp": "Time's Up!",
-  "timeLeft": "Time Left: {seconds}s"
+  "timeLeft": "Time Left: {seconds}s",
+
+  "LoginPage": {
+    "title": "Admin Login",
+    "description": "Please enter your credentials to access the admin panel.",
+    "emailLabel": "Email",
+    "emailPlaceholder": "admin@example.com",
+    "passwordLabel": "Password",
+    "passwordPlaceholder": "••••••••",
+    "submitButton": "Login",
+    "errorInvalidCredentials": "Invalid email or password. Please try again.",
+    "errorGeneric": "An unexpected error occurred. Please try again later.",
+    "adminOnly": "This area is for administrators only."
+  },
+  "AdminDashboardPage": {
+    "title": "Admin Dashboard",
+    "welcome": "Welcome, {email}!",
+    "description": "This is the admin dashboard. Manage your application settings here.",
+    "moreFeaturesSoon": "More features will be available soon.",
+    "logoutButton": "Logout",
+    "footerText": "© {year} AI Trivia Master - Admin Panel"
+  }
 }
