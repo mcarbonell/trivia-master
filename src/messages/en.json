@@ -61,12 +61,49 @@
     "errorGeneric": "An unexpected error occurred. Please try again later.",
     "adminOnly": "This area is for administrators only."
   },
+  "AdminLayout": {
+    "adminPanelTitle": "Admin Panel",
+    "navDashboard": "Dashboard",
+    "navCategories": "Categories",
+    "navQuestions": "Questions",
+    "logoutButton": "Logout",
+    "loggedInAs": "Logged in as: {email}",
+    "footerText": "© {year} AI Trivia Master - Admin"
+  },
   "AdminDashboardPage": {
     "title": "Admin Dashboard",
-    "welcome": "Welcome, {email}!",
-    "description": "This is the admin dashboard. Manage your application settings here.",
-    "moreFeaturesSoon": "More features will be available soon.",
-    "logoutButton": "Logout",
+    "description": "Overview and quick access to management sections.",
+    "quickAccessTitle": "Quick Access",
+    "quickAccessDescription": "Navigate to different management sections.",
+    "manageCategoriesDescription": "View, add, edit, or delete trivia categories.",
+    "manageQuestionsDescription": "Browse, search, and manage predefined trivia questions.",
+    "otherActionsTitle": "Other Actions",
+    "viewLiveAppButton": "View Live App",
+    "openFirestoreButton": "Open Firestore",
     "footerText": "© {year} AI Trivia Master - Admin Panel"
+  },
+  "AdminCategoriesPage": {
+    "title": "Manage Categories",
+    "description": "View, add, edit, or delete trivia categories.",
+    "addButton": "Add Category",
+    "categoriesListTitle": "Categories List",
+    "categoriesListDescription": "Found {count, plural, =0 {no categories} one {# category} other {# categories}}.",
+    "noCategories": "No categories found. Click 'Add Category' to create one.",
+    "tableName": "Name",
+    "tableTopicValue": "Topic Value",
+    "tableIcon": "Icon",
+    "tableIsPredefined": "Predefined",
+    "tableActions": "Actions",
+    "errorLoading": "Error loading categories. Please try again.",
+    "yes": "Yes",
+    "no": "No"
+  },
+  "AdminQuestionsPage": {
+    "title": "Manage Questions",
+    "description": "Browse, search, and manage predefined trivia questions.",
+    "addButton": "Add Question (Manual)",
+    "questionsListTitle": "Questions List",
+    "questionsListDescription": "Predefined questions stored in Firestore.",
+    "comingSoon": "Question management features coming soon. You can currently populate questions using the script."
   }
 }

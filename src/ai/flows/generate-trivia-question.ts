@@ -126,8 +126,8 @@ The user has requested questions of "{{targetDifficulty}}" difficulty. Please tr
 Please assess the inherent difficulty of each question you generate based on the guidelines above AND any difficulty-specific instructions provided, and set the 'difficulty' field in each question's output accordingly.
 {{/if}}
 
-Your response should be a JSON object containing a single key "questions_batch", which is an array of question objects.
-CRITICALLY IMPORTANT FORMATTING RULE: For each question object in the "questions_batch" array, the 'question' field, 'explanation' field, 'hint' field, AND EACH of the four 'answers' objects within the 'answers' array, MUST BE JSON OBJECTS. These objects MUST contain two string properties: "en" for the English text and "es" for the Spanish text.
+Your response should be a JSON array, which is an array of question objects.
+CRITICALLY IMPORTANT FORMATTING RULE: For each question object in the array, the 'question' field, 'explanation' field, 'hint' field, AND EACH of the four 'answers' objects within the 'answers' array, MUST BE JSON OBJECTS. These objects MUST contain two string properties: "en" for the English text and "es" for the Spanish text.
 
 Each question object in the array must conform to the following structure:
 {
@@ -143,15 +143,15 @@ Each question object in the array must conform to the following structure:
   "hint": { "en": "English Hint", "es": "Spanish Hint (optional)" },
   "difficulty": "easy" 
 }
-Ensure the entire response is a single JSON object like: { "questions_batch": [ {question1_object}, {question2_object}, ... ] }
+Ensure the entire response is a single JSON object like: [ {question1_object}, {question2_object}, ... ]
 
-Example for a single answer object within the 'answers' array: { "en": "Answer A", "es": "Respuesta A" }
 Example for the 'question' object: { "en": "What is the capital of France?", "es": "¿Cuál es la capital de Francia?" }
+Example for a single answer object within the 'answers' array: { "en": "Paris", "es": "París" }
 Example for the 'hint' object: { "en": "It's a famous European city known for a tall iron tower.", "es": "Es una famosa ciudad europea conocida por una alta torre de hierro." }
 
 Make sure that only one answer is correct (indicated by correctAnswerIndex).
 
-The number of question objects in the "questions_batch" array SHOULD ideally match the requested "{{count}}", but it is more important that each object is valid.
+The number of question objects in the array SHOULD ideally match the requested "{{count}}", but it is more important that each object is valid.
 `;
 
 // Zod schema for the direct output from the LLM: an object with a "questions_batch" field containing an array of unknown items.
