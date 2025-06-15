@@ -2,7 +2,7 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef } from "react";
-import { generateTriviaQuestion, type GenerateTriviaQuestionOutput, type GenerateTriviaQuestionInput, type DifficultyLevel, type BilingualText } from "@/ai/flows/generate-trivia-question";
+import { generateTriviaQuestion, type GenerateTriviaQuestionOutput, type GenerateTriviaQuestionInput, type DifficultyLevel } from "@/ai/flows/generate-trivia-question";
 import { getPredefinedQuestion, type PredefinedQuestion } from "@/services/triviaService";
 import { getAppCategories } from "@/services/categoryService";
 import type { CategoryDefinition } from "@/types";
@@ -146,14 +146,12 @@ export default function TriviaPage() {
 
     if (isPredefinedTopic) {
       try {
-        // Pass difficulty to getPredefinedQuestion
         newQuestionData = await getPredefinedQuestion(topic, askedQuestionIdentifiers, difficulty);
       } catch (firestoreError) {
         console.warn("Error fetching from Firestore, falling back to Genkit for predefined topic:", firestoreError);
       }
     }
 
-    // If no predefined question found (or it's a custom topic), generate with Genkit
     if (!newQuestionData) {
       const inputForAI: GenerateTriviaQuestionInput = {
         topic,
@@ -162,10 +160,10 @@ export default function TriviaPage() {
         targetDifficulty: difficulty,
       };
 
-      if (categoryDetails) { // Pass detailed instructions if available (for predefined categories)
-        inputForAI.categoryInstructions = categoryDetails.detailedPromptInstructions;
+      if (categoryDetails) { 
+        inputForAI.categoryInstructions = categoryDetails.detailedPromptInstructions; // This is now a string (English)
         if (categoryDetails.difficultySpecificGuidelines && categoryDetails.difficultySpecificGuidelines[difficulty]) {
-          inputForAI.difficultySpecificInstruction = categoryDetails.difficultySpecificGuidelines[difficulty];
+          inputForAI.difficultySpecificInstruction = categoryDetails.difficultySpecificGuidelines[difficulty]; // Also a string (English)
         }
       }
       
@@ -190,7 +188,8 @@ export default function TriviaPage() {
       if (newQuestionData.id) { 
         setAskedQuestionIdentifiers(prev => [...new Set([...prev, newQuestionData!.id!])]);
       } else { 
-        setAskedQuestionIdentifiers(prev => [...new Set([...prev, `genkit_question_${newQuestionData!.question[locale]}`])]);
+        const questionTextIdentifier = newQuestionData.question?.[locale] || `genkit_q_${Date.now()}`;
+        setAskedQuestionIdentifiers(prev => [...new Set([...prev, `genkit_question_${questionTextIdentifier}`])]);
       }
       setGameState('playing'); 
     } else {
@@ -202,8 +201,8 @@ export default function TriviaPage() {
   const handleStartGame = (topicOrTopicValue: string) => {
     const selectedPredefinedCategory = appCategories.find(cat => cat.topicValue === topicOrTopicValue);
     
-    setCurrentTopic(topicOrTopicValue); // Always set currentTopic to the topicValue
-    setCurrentCategoryDetails(selectedPredefinedCategory || null); // Store full details if predefined
+    setCurrentTopic(topicOrTopicValue); 
+    setCurrentCategoryDetails(selectedPredefinedCategory || null); 
     
     setScore({ correct: 0, incorrect: 0 });
     setAskedQuestionIdentifiers([]);
@@ -250,7 +249,7 @@ export default function TriviaPage() {
   };
 
   const handleNewGame = () => {
-    setGameState('category_selection'); // Or 'loading_categories' if categories might change
+    setGameState('category_selection'); 
     setScore({ correct: 0, incorrect: 0 });
     setQuestionData(null);
     setSelectedAnswerIndex(null);
@@ -296,7 +295,7 @@ export default function TriviaPage() {
     correctAnswerIndex: questionData.correctAnswerIndex,
     explanation: questionData.explanation[locale],
     difficulty: questionData.difficulty, 
-    hint: questionData.hint ? questionData.hint[locale] : undefined,
+    hint: questionData.hint?.[locale],
   } : null;
 
 
@@ -334,7 +333,7 @@ export default function TriviaPage() {
             predefinedCategories={appCategories}
             customTopicInput={customTopicInput}
             onCustomTopicChange={setCustomTopicInput}
-            onSelectTopic={handleStartGame} // handleStartGame now expects topicValue
+            onSelectTopic={handleStartGame} 
             currentLocale={locale}
           />
         )}

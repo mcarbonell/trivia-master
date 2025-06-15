@@ -5,7 +5,7 @@
  * @fileOverview This file defines a Genkit flow for generating bilingual (English and Spanish) trivia questions.
  * It ensures questions and their correct answers are not repeated within a session, provides explanations, hints,
  * and generates questions of a specified or assessed difficulty level.
- * It can now accept detailed category-specific and difficulty-specific instructions to guide generation.
+ * It can now accept detailed category-specific (English-only) and difficulty-specific (English-only) instructions to guide generation.
  *
  * @interface GenerateTriviaQuestionInput - Input schema for the generateTriviaQuestion flow.
  * @interface GenerateTriviaQuestionOutput - Output schema for the generateTriviaQuestion flow.
@@ -41,8 +41,8 @@ const GenerateTriviaQuestionInputSchema = z.object({
   previousQuestions: z.array(z.string()).optional().describe('A list of question texts (can be in English or Spanish, or a mix if user switched languages) already asked on this topic in the current session, to avoid repetition of the same conceptual question. The AI should consider these as distinct concepts already covered.'),
   previousCorrectAnswers: z.array(z.string()).optional().describe('A list of correct answer texts (can be in English or Spanish) from questions already asked on this topic, to ensure variety in the subject matter. The AI should avoid these concepts as correct answers for the new question.'),
   targetDifficulty: DifficultyLevelSchema.optional().describe('If provided, the AI should attempt to generate a question of this specific difficulty level. If not provided, the AI will assess and assign a difficulty level based on the content and its guidelines.'),
-  categoryInstructions: BilingualTextSchema.optional().describe('Detailed instructions for the AI on how to generate questions for this specific category. Provided in English and Spanish.'),
-  difficultySpecificInstruction: BilingualTextSchema.optional().describe('More granular instructions for the AI, specific to the target difficulty level within this category. Provided in English and Spanish.')
+  categoryInstructions: z.string().optional().describe('Detailed English-only instructions for the AI on how to generate questions for this specific category.'),
+  difficultySpecificInstruction: z.string().optional().describe('More granular English-only instructions for the AI, specific to the target difficulty level within this category.')
 });
 export type GenerateTriviaQuestionInput = z.infer<typeof GenerateTriviaQuestionInputSchema>;
 
@@ -55,7 +55,7 @@ const GenerateTriviaQuestionOutputSchema = z.object({
     .max(3)
     .describe('The index (0-3) of the correct answer in the answers array. This index applies to both language versions of the answers.'),
   explanation: BilingualTextSchema.describe('A brief explanation (1-2 sentences) of why the correct answer is correct, in English and Spanish.'),
-  hint: BilingualTextSchema.describe('A concise hint (1 short sentence) to help the user deduce the answer without revealing it directly, in English and Spanish.'),
+  hint: BilingualTextSchema.optional().describe('A concise hint (1 short sentence) to help the user deduce the answer without revealing it directly, in English and Spanish.'),
   difficulty: DifficultyLevelSchema,
 });
 export type GenerateTriviaQuestionOutput = z.infer<typeof GenerateTriviaQuestionOutputSchema>;
@@ -71,16 +71,14 @@ IMPORTANT: You MUST generate all textual content (question, each of the four ans
 Topic: {{{topic}}}
 
 {{#if categoryInstructions}}
-SPECIFIC INSTRUCTIONS FOR THE CATEGORY "{{topic}}":
-English Context: {{{categoryInstructions.en}}}
-Spanish Context: {{{categoryInstructions.es}}}
+SPECIFIC ENGLISH-ONLY INSTRUCTIONS FOR THE CATEGORY "{{topic}}":
+{{{categoryInstructions}}}
 You should prioritize these category-specific instructions when generating the question.
 {{/if}}
 
 {{#if difficultySpecificInstruction}}
-SPECIFIC INSTRUCTIONS FOR THE TARGETED DIFFICULTY LEVEL:
-English Context: {{{difficultySpecificInstruction.en}}}
-Spanish Context: {{{difficultySpecificInstruction.es}}}
+SPECIFIC ENGLISH-ONLY INSTRUCTIONS FOR THE TARGETED DIFFICULTY LEVEL:
+{{{difficultySpecificInstruction}}}
 These difficulty-specific instructions are very important for tailoring the question appropriately.
 {{/if}}
 
@@ -137,7 +135,7 @@ const generateTriviaQuestionPrompt = ai.definePrompt({
   input: {schema: GenerateTriviaQuestionInputSchema},
   output: {schema: GenerateTriviaQuestionOutputSchema},
   config: {
-    temperature: 0.9, // Slightly lower temperature for more focused generation with detailed prompts
+    temperature: 0.9, 
   },
   prompt: promptTemplateString,
 });

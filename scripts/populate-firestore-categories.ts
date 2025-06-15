@@ -10,18 +10,12 @@ import type { CategoryDefinition } from '../src/types'; // Adjust path as necess
 // Initialize Firebase Admin SDK
 try {
   if (!admin.apps.length) {
-    const serviceAccountPath = process.env.GOOGLE_APPLICATION_CREDENTIALS;
-    if (!serviceAccountPath) {
-      throw new Error('GOOGLE_APPLICATION_CREDENTIALS environment variable is not set.');
-    }
-    const serviceAccount = JSON.parse(await fs.readFile(serviceAccountPath, 'utf8'));
     admin.initializeApp({
-      credential: admin.credential.cert(serviceAccount),
+      credential: admin.credential.applicationDefault(),
     });
-    console.log('Firebase Admin SDK initialized successfully.');
   }
 } catch (error) {
-  console.error('Firebase Admin initialization error:', error);
+  console.error('Firebase Admin initialization error. Make sure GOOGLE_APPLICATION_CREDENTIALS is set correctly.', error);
   process.exit(1);
 }
 
@@ -34,28 +28,62 @@ async function populateCategories() {
 
   try {
     const categoriesJson = await fs.readFile(INITIAL_CATEGORIES_PATH, 'utf-8');
-    const categories: CategoryDefinition[] = JSON.parse(categoriesJson);
+    const categoriesData: any[] = JSON.parse(categoriesJson); // Read as any first for validation
 
-    if (!categories || categories.length === 0) {
+    if (!categoriesData || categoriesData.length === 0) {
       console.log('No categories found in the JSON file. Exiting.');
       return;
     }
 
-    console.log(`Found ${categories.length} categories to process.`);
+    console.log(`Found ${categoriesData.length} categories to process.`);
 
     const batch = db.batch();
     let operationsCount = 0;
 
-    for (const category of categories) {
-      if (!category.topicValue || !category.name || !category.icon || !category.detailedPromptInstructions) {
-        console.warn(`Skipping category due to missing required fields (topicValue, name, icon, detailedPromptInstructions): ${JSON.stringify(category)}`);
+    for (const categoryData of categoriesData) {
+      // Validate structure before casting to CategoryDefinition
+      if (
+        !categoryData.topicValue || typeof categoryData.topicValue !== 'string' ||
+        !categoryData.name || typeof categoryData.name.en !== 'string' || typeof categoryData.name.es !== 'string' ||
+        !categoryData.icon || typeof categoryData.icon !== 'string' ||
+        !categoryData.detailedPromptInstructions || typeof categoryData.detailedPromptInstructions !== 'string'
+      ) {
+        console.warn(`Skipping category due to missing/invalid required fields (topicValue, name, icon, detailedPromptInstructions as string): ${JSON.stringify(categoryData)}`);
         continue;
       }
-      // Use topicValue as the document ID for idempotency
-      const categoryRef = db.collection(CATEGORIES_COLLECTION).doc(category.topicValue);
-      batch.set(categoryRef, category, { merge: true }); // merge:true will update if exists, create if not
+
+      const categoryToSave: CategoryDefinition = {
+        id: categoryData.topicValue, // Use topicValue as id
+        topicValue: categoryData.topicValue,
+        name: categoryData.name,
+        icon: categoryData.icon,
+        detailedPromptInstructions: categoryData.detailedPromptInstructions,
+      };
+      
+      // Validate difficultySpecificGuidelines if present
+      if (categoryData.difficultySpecificGuidelines) {
+        const guidelines: { [key: string]: string } = {};
+        let validGuidelines = true;
+        for (const key in categoryData.difficultySpecificGuidelines) {
+          if (typeof categoryData.difficultySpecificGuidelines[key] === 'string') {
+            guidelines[key] = categoryData.difficultySpecificGuidelines[key];
+          } else {
+            console.warn(`Invalid guideline for ${categoryData.topicValue} - ${key}: not a string.`);
+            validGuidelines = false; // Mark as invalid to potentially skip this part
+            break; 
+          }
+        }
+        if (validGuidelines && Object.keys(guidelines).length > 0) {
+          categoryToSave.difficultySpecificGuidelines = guidelines;
+        } else if (!validGuidelines) {
+            console.warn(`Skipping difficultySpecificGuidelines for ${categoryData.topicValue} due to invalid entries.`);
+        }
+      }
+
+      const categoryRef = db.collection(CATEGORIES_COLLECTION).doc(categoryToSave.topicValue);
+      batch.set(categoryRef, categoryToSave, { merge: true });
       operationsCount++;
-      console.log(`Scheduled set/update for category: "${category.name.en}" (ID: ${category.topicValue})`);
+      console.log(`Scheduled set/update for category: "${categoryToSave.name.en}" (ID: ${categoryToSave.topicValue})`);
     }
 
     if (operationsCount > 0) {
@@ -79,5 +107,3 @@ populateCategories().catch(error => {
   console.error("Unhandled error in populateCategories script:", error);
   process.exit(1);
 });
-
-    

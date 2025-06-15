@@ -3,7 +3,7 @@ import { config } from 'dotenv';
 config(); // Load environment variables from .env file
 
 import admin from 'firebase-admin';
-import { generateTriviaQuestion, type GenerateTriviaQuestionInput, type GenerateTriviaQuestionOutput, type DifficultyLevel, type BilingualText } from '../src/ai/flows/generate-trivia-question';
+import { generateTriviaQuestion, type GenerateTriviaQuestionInput, type GenerateTriviaQuestionOutput, type DifficultyLevel } from '../src/ai/flows/generate-trivia-question';
 import { ai } from '../src/ai/genkit'; // Ensure Genkit is initialized
 import { getAppCategories } from '../src/services/categoryService'; // Import the new service
 import type { CategoryDefinition } from '../src/types';
@@ -25,12 +25,12 @@ const PREDEFINED_QUESTIONS_COLLECTION = 'predefinedTriviaQuestions';
 
 const ALL_DIFFICULTY_LEVELS: DifficultyLevel[] = ["very easy", "easy", "medium", "hard", "very hard"];
 
-const TARGET_QUESTIONS_PER_CATEGORY_DIFFICULTY = 5; // Target number of questions per category AND per difficulty
-const MAX_NEW_QUESTIONS_PER_RUN_PER_DIFFICULTY = 2; // Max new questions to generate in one script run for each category/difficulty combo
-const GENKIT_API_CALL_DELAY_MS = 7000; // Delay between Genkit API calls (7 seconds)
+const TARGET_QUESTIONS_PER_CATEGORY_DIFFICULTY = 5; 
+const MAX_NEW_QUESTIONS_PER_RUN_PER_DIFFICULTY = 2; 
+const GENKIT_API_CALL_DELAY_MS = 7000; 
 
 async function populateQuestions() {
-  console.log('Starting Firestore question population script (bilingual, target difficulty per category, with detailed category prompts)...');
+  console.log('Starting Firestore question population script (English instructions, target difficulty per category, with detailed category prompts)...');
 
   const appCategories = await getAppCategories();
   if (!appCategories || appCategories.length === 0) {
@@ -60,12 +60,12 @@ async function populateQuestions() {
         const data = doc.data() as GenerateTriviaQuestionOutput & { topicValue: string };
          if (data.question) { 
             if (data.question.en) existingQuestionConceptTexts.push(data.question.en);
-            if (data.question.es) existingQuestionConceptTexts.push(data.question.es);
+            // We only need English concepts for previousQuestions, as AI instructions are in English
           }
           if (data.answers && typeof data.correctAnswerIndex === 'number' && data.answers[data.correctAnswerIndex]) {
             const correctAnswer = data.answers[data.correctAnswerIndex]!; 
             if (correctAnswer.en) existingCorrectAnswerConceptTexts.push(correctAnswer.en);
-            if (correctAnswer.es) existingCorrectAnswerConceptTexts.push(correctAnswer.es);
+            // We only need English concepts for previousCorrectAnswers
           }
       });
 
@@ -88,21 +88,19 @@ async function populateQuestions() {
       for (let i = 0; i < numToGenerate; i++) {
         try {
           const input: GenerateTriviaQuestionInput = {
-            topic: category.topicValue, // Use topicValue for AI
+            topic: category.topicValue, 
             previousQuestions: [...existingQuestionConceptTexts], 
             previousCorrectAnswers: [...existingCorrectAnswerConceptTexts], 
             targetDifficulty: difficulty,
-            categoryInstructions: category.detailedPromptInstructions, // Pass detailed instructions
+            categoryInstructions: category.detailedPromptInstructions, // Pass English-only instructions
           };
           
-          // Pass difficulty-specific instructions if they exist for this category and difficulty
           if (category.difficultySpecificGuidelines && category.difficultySpecificGuidelines[difficulty]) {
-            input.difficultySpecificInstruction = category.difficultySpecificGuidelines[difficulty];
+            input.difficultySpecificInstruction = category.difficultySpecificGuidelines[difficulty]; // Pass English-only instruction
           }
 
 
           console.log(`  Generating question ${i + 1} of ${numToGenerate} for ${category.name.en} - ${difficulty}...`);
-          // Removed initial delay as Genkit might handle rate limiting or we have GENKIT_API_CALL_DELAY_MS
           
           const newQuestionData: GenerateTriviaQuestionOutput = await generateTriviaQuestion(input);
 
@@ -113,21 +111,19 @@ async function populateQuestions() {
 
             const questionToSave = {
               ...newQuestionData,
-              topicValue: category.topicValue, // Store topicValue for easier querying
+              topicValue: category.topicValue, 
               createdAt: admin.firestore.FieldValue.serverTimestamp(),
-              source: 'batch-script-aitrivia-bilingual-target-difficulty-v3-category-prompts'
+              source: 'batch-script-aitrivia-english-instr-target-difficulty-v4-category-prompts'
             };
 
             await questionsRef.add(questionToSave);
             console.log(`  Successfully generated and saved question (AI difficulty: ${newQuestionData.difficulty}, Target: ${difficulty}): "${newQuestionData.question.en.substring(0,30)}..." / "${newQuestionData.question.es.substring(0,30)}..."`);
             
             if (newQuestionData.question.en) existingQuestionConceptTexts.push(newQuestionData.question.en);
-            if (newQuestionData.question.es) existingQuestionConceptTexts.push(newQuestionData.question.es);
             
             const correctAnswer = newQuestionData.answers[newQuestionData.correctAnswerIndex];
-            if (correctAnswer) {
-              if (correctAnswer.en) existingCorrectAnswerConceptTexts.push(correctAnswer.en);
-              if (correctAnswer.es) existingCorrectAnswerConceptTexts.push(correctAnswer.es);
+            if (correctAnswer && correctAnswer.en) {
+              existingCorrectAnswerConceptTexts.push(correctAnswer.en);
             }
 
           } else {
@@ -154,11 +150,10 @@ async function populateQuestions() {
         await new Promise(resolve => setTimeout(resolve, GENKIT_API_CALL_DELAY_MS));
      }
   } 
-  console.log('\nBilingual question population script (with category-specific prompts and target difficulty) finished.');
+  console.log('\nEnglish-instruction based question population script (with category-specific prompts and target difficulty) finished.');
 }
 
 populateQuestions().catch(error => {
   console.error("Unhandled error in populateQuestions:", error);
   process.exit(1);
 });
-
