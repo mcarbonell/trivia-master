@@ -42,11 +42,11 @@ const GenerateTriviaQuestionsInputSchema = z.object({
   targetDifficulty: DifficultyLevelSchema.optional().describe('If provided, the AI should attempt to generate a question of this specific difficulty level. If not provided, the AI will assess and assign a difficulty level based on the content and its guidelines.'),
   categoryInstructions: z.string().optional().describe('Detailed English-only instructions for the AI on how to generate questions for this specific category.'),
   difficultySpecificInstruction: z.string().optional().describe('More granular English-only instructions for the AI, specific to the target difficulty level within this category.'),
-  count: z.number().min(1).max(10).optional().default(1).describe('Number of distinct trivia questions to generate. Max 10. Defaults to 1.')
+  count: z.number().min(1).max(1000).optional().default(1).describe('Number of distinct trivia questions to generate. Max 1000. Defaults to 1.')
 });
 export type GenerateTriviaQuestionsInput = z.infer<typeof GenerateTriviaQuestionsInputSchema>;
 
-// This remains the schema for a SINGLE question. The flow will output an array of these.
+// This remains the schema for a SINGLE question.
 const GenerateTriviaQuestionOutputSchema = z.object({
   question: BilingualTextSchema.describe('The trivia question in English and Spanish.'),
   answers: z.array(BilingualAnswerSchema).length(4).describe('Four possible answers to the question, each in English and Spanish.'),
@@ -61,7 +61,7 @@ const GenerateTriviaQuestionOutputSchema = z.object({
 });
 export type GenerateTriviaQuestionOutput = z.infer<typeof GenerateTriviaQuestionOutputSchema>;
 
-// The flow will now output an array of GenerateTriviaQuestionOutput
+// The flow will output an array of GenerateTriviaQuestionOutput (valid questions)
 const GenerateTriviaQuestionsOutputSchema = z.array(GenerateTriviaQuestionOutputSchema);
 
 export async function generateTriviaQuestions(input: GenerateTriviaQuestionsInput): Promise<GenerateTriviaQuestionOutput[]> {
@@ -147,21 +147,20 @@ Your response should be a JSON object containing a single key "questions_batch",
   "difficulty": "easy" // or "medium", "hard"
 }
 Ensure the entire response is a single JSON object like: { "questions_batch": [ {question1_object}, {question2_object}, ... ] }
-The number of question objects in the "questions_batch" array MUST match the requested "{{count}}".
+The number of question objects in the "questions_batch" array SHOULD ideally match the requested "{{count}}", but it is more important that each object is valid.
 `;
 
-// Define a Zod schema for the expected batch output structure from the LLM
-const LLMBatchOutputSchema = z.object({
-  questions_batch: z.array(GenerateTriviaQuestionOutputSchema),
+// Zod schema for the direct output from the LLM: an object with a "questions_batch" field containing an array of unknown items.
+const LLMOutputStructureSchema = z.object({
+  questions_batch: z.array(z.unknown()), // We will validate each item in the array individually
 });
 
 const generateTriviaQuestionsPrompt = ai.definePrompt({
   name: 'generateTriviaQuestionsPrompt',
   input: {schema: GenerateTriviaQuestionsInputSchema},
-  // The prompt is now instructed to return an object with a "questions_batch" field
-  output: {schema: LLMBatchOutputSchema},
+  output: {schema: LLMOutputStructureSchema}, // Expecting the raw batch structure
   config: {
-    temperature: 0.9,
+    temperature: 0.9, // Keep temperature a bit high for creativity in questions
   },
   prompt: promptTemplateString,
 });
@@ -170,23 +169,40 @@ const generateTriviaQuestionsFlow = ai.defineFlow(
   {
     name: 'generateTriviaQuestionsFlow',
     inputSchema: GenerateTriviaQuestionsInputSchema,
-    outputSchema: GenerateTriviaQuestionsOutputSchema, // Flow output is an array of questions
+    outputSchema: GenerateTriviaQuestionsOutputSchema, // Flow output is an array of VALID questions
   },
   async (input) => {
-    // Ensure count is at least 1, even if not explicitly provided, for the prompt logic
     const effectiveInput = { ...input, count: input.count || 1 };
 
     const {output} = await generateTriviaQuestionsPrompt(effectiveInput);
     
-    // Extract the array from the "questions_batch" field.
-    // Handle potential errors if the LLM doesn't adhere to the format.
-    if (!output || !output.questions_batch) {
-      console.error('LLM did not return the expected "questions_batch" array structure.');
-      throw new Error('Failed to parse questions from LLM response.');
+    if (!output || !Array.isArray(output.questions_batch)) {
+      console.error('LLM did not return the expected "questions_batch" array structure. Input:', JSON.stringify(effectiveInput), 'LLM Output:', JSON.stringify(output));
+      throw new Error('Failed to parse questions array from LLM response.');
     }
-    if (output.questions_batch.length !== effectiveInput.count) {
-        console.warn(`LLM generated ${output.questions_batch.length} questions, but ${effectiveInput.count} were requested. Returning what was generated.`);
+
+    const validQuestions: GenerateTriviaQuestionOutput[] = [];
+    let llmReturnedCount = 0;
+
+    if (output.questions_batch) {
+      llmReturnedCount = output.questions_batch.length;
+      for (let i = 0; i < output.questions_batch.length; i++) {
+        const rawQuestion = output.questions_batch[i];
+        const parsedQuestion = GenerateTriviaQuestionOutputSchema.safeParse(rawQuestion);
+
+        if (parsedQuestion.success) {
+          validQuestions.push(parsedQuestion.data);
+        } else {
+          console.warn(`[generateTriviaQuestionsFlow] Discarding malformed question object at index ${i} from LLM batch. Errors:`, parsedQuestion.error.flatten().fieldErrors);
+          // console.warn(`[generateTriviaQuestionsFlow] Malformed question data:`, JSON.stringify(rawQuestion)); // Uncomment for deep debugging
+        }
+      }
     }
-    return output.questions_batch;
+    
+    if (validQuestions.length !== effectiveInput.count) {
+      console.warn(`[generateTriviaQuestionsFlow] LLM was asked for ${effectiveInput.count} questions, returned ${llmReturnedCount} raw items, and ${validQuestions.length} were valid. For topic: ${effectiveInput.topic}`);
+    }
+
+    return validQuestions;
   }
 );

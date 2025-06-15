@@ -26,9 +26,9 @@ const CATEGORIES_COLLECTION = 'triviaCategories';
 
 const ALL_DIFFICULTY_LEVELS: DifficultyLevel[] = ["easy", "medium", "hard"];
 
-const TARGET_QUESTIONS_PER_CATEGORY_DIFFICULTY = 5; 
-const MAX_NEW_QUESTIONS_TO_FETCH_PER_RUN_PER_DIFFICULTY_TARGET = 2;
-const QUESTIONS_TO_GENERATE_PER_API_CALL = 5; 
+const TARGET_QUESTIONS_PER_CATEGORY_DIFFICULTY = 10000; 
+const MAX_NEW_QUESTIONS_TO_FETCH_PER_RUN_PER_DIFFICULTY_TARGET = 100;
+const QUESTIONS_TO_GENERATE_PER_API_CALL = 100; 
 const GENKIT_API_CALL_DELAY_MS = 7000; 
 
 /**
@@ -195,7 +195,7 @@ async function populateQuestions() {
         if (newQuestionsArray && newQuestionsArray.length > 0) {
           let questionsSavedThisBatch = 0;
           for (const newQuestionData of newQuestionsArray) {
-            if (questionsSavedThisBatch >= numToPotentiallyGenerateThisRun) break;
+            // if (questionsSavedThisBatch >= numToPotentiallyGenerateThisRun) break; // Optimization, allow to generate more questions than asked
 
             if (newQuestionData && newQuestionData.question && newQuestionData.answers && newQuestionData.difficulty) {
               if (newQuestionData.difficulty !== difficulty) {
