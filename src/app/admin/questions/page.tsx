@@ -2,17 +2,26 @@
 'use client';
 
 import { useEffect, useState, useCallback, useMemo } from 'react';
-import { getAllPredefinedQuestions, deletePredefinedQuestion, type PredefinedQuestion } from '@/services/triviaService';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import * as z from 'zod';
+import { getAllPredefinedQuestions, deletePredefinedQuestion, updatePredefinedQuestion, type PredefinedQuestion } from '@/services/triviaService';
 import { getAppCategories } from '@/services/categoryService';
-import type { CategoryDefinition, DifficultyLevel } from '@/types';
+import type { CategoryDefinition, DifficultyLevel, BilingualText } from '@/types';
+import type { GenerateTriviaQuestionOutput } from '@/ai/flows/generate-trivia-question';
 import type { AppLocale } from '@/lib/i18n-config';
 import { useTranslations, useLocale } from 'next-intl';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogTrigger, DialogClose } from '@/components/ui/dialog';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { ScrollArea } from '@/components/ui/scroll-area';
 import { Loader2, AlertTriangle, PlusCircle, Eye, Edit, Trash2, RefreshCw } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
@@ -25,8 +34,32 @@ interface DisplayQuestion extends PredefinedQuestion {
 
 const ALL_DIFFICULTY_LEVELS: DifficultyLevel[] = ["easy", "medium", "hard"];
 
+const questionFormSchema = z.object({
+  questionEn: z.string().min(1, { message: "English question is required." }),
+  questionEs: z.string().min(1, { message: "Spanish question is required." }),
+  answer1En: z.string().min(1, { message: "Answer A (English) is required." }),
+  answer1Es: z.string().min(1, { message: "Answer A (Spanish) is required." }),
+  answer2En: z.string().min(1, { message: "Answer B (English) is required." }),
+  answer2Es: z.string().min(1, { message: "Answer B (Spanish) is required." }),
+  answer3En: z.string().min(1, { message: "Answer C (English) is required." }),
+  answer3Es: z.string().min(1, { message: "Answer C (Spanish) is required." }),
+  answer4En: z.string().min(1, { message: "Answer D (English) is required." }),
+  answer4Es: z.string().min(1, { message: "Answer D (Spanish) is required." }),
+  correctAnswerIndex: z.string().refine(val => ['0', '1', '2', '3'].includes(val), {
+    message: "Please select a valid correct answer.",
+  }),
+  explanationEn: z.string().min(1, { message: "English explanation is required." }),
+  explanationEs: z.string().min(1, { message: "Spanish explanation is required." }),
+  hintEn: z.string().optional(),
+  hintEs: z.string().optional(),
+  difficulty: z.enum(ALL_DIFFICULTY_LEVELS, { required_error: "Difficulty is required." }),
+});
+export type QuestionFormData = z.infer<typeof questionFormSchema>;
+
+
 export default function AdminQuestionsPage() {
   const t = useTranslations('AdminQuestionsPage');
+  const tForm = useTranslations('AdminQuestionsPage.form');
   const tCommon = useTranslations();
   const locale = useLocale() as AppLocale;
   const { toast } = useToast();
@@ -39,6 +72,14 @@ export default function AdminQuestionsPage() {
 
   const [selectedCategory, setSelectedCategory] = useState<string>(ALL_FILTER_VALUE);
   const [selectedDifficulty, setSelectedDifficulty] = useState<string>(ALL_FILTER_VALUE);
+
+  const [isQuestionDialogOpen, setIsQuestionDialogOpen] = useState(false);
+  const [currentQuestionToEdit, setCurrentQuestionToEdit] = useState<PredefinedQuestion | null>(null);
+  const [isSubmittingQuestion, setIsSubmittingQuestion] = useState(false);
+
+  const form = useForm<QuestionFormData>({
+    resolver: zodResolver(questionFormSchema),
+  });
 
   const fetchAllData = useCallback(async () => {
     setLoading(true);
@@ -116,6 +157,66 @@ export default function AdminQuestionsPage() {
       toast({ variant: "destructive", title: tCommon('toastErrorTitle'), description: t('toastDeleteError') });
     }
   };
+
+  const handleOpenEditQuestionDialog = (question: PredefinedQuestion) => {
+    setCurrentQuestionToEdit(question);
+    form.reset({
+      questionEn: question.question.en,
+      questionEs: question.question.es,
+      answer1En: question.answers[0]?.en || '',
+      answer1Es: question.answers[0]?.es || '',
+      answer2En: question.answers[1]?.en || '',
+      answer2Es: question.answers[1]?.es || '',
+      answer3En: question.answers[2]?.en || '',
+      answer3Es: question.answers[2]?.es || '',
+      answer4En: question.answers[3]?.en || '',
+      answer4Es: question.answers[3]?.es || '',
+      correctAnswerIndex: String(question.correctAnswerIndex),
+      explanationEn: question.explanation.en,
+      explanationEs: question.explanation.es,
+      hintEn: question.hint?.en || '',
+      hintEs: question.hint?.es || '',
+      difficulty: question.difficulty,
+    });
+    setIsQuestionDialogOpen(true);
+  };
+
+  const onQuestionSubmit = async (data: QuestionFormData) => {
+    if (!currentQuestionToEdit) return;
+    setIsSubmittingQuestion(true);
+
+    const updatedQuestionData: Partial<GenerateTriviaQuestionOutput> = {
+      question: { en: data.questionEn, es: data.questionEs },
+      answers: [
+        { en: data.answer1En, es: data.answer1Es },
+        { en: data.answer2En, es: data.answer2Es },
+        { en: data.answer3En, es: data.answer3Es },
+        { en: data.answer4En, es: data.answer4Es },
+      ],
+      correctAnswerIndex: parseInt(data.correctAnswerIndex, 10),
+      explanation: { en: data.explanationEn, es: data.explanationEs },
+      hint: (data.hintEn || data.hintEs) ? { en: data.hintEn || '', es: data.hintEs || '' } : undefined,
+      difficulty: data.difficulty,
+      // topicValue is not part of form, it's inherent to the question being edited.
+    };
+     if (!updatedQuestionData.hint?.en && !updatedQuestionData.hint?.es) {
+        delete updatedQuestionData.hint;
+    }
+
+
+    try {
+      await updatePredefinedQuestion(currentQuestionToEdit.id, updatedQuestionData);
+      toast({ title: tCommon('toastSuccessTitle'), description: t('toastUpdateSuccess') });
+      await fetchAllData();
+      setIsQuestionDialogOpen(false);
+    } catch (err) {
+      console.error("Error updating question:", err);
+      toast({ variant: "destructive", title: tCommon('toastErrorTitle'), description: t('toastUpdateError') });
+    } finally {
+      setIsSubmittingQuestion(false);
+    }
+  };
+
 
   const truncateText = (text: string, maxLength: number = 50) => {
     if (text.length <= maxLength) return text;
@@ -207,10 +308,10 @@ export default function AdminQuestionsPage() {
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead className="w-[40%] sm:w-[45%] md:w-[50%]">{t('tableQuestion')}</TableHead>
+                    <TableHead className="w-[40%] sm:w-[45%] md:w-[50%] max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg xl:max-w-xl">{t('tableQuestion')}</TableHead>
                     <TableHead className="hidden md:table-cell w-[15%] sm:w-[15%] md:w-[15%]">{t('tableCategory')}</TableHead>
                     <TableHead className="w-[15%] sm:w-[15%] md:w-[10%]">{t('tableDifficulty')}</TableHead>
-                    <TableHead className="hidden lg:table-cell w-[20%] sm:w-[15%] md:w-[15%]">{t('tableCorrectAnswer')}</TableHead>
+                    <TableHead className="hidden lg:table-cell w-[20%] sm:w-[15%] md:w-[15%] max-w-[150px]">{t('tableCorrectAnswer')}</TableHead>
                     <TableHead className="text-right w-[10%] sm:w-[10%] md:w-[10%]">{t('tableActions')}</TableHead>
                   </TableRow>
                 </TableHeader>
@@ -224,8 +325,8 @@ export default function AdminQuestionsPage() {
                               {truncateText(question.question[locale] || 'N/A', 70)}
                             </span>
                           </TooltipTrigger>
-                          <TooltipContent side="top" align="start">
-                            <p className="max-w-md break-words">{question.question[locale] || 'N/A'}</p>
+                          <TooltipContent side="top" align="start" className="max-w-md break-words bg-background border shadow-lg p-2 rounded-md">
+                            <p>{question.question[locale] || 'N/A'}</p>
                           </TooltipContent>
                         </Tooltip>
                       </TableCell>
@@ -241,7 +342,7 @@ export default function AdminQuestionsPage() {
                           <Eye className="h-4 w-4" />
                           <span className="sr-only">{t('viewButton')}</span>
                         </Button>
-                         <Button variant="outline" size="icon" className="h-8 w-8" disabled>
+                         <Button variant="outline" size="icon" className="h-8 w-8" onClick={() => handleOpenEditQuestionDialog(question)}>
                           <Edit className="h-4 w-4" />
                           <span className="sr-only">{t('editButton')}</span>
                         </Button>
@@ -296,7 +397,111 @@ export default function AdminQuestionsPage() {
             </CardFooter>
         )}
       </Card>
+
+      <Dialog open={isQuestionDialogOpen} onOpenChange={setIsQuestionDialogOpen}>
+        <DialogContent className="sm:max-w-3xl max-h-[90vh]">
+          <DialogHeader>
+            <DialogTitle>{tForm('editDialogTitle')}</DialogTitle>
+            <DialogDescription>{tForm('editDialogDescription', { topic: currentQuestionToEdit?.categoryName || currentQuestionToEdit?.topicValue || '' })}</DialogDescription>
+          </DialogHeader>
+          <ScrollArea className="max-h-[calc(90vh-200px)] pr-6"> {/* Adjusted height for scroll area */}
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(onQuestionSubmit)} className="space-y-6 py-4">
+                <FormField
+                  control={form.control}
+                  name="difficulty"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>{tForm('difficultyLabel')}</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder={tForm('difficultyPlaceholder')} />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {ALL_DIFFICULTY_LEVELS.map(diff => (
+                            <SelectItem key={diff} value={diff}>{tCommon(`difficultyLevels.${diff}` as any)}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <Card>
+                  <CardHeader><CardTitle className="text-lg">{tForm('questionLabel')}</CardTitle></CardHeader>
+                  <CardContent className="space-y-4">
+                    <FormField control={form.control} name="questionEn" render={({ field }) => ( <FormItem> <FormLabel>{tCommon('english')}</FormLabel> <FormControl><Textarea placeholder={tForm('questionPlaceholder')} {...field} rows={3} /></FormControl> <FormMessage /> </FormItem> )}/>
+                    <FormField control={form.control} name="questionEs" render={({ field }) => ( <FormItem> <FormLabel>{tCommon('spanish')}</FormLabel> <FormControl><Textarea placeholder={tForm('questionPlaceholder')} {...field} rows={3} /></FormControl> <FormMessage /> </FormItem> )}/>
+                  </CardContent>
+                </Card>
+
+                {[1, 2, 3, 4].map(idx => (
+                  <Card key={idx}>
+                    <CardHeader><CardTitle className="text-lg">{tForm('answerLabel', { letter: String.fromCharCode(64 + idx) })}</CardTitle></CardHeader>
+                    <CardContent className="space-y-4">
+                      <FormField control={form.control} name={`answer${idx}En` as keyof QuestionFormData} render={({ field }) => ( <FormItem> <FormLabel>{tCommon('english')}</FormLabel> <FormControl><Input placeholder={tForm('answerPlaceholder')} {...field} /></FormControl> <FormMessage /> </FormItem> )}/>
+                      <FormField control={form.control} name={`answer${idx}Es` as keyof QuestionFormData} render={({ field }) => ( <FormItem> <FormLabel>{tCommon('spanish')}</FormLabel> <FormControl><Input placeholder={tForm('answerPlaceholder')} {...field} /></FormControl> <FormMessage /> </FormItem> )}/>
+                    </CardContent>
+                  </Card>
+                ))}
+                
+                <FormField
+                  control={form.control}
+                  name="correctAnswerIndex"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>{tForm('correctAnswerLabel')}</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder={tForm('correctAnswerPlaceholder')} />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {['0', '1', '2', '3'].map(idx => (
+                            <SelectItem key={idx} value={idx}>{tForm('answerOption', { letter: String.fromCharCode(65 + parseInt(idx)) })}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <Card>
+                  <CardHeader><CardTitle className="text-lg">{tForm('explanationLabel')}</CardTitle></CardHeader>
+                  <CardContent className="space-y-4">
+                    <FormField control={form.control} name="explanationEn" render={({ field }) => ( <FormItem> <FormLabel>{tCommon('english')}</FormLabel> <FormControl><Textarea placeholder={tForm('explanationPlaceholder')} {...field} rows={4} /></FormControl> <FormMessage /> </FormItem> )}/>
+                    <FormField control={form.control} name="explanationEs" render={({ field }) => ( <FormItem> <FormLabel>{tCommon('spanish')}</FormLabel> <FormControl><Textarea placeholder={tForm('explanationPlaceholder')} {...field} rows={4} /></FormControl> <FormMessage /> </FormItem> )}/>
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader><CardTitle className="text-lg">{tForm('hintLabelOptional')}</CardTitle></CardHeader>
+                  <CardContent className="space-y-4">
+                    <FormField control={form.control} name="hintEn" render={({ field }) => ( <FormItem> <FormLabel>{tCommon('english')}</FormLabel> <FormControl><Textarea placeholder={tForm('hintPlaceholder')} {...field} rows={2} /></FormControl> <FormMessage /> </FormItem> )}/>
+                    <FormField control={form.control} name="hintEs" render={({ field }) => ( <FormItem> <FormLabel>{tCommon('spanish')}</FormLabel> <FormControl><Textarea placeholder={tForm('hintPlaceholder')} {...field} rows={2} /></FormControl> <FormMessage /> </FormItem> )}/>
+                  </CardContent>
+                </Card>
+
+                <DialogFooter className="pt-4">
+                  <DialogClose asChild>
+                      <Button type="button" variant="outline" disabled={isSubmittingQuestion}>{tCommon('cancel')}</Button>
+                  </DialogClose>
+                  <Button type="submit" disabled={isSubmittingQuestion} className="bg-primary hover:bg-primary/90 text-primary-foreground">
+                    {isSubmittingQuestion && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                    {tCommon('save')}
+                  </Button>
+                </DialogFooter>
+              </form>
+            </Form>
+          </ScrollArea>
+        </DialogContent>
+      </Dialog>
+
     </div>
   );
 }
-

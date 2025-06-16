@@ -174,6 +174,25 @@
     "deleteConfirmTitle": "¿Estás seguro?",
     "deleteConfirmDescription": "¿Estás seguro de que quieres eliminar la pregunta \"{question}\"? Esta acción no se puede deshacer.",
     "toastDeleteSuccess": "Pregunta \"{question}\" eliminada correctamente.",
-    "toastDeleteError": "No se pudo eliminar la pregunta. Por favor, inténtalo de nuevo."
+    "toastDeleteError": "No se pudo eliminar la pregunta. Por favor, inténtalo de nuevo.",
+    "toastUpdateSuccess": "Pregunta actualizada correctamente.",
+    "toastUpdateError": "No se pudo actualizar la pregunta. Por favor, inténtalo de nuevo.",
+    "form": {
+      "editDialogTitle": "Editar Pregunta",
+      "editDialogDescription": "Actualiza los detalles de esta pregunta de la categoría \"{topic}\". El Valor del Tema no se puede cambiar aquí.",
+      "difficultyLabel": "Dificultad",
+      "difficultyPlaceholder": "Selecciona la dificultad",
+      "questionLabel": "Texto de la Pregunta",
+      "questionPlaceholder": "Ingresa el texto de la pregunta...",
+      "answerLabel": "Respuesta {letter}",
+      "answerPlaceholder": "Ingresa el texto de la respuesta...",
+      "correctAnswerLabel": "Respuesta Correcta",
+      "correctAnswerPlaceholder": "Selecciona la respuesta correcta",
+      "answerOption": "Respuesta {letter}",
+      "explanationLabel": "Texto de la Explicación",
+      "explanationPlaceholder": "Ingresa el texto de la explicación...",
+      "hintLabelOptional": "Texto de la Pista (Opcional)",
+      "hintPlaceholder": "Ingresa el texto de la pista..."
+    }
   }
 }

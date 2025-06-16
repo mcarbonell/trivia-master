@@ -2,7 +2,7 @@
 'use server';
 
 import { db } from '@/lib/firebase';
-import { collection, query, where, getDocs, limit, DocumentData, orderBy, Timestamp, doc, deleteDoc } from 'firebase/firestore'; // Added doc, deleteDoc
+import { collection, query, where, getDocs, limit, DocumentData, orderBy, Timestamp, doc, deleteDoc, updateDoc } from 'firebase/firestore'; // Added updateDoc
 import type { GenerateTriviaQuestionOutput, DifficultyLevel, BilingualText } from '@/ai/flows/generate-trivia-question';
 
 export interface PredefinedQuestion extends GenerateTriviaQuestionOutput {
@@ -67,7 +67,7 @@ export async function getPredefinedQuestion(
       return unaskedQuestions[randomIndex]!;
     }
 
-    console.log(`No predefined question found for topic "${topicValue}" and difficulty "${targetDifficulty}". Falling back to Genkit.`);
+    // console.log(`No predefined question found for topic "${topicValue}" and difficulty "${targetDifficulty}". Falling back to Genkit.`);
     return null; 
   } catch (error) {
     console.error(`Error fetching predefined question (topic: ${topicValue}, difficulty: ${targetDifficulty}):`, error);
@@ -124,6 +124,22 @@ export async function deletePredefinedQuestion(questionId: string): Promise<void
     await deleteDoc(questionRef);
   } catch (error) {
     console.error(`[triviaService] Error deleting question ${questionId}:`, error);
+    throw error; // Re-throw to be caught by caller
+  }
+}
+
+/**
+ * Updates a predefined question in Firestore.
+ * @param questionId The ID of the question to update.
+ * @param data The partial data to update the question with.
+ * @returns A promise that resolves when the question is updated.
+ */
+export async function updatePredefinedQuestion(questionId: string, data: Partial<GenerateTriviaQuestionOutput>): Promise<void> {
+  try {
+    const questionRef = doc(db, PREDEFINED_QUESTIONS_COLLECTION, questionId);
+    await updateDoc(questionRef, data);
+  } catch (error) {
+    console.error(`[triviaService] Error updating question ${questionId}:`, error);
     throw error; // Re-throw to be caught by caller
   }
 }
