@@ -58,6 +58,12 @@ const argv = yargs(hideBin(process.argv))
     default: 25,
     description: 'Number of questions to request per Genkit API call.',
   })
+  .option('noContext', {
+    alias: 'nc',
+    type: 'boolean',
+    default: false,
+    description: 'If true, do not pass previous questions/answers as context to the AI.',
+  })
   .help()
   .alias('help', 'h')
   .parseSync();
@@ -69,6 +75,7 @@ const TARGET_DIFFICULTY: DifficultyLevel | undefined = argv.difficulty as Diffic
 const TARGET_QUESTIONS_PER_CATEGORY_DIFFICULTY: number = argv.targetPerDifficulty;
 const MAX_NEW_QUESTIONS_TO_FETCH_PER_RUN_PER_DIFFICULTY_TARGET: number = argv.maxNewPerRun;
 const QUESTIONS_TO_GENERATE_PER_API_CALL: number = argv.batchSize;
+const NO_CONTEXT_MODE: boolean = argv.noContext;
 
 
 async function fetchCategoriesWithAdminSDK(): Promise<CategoryDefinition[]> {
@@ -76,7 +83,7 @@ async function fetchCategoriesWithAdminSDK(): Promise<CategoryDefinition[]> {
     const categoriesRef = db.collection(CATEGORIES_COLLECTION);
     const querySnapshot = await categoriesRef.get();
     
-    console.log(`[AdminScript] Fetched ${querySnapshot.size} documents from "${CATEGORIES_COLLECTION}".`);
+    // console.log(`[AdminScript] Fetched ${querySnapshot.size} documents from "${CATEGORIES_COLLECTION}".`);
 
     const categories: CategoryDefinition[] = [];
     querySnapshot.forEach((doc) => {
@@ -106,30 +113,30 @@ async function fetchCategoriesWithAdminSDK(): Promise<CategoryDefinition[]> {
             if (allowedDifficulties.includes(key as DifficultyLevel) && typeof data.difficultySpecificGuidelines[key] === 'string') {
               validatedGuidelines[key] = data.difficultySpecificGuidelines[key];
             } else if (!allowedDifficulties.includes(key as DifficultyLevel)) {
-              console.warn(`[AdminScript] Document ${doc.id}, invalid difficulty key "${key}" in difficultySpecificGuidelines for ${categoryToAdd.topicValue}. Allowed: ${allowedDifficulties.join(', ')}. Skipping.`);
+              // console.warn(`[AdminScript] Document ${doc.id}, invalid difficulty key "${key}" in difficultySpecificGuidelines for ${categoryToAdd.topicValue}. Allowed: ${allowedDifficulties.join(', ')}. Skipping.`);
             } else {
-              console.warn(`[AdminScript] Document ${doc.id}, difficultySpecificGuidelines for key "${key}" is not a string. Skipping this guideline.`);
+              // console.warn(`[AdminScript] Document ${doc.id}, difficultySpecificGuidelines for key "${key}" is not a string. Skipping this guideline.`);
             }
           }
           if(Object.keys(validatedGuidelines).length > 0){
              categoryToAdd.difficultySpecificGuidelines = validatedGuidelines;
           } else if (Object.keys(data.difficultySpecificGuidelines).length > 0) {
-             console.warn(`[AdminScript] Document ${doc.id} had difficultySpecificGuidelines for ${categoryToAdd.topicValue} but none were valid strings or matched allowed difficulties. It will be omitted.`);
+            //  console.warn(`[AdminScript] Document ${doc.id} had difficultySpecificGuidelines for ${categoryToAdd.topicValue} but none were valid strings or matched allowed difficulties. It will be omitted.`);
           }
         }
         
         categories.push(categoryToAdd);
 
       } else {
-        console.warn(`[AdminScript] Document ${doc.id} in "${CATEGORIES_COLLECTION}" is missing one or more required fields or they are not in the expected format. Skipping.`);
-        console.warn(`[AdminScript] Problematic data for doc ${doc.id}:`, JSON.stringify(data));
+        // console.warn(`[AdminScript] Document ${doc.id} in "${CATEGORIES_COLLECTION}" is missing one or more required fields or they are not in the expected format. Skipping.`);
+        // console.warn(`[AdminScript] Problematic data for doc ${doc.id}:`, JSON.stringify(data));
       }
     });
     
-    console.log('[AdminScript] Processed categories: ', categories.map(c => ({ id: c.id, name: c.name.en, isPredefined: c.isPredefined })));
+    // console.log('[AdminScript] Processed categories: ', categories.map(c => ({ id: c.id, name: c.name.en, isPredefined: c.isPredefined })));
     
     if (querySnapshot.size > 0 && categories.length === 0) {
-        console.warn(`[AdminScript] All documents fetched from "${CATEGORIES_COLLECTION}" were skipped due to missing fields or incorrect format. Please check Firestore data and structure definitions.`);
+        // console.warn(`[AdminScript] All documents fetched from "${CATEGORIES_COLLECTION}" were skipped due to missing fields or incorrect format. Please check Firestore data and structure definitions.`);
     }
     
     return categories;
@@ -148,6 +155,7 @@ async function populateQuestions() {
   console.log(`Target Questions per Combo: ${TARGET_QUESTIONS_PER_CATEGORY_DIFFICULTY}`);
   console.log(`Max New Questions per Run: ${MAX_NEW_QUESTIONS_TO_FETCH_PER_RUN_PER_DIFFICULTY_TARGET}`);
   console.log(`Genkit API Batch Size: ${QUESTIONS_TO_GENERATE_PER_API_CALL}`);
+  console.log(`No Context Mode (don't send previous questions to AI): ${NO_CONTEXT_MODE}`);
   console.log(`---------------------`);
 
 
@@ -181,27 +189,35 @@ async function populateQuestions() {
     }
     console.log(`\nProcessing Category: "${category.name.en}" (TopicValue: ${category.topicValue})`);
     
-    // Collect all existing question texts and correct answer texts for THIS CATEGORY
-    // to avoid duplication within the category across all difficulties and runs.
-    const existingQuestionConceptTexts: string[] = [];
-    const existingCorrectAnswerConceptTexts: string[] = [];
-    const questionsRef = db.collection(PREDEFINED_QUESTIONS_COLLECTION);
-    const allCategoryQuestionsSnapshot = await questionsRef.where('topicValue', '==', category.topicValue).get();
-    allCategoryQuestionsSnapshot.forEach(doc => {
-      const data = doc.data() as GenerateTriviaQuestionOutput & { topicValue: string };
-        if (data.question) { 
-          if (data.question.en) existingQuestionConceptTexts.push(data.question.en);
-        }
-        if (data.answers && typeof data.correctAnswerIndex === 'number' && data.answers[data.correctAnswerIndex]) {
-          const correctAnswer = data.answers[data.correctAnswerIndex]!; 
-          if (correctAnswer.en) existingCorrectAnswerConceptTexts.push(correctAnswer.en);
-        }
-    });
-    console.log(`  Found ${existingQuestionConceptTexts.length} existing question concepts and ${existingCorrectAnswerConceptTexts.length} correct answer concepts for category "${category.name.en}" to use as context for AI.`);
-
-
     for (const difficulty of difficultyLevelsToProcess) {
       console.log(`  Targeting Difficulty: "${difficulty}" for category "${category.name.en}"`);
+
+      const existingQuestionConceptTextsForDifficulty: string[] = [];
+      const existingCorrectAnswerConceptTextsForDifficulty: string[] = [];
+      const questionsRef = db.collection(PREDEFINED_QUESTIONS_COLLECTION);
+
+      if (!NO_CONTEXT_MODE) {
+        const difficultyContextSnapshot = await questionsRef
+          .where('topicValue', '==', category.topicValue)
+          .where('difficulty', '==', difficulty)
+          .get();
+        
+        difficultyContextSnapshot.forEach(doc => {
+          const data = doc.data() as GenerateTriviaQuestionOutput & { topicValue: string };
+            if (data.question && data.question.en) { // Use 'en' as conceptual text
+              existingQuestionConceptTextsForDifficulty.push(data.question.en);
+            }
+            if (data.answers && typeof data.correctAnswerIndex === 'number' && data.answers[data.correctAnswerIndex]) {
+              const correctAnswer = data.answers[data.correctAnswerIndex]!; 
+              if (correctAnswer.en) { // Use 'en' as conceptual text
+                existingCorrectAnswerConceptTextsForDifficulty.push(correctAnswer.en);
+              }
+            }
+        });
+        console.log(`    Found ${existingQuestionConceptTextsForDifficulty.length} existing question concepts and ${existingCorrectAnswerConceptTextsForDifficulty.length} correct answer concepts for ${category.name.en} - ${difficulty} to use as context.`);
+      } else {
+        console.log(`    Skipping context collection for ${category.name.en} - ${difficulty} due to --no-context flag.`);
+      }
 
       const currentDifficultyQuerySnapshot = await questionsRef
         .where('topicValue', '==', category.topicValue)
@@ -209,10 +225,10 @@ async function populateQuestions() {
         .get();
 
       const numExistingForDifficulty = currentDifficultyQuerySnapshot.size;
-      console.log(`  Found ${numExistingForDifficulty} existing questions for ${category.name.en} with difficulty "${difficulty}". Target is ${TARGET_QUESTIONS_PER_CATEGORY_DIFFICULTY}.`);
+      console.log(`    Found ${numExistingForDifficulty} existing questions for ${category.name.en} with difficulty "${difficulty}". Target is ${TARGET_QUESTIONS_PER_CATEGORY_DIFFICULTY}.`);
 
       if (numExistingForDifficulty >= TARGET_QUESTIONS_PER_CATEGORY_DIFFICULTY) {
-        console.log(`  Overall target reached for ${category.name.en} - ${difficulty}. Skipping generation for this difficulty.`);
+        console.log(`    Overall target reached for ${category.name.en} - ${difficulty}. Skipping generation for this difficulty.`);
         continue;
       }
 
@@ -223,16 +239,16 @@ async function populateQuestions() {
       );
       
       if (maxNewQuestionsToFetchForThisDifficulty <= 0) {
-          console.log(`  No new questions needed for ${category.name.en} - ${difficulty} in this run based on overall target or run limit.`);
+          console.log(`    No new questions needed for ${category.name.en} - ${difficulty} in this run based on overall target or run limit.`);
           continue;
       }
 
-      console.log(`  Attempting to generate up to ${maxNewQuestionsToFetchForThisDifficulty} new questions for ${category.name.en} - ${difficulty}.`);
+      console.log(`    Attempting to generate up to ${maxNewQuestionsToFetchForThisDifficulty} new questions for ${category.name.en} - ${difficulty}.`);
 
       while (questionsGeneratedForThisDifficultyInThisRun < maxNewQuestionsToFetchForThisDifficulty) {
         const questionsStillNeededForThisRun = maxNewQuestionsToFetchForThisDifficulty - questionsGeneratedForThisDifficultyInThisRun;
         const questionsToRequestInThisAPICall = Math.min(
-          QUESTIONS_TO_GENERATE_PER_API_CALL, // Configured batch size per API call
+          QUESTIONS_TO_GENERATE_PER_API_CALL, 
           questionsStillNeededForThisRun
         );
 
@@ -240,13 +256,13 @@ async function populateQuestions() {
           break; 
         }
         
-        console.log(`    Generating a batch of ${questionsToRequestInThisAPICall} questions via Genkit (need ${questionsStillNeededForThisRun} more for this run for ${category.name.en} - ${difficulty})...`);
+        console.log(`      Generating a batch of ${questionsToRequestInThisAPICall} questions via Genkit (need ${questionsStillNeededForThisRun} more for this run for ${category.name.en} - ${difficulty})...`);
         
         try {
           const input: GenerateTriviaQuestionsInput = {
             topic: category.topicValue, 
-            previousQuestions: [...existingQuestionConceptTexts], 
-            previousCorrectAnswers: [...existingCorrectAnswerConceptTexts], 
+            previousQuestions: NO_CONTEXT_MODE ? [] : [...existingQuestionConceptTextsForDifficulty], 
+            previousCorrectAnswers: NO_CONTEXT_MODE ? [] : [...existingCorrectAnswerConceptTextsForDifficulty], 
             targetDifficulty: difficulty,
             categoryInstructions: category.detailedPromptInstructions,
             count: questionsToRequestInThisAPICall,
@@ -262,83 +278,77 @@ async function populateQuestions() {
           if (newQuestionsArray && newQuestionsArray.length > 0) {
             for (const newQuestionData of newQuestionsArray) {
               if (questionsGeneratedForThisDifficultyInThisRun >= maxNewQuestionsToFetchForThisDifficulty) {
-                  console.log(`      Max new questions for this run/difficulty (${maxNewQuestionsToFetchForThisDifficulty}) reached. Stopping save for this API call's results.`);
+                  console.log(`        Max new questions for this run/difficulty (${maxNewQuestionsToFetchForThisDifficulty}) reached. Stopping save for this API call's results.`);
                   break; 
               }
 
               if (newQuestionData && newQuestionData.question && newQuestionData.answers && newQuestionData.difficulty) {
                 if (newQuestionData.difficulty !== difficulty) {
-                    console.warn(`    AI generated question with difficulty "${newQuestionData.difficulty}" but target was "${difficulty}". Saving with AI's assessed difficulty.`);
+                    console.warn(`      AI generated question with difficulty "${newQuestionData.difficulty}" but target was "${difficulty}". Saving with AI's assessed difficulty.`);
                 }
 
                 const questionToSave = {
                   ...newQuestionData,
                   topicValue: category.topicValue, 
                   createdAt: admin.firestore.FieldValue.serverTimestamp(),
-                  source: 'batch-script-v5-cli-args-loop' 
+                  source: 'batch-script-v6-cli-context-options' 
                 };
 
                 await questionsRef.add(questionToSave);
                 questionsSavedThisAPICall++;
                 questionsGeneratedForThisDifficultyInThisRun++;
-                console.log(`      > Saved question (${questionsGeneratedForThisDifficultyInThisRun}/${maxNewQuestionsToFetchForThisDifficulty}) (AI diff: ${newQuestionData.difficulty}, Target: ${difficulty}): "${newQuestionData.question.en.substring(0,30)}..."`);
+                console.log(`        > Saved question (${questionsGeneratedForThisDifficultyInThisRun}/${maxNewQuestionsToFetchForThisDifficulty}) (AI diff: ${newQuestionData.difficulty}, Target: ${difficulty}): "${newQuestionData.question.en.substring(0,30)}..."`);
                 
-                if (newQuestionData.question.en) existingQuestionConceptTexts.push(newQuestionData.question.en);
-                const correctAnswer = newQuestionData.answers[newQuestionData.correctAnswerIndex];
-                if (correctAnswer && correctAnswer.en) {
-                  existingCorrectAnswerConceptTexts.push(correctAnswer.en);
+                if (!NO_CONTEXT_MODE) {
+                    if (newQuestionData.question.en) existingQuestionConceptTextsForDifficulty.push(newQuestionData.question.en);
+                    const correctAnswer = newQuestionData.answers[newQuestionData.correctAnswerIndex];
+                    if (correctAnswer && correctAnswer.en) {
+                      existingCorrectAnswerConceptTextsForDifficulty.push(correctAnswer.en);
+                    }
                 }
               } else {
-                console.warn(`    Genkit returned empty or invalid data for one question in batch (Category: ${category.name.en}, Target Difficulty: ${difficulty}).`);
+                console.warn(`      Genkit returned empty or invalid data for one question in batch (Category: ${category.name.en}, Target Difficulty: ${difficulty}).`);
               }
             }
-            console.log(`    Successfully saved ${questionsSavedThisAPICall} new questions from this API call for ${category.name.en} - ${difficulty}.`);
+            console.log(`      Successfully saved ${questionsSavedThisAPICall} new questions from this API call for ${category.name.en} - ${difficulty}.`);
           } else {
-            console.warn(`    Genkit returned an empty array or invalid data for the API call (Category: ${category.name.en}, Target Difficulty: ${difficulty}). No questions saved from this call.`);
-            // If Genkit consistently returns no questions, this could lead to many API calls.
-            // For now, we'll let it continue and rely on the outer loop conditions.
-            // Consider breaking here if no questions are returned after a few tries for robustness.
+            console.warn(`      Genkit returned an empty array or invalid data for the API call (Category: ${category.name.en}, Target Difficulty: ${difficulty}). No questions saved from this call.`);
           }
 
-          console.log(`    Total generated for ${category.name.en} - ${difficulty} in this run: ${questionsGeneratedForThisDifficultyInThisRun}/${maxNewQuestionsToFetchForThisDifficulty}.`);
+          console.log(`      Total generated for ${category.name.en} - ${difficulty} in this run: ${questionsGeneratedForThisDifficultyInThisRun}/${maxNewQuestionsToFetchForThisDifficulty}.`);
           
           if (questionsGeneratedForThisDifficultyInThisRun < maxNewQuestionsToFetchForThisDifficulty && newQuestionsArray && newQuestionsArray.length > 0) {
-            // Delay only if we are going to make another call for this same category/difficulty combo AND the last call returned something.
-            console.log(`    Waiting ${GENKIT_API_CALL_DELAY_MS / 1000}s before next API call for this same difficulty/category combination...`);
+            console.log(`      Waiting ${GENKIT_API_CALL_DELAY_MS / 1000}s before next API call for this same difficulty/category combination...`);
             await new Promise(resolve => setTimeout(resolve, GENKIT_API_CALL_DELAY_MS));
           } else if (questionsGeneratedForThisDifficultyInThisRun >= maxNewQuestionsToFetchForThisDifficulty) {
-             break; // Reached target for this run, exit while loop
+             break; 
           } else if (!newQuestionsArray || newQuestionsArray.length === 0) {
-            console.warn(`    API call returned no questions. Breaking loop for ${category.name.en} - ${difficulty} to avoid potential infinite loop if AI cannot generate more for this topic/difficulty combination.`);
-            break; // Break if API returns nothing, to avoid hammering.
+            console.warn(`      API call returned no questions. Breaking loop for ${category.name.en} - ${difficulty} to avoid potential infinite loop.`);
+            break; 
           }
 
         } catch (error) {
-          console.error(`    Error during Genkit API call for ${category.name.en} - ${difficulty}:`, error);
-          // Decide if we should break or continue after an error
-          console.log(`    Waiting ${GENKIT_API_CALL_DELAY_MS / 1000}s after error before potentially retrying or moving on...`);
+          console.error(`      Error during Genkit API call for ${category.name.en} - ${difficulty}:`, error);
+          console.log(`      Waiting ${GENKIT_API_CALL_DELAY_MS / 1000}s after error before potentially retrying or moving on...`);
           await new Promise(resolve => setTimeout(resolve, GENKIT_API_CALL_DELAY_MS));
-          break; // Break the while loop on error to prevent hammering API
+          break; 
         }
-      } // end while loop
+      } 
       
-      console.log(`  Finished generation attempts for ${category.name.en} - ${difficulty}. Generated ${questionsGeneratedForThisDifficultyInThisRun} questions in this run.`);
+      console.log(`    Finished generation attempts for ${category.name.en} - ${difficulty}. Generated ${questionsGeneratedForThisDifficultyInThisRun} questions in this run.`);
       if (questionsGeneratedForThisDifficultyInThisRun > 0 && questionsGeneratedForThisDifficultyInThisRun < maxNewQuestionsToFetchForThisDifficulty) {
-        console.log(`  Note: Fewer questions were generated (${questionsGeneratedForThisDifficultyInThisRun}) than the target for this run (${maxNewQuestionsToFetchForThisDifficulty}). This might be due to API limits or the AI running out of unique concepts for the current settings.`);
+        console.log(`    Note: Fewer questions were generated (${questionsGeneratedForThisDifficultyInThisRun}) than the target for this run (${maxNewQuestionsToFetchForThisDifficulty}).`);
       }
 
-      // Delay before processing the next difficulty *if* this difficulty actually attempted generation.
-      // This avoids a delay if the script just skipped this difficulty.
-      // Also check if it's not the very last difficulty of the last category.
       const isLastDifficulty = difficultyLevelsToProcess.indexOf(difficulty) === difficultyLevelsToProcess.length - 1;
       const isLastCategory = categoriesToProcess.indexOf(category) === categoriesToProcess.length - 1;
-      if (maxNewQuestionsToFetchForThisDifficulty > 0 && !(isLastDifficulty && isLastCategory)) { // Only delay if work was done and not the absolute end
-        console.log(`  Waiting ${GENKIT_API_CALL_DELAY_MS / 1000}s before processing next difficulty or category...`);
+      if (maxNewQuestionsToFetchForThisDifficulty > 0 && !(isLastDifficulty && isLastCategory)) { 
+        console.log(`    Waiting ${GENKIT_API_CALL_DELAY_MS / 1000}s before processing next difficulty or category...`);
         await new Promise(resolve => setTimeout(resolve, GENKIT_API_CALL_DELAY_MS));
       }
 
     } 
-    console.log(`Finished all difficulty levels for category: ${category.name.en}.`);
+    console.log(`  Finished all difficulty levels for category: ${category.name.en}.`);
   } 
   console.log('\nBatch question population script finished.');
 }
