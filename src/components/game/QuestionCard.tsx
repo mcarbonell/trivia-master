@@ -82,7 +82,7 @@ export function QuestionCard({
                 variant="ghost"
                 size="icon"
                 onClick={() => setIsReportDialogOpen(true)}
-                className="ml-2 shrink-0 text-muted-foreground hover:text-primary"
+                className="ml-2 shrink-0 text-muted-foreground hover:text-destructive"
                 aria-label={t('ReportDialog.reportButtonLabel')}
               >
                 <Flag className="h-5 w-5" />
@@ -185,7 +185,7 @@ export function QuestionCard({
                 variant="ghost"
                 size="sm"
                 onClick={() => setIsReportDialogOpen(true)}
-                className="text-muted-foreground hover:text-primary"
+                className="text-muted-foreground hover:text-destructive"
                 aria-label={t('ReportDialog.reportButtonLabel')}
               >
                 <Flag className="mr-2 h-4 w-4" /> {t('ReportDialog.reportThisQuestionButton')}
@@ -208,3 +208,4 @@ export function QuestionCard({
     </>
   );
 }
+
