@@ -26,7 +26,7 @@ const CATEGORIES_COLLECTION = 'triviaCategories';
 
 const ALL_DIFFICULTY_LEVELS_CONST: DifficultyLevel[] = ["easy", "medium", "hard"];
 const GENKIT_API_CALL_DELAY_MS = 1000; // Delay between Genkit API calls
-const DEFAULT_MODEL_NAME = 'gemini-2.5-flash-preview-05-20'; // Default model if not specified
+const DEFAULT_MODEL_NAME = 'googleai/gemini-2.5-flash-preview-05-20'; // Default model if not specified
 
 // --- Argument Parsing with yargs ---
 const argv = yargs(hideBin(process.argv))
@@ -88,7 +88,7 @@ const TARGET_QUESTIONS_PER_CATEGORY_DIFFICULTY: number = argv.targetPerDifficult
 const MAX_NEW_QUESTIONS_TO_FETCH_PER_RUN_PER_DIFFICULTY_TARGET: number = argv.maxNewPerRun;
 const QUESTIONS_TO_GENERATE_PER_API_CALL: number = argv.batchSize;
 const NO_CONTEXT_MODE: boolean = argv.noContext;
-const MODEL_TO_USE: string | undefined = argv.model;
+const MODEL_TO_USE: string = argv.model || DEFAULT_MODEL_NAME; // Ensure DEFAULT_MODEL_NAME is used if argv.model is undefined
 const UPDATE_EXISTING_SOURCES_MODE: boolean = argv.updateExistingSources;
 
 
@@ -139,7 +139,7 @@ async function fetchCategoriesWithAdminSDK(): Promise<CategoryDefinition[]> {
 async function updateAllExistingQuestionSources() {
   console.log('Starting update of "source" field for all existing predefined questions...');
   const questionsRef = db.collection(PREDEFINED_QUESTIONS_COLLECTION);
-  const newSourceValue = `model:${DEFAULT_MODEL_NAME},context:true,api_batch_size:N/A`;
+  const newSourceValue = `model:${MODEL_TO_USE},context:true,api_batch_size:N/A`; // Use MODEL_TO_USE here for consistency
   let questionsUpdated = 0;
   let batch = db.batch();
   let operationsInBatch = 0;
@@ -192,7 +192,7 @@ async function populateQuestions() {
   console.log(`Max New Questions per Run: ${MAX_NEW_QUESTIONS_TO_FETCH_PER_RUN_PER_DIFFICULTY_TARGET}`);
   console.log(`Genkit API Batch Size: ${QUESTIONS_TO_GENERATE_PER_API_CALL}`);
   console.log(`No Context Mode (don't send previous questions to AI): ${NO_CONTEXT_MODE}`);
-  console.log(`Model to Use: ${MODEL_TO_USE || DEFAULT_MODEL_NAME + ' (default)'}`);
+  console.log(`Model to Use: ${MODEL_TO_USE}`);
   console.log(`Update Existing Sources Only Mode: ${UPDATE_EXISTING_SOURCES_MODE}`);
   console.log(`---------------------`);
 
@@ -298,7 +298,7 @@ async function populateQuestions() {
           break;
         }
 
-        console.log(`      Generating a batch of ${questionsToRequestInThisAPICall} questions via Genkit (need ${questionsStillNeededForThisRun} more for this run for ${category.name.en} - ${difficulty}). Using model: ${MODEL_TO_USE || DEFAULT_MODEL_NAME}.`);
+        console.log(`      Generating a batch of ${questionsToRequestInThisAPICall} questions via Genkit (need ${questionsStillNeededForThisRun} more for this run for ${category.name.en} - ${difficulty}). Using model: ${MODEL_TO_USE}.`);
 
         try {
           const input: GenerateTriviaQuestionsInput = {
@@ -330,7 +330,7 @@ async function populateQuestions() {
                     console.warn(`      AI generated question with difficulty "${newQuestionData.difficulty}" but target was "${difficulty}". Saving with AI's assessed difficulty.`);
                 }
 
-                const modelUsedForSource = MODEL_TO_USE || DEFAULT_MODEL_NAME;
+                const modelUsedForSource = MODEL_TO_USE;
                 const sourceInfo = `model:${modelUsedForSource},context:${!NO_CONTEXT_MODE},api_batch_size:${QUESTIONS_TO_GENERATE_PER_API_CALL}`;
 
                 const questionToSave = {

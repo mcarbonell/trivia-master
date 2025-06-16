@@ -172,7 +172,8 @@ const generateTriviaQuestionsFlow = ai.defineFlow(
   },
   async (input) => {
     const effectiveInput = { ...input, count: input.count || 1 };
-    console.log('[generateTriviaQuestionsFlow] Checking ai object and ai.model method. Type of ai.model:', typeof ai.model);
+    // The following log was misleading and has been removed:
+    // console.log('[generateTriviaQuestionsFlow] Checking ai object and ai.model method. Type of ai.model:', typeof ai.model);
 
     let llmOutputArray: any[] | null = null;
 

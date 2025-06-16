@@ -5,21 +5,21 @@
     "name": { "en": "World Capitals", "es": "Capitales del Mundo" },
     "icon": "Building2",
     "detailedPromptInstructions": "Generate questions about the capital cities of countries worldwide. Questions can involve identifying the capital of a given country, the country of a given capital, or interesting facts about capital cities. Ensure a global spread.",
-    "isPredefined": true
+    "isPredefined": false
   },
   {
     "topicValue": "FamousInventions",
     "name": { "en": "Famous Inventions", "es": "Inventos Famosos" },
     "icon": "Lightbulb",
     "detailedPromptInstructions": "Generate questions about significant inventions throughout history, their inventors, the year/period of invention, and their impact on society. Cover a range of fields like communication, transport, medicine, etc.",
-    "isPredefined": true
+    "isPredefined": false
   },
   {
     "topicValue": "MythicalCreatures",
     "name": { "en": "Mythical Creatures", "es": "Criaturas Míticas" },
     "icon": "Ghost",
     "detailedPromptInstructions": "Generate questions about legendary creatures from various mythologies and folklore around the world (e.g., griffins, unicorns, dragons, krakens, etc.). Questions can cover their characteristics, origins, and associated stories.",
-    "isPredefined": true
+    "isPredefined": false
   },
   {
     "topicValue": "SpaceExploration",
@@ -31,49 +31,49 @@
       "medium": "Cover specific missions, key figures beyond the most famous, or basic concepts of space travel.",
       "hard": "Delve into technical details of spacecraft, specific objectives of lesser-known missions, or scientific discoveries made through space exploration."
     },
-    "isPredefined": true
+    "isPredefined": false
   },
   {
     "topicValue": "BoardGames",
     "name": { "en": "Board Games", "es": "Juegos de Mesa" },
     "icon": "Dice5",
     "detailedPromptInstructions": "Generate questions about classic and modern board games, including their rules, objectives, origins, famous designers, or iconic game pieces/mechanics. Examples: Chess, Monopoly, Scrabble, Settlers of Catan.",
-    "isPredefined": true
+    "isPredefined": false
   },
   {
     "topicValue": "InternetCulture",
     "name": { "en": "Internet Culture", "es": "Cultura de Internet" },
     "icon": "Wifi",
     "detailedPromptInstructions": "Generate questions about famous memes, viral trends, influential websites/platforms, historical internet events, and key figures in internet history. Focus on widely recognizable phenomena.",
-    "isPredefined": true
+    "isPredefined": false
   },
   {
     "topicValue": "HumanAnatomy",
     "name": { "en": "Human Anatomy", "es": "Anatomía Humana" },
     "icon": "HeartPulse",
     "detailedPromptInstructions": "Generate questions about the organs, systems (e.g., circulatory, nervous, respiratory), bones, and basic physiological functions of the human body. Focus on generally known anatomical terms and functions.",
-    "isPredefined": true
+    "isPredefined": false
   },
   {
     "topicValue": "Dinosaurs",
     "name": { "en": "Dinosaurs", "es": "Dinosaurios" },
     "icon": "Footprints",
     "detailedPromptInstructions": "Generate questions about various dinosaur species (e.g., T-Rex, Triceratops, Stegosaurus), their characteristics, the periods they lived in (Triassic, Jurassic, Cretaceous), and paleontology related to dinosaurs.",
-    "isPredefined": true
+    "isPredefined": false
   },
   {
     "topicValue": "FlagsOfTheWorld",
     "name": { "en": "Flags of the World", "es": "Banderas del Mundo" },
     "icon": "Flag",
     "detailedPromptInstructions": "Generate questions that require identifying a country based on a description of its flag, or vice versa. Questions can also be about the symbolism or history of specific flags. Focus on flags of well-known countries.",
-    "isPredefined": true
+    "isPredefined": false
   },
   {
     "topicValue": "FamousQuotes",
     "name": { "en": "Famous Quotes", "es": "Citas Célebres" },
     "icon": "Quote",
     "detailedPromptInstructions": "Generate questions asking to identify the person who said a famous quote, or to complete a well-known quote. Quotes can be from historical figures, literature, movies, or speeches.",
-    "isPredefined": true
+    "isPredefined": false
   },
   {
     "topicValue": "VideoGames",
@@ -85,13 +85,13 @@
         "medium": "Cover well-known games from various genres, identify characters or main plot points.",
         "hard": "Questions about specific game mechanics, development history, influential indie games, or niche genres."
     },
-    "isPredefined": true
+    "isPredefined": false
   },
   {
     "topicValue": "ArchitecturalStyles",
     "name": { "en": "Architectural Styles", "es": "Estilos Arquitectónicos" },
     "icon": "Landmark",
     "detailedPromptInstructions": "Generate questions about different architectural styles (e.g., Gothic, Baroque, Modernist, Art Deco), their key characteristics, famous architects associated with them, and iconic buildings representing these styles.",
-    "isPredefined": true
+    "isPredefined": false
   }
 ]

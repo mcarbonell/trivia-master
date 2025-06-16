@@ -21,7 +21,7 @@ try {
 
 const db = admin.firestore();
 const CATEGORIES_COLLECTION = 'triviaCategories';
-const INITIAL_CATEGORIES_PATH = path.join(__dirname, '../src/data/initial-categories.json');
+const INITIAL_CATEGORIES_PATH = path.join(__dirname, '../src/data/more-categories.json');
 
 async function populateCategories() {
   console.log(`Starting Firestore category population script from ${INITIAL_CATEGORIES_PATH}...`);
