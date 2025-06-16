@@ -4,20 +4,24 @@
 import { useEffect, useState, useCallback, useMemo } from 'react';
 import { getAllPredefinedQuestions, type PredefinedQuestion } from '@/services/triviaService';
 import { getAppCategories } from '@/services/categoryService';
-import type { CategoryDefinition } from '@/types';
+import type { CategoryDefinition, DifficultyLevel } from '@/types';
 import type { AppLocale } from '@/lib/i18n-config';
 import { useTranslations, useLocale } from 'next-intl';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Loader2, AlertTriangle, PlusCircle, Edit, Trash2, Eye, RefreshCw } from 'lucide-react';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Loader2, AlertTriangle, PlusCircle, Eye, Edit, Trash2, RefreshCw } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 const ITEMS_PER_PAGE = 10;
+const ALL_FILTER_VALUE = 'all';
 
 interface DisplayQuestion extends PredefinedQuestion {
   categoryName?: string;
 }
+
+const ALL_DIFFICULTY_LEVELS: DifficultyLevel[] = ["easy", "medium", "hard"];
 
 export default function AdminQuestionsPage() {
   const t = useTranslations('AdminQuestionsPage');
@@ -31,6 +35,9 @@ export default function AdminQuestionsPage() {
   const [error, setError] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
 
+  const [selectedCategory, setSelectedCategory] = useState<string>(ALL_FILTER_VALUE);
+  const [selectedDifficulty, setSelectedDifficulty] = useState<string>(ALL_FILTER_VALUE);
+
   const fetchAllData = useCallback(async () => {
     setLoading(true);
     setError(null);
@@ -40,7 +47,7 @@ export default function AdminQuestionsPage() {
         getAppCategories(),
       ]);
       setAllQuestions(fetchedQuestions);
-      setCategories(fetchedCategories);
+      setCategories(fetchedCategories.filter(cat => cat.isPredefined !== false)); // Only show predefined categories for filtering
     } catch (err) {
       console.error("Error fetching data:", err);
       setError(t('errorLoading'));
@@ -58,12 +65,18 @@ export default function AdminQuestionsPage() {
     return new Map(categories.map(cat => [cat.topicValue, cat.name[locale]]));
   }, [categories, locale]);
 
+  const filteredQuestions = useMemo(() => {
+    return allQuestions
+      .filter(q => selectedCategory === ALL_FILTER_VALUE || q.topicValue === selectedCategory)
+      .filter(q => selectedDifficulty === ALL_FILTER_VALUE || q.difficulty === selectedDifficulty);
+  }, [allQuestions, selectedCategory, selectedDifficulty]);
+
   const displayQuestions = useMemo(() => {
-    return allQuestions.map(q => ({
+    return filteredQuestions.map(q => ({
       ...q,
       categoryName: categoryMap.get(q.topicValue) || q.topicValue,
     }));
-  }, [allQuestions, categoryMap]);
+  }, [filteredQuestions, categoryMap]);
 
   const paginatedQuestions = useMemo(() => {
     const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
@@ -72,6 +85,12 @@ export default function AdminQuestionsPage() {
   }, [displayQuestions, currentPage]);
 
   const totalPages = Math.ceil(displayQuestions.length / ITEMS_PER_PAGE);
+
+  const handleFilterChange = () => {
+    setCurrentPage(1);
+  };
+
+  useEffect(handleFilterChange, [selectedCategory, selectedDifficulty]);
 
   const handleNextPage = () => {
     if (currentPage < totalPages) {
@@ -129,15 +148,47 @@ export default function AdminQuestionsPage() {
             {t('addButton')}
         </Button>
       </header>
-      
+
       <Card className="shadow-lg">
         <CardHeader>
-          <CardTitle>{t('questionsListTitle')}</CardTitle>
-          <CardDescription>{t('questionsListDescription', { count: displayQuestions.length })}</CardDescription>
+          <div className="flex flex-col md:flex-row justify-between md:items-center gap-4">
+            <div>
+              <CardTitle>{t('questionsListTitle')}</CardTitle>
+              <CardDescription>{t('questionsListDescriptionFiltered', { count: displayQuestions.length, total: allQuestions.length })}</CardDescription>
+            </div>
+            <div className="flex flex-col sm:flex-row gap-2 md:gap-4">
+              <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+                <SelectTrigger className="w-full sm:w-[200px]">
+                  <SelectValue placeholder={t('filterCategoryPlaceholder')} />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value={ALL_FILTER_VALUE}>{t('allCategories')}</SelectItem>
+                  {categories.map(cat => (
+                    <SelectItem key={cat.topicValue} value={cat.topicValue}>
+                      {cat.name[locale]}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <Select value={selectedDifficulty} onValueChange={setSelectedDifficulty}>
+                <SelectTrigger className="w-full sm:w-[180px]">
+                  <SelectValue placeholder={t('filterDifficultyPlaceholder')} />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value={ALL_FILTER_VALUE}>{t('allDifficulties')}</SelectItem>
+                  {ALL_DIFFICULTY_LEVELS.map(diff => (
+                     <SelectItem key={diff} value={diff}>
+                        {tCommon(`difficultyLevels.${diff}` as any)}
+                     </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
         </CardHeader>
         <CardContent>
           {paginatedQuestions.length === 0 ? (
-            <p className="text-muted-foreground text-center py-4">{t('noQuestions')}</p>
+            <p className="text-muted-foreground text-center py-4">{t('noQuestionsFound')}</p>
           ) : (
             <Table>
               <TableHeader>
@@ -152,10 +203,10 @@ export default function AdminQuestionsPage() {
               <TableBody>
                 {paginatedQuestions.map((question) => (
                   <TableRow key={question.id}>
-                    <TableCell className="font-medium">{truncateText(question.question[locale] || 'N/A', 70)}</TableCell>
+                    <TableCell className="font-medium max-w-xs break-words">{truncateText(question.question[locale] || 'N/A', 70)}</TableCell>
                     <TableCell className="hidden md:table-cell">{question.categoryName}</TableCell>
                     <TableCell>{tCommon(`difficultyLevels.${question.difficulty}` as any) || question.difficulty}</TableCell>
-                    <TableCell className="hidden lg:table-cell">{truncateText(question.answers[question.correctAnswerIndex]?.[locale] || 'N/A', 50)}</TableCell>
+                    <TableCell className="hidden lg:table-cell max-w-xs break-words">{truncateText(question.answers[question.correctAnswerIndex]?.[locale] || 'N/A', 50)}</TableCell>
                     <TableCell className="text-right space-x-1">
                       <Button variant="outline" size="icon" className="h-8 w-8" disabled>
                         <Eye className="h-4 w-4" />
@@ -190,6 +241,11 @@ export default function AdminQuestionsPage() {
               </Button>
             </div>
           </CardFooter>
+        )}
+         {displayQuestions.length === 0 && allQuestions.length > 0 && (
+            <CardFooter className="pt-4">
+                <p className="text-sm text-muted-foreground">{t('noQuestionsMatchFilters')}</p>
+            </CardFooter>
         )}
       </Card>
     </div>

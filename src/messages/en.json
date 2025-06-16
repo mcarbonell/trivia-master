@@ -151,11 +151,14 @@
     "addButton": "Add Question (Manual)",
     "questionsListTitle": "Predefined Questions",
     "questionsListDescription": "Found {count, plural, =0 {no questions} one {# question} other {# questions}}.",
+    "questionsListDescriptionFiltered": "Showing {count, plural, =0 {no questions} one {# question} other {# questions}} (out of {total} total).",
     "noQuestions": "No predefined questions found. You can generate them using the population script.",
-    "tableQuestion": "Question (EN)",
+    "noQuestionsFound": "No questions found matching the current filters.",
+    "noQuestionsMatchFilters": "Try adjusting your filters or ensure questions have been populated for the selected criteria.",
+    "tableQuestion": "Question",
     "tableCategory": "Category",
     "tableDifficulty": "Difficulty",
-    "tableCorrectAnswer": "Correct Answer (EN)",
+    "tableCorrectAnswer": "Correct Answer",
     "tableActions": "Actions",
     "viewButton": "View Details",
     "editButton": "Edit",
@@ -163,6 +166,10 @@
     "errorLoading": "Error loading questions. Please try again.",
     "paginationInfo": "Page {currentPage} of {totalPages}. Total: {totalItems} questions.",
     "previousPage": "Previous",
-    "nextPage": "Next"
+    "nextPage": "Next",
+    "filterCategoryPlaceholder": "Filter by category...",
+    "filterDifficultyPlaceholder": "Filter by difficulty...",
+    "allCategories": "All Categories",
+    "allDifficulties": "All Difficulties"
   }
 }

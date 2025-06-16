@@ -151,11 +151,14 @@
     "addButton": "Añadir Pregunta (Manual)",
     "questionsListTitle": "Preguntas Predefinidas",
     "questionsListDescription": "{count, plural, =0 {No se encontraron preguntas} one {Se encontró # pregunta} other {Se encontraron # preguntas}}.",
+    "questionsListDescriptionFiltered": "Mostrando {count, plural, =0 {ninguna pregunta} one {# pregunta} other {# preguntas}} (de {total} en total).",
     "noQuestions": "No se encontraron preguntas predefinidas. Puedes generarlas usando el script de población.",
-    "tableQuestion": "Pregunta (EN)",
+    "noQuestionsFound": "No se encontraron preguntas que coincidan con los filtros actuales.",
+    "noQuestionsMatchFilters": "Intenta ajustar tus filtros o asegúrate de que se hayan poblado preguntas para los criterios seleccionados.",
+    "tableQuestion": "Pregunta",
     "tableCategory": "Categoría",
     "tableDifficulty": "Dificultad",
-    "tableCorrectAnswer": "Respuesta Correcta (EN)",
+    "tableCorrectAnswer": "Respuesta Correcta",
     "tableActions": "Acciones",
     "viewButton": "Ver Detalles",
     "editButton": "Editar",
@@ -163,6 +166,10 @@
     "errorLoading": "Error al cargar las preguntas. Por favor, inténtalo de nuevo.",
     "paginationInfo": "Página {currentPage} de {totalPages}. Total: {totalItems} preguntas.",
     "previousPage": "Anterior",
-    "nextPage": "Siguiente"
+    "nextPage": "Siguiente",
+    "filterCategoryPlaceholder": "Filtrar por categoría...",
+    "filterDifficultyPlaceholder": "Filtrar por dificultad...",
+    "allCategories": "Todas las Categorías",
+    "allDifficulties": "Todas las Dificultades"
   }
 }
