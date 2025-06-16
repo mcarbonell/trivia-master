@@ -224,10 +224,11 @@ async function populateQuestions() {
   }
 
   for (const category of categoriesToProcess) {
-    if (category.isPredefined === false) {
-        console.log(`\nSkipping Category: "${category.name.en}" (TopicValue: ${category.topicValue}) as it is not marked for predefined question population.`);
-        continue;
-    }
+    // Predefined needs redefinition, will be selected in the home screen
+    // if (category.isPredefined === false) {
+    //     console.log(`\nSkipping Category: "${category.name.en}" (TopicValue: ${category.topicValue}) as it is not marked for predefined question population.`);
+    //     continue;
+    // }
     console.log(`\nProcessing Category: "${category.name.en}" (TopicValue: ${category.topicValue})`);
 
     for (const difficulty of difficultyLevelsToProcess) {
@@ -342,7 +343,7 @@ async function populateQuestions() {
                 await questionsRef.add(questionToSave);
                 questionsSavedThisAPICall++;
                 questionsGeneratedForThisDifficultyInThisRun++;
-                console.log(`        > Saved question (${questionsGeneratedForThisDifficultyInThisRun}/${maxNewQuestionsToFetchForThisDifficulty}) (AI diff: ${newQuestionData.difficulty}, Target: ${difficulty}): "${newQuestionData.question.en.substring(0,60)}..."`);
+                console.log(`        > Saved question (${questionsGeneratedForThisDifficultyInThisRun}/${maxNewQuestionsToFetchForThisDifficulty}) (AI diff: ${newQuestionData.difficulty}, Target: ${difficulty}): "${newQuestionData.question.en.substring(0,80)}..."`);
 
                 if (!NO_CONTEXT_MODE) {
                     if (newQuestionData.question.en) existingQuestionConceptTextsForDifficulty.push(newQuestionData.question.en);

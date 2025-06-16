@@ -62,9 +62,10 @@ const GenerateTriviaQuestionOutputSchema = z.object({
 });
 export type GenerateTriviaQuestionOutput = z.infer<typeof GenerateTriviaQuestionOutputSchema>;
 
-// The prompt output schema is now an array of the single question output schema.
+// The flow will output an array of GenerateTriviaQuestionOutput (valid questions)
+// This schema is used for internal validation within the flow, not for the prompt's direct output.
 const ValidatedQuestionsArraySchema = z.array(GenerateTriviaQuestionOutputSchema);
-
+// const PermisiveQuestionsArraySchema = z.array(z.object({})).describe("A JSON string representing an array of trivia question objects, or null."); // Not needed any more, as outputSchema is not mandatory in defineFlow.
 
 export async function generateTriviaQuestions(input: GenerateTriviaQuestionsInput): Promise<GenerateTriviaQuestionOutput[]> {
   return generateTriviaQuestionsFlow(input);
@@ -157,7 +158,7 @@ The number of question objects in the JSON array string SHOULD ideally match the
 const generateTriviaQuestionsPrompt = ai.definePrompt({
   name: 'generateTriviaQuestionsPrompt',
   input: {schema: GenerateTriviaQuestionsInputSchema},
-  output: {schema: ValidatedQuestionsArraySchema}, // Output schema is an array of valid question objects
+  output: {schema: ValidatedQuestionsArraySchema}, // Strict output instructions for the LLM
   config: {
     temperature: 1,
   },
@@ -168,85 +169,52 @@ const generateTriviaQuestionsFlow = ai.defineFlow(
   {
     name: 'generateTriviaQuestionsFlow',
     inputSchema: GenerateTriviaQuestionsInputSchema,
-    // No outputSchema here, allowing us to do granular validation
+//    outputSchema: PermisiveQuestionsArraySchema, // Permisive output schema for Genkit - Key insight: this field is NOT mandatory, if filled, Genkit will ensure the output is valid.
   },
   async (input) => {
     const effectiveInput = { ...input, count: input.count || 1 };
+    // console.log('[generateTriviaQuestionsFlow] Input received:', JSON.stringify(effectiveInput, null, 2)); // Verbose log, can be enabled if needed
     console.log('[generateTriviaQuestionsFlow] Checking ai object and ai.model method. Type of ai.model:', typeof ai.model);
 
-    let llmOutputArray: any[] | null = null;
-
-    try {
-      // The prompt's output is strictly validated by Genkit against ValidatedQuestionsArraySchema
-      const { output } = await generateTriviaQuestionsPrompt(
+    // The prompt's output is now expected to be a JSON string or null.
+    const {output: llmOutput} = await generateTriviaQuestionsPrompt(
         effectiveInput,
         effectiveInput.modelName ? { model: effectiveInput.modelName } : undefined // Pass modelName string directly
       );
-      llmOutputArray = output; // If successful, 'output' is the validated array
-      console.log(`[generateTriviaQuestionsFlow] Prompt call successful, Genkit validated ${llmOutputArray?.length || 0} items against schema.`);
 
-    } catch (error: any) {
-      console.warn(`[generateTriviaQuestionsFlow] Genkit prompt validation failed for the batch. Attempting to parse raw data from error. Error: ${error.name} - ${error.message}`);
-      if (error.name === 'GenkitError' && error.status === 'INVALID_ARGUMENT') {
-        // Attempt to get raw data from error.detail.data or error.detail.input
-        const rawDataFromErrorDetail = error.detail?.data ?? error.detail?.input;
-
-        if (Array.isArray(rawDataFromErrorDetail)) {
-          console.log(`[generateTriviaQuestionsFlow] Successfully extracted raw array of ${rawDataFromErrorDetail.length} items from GenkitError details.`);
-          llmOutputArray = rawDataFromErrorDetail;
-        } else {
-          // Fallback: attempt to parse from error.message
-          const message = error.message || '';
-          const providedDataMatch = message.match(/Provided data:\s*(\[[\s\S]*?\](?=\s*Required JSON schema:|$))/s);
-          if (providedDataMatch && providedDataMatch[1]) {
-            try {
-              llmOutputArray = JSON.parse(providedDataMatch[1]);
-              console.log(`[generateTriviaQuestionsFlow] Successfully parsed raw array of ${llmOutputArray?.length || 0} items from error message string.`);
-            } catch (parseError: any) {
-              console.error(`[generateTriviaQuestionsFlow] Failed to parse JSON from error message. ParseError: ${parseError.message}`);
-            }
-          } else {
-            console.warn(`[generateTriviaQuestionsFlow] Could not extract raw data array from GenkitError details or message.`);
-          }
-        }
-      } else {
-        console.error(`[generateTriviaQuestionsFlow] Non-validation error during prompt execution:`, error);
-        return [];
-      }
-    }
-
-    if (llmOutputArray === null) {
-      console.warn('[generateTriviaQuestionsFlow] LLM returned or resulted in null/unparseable output for the batch. Topic:', effectiveInput.topic);
+    if (llmOutput === null) {
+      console.warn('[generateTriviaQuestionsFlow] LLM returned null. This might be due to safety filters or inability to generate content for the request. Topic:', effectiveInput.topic);
       return [];
     }
     
-    if (!Array.isArray(llmOutputArray)) {
-      console.error('[generateTriviaQuestionsFlow] Processed LLM output is not an array. Output data:', llmOutputArray);
+    if (!Array.isArray(llmOutput)) {
+      console.error('[generateTriviaQuestionsFlow] llmOutput is not an array. Output data:', llmOutput);
       return []; 
     }
     
     const validQuestions: GenerateTriviaQuestionOutput[] = [];
-    const llmReturnedCount = llmOutputArray.length;
+    let llmReturnedCount = llmOutput.length;
 
-    for (let i = 0; i < llmOutputArray.length; i++) {
-      const rawQuestion = llmOutputArray[i];
+    for (let i = 0; i < llmOutput.length; i++) {
+      const rawQuestion = llmOutput[i];
+      // Validate each individual question object
       const parsedQuestion = GenerateTriviaQuestionOutputSchema.safeParse(rawQuestion);
 
       if (parsedQuestion.success) {
         validQuestions.push(parsedQuestion.data);
       } else {
         console.warn(`[generateTriviaQuestionsFlow] Discarding malformed question object at index ${i} from LLM batch. Errors:`, parsedQuestion.error.flatten().fieldErrors);
-        // console.warn(`[generateTriviaQuestionsFlow] Malformed question data for index ${i}:`, JSON.stringify(rawQuestion)); // Can be very verbose
+        console.warn(`[generateTriviaQuestionsFlow] Malformed question data:`, JSON.stringify(rawQuestion));
       }
     }
 
-    const requestedCount = effectiveInput.count || 1;
-    if (validQuestions.length !== requestedCount && llmReturnedCount >= requestedCount) {
-      console.warn(`[generateTriviaQuestionsFlow] LLM was asked for ${requestedCount} questions, JSON string contained ${llmReturnedCount} raw items, and ${validQuestions.length} were valid. This means ${llmReturnedCount - validQuestions.length} items failed individual validation. For topic: ${effectiveInput.topic}`);
-    } else if (llmReturnedCount < requestedCount) {
-      console.warn(`[generateTriviaQuestionsFlow] LLM was asked for ${requestedCount} questions, JSON string contained ${llmReturnedCount} raw items, of which ${validQuestions.length} were valid. For topic: ${effectiveInput.topic}`);
+    if (validQuestions.length !== effectiveInput.count && llmReturnedCount >= effectiveInput.count) {
+      console.warn(`[generateTriviaQuestionsFlow] LLM was asked for ${effectiveInput.count} questions, JSON string contained ${llmReturnedCount} raw items, and ${validQuestions.length} were valid. This means ${llmReturnedCount - validQuestions.length} items failed individual validation. For topic: ${effectiveInput.topic}`);
+    } else if (llmReturnedCount < effectiveInput.count) {
+      console.warn(`[generateTriviaQuestionsFlow] LLM was asked for ${effectiveInput.count} questions, JSON string contained ${llmReturnedCount} raw items, of which ${validQuestions.length} were valid. For topic: ${effectiveInput.topic}`);
     }
     
     return validQuestions;
   }
 );
+
