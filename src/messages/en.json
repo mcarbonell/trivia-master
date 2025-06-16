@@ -134,8 +134,8 @@
     "formIconPlaceholder": "e.g., Rocket, Film",
     "formDetailedInstructions": "Detailed Prompt Instructions (English)",
     "formDetailedInstructionsPlaceholder": "Provide specific guidelines for AI question generation for this category...",
-    "formIsPredefined": "Visible in App?",
-    "formIsPredefinedHint": "Controls if this category appears in the main selection screen of the app.",
+    "formIsPredefined": "Show in App's Main Selection?",
+    "formIsPredefinedHint": "Controls if this category appears in the main selection screen of the game.",
     "formDifficultyGuidelinesTitle": "Difficulty-Specific Guidelines (Optional, English)",
     "formDifficultyGuidelinesDesc": "Provide more granular instructions for each difficulty level if needed.",
     "formDifficultyEasy": "Easy Difficulty Instructions",
@@ -202,6 +202,26 @@
       "hintLabelOptional": "Hint Text (Optional)",
       "hintPlaceholder": "Enter the hint text..."
     }
+  },
+  "ReportDialog": {
+    "title": "Report Question",
+    "description": "Let us know what's wrong with this question. Your feedback helps us improve!",
+    "reasonLabel": "Reason for reporting",
+    "reasonPlaceholder": "Select a reason",
+    "detailsLabel": "Additional Details (Optional)",
+    "detailsPlaceholder": "Provide more information here...",
+    "submitButton": "Submit Report",
+    "reportButtonLabel": "Report this question",
+    "reportThisQuestionButton": "Report Question",
+    "reportSubmittedSuccess": "Report submitted successfully. Thank you!",
+    "reportSubmittedError": "Failed to submit report. Please try again.",
+    "reasons": {
+      "incorrect_info": "Incorrect Information",
+      "poorly_worded": "Poorly Worded / Confusing",
+      "typo_grammar": "Typo / Grammatical Error",
+      "duplicate_question": "Duplicate Question",
+      "offensive_content": "Offensive Content",
+      "other": "Other"
+    }
   }
 }
-

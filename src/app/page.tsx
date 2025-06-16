@@ -5,7 +5,7 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import { generateTriviaQuestions, type GenerateTriviaQuestionOutput, type GenerateTriviaQuestionsInput, type DifficultyLevel } from "@/ai/flows/generate-trivia-question";
 import { getPredefinedQuestion, type PredefinedQuestion } from "@/services/triviaService";
 import { getAppCategories } from "@/services/categoryService";
-import type { CategoryDefinition, DifficultyMode } from "@/types"; // Added DifficultyMode
+import type { CategoryDefinition, DifficultyMode, BilingualText } from "@/types"; // Added BilingualText
 import { CategorySelector } from "@/components/game/CategorySelector";
 import { QuestionCard } from "@/components/game/QuestionCard";
 import { ScoreDisplay } from "@/components/game/ScoreDisplay";
@@ -17,9 +17,7 @@ import type { AppLocale } from "@/lib/i18n-config";
 import {
   Loader2,
   AlertTriangle,
-  ChevronUp,
-  ChevronDown,
-  Minus,
+  ChevronRight, // Replaced ChevronUp/Down/Minus with ChevronRight for next button
   Zap,
   ShieldQuestion,
   BarChart3,
@@ -27,11 +25,12 @@ import {
   SignalMedium,
   SignalHigh
 } from "lucide-react";
-import { logEvent as logEventFromLib, analytics } from "@/lib/firebase"; // Renombrado y se usa analytics de aquí
+import { logEvent as logEventFromLib, analytics } from "@/lib/firebase";
 
 type GameState = 'loading_categories' | 'category_selection' | 'difficulty_selection' | 'loading_question' | 'playing' | 'showing_feedback' | 'error';
 
-type CurrentQuestionData = GenerateTriviaQuestionOutput & { id?: string }; // id for Firestore questions
+// This will store the full bilingual question data, including a Firestore ID if available.
+type CurrentQuestionData = GenerateTriviaQuestionOutput & { id?: string };
 
 const DIFFICULTY_LEVELS_ORDER: DifficultyLevel[] = ["easy", "medium", "hard"];
 const QUESTION_TIME_LIMIT_SECONDS = 30;
@@ -63,16 +62,14 @@ export default function TriviaPage() {
   const timerIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const [isHintVisible, setIsHintVisible] = useState(false);
 
-
-  // Analytics Helper
   const logAnalyticsEvent = useCallback((eventName: string, eventParams?: { [key: string]: any }) => {
-    if (analytics) { // analytics instance from @/lib/firebase
-      logEventFromLib(eventName, eventParams); // LLAMADA CORREGIDA
-      console.log(`[Analytics] Event: ${eventName}`, eventParams);
+    if (analytics) {
+      logEventFromLib(eventName, eventParams);
+      // console.log(`[Analytics] Event: ${eventName}`, eventParams);
     } else {
-      console.log(`[Analytics] SKIPPED (not supported/initialized): ${eventName}`, eventParams);
+      // console.log(`[Analytics] SKIPPED (not supported/initialized): ${eventName}`, eventParams);
     }
-  }, [analytics, logEventFromLib]); // Dependencias añadidas
+  }, [analytics, logEventFromLib]);
 
   useEffect(() => {
     setCurrentYear(new Date().getFullYear());
@@ -80,17 +77,21 @@ export default function TriviaPage() {
     const fetchAndSetCategories = async () => {
       try {
         const allCategories = await getAppCategories();
+        // Filter categories based on isPredefined flag for UI display
         const uiCategories = allCategories.filter(cat => cat.isPredefined !== false);
         setAppCategories(uiCategories);
+
         if (uiCategories.length > 0) {
           setGameState('category_selection');
         } else {
-          console.warn("[TriviaPage] No categories marked for UI display (isPredefined: true). User will only be able to use custom topics or may see an error if none are found at all.");
+          console.warn("[TriviaPage] No categories marked for UI display (isPredefined !== false). User may only use custom topics or see an error if no categories are defined at all.");
           setFeedback({ message: t('errorLoadingCategories'), detailedMessage: t('errorNoUICategories'), isCorrect: false });
+          // If there are no categories at all (even hidden ones), it's an error.
+          // Otherwise, proceed to category selection to allow custom topics.
           if (allCategories.length === 0) {
             setGameState('error');
           } else {
-             setGameState('category_selection');
+             setGameState('category_selection'); // Still allow custom topics
           }
         }
       } catch (error) {
@@ -100,7 +101,7 @@ export default function TriviaPage() {
       }
     };
     fetchAndSetCategories();
-  }, [t, logAnalyticsEvent]); // logAnalyticsEvent añadido a dependencias si se usa aquí, aunque no parece usarse directamente en este useEffect
+  }, [t, logAnalyticsEvent]);
 
   const clearTimer = useCallback(() => {
     if (timerIntervalRef.current) {
@@ -177,7 +178,6 @@ export default function TriviaPage() {
     };
   }, [gameState, questionData, startTimer, clearTimer]);
 
-  // Track hint usage
   useEffect(() => {
     if (isHintVisible && questionData && gameState === 'playing') {
       logAnalyticsEvent('use_hint', {
@@ -197,18 +197,18 @@ export default function TriviaPage() {
     setTimeLeft(null); 
     setIsHintVisible(false);
 
-    let newQuestionArray: GenerateTriviaQuestionOutput[] | null = null;
-    let newQuestionData: CurrentQuestionData | null = null;
+    let fetchedQuestionData: CurrentQuestionData | null = null;
     
+    // Only attempt to get predefined question if a category was selected (not custom topic)
     if (categoryDetailsForSelectedTopic) {
       try {
-        newQuestionData = await getPredefinedQuestion(topic, askedFirestoreIds, difficulty);
+        fetchedQuestionData = await getPredefinedQuestion(topic, askedFirestoreIds, difficulty);
       } catch (firestoreError) {
         console.warn(`[TriviaPage] Error fetching from Firestore for topic "${topic}", will fall back to Genkit:`, firestoreError);
       }
     }
 
-    if (!newQuestionData) {
+    if (!fetchedQuestionData) {
       const inputForAI: GenerateTriviaQuestionsInput = {
         topic,
         previousQuestions: askedQuestionTextsForAI, 
@@ -225,9 +225,9 @@ export default function TriviaPage() {
       }
       
       try {
-        newQuestionArray = await generateTriviaQuestions(inputForAI);
+        const newQuestionArray = await generateTriviaQuestions(inputForAI);
         if (newQuestionArray && newQuestionArray.length > 0) {
-            newQuestionData = newQuestionArray[0]!; 
+            fetchedQuestionData = newQuestionArray[0]!; 
         }
       } catch (genkitError) {
         console.error(`[TriviaPage] Failed to generate question with Genkit (topic: ${topic}, difficulty: ${difficulty}):`, genkitError);
@@ -237,16 +237,16 @@ export default function TriviaPage() {
       }
     }
 
-    if (newQuestionData) {
-      setQuestionData(newQuestionData as CurrentQuestionData); 
-      const questionTextInLocale = newQuestionData.question[locale] || `q_text_${Date.now()}`;
-      const correctAnswerTextInLocale = newQuestionData.answers[newQuestionData.correctAnswerIndex]![locale];
+    if (fetchedQuestionData) {
+      setQuestionData(fetchedQuestionData); 
+      const questionTextInLocale = fetchedQuestionData.question[locale] || `q_text_${Date.now()}`;
+      const correctAnswerTextInLocale = fetchedQuestionData.answers[fetchedQuestionData.correctAnswerIndex]![locale];
 
       setAskedQuestionTextsForAI(prev => [...new Set([...prev, questionTextInLocale])]);
       setAskedCorrectAnswerTexts(prev => [...new Set([...prev, correctAnswerTextInLocale])]);
 
-      if ((newQuestionData as CurrentQuestionData).id) {
-        setAskedFirestoreIds(prev => [...new Set([...prev, (newQuestionData as CurrentQuestionData).id!])]);
+      if (fetchedQuestionData.id) { // Only add ID if it's a Firestore question
+        setAskedFirestoreIds(prev => [...new Set([...prev, fetchedQuestionData!.id!])]);
       }
       setGameState('playing'); 
     } else {
@@ -370,7 +370,7 @@ export default function TriviaPage() {
   };
   
   const DifficultyIndicator = () => {
-    let Icon = Minus;
+    let Icon = ShieldQuestion; // Default icon
     let color = "text-muted-foreground";
     let text = t(`difficultyLevels.${currentDifficultyLevel}` as any); 
 
@@ -440,7 +440,7 @@ export default function TriviaPage() {
         )}
         {gameState === 'category_selection' && (
           <CategorySelector
-            predefinedCategories={appCategories} 
+            predefinedCategories={appCategories} // Already filtered based on isPredefined
             customTopicInput={customTopicInput}
             onCustomTopicChange={setCustomTopicInput}
             onSelectTopic={handleStartGame} 
@@ -499,9 +499,9 @@ export default function TriviaPage() {
             </CardContent>
           </Card>
         )}
-        {(gameState === 'playing' || gameState === 'showing_feedback') && localizedQuestionCardData && (
+        {(gameState === 'playing' || gameState === 'showing_feedback') && localizedQuestionCardData && questionData && (
           <QuestionCard
-            questionData={{
+            questionData={{ // Localized data for display
                 question: localizedQuestionCardData.question,
                 answers: localizedQuestionCardData.answers,
                 correctAnswerIndex: localizedQuestionCardData.correctAnswerIndex,
@@ -516,7 +516,12 @@ export default function TriviaPage() {
             gameState={gameState}
             timeLeft={timeLeft}
             questionTimeLimitSeconds={QUESTION_TIME_LIMIT_SECONDS}
-            onShowHint={() => setIsHintVisible(true)} // Pass handler to QuestionCard
+            onShowHint={() => setIsHintVisible(true)}
+            // Props for reporting (using full bilingual data from questionData state)
+            questionId={questionData.id} 
+            bilingualQuestionText={questionData.question} 
+            categoryTopicValue={currentTopic}
+            currentDifficulty={currentDifficultyLevel}
           />
         )}
          {gameState === 'error' && feedback && (
@@ -552,4 +557,3 @@ export default function TriviaPage() {
     </div>
   );
 }
-

@@ -134,8 +134,8 @@
     "formIconPlaceholder": "Ej: Rocket, Film",
     "formDetailedInstructions": "Instrucciones Detalladas del Prompt (Inglés)",
     "formDetailedInstructionsPlaceholder": "Proporciona guías específicas para la generación de preguntas de IA para esta categoría...",
-    "formIsPredefined": "¿Visible en la App?",
-    "formIsPredefinedHint": "Controla si esta categoría aparece en la pantalla principal de selección de la aplicación.",
+    "formIsPredefined": "¿Mostrar en Selección Principal de la App?",
+    "formIsPredefinedHint": "Controla si esta categoría aparece en la pantalla principal de selección del juego.",
     "formDifficultyGuidelinesTitle": "Guías Específicas de Dificultad (Opcional, Inglés)",
     "formDifficultyGuidelinesDesc": "Proporciona instrucciones más granulares para cada nivel de dificultad si es necesario.",
     "formDifficultyEasy": "Instrucciones Dificultad Fácil",
@@ -203,6 +203,26 @@
       "hintLabelOptional": "Texto de la Pista (Opcional)",
       "hintPlaceholder": "Ingresa el texto de la pista..."
     }
+  },
+  "ReportDialog": {
+    "title": "Reportar Pregunta",
+    "description": "Dinos qué problema tiene esta pregunta. ¡Tu opinión nos ayuda a mejorar!",
+    "reasonLabel": "Motivo del reporte",
+    "reasonPlaceholder": "Selecciona un motivo",
+    "detailsLabel": "Detalles Adicionales (Opcional)",
+    "detailsPlaceholder": "Proporciona más información aquí...",
+    "submitButton": "Enviar Reporte",
+    "reportButtonLabel": "Reportar esta pregunta",
+    "reportThisQuestionButton": "Reportar Pregunta",
+    "reportSubmittedSuccess": "Reporte enviado correctamente. ¡Gracias!",
+    "reportSubmittedError": "Error al enviar el reporte. Por favor, inténtalo de nuevo.",
+    "reasons": {
+      "incorrect_info": "Información Incorrecta",
+      "poorly_worded": "Mal Redactada / Confusa",
+      "typo_grammar": "Error Tipográfico / Gramatical",
+      "duplicate_question": "Pregunta Duplicada",
+      "offensive_content": "Contenido Ofensivo",
+      "other": "Otro"
+    }
   }
 }
-
