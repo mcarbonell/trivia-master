@@ -24,31 +24,27 @@ export default function AdminDashboardPage() {
             <CardDescription>{t('quickAccessDescription')}</CardDescription>
             </CardHeader>
             <CardContent className="grid gap-4 md:grid-cols-2">
-                <Link href="/admin/categories" passHref legacyBehavior>
-                    <a className="block">
-                        <Card className="hover:shadow-md transition-shadow">
-                            <CardHeader className="flex flex-row items-center justify-between pb-2">
-                                <CardTitle className="text-lg font-medium">{tCommon('navCategories')}</CardTitle>
-                                <ListChecks className="h-5 w-5 text-primary" />
-                            </CardHeader>
-                            <CardContent>
-                                <p className="text-sm text-muted-foreground">{t('manageCategoriesDescription')}</p>
-                            </CardContent>
-                        </Card>
-                    </a>
+                <Link href="/admin/categories" className="block">
+                    <Card className="hover:shadow-md transition-shadow">
+                        <CardHeader className="flex flex-row items-center justify-between pb-2">
+                            <CardTitle className="text-lg font-medium">{tCommon('navCategories')}</CardTitle>
+                            <ListChecks className="h-5 w-5 text-primary" />
+                        </CardHeader>
+                        <CardContent>
+                            <p className="text-sm text-muted-foreground">{t('manageCategoriesDescription')}</p>
+                        </CardContent>
+                    </Card>
                 </Link>
-                <Link href="/admin/questions" passHref legacyBehavior>
-                    <a className="block">
-                        <Card className="hover:shadow-md transition-shadow">
-                            <CardHeader className="flex flex-row items-center justify-between pb-2">
-                                <CardTitle className="text-lg font-medium">{tCommon('navQuestions')}</CardTitle>
-                                <HelpCircle className="h-5 w-5 text-primary" />
-                            </CardHeader>
-                            <CardContent>
-                                <p className="text-sm text-muted-foreground">{t('manageQuestionsDescription')}</p>
-                            </CardContent>
-                        </Card>
-                    </a>
+                <Link href="/admin/questions" className="block">
+                    <Card className="hover:shadow-md transition-shadow">
+                        <CardHeader className="flex flex-row items-center justify-between pb-2">
+                            <CardTitle className="text-lg font-medium">{tCommon('navQuestions')}</CardTitle>
+                            <HelpCircle className="h-5 w-5 text-primary" />
+                        </CardHeader>
+                        <CardContent>
+                            <p className="text-sm text-muted-foreground">{t('manageQuestionsDescription')}</p>
+                        </CardContent>
+                    </Card>
                 </Link>
             </CardContent>
         </Card>

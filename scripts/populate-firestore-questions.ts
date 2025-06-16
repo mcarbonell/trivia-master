@@ -29,7 +29,7 @@ const ALL_DIFFICULTY_LEVELS: DifficultyLevel[] = ["easy", "medium", "hard"];
 const TARGET_QUESTIONS_PER_CATEGORY_DIFFICULTY = 10000; 
 const MAX_NEW_QUESTIONS_TO_FETCH_PER_RUN_PER_DIFFICULTY_TARGET = 50;
 const QUESTIONS_TO_GENERATE_PER_API_CALL = 50; 
-const GENKIT_API_CALL_DELAY_MS = 700; 
+const GENKIT_API_CALL_DELAY_MS = 1000; 
 
 /**
  * Fetches all category definitions from Firestore using Firebase Admin SDK.

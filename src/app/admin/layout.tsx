@@ -59,16 +59,16 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
             {t('adminPanelTitle')}
           </h2>
           {navItems.map((item) => (
-            <Link key={item.href} href={item.href} legacyBehavior passHref>
-              <a
-                className={cn(
-                  'flex w-full items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary',
-                  pathname === item.href && 'bg-muted text-primary font-semibold'
-                )}
-              >
-                <item.icon className="h-5 w-5" />
-                {item.label}
-              </a>
+            <Link
+              key={item.href}
+              href={item.href}
+              className={cn(
+                'flex w-full items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary',
+                pathname === item.href && 'bg-muted text-primary font-semibold'
+              )}
+            >
+              <item.icon className="h-5 w-5" />
+              {item.label}
             </Link>
           ))}
         </nav>
