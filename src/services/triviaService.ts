@@ -2,13 +2,13 @@
 'use server';
 
 import { db } from '@/lib/firebase';
-import { collection, query, where, getDocs, limit, DocumentData, orderBy } from 'firebase/firestore'; // Added orderBy
-import type { GenerateTriviaQuestionOutput, DifficultyLevel, BilingualText } from '@/ai/flows/generate-trivia-question'; // Added BilingualText
+import { collection, query, where, getDocs, limit, DocumentData, orderBy, Timestamp } from 'firebase/firestore'; // Added orderBy and Timestamp
+import type { GenerateTriviaQuestionOutput, DifficultyLevel, BilingualText } from '@/ai/flows/generate-trivia-question';
 
 export interface PredefinedQuestion extends GenerateTriviaQuestionOutput {
   id: string;
   topicValue: string;
-  createdAt?: admin.firestore.Timestamp | Date; // Optional, if populated by script
+  createdAt?: string; // Changed to string for ISO date format
 }
 
 const PREDEFINED_QUESTIONS_COLLECTION = 'predefinedTriviaQuestions';
@@ -31,7 +31,6 @@ export async function getPredefinedQuestion(
   try {
     const questionsRef = collection(db, PREDEFINED_QUESTIONS_COLLECTION);
     
-    // Query for questions matching topic AND difficulty
     const q = query(
       questionsRef,
       where('topicValue', '==', topicValue),
@@ -44,7 +43,6 @@ export async function getPredefinedQuestion(
 
     querySnapshot.forEach((doc) => {
       const data = doc.data() as DocumentData;
-      // Ensure all required fields from GenerateTriviaQuestionOutput are present
       if (data.question && data.answers && typeof data.correctAnswerIndex === 'number' && data.explanation && data.difficulty && data.topicValue) {
         potentialQuestions.push({
           id: doc.id,
@@ -54,8 +52,8 @@ export async function getPredefinedQuestion(
           explanation: data.explanation as BilingualText,
           difficulty: data.difficulty as DifficultyLevel,
           topicValue: data.topicValue as string,
-          hint: data.hint as BilingualText | undefined, // Add hint
-          createdAt: data.createdAt // Keep createdAt if it exists
+          hint: data.hint as BilingualText | undefined,
+          createdAt: data.createdAt ? (data.createdAt as Timestamp).toDate().toISOString() : undefined
         });
       }
     });
@@ -85,14 +83,12 @@ export async function getPredefinedQuestion(
 export async function getAllPredefinedQuestions(): Promise<PredefinedQuestion[]> {
   try {
     const questionsRef = collection(db, PREDEFINED_QUESTIONS_COLLECTION);
-    // Optionally, order by creation date or topic
     const q = query(questionsRef, orderBy('topicValue'), orderBy('difficulty')); 
     const querySnapshot = await getDocs(q);
     
     const questions: PredefinedQuestion[] = [];
     querySnapshot.forEach((doc) => {
       const data = doc.data() as DocumentData;
-      // Basic validation to ensure essential fields are present
       if (data.question && data.answers && typeof data.correctAnswerIndex === 'number' && data.explanation && data.difficulty && data.topicValue) {
         questions.push({
           id: doc.id,
@@ -103,7 +99,7 @@ export async function getAllPredefinedQuestions(): Promise<PredefinedQuestion[]>
           difficulty: data.difficulty as DifficultyLevel,
           topicValue: data.topicValue as string,
           hint: data.hint as BilingualText | undefined,
-          createdAt: data.createdAt // Keep createdAt if it exists
+          createdAt: data.createdAt ? (data.createdAt as Timestamp).toDate().toISOString() : undefined
         });
       } else {
         console.warn(`[triviaService] Document ${doc.id} in "${PREDEFINED_QUESTIONS_COLLECTION}" is missing essential fields. Skipping.`);
