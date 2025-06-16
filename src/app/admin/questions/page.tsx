@@ -22,7 +22,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Loader2, AlertTriangle, PlusCircle, Eye, Edit, Trash2, RefreshCw } from 'lucide-react';
+import { Loader2, AlertTriangle, PlusCircle, Eye, Edit, Trash2, RefreshCw, Search } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 const ITEMS_PER_PAGE = 10;
@@ -72,6 +72,7 @@ export default function AdminQuestionsPage() {
 
   const [selectedCategory, setSelectedCategory] = useState<string>(ALL_FILTER_VALUE);
   const [selectedDifficulty, setSelectedDifficulty] = useState<string>(ALL_FILTER_VALUE);
+  const [searchQuery, setSearchQuery] = useState<string>('');
 
   const [isQuestionDialogOpen, setIsQuestionDialogOpen] = useState(false);
   const [currentQuestionToEdit, setCurrentQuestionToEdit] = useState<PredefinedQuestion | null>(null);
@@ -109,10 +110,20 @@ export default function AdminQuestionsPage() {
   }, [categories, locale]);
 
   const filteredQuestions = useMemo(() => {
+    const lowerSearchQuery = searchQuery.toLowerCase();
     return allQuestions
       .filter(q => selectedCategory === ALL_FILTER_VALUE || q.topicValue === selectedCategory)
-      .filter(q => selectedDifficulty === ALL_FILTER_VALUE || q.difficulty === selectedDifficulty);
-  }, [allQuestions, selectedCategory, selectedDifficulty]);
+      .filter(q => selectedDifficulty === ALL_FILTER_VALUE || q.difficulty === selectedDifficulty)
+      .filter(q => {
+        if (!lowerSearchQuery) return true;
+        const inQuestion = q.question.en.toLowerCase().includes(lowerSearchQuery) || q.question.es.toLowerCase().includes(lowerSearchQuery);
+        if (inQuestion) return true;
+        const inAnswers = q.answers.some(ans => 
+          ans.en.toLowerCase().includes(lowerSearchQuery) || ans.es.toLowerCase().includes(lowerSearchQuery)
+        );
+        return inAnswers;
+      });
+  }, [allQuestions, selectedCategory, selectedDifficulty, searchQuery]);
 
   const displayQuestions = useMemo(() => {
     return filteredQuestions.map(q => ({
@@ -133,7 +144,7 @@ export default function AdminQuestionsPage() {
     setCurrentPage(1);
   };
 
-  useEffect(handleFilterChange, [selectedCategory, selectedDifficulty]);
+  useEffect(handleFilterChange, [selectedCategory, selectedDifficulty, searchQuery]);
 
   const handleNextPage = () => {
     if (currentPage < totalPages) {
@@ -197,12 +208,10 @@ export default function AdminQuestionsPage() {
       explanation: { en: data.explanationEn, es: data.explanationEs },
       hint: (data.hintEn || data.hintEs) ? { en: data.hintEn || '', es: data.hintEs || '' } : undefined,
       difficulty: data.difficulty,
-      // topicValue is not part of form, it's inherent to the question being edited.
     };
      if (!updatedQuestionData.hint?.en && !updatedQuestionData.hint?.es) {
         delete updatedQuestionData.hint;
     }
-
 
     try {
       await updatePredefinedQuestion(currentQuestionToEdit.id, updatedQuestionData);
@@ -216,7 +225,6 @@ export default function AdminQuestionsPage() {
       setIsSubmittingQuestion(false);
     }
   };
-
 
   const truncateText = (text: string, maxLength: number = 50) => {
     if (text.length <= maxLength) return text;
@@ -265,12 +273,22 @@ export default function AdminQuestionsPage() {
 
       <Card className="shadow-lg">
         <CardHeader>
-          <div className="flex flex-col md:flex-row justify-between md:items-center gap-4">
-            <div>
+          <div className="flex flex-col md:flex-row justify-between md:items-start gap-4">
+            <div className="flex-grow">
               <CardTitle>{t('questionsListTitle')}</CardTitle>
               <CardDescription>{t('questionsListDescriptionFiltered', { count: displayQuestions.length, total: allQuestions.length })}</CardDescription>
             </div>
-            <div className="flex flex-col sm:flex-row gap-2 md:gap-4">
+            <div className="flex flex-col sm:flex-row gap-2 md:gap-4 w-full md:w-auto">
+              <div className="relative w-full sm:w-auto md:flex-grow">
+                  <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                  <Input
+                    type="search"
+                    placeholder={t('searchPlaceholder')}
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="pl-8 w-full sm:w-[200px] md:w-full"
+                  />
+              </div>
               <Select value={selectedCategory} onValueChange={setSelectedCategory}>
                 <SelectTrigger className="w-full sm:w-[200px]">
                   <SelectValue placeholder={t('filterCategoryPlaceholder')} />
@@ -404,7 +422,7 @@ export default function AdminQuestionsPage() {
             <DialogTitle>{tForm('editDialogTitle')}</DialogTitle>
             <DialogDescription>{tForm('editDialogDescription', { topic: currentQuestionToEdit?.categoryName || currentQuestionToEdit?.topicValue || '' })}</DialogDescription>
           </DialogHeader>
-          <ScrollArea className="max-h-[calc(90vh-200px)] pr-6"> {/* Adjusted height for scroll area */}
+          <ScrollArea className="max-h-[calc(90vh-200px)] pr-6"> 
             <Form {...form}>
               <form onSubmit={form.handleSubmit(onQuestionSubmit)} className="space-y-6 py-4">
                 <FormField
@@ -461,8 +479,8 @@ export default function AdminQuestionsPage() {
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          {['0', '1', '2', '3'].map(idx => (
-                            <SelectItem key={idx} value={idx}>{tForm('answerOption', { letter: String.fromCharCode(65 + parseInt(idx)) })}</SelectItem>
+                          {['0', '1', '2', '3'].map(idx_str => ( // Renamed idx to idx_str
+                            <SelectItem key={idx_str} value={idx_str}>{tForm('answerOption', { letter: String.fromCharCode(65 + parseInt(idx_str)) })}</SelectItem>
                           ))}
                         </SelectContent>
                       </Select>

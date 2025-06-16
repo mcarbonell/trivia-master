@@ -173,6 +173,7 @@
     "paginationInfo": "Página {currentPage} de {totalPages}. Total: {totalItems} preguntas.",
     "previousPage": "Anterior",
     "nextPage": "Siguiente",
+    "searchPlaceholder": "Buscar preguntas y respuestas...",
     "filterCategoryPlaceholder": "Filtrar por categoría...",
     "filterDifficultyPlaceholder": "Filtrar por dificultad...",
     "allCategories": "Todas las Categorías",

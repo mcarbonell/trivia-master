@@ -173,6 +173,7 @@
     "paginationInfo": "Page {currentPage} of {totalPages}. Total: {totalItems} questions.",
     "previousPage": "Previous",
     "nextPage": "Next",
+    "searchPlaceholder": "Search questions & answers...",
     "filterCategoryPlaceholder": "Filter by category...",
     "filterDifficultyPlaceholder": "Filter by difficulty...",
     "allCategories": "All Categories",
