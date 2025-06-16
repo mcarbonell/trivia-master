@@ -135,7 +135,7 @@ export default function AdminReportsPage() {
   };
 
   const truncateText = (text: string | undefined, maxLength: number = 50) => {
-    if (!text) return t('tableNotAvailable');
+    if (!text) return t('notAvailable'); // Changed from tableNotAvailable
     if (text.length <= maxLength) return text;
     return text.substring(0, maxLength) + "...";
   };
@@ -212,14 +212,14 @@ export default function AdminReportsPage() {
                   {paginatedReports.map((report) => (
                     <TableRow key={report.id}>
                       <TableCell className="hidden sm:table-cell">
-                        {report.reportedAt ? format(new Date(report.reportedAt), 'PPp', { locale: dateLocale }) : t('tableNotAvailable')}
+                        {report.reportedAt ? format(new Date(report.reportedAt), 'PPp', { locale: dateLocale }) : t('notAvailable')}
                       </TableCell>
                       <TableCell>
                         <Tooltip>
                           <TooltipTrigger asChild><span className="cursor-default">{truncateText(getQuestionTextForLocale(report), 40)}</span></TooltipTrigger>
                           <TooltipContent side="top" className="max-w-md bg-background border shadow-lg p-2 rounded-md">
-                            <p><strong>EN:</strong> {report.questionTextEn || t('tableNotAvailable')}</p>
-                            <p><strong>ES:</strong> {report.questionTextEs || t('tableNotAvailable')}</p>
+                            <p><strong>EN:</strong> {report.questionTextEn || t('notAvailable')}</p>
+                            <p><strong>ES:</strong> {report.questionTextEs || t('notAvailable')}</p>
                             {report.questionId && <p className="mt-1 text-xs text-muted-foreground">ID: {report.questionId}</p>}
                           </TooltipContent>
                         </Tooltip>
@@ -261,8 +261,8 @@ export default function AdminReportsPage() {
                                 <TooltipContent><p>{t('copyQuestionIdButton')}</p></TooltipContent>
                             </Tooltip>
                             <Tooltip>
-                                <TooltipTrigger asChild>
-                                  <AlertDialogTrigger asChild>
+                                <TooltipTrigger asChild={true}>
+                                  <AlertDialogTrigger asChild={true}>
                                     <Button variant="ghost" size="icon" className="h-8 w-8 hover:bg-destructive hover:text-destructive-foreground">
                                         <Trash2 className="h-4 w-4" />
                                     </Button>
@@ -284,8 +284,8 @@ export default function AdminReportsPage() {
                            </>
                         )}
                         <Tooltip>
-                            <TooltipTrigger asChild>
-                              <AlertDialogTrigger asChild>
+                            <TooltipTrigger asChild={true}>
+                              <AlertDialogTrigger asChild={true}>
                                 <Button variant="ghost" size="icon" className="h-8 w-8 hover:bg-destructive hover:text-destructive-foreground">
                                 <Trash2 className="h-4 w-4" />
                                 </Button>

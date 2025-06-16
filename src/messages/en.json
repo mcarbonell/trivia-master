@@ -219,7 +219,7 @@
     "tableReason": "Reason",
     "tableStatus": "Status",
     "tableActions": "Actions",
-    "tableNotAvailable": "N/A",
+    "notAvailable": "N/A",
     "filterByStatus": "Filter by status",
     "allStatuses": "All Statuses",
     "statuses": {

@@ -219,7 +219,7 @@
     "tableReason": "Motivo",
     "tableStatus": "Estado",
     "tableActions": "Acciones",
-    "tableNotAvailable": "N/D",
+    "notAvailable": "N/D",
     "filterByStatus": "Filtrar por estado",
     "allStatuses": "Todos los Estados",
     "statuses": {
