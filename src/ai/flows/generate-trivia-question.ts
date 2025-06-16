@@ -158,8 +158,8 @@ The number of question objects in the JSON array string SHOULD ideally match the
 const generateTriviaQuestionsPrompt = ai.definePrompt({
   name: 'generateTriviaQuestionsPrompt',
   input: {schema: GenerateTriviaQuestionsInputSchema},
-  // The prompt now outputs a JSON string. The flow will parse and validate it.
-  output: {schema: z.string().describe("A JSON string representing an array of trivia question objects.")},
+  // The prompt now outputs a JSON string, or null if the LLM fails.
+  output: {schema: z.string().nullable().describe("A JSON string representing an array of trivia question objects, or null.")},
   config: {
     temperature: 1,
   },
@@ -175,16 +175,22 @@ const generateTriviaQuestionsFlow = ai.defineFlow(
   },
   async (input) => {
     const effectiveInput = { ...input, count: input.count || 1 };
+    // console.log('[generateTriviaQuestionsFlow] Input received:', JSON.stringify(effectiveInput, null, 2)); // Verbose log, can be enabled if needed
     console.log('[generateTriviaQuestionsFlow] Checking ai object and ai.model method. Type of ai.model:', typeof ai.model);
 
-    // The prompt's output is now expected to be a JSON string.
+    // The prompt's output is now expected to be a JSON string or null.
     const {output: jsonStringOutput} = await generateTriviaQuestionsPrompt(
         effectiveInput,
         effectiveInput.modelName ? { model: effectiveInput.modelName } : undefined // Pass modelName string directly
       );
 
+    if (jsonStringOutput === null) {
+      console.warn('[generateTriviaQuestionsFlow] LLM returned null. This might be due to safety filters or inability to generate content for the request. Topic:', effectiveInput.topic);
+      return [];
+    }
+    
     if (typeof jsonStringOutput !== 'string') {
-      console.error('[generateTriviaQuestionsFlow] LLM did not return a JSON string as expected. Output type:', typeof jsonStringOutput, "Output:", jsonStringOutput);
+      console.error('[generateTriviaQuestionsFlow] LLM did not return a JSON string or null as expected. Output type:', typeof jsonStringOutput, "Output:", jsonStringOutput);
       return []; 
     }
     
