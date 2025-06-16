@@ -342,7 +342,7 @@ async function populateQuestions() {
                 await questionsRef.add(questionToSave);
                 questionsSavedThisAPICall++;
                 questionsGeneratedForThisDifficultyInThisRun++;
-                console.log(`        > Saved question (${questionsGeneratedForThisDifficultyInThisRun}/${maxNewQuestionsToFetchForThisDifficulty}) (AI diff: ${newQuestionData.difficulty}, Target: ${difficulty}): "${newQuestionData.question.en.substring(0,30)}..."`);
+                console.log(`        > Saved question (${questionsGeneratedForThisDifficultyInThisRun}/${maxNewQuestionsToFetchForThisDifficulty}) (AI diff: ${newQuestionData.difficulty}, Target: ${difficulty}): "${newQuestionData.question.en.substring(0,60)}..."`);
 
                 if (!NO_CONTEXT_MODE) {
                     if (newQuestionData.question.en) existingQuestionConceptTextsForDifficulty.push(newQuestionData.question.en);

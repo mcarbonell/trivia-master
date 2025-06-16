@@ -1,3 +1,7 @@
+//
+// This version of the file works well with short batches.
+// Do not delete or alter this file, it is not used and is keeped for reference
+// 
 
 'use server';
 
@@ -169,7 +173,7 @@ const generateTriviaQuestionsFlow = ai.defineFlow(
   {
     name: 'generateTriviaQuestionsFlow',
     inputSchema: GenerateTriviaQuestionsInputSchema,
-//    outputSchema: PermisiveQuestionsArraySchema, // Permisive output schema for Genkit
+    outputSchema: PermisiveQuestionsArraySchema, // Permisive output schema for Genkit
   },
   async (input) => {
     const effectiveInput = { ...input, count: input.count || 1 };

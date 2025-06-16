@@ -1,83 +1,25 @@
 
 > nextn@0.1.0 populate:questions
-> tsx scripts/populate-firestore-questions.ts -c Animals2 -d easy -m 4 --mod googleai/gemini-1.5-flash -b 2
+> tsx scripts/populate-firestore-questions.ts -c Animals2 -d medium -m 100 --mod googleai/gemini-2.5-flash-preview-05-20 -b 50 --nc
 
 Starting Firestore question population script...
 --- Configuration ---
 Target Category: Animals2
-Target Difficulty: easy
+Target Difficulty: medium
 Target Questions per Combo: 10000
-Max New Questions per Run: 4
-Genkit API Batch Size: 2
-No Context Mode (don't send previous questions to AI): false
-Model to Use: googleai/gemini-1.5-flash
+Max New Questions per Run: 100
+Genkit API Batch Size: 50
+No Context Mode (don't send previous questions to AI): true
+Model to Use: googleai/gemini-2.5-flash-preview-05-20
 Update Existing Sources Only Mode: false
 ---------------------
 Processing only specified category: "Animals2"
-Processing only specified difficulty: "easy"
+Processing only specified difficulty: "medium"
 
 Processing Category: "Animals2" (TopicValue: Animals2)
-  Targeting Difficulty: "easy" for category "Animals2"
-    Found 319 existing question concepts and 319 correct answer concepts for Animals2 - easy to use as context.
-    Found 319 existing questions for Animals2 with difficulty "easy". Target is 10000.
-    Attempting to generate up to 4 new questions for Animals2 - easy.
-      Generating a batch of 2 questions via Genkit (need 4 more for this run for Animals2 - easy). Using model: googleai/gemini-1.5-flash.
+  Targeting Difficulty: "medium" for category "Animals2"
+    Skipping context collection for Animals2 - medium due to --no-context flag.
+    Found 130 existing questions for Animals2 with difficulty "medium". Target is 10000.
+    Attempting to generate up to 100 new questions for Animals2 - medium.
+      Generating a batch of 50 questions via Genkit (need 100 more for this run for Animals2 - medium). Using model: googleai/gemini-2.5-flash-preview-05-20.
 [generateTriviaQuestionsFlow] Checking ai object and ai.model method. Type of ai.model: undefined
-      Error during Genkit API call for Animals2 - easy: ValidationError [GenkitError]: INVALID_ARGUMENT: Schema validation failed. Parse Errors:
-
-- (root): must be string
-
-Provided data:
-
-null
-
-Required JSON schema:
-
-{
-  "type": "string",
-  "description": "A JSON string representing an array of trivia question objects.",
-  "$schema": "http://json-schema.org/draft-07/schema#"
-}
-    at parseSchema (/home/user/studio/node_modules/@genkit-ai/core/src/schema.ts:133:21)
-    at GenerateResponse.assertValidSchema (/home/user/studio/node_modules/@genkit-ai/ai/src/generate/response.ts:101:7)
-    at generate (/home/user/studio/node_modules/@genkit-ai/ai/src/generate/action.ts:340:45)
-    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
-    at async <anonymous> (/home/user/studio/node_modules/@genkit-ai/ai/src/generate/action.ts:131:22)
-    at async <anonymous> (/home/user/studio/node_modules/@genkit-ai/core/src/tracing/instrumentation.ts:115:24)
-    at async runInNewSpan (/home/user/studio/node_modules/@genkit-ai/core/src/tracing/instrumentation.ts:103:10)
-    at async generateHelper (/home/user/studio/node_modules/@genkit-ai/ai/src/generate/action.ts:118:10)
-    at async <anonymous> (/home/user/studio/node_modules/@genkit-ai/ai/src/generate.ts:346:24)
-    at async generate (/home/user/studio/node_modules/@genkit-ai/ai/src/generate.ts:342:10) {
-  source: undefined,
-  status: 'INVALID_ARGUMENT',
-  detail: {
-    errors: [ [Object] ],
-    schema: {
-      type: 'string',
-      description: 'A JSON string representing an array of trivia question objects.',
-      '$schema': 'http://json-schema.org/draft-07/schema#'
-    }
-  },
-  code: 400,
-  originalMessage: 'Schema validation failed. Parse Errors:\n' +
-    '\n' +
-    '- (root): must be string\n' +
-    '\n' +
-    'Provided data:\n' +
-    '\n' +
-    'null\n' +
-    '\n' +
-    'Required JSON schema:\n' +
-    '\n' +
-    '{\n' +
-    '  "type": "string",\n' +
-    '  "description": "A JSON string representing an array of trivia question objects.",\n' +
-    '  "$schema": "http://json-schema.org/draft-07/schema#"\n' +
-    '}',
-  traceId: '454b6d91d6c2e41a89ca3034d05a971e'
-}
-      Waiting 1s after error before potentially retrying or moving on...
-    Finished generation attempts for Animals2 - easy. Generated 0 questions in this run.
-  Finished all difficulty levels for category: Animals2.
-
-Batch question population script finished.
