@@ -110,15 +110,18 @@ export default function AdminQuestionsPage() {
   }, [categoriesForFilter, locale]);
 
   const filteredQuestions = useMemo(() => {
-    const lowerSearchQuery = searchQuery.toLowerCase().trim();
+    const trimmedSearchQuery = searchQuery.trim();
+    const lowerSearchQuery = trimmedSearchQuery.toLowerCase();
+
     return allQuestions
       .filter(q => selectedCategory === ALL_FILTER_VALUE || q.topicValue === selectedCategory)
       .filter(q => selectedDifficulty === ALL_FILTER_VALUE || q.difficulty === selectedDifficulty)
       .filter(q => {
-        if (!lowerSearchQuery) return true;
-        // Check if search query is an exact match for question ID
-        if (q.id === lowerSearchQuery) return true;
-
+        if (!trimmedSearchQuery) return true;
+        // Check if search query is an exact match for question ID (case-sensitive)
+        if (q.id === trimmedSearchQuery) return true;
+        
+        // For text search, use lower case
         const inQuestion = q.question.en.toLowerCase().includes(lowerSearchQuery) || q.question.es.toLowerCase().includes(lowerSearchQuery);
         if (inQuestion) return true;
         
@@ -527,3 +530,4 @@ export default function AdminQuestionsPage() {
     </div>
   );
 }
+
