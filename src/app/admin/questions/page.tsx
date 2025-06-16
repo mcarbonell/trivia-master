@@ -88,10 +88,10 @@ export default function AdminQuestionsPage() {
     try {
       const [fetchedQuestions, fetchedCategories] = await Promise.all([
         getAllPredefinedQuestions(),
-        getAppCategories(), // Fetches ALL categories from Firestore
+        getAppCategories(), 
       ]);
       setAllQuestions(fetchedQuestions);
-      setCategoriesForFilter(fetchedCategories); // Use all fetched categories for the admin filter
+      setCategoriesForFilter(fetchedCategories); 
     } catch (err) {
       console.error("Error fetching data:", err);
       setError(t('errorLoading'));
@@ -110,14 +110,18 @@ export default function AdminQuestionsPage() {
   }, [categoriesForFilter, locale]);
 
   const filteredQuestions = useMemo(() => {
-    const lowerSearchQuery = searchQuery.toLowerCase();
+    const lowerSearchQuery = searchQuery.toLowerCase().trim();
     return allQuestions
       .filter(q => selectedCategory === ALL_FILTER_VALUE || q.topicValue === selectedCategory)
       .filter(q => selectedDifficulty === ALL_FILTER_VALUE || q.difficulty === selectedDifficulty)
       .filter(q => {
         if (!lowerSearchQuery) return true;
+        // Check if search query is an exact match for question ID
+        if (q.id === lowerSearchQuery) return true;
+
         const inQuestion = q.question.en.toLowerCase().includes(lowerSearchQuery) || q.question.es.toLowerCase().includes(lowerSearchQuery);
         if (inQuestion) return true;
+        
         const inAnswers = q.answers.some(ans => 
           ans.en.toLowerCase().includes(lowerSearchQuery) || ans.es.toLowerCase().includes(lowerSearchQuery)
         );
@@ -295,7 +299,7 @@ export default function AdminQuestionsPage() {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value={ALL_FILTER_VALUE}>{t('allCategories')}</SelectItem>
-                  {categoriesForFilter.map(cat => ( // Use categoriesForFilter here
+                  {categoriesForFilter.map(cat => ( 
                     <SelectItem key={cat.topicValue} value={cat.topicValue}>
                       {cat.name[locale]}
                     </SelectItem>
@@ -523,4 +527,3 @@ export default function AdminQuestionsPage() {
     </div>
   );
 }
-

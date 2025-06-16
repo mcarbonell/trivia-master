@@ -7,7 +7,7 @@ import { es as esLocale, enUS as enLocale } from 'date-fns/locale';
 import { getReportedQuestions, updateReportStatus, deleteReport } from '@/services/reportService';
 import { deletePredefinedQuestion } from '@/services/triviaService';
 import { getAppCategories } from '@/services/categoryService';
-import type { ReportData, ReportStatus, CategoryDefinition } from '@/types'; // Removed BilingualText as it's not directly used here
+import type { ReportData, ReportStatus, CategoryDefinition } from '@/types';
 import type { AppLocale } from '@/lib/i18n-config';
 
 import { useTranslations, useLocale } from 'next-intl';
@@ -17,7 +17,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
-import { Loader2, AlertTriangle, RefreshCw, Trash2, ClipboardCopy } from 'lucide-react'; // Removed Edit3, ExternalLink
+import { Loader2, AlertTriangle, RefreshCw, Trash2, ClipboardCopy } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 const ITEMS_PER_PAGE = 10;
@@ -71,7 +71,7 @@ export default function AdminReportsPage() {
         return false;
       }
       return true;
-    }).sort((a, b) => new Date(b.reportedAt).getTime() - new Date(a.reportedAt).getTime()); // Ensure consistent sort after filtering
+    }).sort((a, b) => new Date(b.reportedAt).getTime() - new Date(a.reportedAt).getTime());
   }, [reports, activeFilters]);
 
   const paginatedReports = useMemo(() => {
@@ -141,7 +141,6 @@ export default function AdminReportsPage() {
   };
 
   const getQuestionTextForLocale = (report: ReportData) => {
-    // Use the locale of the report to decide which text to show primarily
     return report.locale === 'es' ? report.questionTextEs : report.questionTextEn;
   };
 
@@ -259,46 +258,54 @@ export default function AdminReportsPage() {
                                         <span className="sr-only">{t('copyQuestionIdButton')}</span>
                                     </Button>
                                 </TooltipTrigger>
-                                <TooltipContent><p>{t('copyQuestionIdButton')}: {report.questionId}</p></TooltipContent>
+                                <TooltipContent><p>{t('copyQuestionIdButton')}</p></TooltipContent>
                             </Tooltip>
-                            <AlertDialog>
-                                <AlertDialogTrigger asChild>
-                                <Button variant="ghost" size="icon" className="h-8 w-8 hover:bg-destructive hover:text-destructive-foreground">
-                                    <Trash2 className="h-4 w-4" />
-                                    <span className="sr-only">{t('deleteReportedQuestionButton')}</span>
-                                </Button>
-                                </AlertDialogTrigger>
-                                <AlertDialogContent>
-                                <AlertDialogHeader>
-                                    <AlertDialogTitle>{t('deletePredefinedQuestionConfirmTitle')}</AlertDialogTitle>
-                                    <AlertDialogDescription>{t('deletePredefinedQuestionConfirmDescription', { question: truncateText(getQuestionTextForLocale(report), 50) })}</AlertDialogDescription>
-                                </AlertDialogHeader>
-                                <AlertDialogFooter>
-                                    <AlertDialogCancel>{tCommon('cancel')}</AlertDialogCancel>
-                                    <AlertDialogAction onClick={() => handleDeletePredefinedQuestion(report.questionId, getQuestionTextForLocale(report))} className="bg-destructive hover:bg-destructive/90">{tCommon('deleteButton')}</AlertDialogAction>
-                                </AlertDialogFooter>
-                                </AlertDialogContent>
-                            </AlertDialog>
+                            <Tooltip>
+                                <TooltipTrigger asChild>
+                                    <AlertDialog>
+                                        <AlertDialogTrigger asChild>
+                                        <Button variant="ghost" size="icon" className="h-8 w-8 hover:bg-destructive hover:text-destructive-foreground">
+                                            <Trash2 className="h-4 w-4" />
+                                        </Button>
+                                        </AlertDialogTrigger>
+                                        <AlertDialogContent>
+                                        <AlertDialogHeader>
+                                            <AlertDialogTitle>{t('deletePredefinedQuestionConfirmTitle')}</AlertDialogTitle>
+                                            <AlertDialogDescription>{t('deletePredefinedQuestionConfirmDescription', { question: truncateText(getQuestionTextForLocale(report), 50) })}</AlertDialogDescription>
+                                        </AlertDialogHeader>
+                                        <AlertDialogFooter>
+                                            <AlertDialogCancel>{tCommon('cancel')}</AlertDialogCancel>
+                                            <AlertDialogAction onClick={() => handleDeletePredefinedQuestion(report.questionId, getQuestionTextForLocale(report))} className="bg-destructive hover:bg-destructive/90">{tCommon('deleteButton')}</AlertDialogAction>
+                                        </AlertDialogFooter>
+                                        </AlertDialogContent>
+                                    </AlertDialog>
+                                </TooltipTrigger>
+                                <TooltipContent><p>{t('deleteReportedQuestionButton')}</p></TooltipContent>
+                            </Tooltip>
                            </>
                         )}
-                        <AlertDialog>
-                          <AlertDialogTrigger asChild>
-                            <Button variant="ghost" size="icon" className="h-8 w-8 hover:bg-destructive hover:text-destructive-foreground">
-                              <Trash2 className="h-4 w-4" />
-                              <span className="sr-only">{t('deleteReportButton')}</span>
-                            </Button>
-                          </AlertDialogTrigger>
-                          <AlertDialogContent>
-                            <AlertDialogHeader>
-                              <AlertDialogTitle>{t('deleteReportConfirmTitle')}</AlertDialogTitle>
-                              <AlertDialogDescription>{t('deleteReportConfirmDescription')}</AlertDialogDescription>
-                            </AlertDialogHeader>
-                            <AlertDialogFooter>
-                              <AlertDialogCancel>{tCommon('cancel')}</AlertDialogCancel>
-                              <AlertDialogAction onClick={() => handleDeleteReport(report.id)} className="bg-destructive hover:bg-destructive/90">{tCommon('deleteButton')}</AlertDialogAction>
-                            </AlertDialogFooter>
-                          </AlertDialogContent>
-                        </AlertDialog>
+                        <Tooltip>
+                            <TooltipTrigger asChild>
+                                <AlertDialog>
+                                <AlertDialogTrigger asChild>
+                                    <Button variant="ghost" size="icon" className="h-8 w-8 hover:bg-destructive hover:text-destructive-foreground">
+                                    <Trash2 className="h-4 w-4" />
+                                    </Button>
+                                </AlertDialogTrigger>
+                                <AlertDialogContent>
+                                    <AlertDialogHeader>
+                                    <AlertDialogTitle>{t('deleteReportConfirmTitle')}</AlertDialogTitle>
+                                    <AlertDialogDescription>{t('deleteReportConfirmDescription')}</AlertDialogDescription>
+                                    </AlertDialogHeader>
+                                    <AlertDialogFooter>
+                                    <AlertDialogCancel>{tCommon('cancel')}</AlertDialogCancel>
+                                    <AlertDialogAction onClick={() => handleDeleteReport(report.id)} className="bg-destructive hover:bg-destructive/90">{tCommon('deleteButton')}</AlertDialogAction>
+                                    </AlertDialogFooter>
+                                </AlertDialogContent>
+                                </AlertDialog>
+                            </TooltipTrigger>
+                            <TooltipContent><p>{t('deleteReportButton')}</p></TooltipContent>
+                        </Tooltip>
                       </TableCell>
                     </TableRow>
                   ))}
@@ -325,9 +332,4 @@ export default function AdminReportsPage() {
       </Card>
     </div>
   );
-}
-
-// Define Timestamp type for Firestore compatibility (if needed for other parts, but here we convert to string)
-interface Timestamp {
-  toDate: () => Date;
 }
