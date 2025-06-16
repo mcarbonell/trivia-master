@@ -61,6 +61,8 @@
   "hintLabel": "Hint",
   "timesUp": "Time's Up!",
   "timeLeft": "Time Left: {seconds}s",
+  "deleteButton": "Delete",
+  "notAvailable": "N/A",
 
   "LoginPage": {
     "title": "Admin Login",
@@ -79,6 +81,7 @@
     "navDashboard": "Dashboard",
     "navCategories": "Categories",
     "navQuestions": "Questions",
+    "navReports": "Reports",
     "logoutButton": "Logout",
     "loggedInAs": "Logged in as: {email}",
     "footerText": "© {year} AI Trivia Master - Admin"
@@ -202,6 +205,46 @@
       "hintLabelOptional": "Hint Text (Optional)",
       "hintPlaceholder": "Enter the hint text..."
     }
+  },
+  "AdminReportsPage": {
+    "title": "Manage Reported Questions",
+    "description": "Review and manage user-submitted question reports.",
+    "reportsListTitle": "Reported Questions List",
+    "reportsListDescription": "Showing {count, plural, =0 {no reports} one {# report} other {# reports}} (out of {total} total).",
+    "noReportsFound": "No reports found matching the current filters.",
+    "tableDate": "Date Reported",
+    "tableQuestion": "Question Reported",
+    "tableCategory": "Category",
+    "tableDifficulty": "Difficulty",
+    "tableReason": "Reason",
+    "tableStatus": "Status",
+    "tableActions": "Actions",
+    "filterByStatus": "Filter by status",
+    "allStatuses": "All Statuses",
+    "statuses": {
+      "new": "New",
+      "reviewed": "Reviewed",
+      "resolved": "Resolved",
+      "ignored": "Ignored"
+    },
+    "copyQuestionIdButton": "Copy Question ID",
+    "editReportedQuestionButton": "Edit Reported Question",
+    "deleteReportedQuestionButton": "Delete Reported Question",
+    "deleteReportButton": "Delete Report",
+    "errorLoading": "Error loading reports. Please try again.",
+    "toastStatusUpdateSuccess": "Report status updated successfully.",
+    "toastStatusUpdateError": "Could not update report status.",
+    "toastReportDeleteSuccess": "Report deleted successfully.",
+    "toastReportDeleteError": "Could not delete report.",
+    "toastPredefinedQuestionDeleteSuccess": "Predefined question \"{question}\" deleted successfully.",
+    "toastPredefinedQuestionDeleteError": "Could not delete the predefined question.",
+    "errorNoQuestionIdForDelete": "This report is not linked to a specific predefined question ID, so the question cannot be deleted directly from here.",
+    "questionIdCopied": "Question ID copied to clipboard!",
+    "questionIdCopyError": "Failed to copy Question ID.",
+    "deleteReportConfirmTitle": "Delete Report?",
+    "deleteReportConfirmDescription": "Are you sure you want to delete this report? This action only removes the report, not the question itself.",
+    "deletePredefinedQuestionConfirmTitle": "Delete Predefined Question?",
+    "deletePredefinedQuestionConfirmDescription": "Are you sure you want to delete the predefined question: \"{question}\"? This will remove it from the game and cannot be undone."
   },
   "ReportDialog": {
     "title": "Report Question",

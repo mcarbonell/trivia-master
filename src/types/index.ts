@@ -9,24 +9,19 @@ export interface BilingualText {
   es: string;
 }
 
-// CategoryDifficultyGuideline will now be a simple string (English instruction)
 export type CategoryDifficultyGuideline = string;
 
 export interface CategoryDefinition {
-  id: string; // Firestore document ID, can be the same as topicValue for simplicity
-  topicValue: string; // e.g., "Science", "World_History"
-  name: BilingualText; // e.g., { en: "Science", es: "Ciencia" } - Name remains bilingual for UI
-  icon: string; // Lucide icon name, e.g., "Lightbulb"
-  detailedPromptInstructions: string; // English-only detailed general instructions for this category
-  difficultySpecificGuidelines?: { // Optional: more specific English-only instructions per difficulty
+  id: string; 
+  topicValue: string; 
+  name: BilingualText; 
+  icon: string; 
+  detailedPromptInstructions: string; 
+  difficultySpecificGuidelines?: { 
     "easy"?: CategoryDifficultyGuideline;
     "medium"?: CategoryDifficultyGuideline;
     "hard"?: CategoryDifficultyGuideline;
   };
-  /** Controls if this category appears in the main selection screen of the app.
-   *  Users can still access categories with isPredefined:false if they know the topicValue (e.g. via direct link or if it was pre-selected).
-   *  The question population script will attempt to generate questions for ALL categories
-   *  in Firestore, regardless of this flag. */
   isPredefined?: boolean; 
 }
 
@@ -40,16 +35,21 @@ export type ReportReason =
   | 'offensive_content'
   | 'other';
 
+export type ReportStatus = 'new' | 'reviewed' | 'resolved' | 'ignored';
+
 export interface ReportData {
-  id?: string; // Firestore document ID, will be auto-generated
-  questionId?: string; // ID of the predefined question from 'predefinedTriviaQuestions' collection, if available
+  id: string; // Firestore document ID for the report itself
+  questionId?: string; // Firestore ID of the predefined question, if reported from one
   questionTextEn: string;
   questionTextEs: string;
   categoryTopicValue: string;
   difficulty: DifficultyLevel;
   reason: ReportReason;
   details?: string;
-  reportedAt: FieldValue; // ServerTimestamp
-  locale: AppLocale; // Language user was using when reporting
-  status?: 'new' | 'reviewed' | 'resolved' | 'ignored'; // For admin panel processing later
+  reportedAt: FieldValue | Timestamp; // Allow Timestamp for reading
+  locale: AppLocale; 
+  status: ReportStatus; 
 }
+// Add Timestamp for reading compatibility
+import type { Timestamp } from 'firebase/firestore';
+

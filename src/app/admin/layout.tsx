@@ -6,7 +6,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { Loader2, LogOut, LayoutDashboard, ListChecks, HelpCircle } from 'lucide-react';
+import { Loader2, LogOut, LayoutDashboard, ListChecks, HelpCircle, ShieldAlert } from 'lucide-react'; // Added ShieldAlert
 import { useTranslations } from 'next-intl';
 import { LanguageSwitcher } from '@/components/LanguageSwitcher';
 import { cn } from '@/lib/utils';
@@ -33,7 +33,6 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
       router.push('/login');
     } catch (error) {
       console.error('Error signing out:', error);
-      // Consider showing a toast message for sign-out errors
     }
   };
 
@@ -49,6 +48,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
     { href: '/admin/dashboard', label: t('navDashboard'), icon: LayoutDashboard },
     { href: '/admin/categories', label: t('navCategories'), icon: ListChecks },
     { href: '/admin/questions', label: t('navQuestions'), icon: HelpCircle },
+    { href: '/admin/reports', label: t('navReports'), icon: ShieldAlert },
   ];
 
   return (
@@ -64,7 +64,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
               href={item.href}
               className={cn(
                 'flex w-full items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary',
-                pathname === item.href && 'bg-muted text-primary font-semibold'
+                pathname.startsWith(item.href) && (item.href !== '/admin/dashboard' || pathname === item.href) && 'bg-muted text-primary font-semibold'
               )}
             >
               <item.icon className="h-5 w-5" />
@@ -81,8 +81,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
       </aside>
       <div className="flex flex-col sm:gap-4 sm:py-4 sm:pl-64 w-full">
         <header className="sticky top-0 z-30 flex h-14 items-center justify-between gap-4 border-b bg-background px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6">
-          {/* Mobile Nav Trigger could go here if needed */}
-          <div className="sm:hidden"> {/* Placeholder for mobile nav trigger */}
+          <div className="sm:hidden">
              <h1 className="text-xl font-semibold text-primary">{t('adminPanelTitle')}</h1>
           </div>
           <div className="flex items-center gap-4 ml-auto">

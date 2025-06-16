@@ -61,6 +61,8 @@
   "hintLabel": "Pista",
   "timesUp": "¡Se Acabó el Tiempo!",
   "timeLeft": "Tiempo Restante: {seconds}s",
+  "deleteButton": "Eliminar",
+  "notAvailable": "N/D",
 
   "LoginPage": {
     "title": "Acceso de Administrador",
@@ -79,6 +81,7 @@
     "navDashboard": "Dashboard",
     "navCategories": "Categorías",
     "navQuestions": "Preguntas",
+    "navReports": "Reportes",
     "logoutButton": "Cerrar Sesión",
     "loggedInAs": "Sesión iniciada como: {email}",
     "footerText": "© {year} Maestro de Trivia IA - Admin"
@@ -203,6 +206,46 @@
       "hintLabelOptional": "Texto de la Pista (Opcional)",
       "hintPlaceholder": "Ingresa el texto de la pista..."
     }
+  },
+  "AdminReportsPage": {
+    "title": "Gestionar Preguntas Reportadas",
+    "description": "Revisa y gestiona los reportes de preguntas enviados por los usuarios.",
+    "reportsListTitle": "Lista de Preguntas Reportadas",
+    "reportsListDescription": "Mostrando {count, plural, =0 {ningún reporte} one {# reporte} other {# reportes}} (de {total} en total).",
+    "noReportsFound": "No se encontraron reportes que coincidan con los filtros actuales.",
+    "tableDate": "Fecha Reporte",
+    "tableQuestion": "Pregunta Reportada",
+    "tableCategory": "Categoría",
+    "tableDifficulty": "Dificultad",
+    "tableReason": "Motivo",
+    "tableStatus": "Estado",
+    "tableActions": "Acciones",
+    "filterByStatus": "Filtrar por estado",
+    "allStatuses": "Todos los Estados",
+    "statuses": {
+      "new": "Nuevo",
+      "reviewed": "Revisado",
+      "resolved": "Resuelto",
+      "ignored": "Ignorado"
+    },
+    "copyQuestionIdButton": "Copiar ID Pregunta",
+    "editReportedQuestionButton": "Editar Pregunta Reportada",
+    "deleteReportedQuestionButton": "Eliminar Pregunta Reportada",
+    "deleteReportButton": "Eliminar Reporte",
+    "errorLoading": "Error al cargar los reportes. Por favor, inténtalo de nuevo.",
+    "toastStatusUpdateSuccess": "Estado del reporte actualizado correctamente.",
+    "toastStatusUpdateError": "No se pudo actualizar el estado del reporte.",
+    "toastReportDeleteSuccess": "Reporte eliminado correctamente.",
+    "toastReportDeleteError": "No se pudo eliminar el reporte.",
+    "toastPredefinedQuestionDeleteSuccess": "Pregunta predefinida \"{question}\" eliminada correctamente.",
+    "toastPredefinedQuestionDeleteError": "No se pudo eliminar la pregunta predefinida.",
+    "errorNoQuestionIdForDelete": "Este reporte no está vinculado a un ID de pregunta predefinida específico, por lo que la pregunta no se puede eliminar directamente desde aquí.",
+    "questionIdCopied": "¡ID de pregunta copiado al portapapeles!",
+    "questionIdCopyError": "Error al copiar el ID de la pregunta.",
+    "deleteReportConfirmTitle": "¿Eliminar Reporte?",
+    "deleteReportConfirmDescription": "¿Estás seguro de que quieres eliminar este reporte? Esta acción solo elimina el reporte, no la pregunta en sí.",
+    "deletePredefinedQuestionConfirmTitle": "¿Eliminar Pregunta Predefinida?",
+    "deletePredefinedQuestionConfirmDescription": "¿Estás seguro de que quieres eliminar la pregunta predefinida: \"{question}\"? Esto la eliminará del juego y no se puede deshacer."
   },
   "ReportDialog": {
     "title": "Reportar Pregunta",
