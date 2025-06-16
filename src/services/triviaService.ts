@@ -28,6 +28,7 @@ export async function getPredefinedQuestion(
   askedQuestionIds: string[],
   targetDifficulty: DifficultyLevel
 ): Promise<PredefinedQuestion | null> {
+  console.log(`[getPredefinedQuestion] Attempting to fetch for topic: "${topicValue}", difficulty: "${targetDifficulty}". Asked IDs count: ${askedQuestionIds.length}`);
   try {
     const questionsRef = collection(db, PREDEFINED_QUESTIONS_COLLECTION);
     
@@ -35,11 +36,12 @@ export async function getPredefinedQuestion(
       questionsRef,
       where('topicValue', '==', topicValue),
       where('difficulty', '==', targetDifficulty),
-      limit(BATCH_SIZE_PER_DIFFICULTY) 
+      limit(BATCH_SIZE_PER_DIFFICULTY * 5) // Fetch a larger batch to increase chances of finding an unasked one
     );
 
     const querySnapshot = await getDocs(q);
     const potentialQuestions: PredefinedQuestion[] = [];
+    console.log(`[getPredefinedQuestion] Firestore query for "${topicValue}" (diff: ${targetDifficulty}) returned ${querySnapshot.size} potential questions.`);
 
     querySnapshot.forEach((doc) => {
       const data = doc.data() as DocumentData;
@@ -61,16 +63,21 @@ export async function getPredefinedQuestion(
     const unaskedQuestions = potentialQuestions.filter(
       (pq) => !askedQuestionIds.includes(pq.id)
     );
+    console.log(`[getPredefinedQuestion] After filtering ${potentialQuestions.length} potentials against ${askedQuestionIds.length} asked IDs, found ${unaskedQuestions.length} unasked questions for "${topicValue}" (diff: ${targetDifficulty}).`);
+    // console.log('[getPredefinedQuestion] Asked IDs:', JSON.stringify(askedQuestionIds));
+
 
     if (unaskedQuestions.length > 0) {
       const randomIndex = Math.floor(Math.random() * unaskedQuestions.length);
-      return unaskedQuestions[randomIndex]!;
+      const foundQuestion = unaskedQuestions[randomIndex]!;
+      console.log(`[getPredefinedQuestion] Returning random unasked question (ID: ${foundQuestion.id}) for "${topicValue}" (diff: ${targetDifficulty}).`);
+      return foundQuestion;
     }
 
-    // console.log(`No predefined question found for topic "${topicValue}" and difficulty "${targetDifficulty}". Falling back to Genkit.`);
+    console.log(`[getPredefinedQuestion] No UNASKED predefined question found for topic "${topicValue}" and difficulty "${targetDifficulty}". Will fall back to Genkit if applicable.`);
     return null; 
   } catch (error) {
-    console.error(`Error fetching predefined question (topic: ${topicValue}, difficulty: ${targetDifficulty}):`, error);
+    console.error(`[getPredefinedQuestion] Error fetching predefined question (topic: ${topicValue}, difficulty: ${targetDifficulty}):`, error);
     return null;
   }
 }
@@ -102,7 +109,7 @@ export async function getAllPredefinedQuestions(): Promise<PredefinedQuestion[]>
           createdAt: data.createdAt ? (data.createdAt as Timestamp).toDate().toISOString() : undefined
         });
       } else {
-        console.warn(`[triviaService] Document ${doc.id} in "${PREDEFINED_QUESTIONS_COLLECTION}" is missing essential fields. Skipping.`);
+        // console.warn(`[triviaService] Document ${doc.id} in "${PREDEFINED_QUESTIONS_COLLECTION}" is missing essential fields. Skipping.`);
       }
     });
     
@@ -143,3 +150,4 @@ export async function updatePredefinedQuestion(questionId: string, data: Partial
     throw error; // Re-throw to be caught by caller
   }
 }
+

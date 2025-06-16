@@ -145,6 +145,10 @@ export default function TriviaPage() {
 
 
   const fetchQuestion = useCallback(async (topic: string, difficulty: DifficultyLevel, categoryDetails: CategoryDefinition | null) => {
+    console.log(`[TriviaPage] fetchQuestion called. Topic: "${topic}", Difficulty: "${difficulty}"`);
+    console.log(`[TriviaPage] Current askedQuestionIdentifiers count: ${askedQuestionIdentifiers.length}`);
+    console.log(`[TriviaPage] Current askedCorrectAnswerTexts count: ${askedCorrectAnswerTexts.length}`);
+
     setGameState('loading_question');
     setSelectedAnswerIndex(null);
     setFeedback(null);
@@ -153,16 +157,27 @@ export default function TriviaPage() {
     let newQuestionArray: GenerateTriviaQuestionOutput[] | null = null;
     let newQuestionData: CurrentQuestionData | null = null;
     const isPredefinedTopic = appCategories.some(cat => cat.topicValue === topic);
+    console.log(`[TriviaPage] Is "${topic}" a predefined topic? ${isPredefinedTopic}. Category marked as predefined?: ${categoryDetails?.isPredefined}`);
+
 
     if (isPredefinedTopic && categoryDetails?.isPredefined !== false) { // Only try predefined if actually marked as predefined
+      console.log(`[TriviaPage] Attempting to fetch PREDEFINED question for topic "${topic}" (difficulty: ${difficulty}).`);
       try {
         newQuestionData = await getPredefinedQuestion(topic, askedQuestionIdentifiers, difficulty);
+        if (newQuestionData) {
+          console.log(`[TriviaPage] Successfully fetched PREDEFINED question (ID: ${newQuestionData.id}) for "${topic}".`);
+        } else {
+          console.log(`[TriviaPage] No PREDEFINED question found by getPredefinedQuestion for "${topic}" (difficulty: ${difficulty}).`);
+        }
       } catch (firestoreError) {
-        console.warn("Error fetching from Firestore, falling back to Genkit for predefined topic:", firestoreError);
+        console.warn(`[TriviaPage] Error fetching from Firestore for predefined topic "${topic}", will fall back to Genkit:`, firestoreError);
       }
+    } else {
+        console.log(`[TriviaPage] Topic "${topic}" is custom or not marked as predefined. Will use Genkit directly.`);
     }
 
     if (!newQuestionData) {
+      console.log(`[TriviaPage] FALLING BACK to Genkit AI generation for topic "${topic}" (difficulty: ${difficulty}).`);
       const inputForAI: GenerateTriviaQuestionsInput = {
         topic,
         previousQuestions: askedQuestionIdentifiers.filter(id => id.startsWith("genkit_question_")).map(id => id.replace("genkit_question_", "")),
@@ -177,20 +192,25 @@ export default function TriviaPage() {
           inputForAI.difficultySpecificInstruction = categoryDetails.difficultySpecificGuidelines[difficulty]; 
         }
       }
+      console.log('[TriviaPage] Input for Genkit AI:', JSON.stringify(inputForAI, null, 2));
       
       try {
         newQuestionArray = await generateTriviaQuestions(inputForAI);
         if (newQuestionArray && newQuestionArray.length > 0) {
             newQuestionData = newQuestionArray[0]!; 
+            console.log(`[TriviaPage] Successfully generated question with Genkit for "${topic}". Question: "${newQuestionData.question[locale]?.substring(0,50)}..."`);
              if (newQuestionData.answers && typeof newQuestionData.correctAnswerIndex === 'number' && newQuestionData.answers[newQuestionData.correctAnswerIndex]) {
                const correctAnswerTextInLocale = newQuestionData.answers[newQuestionData.correctAnswerIndex]![locale];
-               if(!newQuestionData.id) { 
+               if(!newQuestionData.id) { // Only add to askedCorrectAnswerTexts if it's an AI generated one
                  setAskedCorrectAnswerTexts(prev => [...new Set([...prev, correctAnswerTextInLocale])]);
+                 console.log(`[TriviaPage] Added AI-generated correct answer to askedCorrectAnswerTexts: "${correctAnswerTextInLocale}"`);
                }
             }
+        } else {
+            console.warn(`[TriviaPage] Genkit returned no questions for topic "${topic}" (difficulty: ${difficulty}).`);
         }
       } catch (genkitError) {
-        console.error(`Failed to generate question with Genkit (topic: ${topic}, difficulty: ${difficulty}):`, genkitError);
+        console.error(`[TriviaPage] Failed to generate question with Genkit (topic: ${topic}, difficulty: ${difficulty}):`, genkitError);
         setFeedback({ message: t('errorLoadingQuestion'), detailedMessage: t('errorLoadingQuestionDetail'), isCorrect: false });
         setGameState('error');
         return;
@@ -199,32 +219,39 @@ export default function TriviaPage() {
 
     if (newQuestionData) {
       setQuestionData(newQuestionData as CurrentQuestionData); 
-      if ((newQuestionData as CurrentQuestionData).id) { 
+      if ((newQuestionData as CurrentQuestionData).id) { // Predefined question with Firestore ID
         setAskedQuestionIdentifiers(prev => [...new Set([...prev, (newQuestionData as CurrentQuestionData).id!])]);
-      } else { 
+        console.log(`[TriviaPage] Added PREDEFINED question ID to askedQuestionIdentifiers: "${(newQuestionData as CurrentQuestionData).id!}"`);
+      } else { // AI generated question
         const questionTextIdentifier = newQuestionData.question?.[locale] || `genkit_q_${Date.now()}`;
-        setAskedQuestionIdentifiers(prev => [...new Set([...prev, `genkit_question_${questionTextIdentifier}`])]);
+        const genkitId = `genkit_question_${questionTextIdentifier}`;
+        setAskedQuestionIdentifiers(prev => [...new Set([...prev, genkitId])]);
+        console.log(`[TriviaPage] Added AI-generated question identifier to askedQuestionIdentifiers: "${genkitId}"`);
       }
       setGameState('playing'); 
     } else {
+      console.warn(`[TriviaPage] NO QUESTION DATA (neither predefined nor AI) for topic "${topic}", difficulty "${difficulty}". Setting error state.`);
       setFeedback({ message: t('errorLoadingQuestion'), detailedMessage: t('errorNoQuestionForDifficulty', {difficulty: t(`difficultyLevels.${difficulty}` as any) as string }), isCorrect: false });
       setGameState('error');
     }
   }, [locale, askedQuestionIdentifiers, askedCorrectAnswerTexts, appCategories, t]); 
 
   const handleStartGame = (topicOrTopicValue: string) => {
+    console.log(`[TriviaPage] handleStartGame called with topic: "${topicOrTopicValue}"`);
     const selectedPredefinedCategory = appCategories.find(cat => cat.topicValue === topicOrTopicValue);
     
     setCurrentTopic(topicOrTopicValue); 
     setCurrentCategoryDetails(selectedPredefinedCategory || null); 
     
     setScore({ correct: 0, incorrect: 0 });
-    setAskedQuestionIdentifiers([]);
-    setAskedCorrectAnswerTexts([]);
+    setAskedQuestionIdentifiers([]); // Reset for new topic/game
+    setAskedCorrectAnswerTexts([]); // Reset for new topic/game
+    console.log('[TriviaPage] Score, askedQuestionIdentifiers, and askedCorrectAnswerTexts RESET for new game.');
     setGameState('difficulty_selection');
   };
 
   const handleDifficultySelect = (mode: DifficultyMode) => {
+    console.log(`[TriviaPage] handleDifficultySelect called with mode: "${mode}" for topic: "${currentTopic}"`);
     setSelectedDifficultyMode(mode);
     let initialDifficulty: DifficultyLevel;
     if (mode === "adaptive") {
@@ -233,11 +260,13 @@ export default function TriviaPage() {
       initialDifficulty = mode;
     }
     setCurrentDifficultyLevel(initialDifficulty);
+    console.log(`[TriviaPage] Initial difficulty set to: "${initialDifficulty}"`);
     fetchQuestion(currentTopic, initialDifficulty, currentCategoryDetails);
   };
 
   const handleAnswerSelect = (answerIndex: number) => {
     if (!questionData || gameState !== 'playing') return;
+    console.log(`[TriviaPage] handleAnswerSelect: User selected answer index ${answerIndex}. Correct index: ${questionData.correctAnswerIndex}`);
 
     clearTimer(); 
     setSelectedAnswerIndex(answerIndex);
@@ -246,15 +275,21 @@ export default function TriviaPage() {
     const explanationInLocale = questionData.explanation[locale];
     
     if (isCorrect) {
+      console.log('[TriviaPage] Answer was CORRECT.');
       setScore(prev => ({ ...prev, correct: prev.correct + 1 }));
       setFeedback({ message: t('correct'), isCorrect: true, explanation: explanationInLocale });
       if (selectedDifficultyMode === "adaptive") {
         const currentIndex = DIFFICULTY_LEVELS_ORDER.indexOf(currentDifficultyLevel);
         if (currentIndex < DIFFICULTY_LEVELS_ORDER.length - 1) {
-          setCurrentDifficultyLevel(DIFFICULTY_LEVELS_ORDER[currentIndex + 1]!);
+          const newDifficulty = DIFFICULTY_LEVELS_ORDER[currentIndex + 1]!;
+          console.log(`[TriviaPage] Adaptive difficulty: Correct answer, increasing difficulty from ${currentDifficultyLevel} to ${newDifficulty}`);
+          setCurrentDifficultyLevel(newDifficulty);
+        } else {
+          console.log('[TriviaPage] Adaptive difficulty: Correct answer, already at max difficulty.');
         }
       }
     } else {
+      console.log('[TriviaPage] Answer was INCORRECT.');
       setScore(prev => ({ ...prev, incorrect: prev.incorrect + 1 }));
       setFeedback({
         message: t('incorrect'),
@@ -265,7 +300,11 @@ export default function TriviaPage() {
       if (selectedDifficultyMode === "adaptive") {
         const currentIndex = DIFFICULTY_LEVELS_ORDER.indexOf(currentDifficultyLevel);
         if (currentIndex > 0) {
-          setCurrentDifficultyLevel(DIFFICULTY_LEVELS_ORDER[currentIndex - 1]!);
+           const newDifficulty = DIFFICULTY_LEVELS_ORDER[currentIndex - 1]!;
+           console.log(`[TriviaPage] Adaptive difficulty: Incorrect answer, decreasing difficulty from ${currentDifficultyLevel} to ${newDifficulty}`);
+          setCurrentDifficultyLevel(newDifficulty);
+        } else {
+            console.log('[TriviaPage] Adaptive difficulty: Incorrect answer, already at min difficulty.');
         }
       }
     }
@@ -273,11 +312,12 @@ export default function TriviaPage() {
   };
 
   const handleNextQuestion = () => {
-    // currentDifficultyLevel is already set correctly either by adaptation or fixed mode
+    console.log(`[TriviaPage] handleNextQuestion called. Next question will be difficulty: "${currentDifficultyLevel}" for topic: "${currentTopic}"`);
     fetchQuestion(currentTopic, currentDifficultyLevel, currentCategoryDetails);
   };
 
   const handleNewGame = () => {
+    console.log('[TriviaPage] handleNewGame called. Resetting game state.');
     setGameState('category_selection'); 
     setScore({ correct: 0, incorrect: 0 });
     setQuestionData(null);
@@ -291,6 +331,7 @@ export default function TriviaPage() {
     setCurrentDifficultyLevel("medium"); 
     setSelectedDifficultyMode(null); 
     setTimeLeft(null); 
+    console.log('[TriviaPage] All states reset for new game.');
   };
   
   const DifficultyIndicator = () => {
@@ -475,3 +516,4 @@ export default function TriviaPage() {
     </div>
   );
 }
+
