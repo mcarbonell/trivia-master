@@ -51,8 +51,11 @@ export default function TriviaPage() {
   const [feedback, setFeedback] = useState<{ message: string; isCorrect: boolean; detailedMessage?: string; explanation?: string } | null>(null);
   const [customTopicInput, setCustomTopicInput] = useState('');
   
-  const [askedQuestionIdentifiers, setAskedQuestionIdentifiers] = useState<string[]>([]);
-  const [askedCorrectAnswerTexts, setAskedCorrectAnswerTexts] = useState<string[]>([]);
+  // State for tracking asked questions
+  const [askedFirestoreIds, setAskedFirestoreIds] = useState<string[]>([]); // For Firestore predefined question IDs
+  const [askedQuestionTextsForAI, setAskedQuestionTextsForAI] = useState<string[]>([]); // For AI (texts of all questions)
+  const [askedCorrectAnswerTexts, setAskedCorrectAnswerTexts] = useState<string[]>([]); // For AI (texts of correct answers)
+
 
   const [currentDifficultyLevel, setCurrentDifficultyLevel] = useState<DifficultyLevel>("medium");
   const [selectedDifficultyMode, setSelectedDifficultyMode] = useState<DifficultyMode | null>(null);
@@ -146,7 +149,8 @@ export default function TriviaPage() {
 
   const fetchQuestion = useCallback(async (topic: string, difficulty: DifficultyLevel, categoryDetails: CategoryDefinition | null) => {
     console.log(`[TriviaPage] fetchQuestion called. Topic: "${topic}", Difficulty: "${difficulty}"`);
-    console.log(`[TriviaPage] Current askedQuestionIdentifiers count: ${askedQuestionIdentifiers.length}`);
+    console.log(`[TriviaPage] Current askedFirestoreIds count: ${askedFirestoreIds.length}`);
+    console.log(`[TriviaPage] Current askedQuestionTextsForAI count: ${askedQuestionTextsForAI.length}`);
     console.log(`[TriviaPage] Current askedCorrectAnswerTexts count: ${askedCorrectAnswerTexts.length}`);
 
     setGameState('loading_question');
@@ -160,10 +164,10 @@ export default function TriviaPage() {
     console.log(`[TriviaPage] Is "${topic}" a predefined topic? ${isPredefinedTopic}. Category marked as predefined?: ${categoryDetails?.isPredefined}`);
 
 
-    if (isPredefinedTopic && categoryDetails?.isPredefined !== false) { // Only try predefined if actually marked as predefined
-      console.log(`[TriviaPage] Attempting to fetch PREDEFINED question for topic "${topic}" (difficulty: ${difficulty}).`);
+    if (isPredefinedTopic && categoryDetails?.isPredefined !== false) {
+      console.log(`[TriviaPage] Attempting to fetch PREDEFINED question for topic "${topic}" (difficulty: ${difficulty}). Passing ${askedFirestoreIds.length} asked Firestore IDs.`);
       try {
-        newQuestionData = await getPredefinedQuestion(topic, askedQuestionIdentifiers, difficulty);
+        newQuestionData = await getPredefinedQuestion(topic, askedFirestoreIds, difficulty);
         if (newQuestionData) {
           console.log(`[TriviaPage] Successfully fetched PREDEFINED question (ID: ${newQuestionData.id}) for "${topic}".`);
         } else {
@@ -180,7 +184,7 @@ export default function TriviaPage() {
       console.log(`[TriviaPage] FALLING BACK to Genkit AI generation for topic "${topic}" (difficulty: ${difficulty}).`);
       const inputForAI: GenerateTriviaQuestionsInput = {
         topic,
-        previousQuestions: askedQuestionIdentifiers.filter(id => id.startsWith("genkit_question_")).map(id => id.replace("genkit_question_", "")),
+        previousQuestions: askedQuestionTextsForAI, 
         previousCorrectAnswers: askedCorrectAnswerTexts,
         targetDifficulty: difficulty,
         count: 1, 
@@ -199,13 +203,6 @@ export default function TriviaPage() {
         if (newQuestionArray && newQuestionArray.length > 0) {
             newQuestionData = newQuestionArray[0]!; 
             console.log(`[TriviaPage] Successfully generated question with Genkit for "${topic}". Question: "${newQuestionData.question[locale]?.substring(0,50)}..."`);
-             if (newQuestionData.answers && typeof newQuestionData.correctAnswerIndex === 'number' && newQuestionData.answers[newQuestionData.correctAnswerIndex]) {
-               const correctAnswerTextInLocale = newQuestionData.answers[newQuestionData.correctAnswerIndex]![locale];
-               if(!newQuestionData.id) { // Only add to askedCorrectAnswerTexts if it's an AI generated one
-                 setAskedCorrectAnswerTexts(prev => [...new Set([...prev, correctAnswerTextInLocale])]);
-                 console.log(`[TriviaPage] Added AI-generated correct answer to askedCorrectAnswerTexts: "${correctAnswerTextInLocale}"`);
-               }
-            }
         } else {
             console.warn(`[TriviaPage] Genkit returned no questions for topic "${topic}" (difficulty: ${difficulty}).`);
         }
@@ -219,14 +216,18 @@ export default function TriviaPage() {
 
     if (newQuestionData) {
       setQuestionData(newQuestionData as CurrentQuestionData); 
+      const questionTextInLocale = newQuestionData.question[locale] || `q_text_${Date.now()}`;
+      const correctAnswerTextInLocale = newQuestionData.answers[newQuestionData.correctAnswerIndex]![locale];
+
+      setAskedQuestionTextsForAI(prev => [...new Set([...prev, questionTextInLocale])]);
+      console.log(`[TriviaPage] Added question text to askedQuestionTextsForAI: "${questionTextInLocale.substring(0,50)}..."`);
+      
+      setAskedCorrectAnswerTexts(prev => [...new Set([...prev, correctAnswerTextInLocale])]);
+      console.log(`[TriviaPage] Added correct answer to askedCorrectAnswerTexts: "${correctAnswerTextInLocale}"`);
+
       if ((newQuestionData as CurrentQuestionData).id) { // Predefined question with Firestore ID
-        setAskedQuestionIdentifiers(prev => [...new Set([...prev, (newQuestionData as CurrentQuestionData).id!])]);
-        console.log(`[TriviaPage] Added PREDEFINED question ID to askedQuestionIdentifiers: "${(newQuestionData as CurrentQuestionData).id!}"`);
-      } else { // AI generated question
-        const questionTextIdentifier = newQuestionData.question?.[locale] || `genkit_q_${Date.now()}`;
-        const genkitId = `genkit_question_${questionTextIdentifier}`;
-        setAskedQuestionIdentifiers(prev => [...new Set([...prev, genkitId])]);
-        console.log(`[TriviaPage] Added AI-generated question identifier to askedQuestionIdentifiers: "${genkitId}"`);
+        setAskedFirestoreIds(prev => [...new Set([...prev, (newQuestionData as CurrentQuestionData).id!])]);
+        console.log(`[TriviaPage] Added PREDEFINED question ID to askedFirestoreIds: "${(newQuestionData as CurrentQuestionData).id!}"`);
       }
       setGameState('playing'); 
     } else {
@@ -234,7 +235,7 @@ export default function TriviaPage() {
       setFeedback({ message: t('errorLoadingQuestion'), detailedMessage: t('errorNoQuestionForDifficulty', {difficulty: t(`difficultyLevels.${difficulty}` as any) as string }), isCorrect: false });
       setGameState('error');
     }
-  }, [locale, askedQuestionIdentifiers, askedCorrectAnswerTexts, appCategories, t]); 
+  }, [locale, askedFirestoreIds, askedQuestionTextsForAI, askedCorrectAnswerTexts, appCategories, t]); 
 
   const handleStartGame = (topicOrTopicValue: string) => {
     console.log(`[TriviaPage] handleStartGame called with topic: "${topicOrTopicValue}"`);
@@ -244,9 +245,11 @@ export default function TriviaPage() {
     setCurrentCategoryDetails(selectedPredefinedCategory || null); 
     
     setScore({ correct: 0, incorrect: 0 });
-    setAskedQuestionIdentifiers([]); // Reset for new topic/game
-    setAskedCorrectAnswerTexts([]); // Reset for new topic/game
-    console.log('[TriviaPage] Score, askedQuestionIdentifiers, and askedCorrectAnswerTexts RESET for new game.');
+    // Reset all tracking arrays for the new game session
+    setAskedFirestoreIds([]);
+    setAskedQuestionTextsForAI([]);
+    setAskedCorrectAnswerTexts([]);
+    console.log('[TriviaPage] Score, askedFirestoreIds, askedQuestionTextsForAI, and askedCorrectAnswerTexts RESET for new game.');
     setGameState('difficulty_selection');
   };
 
@@ -326,12 +329,16 @@ export default function TriviaPage() {
     setCurrentTopic('');
     setCustomTopicInput('');
     setCurrentCategoryDetails(null);
-    setAskedQuestionIdentifiers([]);
+    
+    // Reset all tracking arrays
+    setAskedFirestoreIds([]);
+    setAskedQuestionTextsForAI([]);
     setAskedCorrectAnswerTexts([]);
+
     setCurrentDifficultyLevel("medium"); 
     setSelectedDifficultyMode(null); 
     setTimeLeft(null); 
-    console.log('[TriviaPage] All states reset for new game.');
+    console.log('[TriviaPage] All states reset for new game, including all asked question tracking arrays.');
   };
   
   const DifficultyIndicator = () => {

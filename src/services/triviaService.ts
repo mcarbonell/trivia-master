@@ -1,3 +1,4 @@
+
 // src/services/triviaService.ts
 'use server';
 
@@ -12,23 +13,23 @@ export interface PredefinedQuestion extends GenerateTriviaQuestionOutput {
 }
 
 const PREDEFINED_QUESTIONS_COLLECTION = 'predefinedTriviaQuestions';
-const BATCH_SIZE_PER_DIFFICULTY = 5; 
+const FIRESTORE_QUERY_LIMIT = 200; // Increased limit
 
 /**
  * Fetches a predefined bilingual trivia question from Firestore for a given topicValue and targetDifficulty.
  * Excludes questions whose Firestore ID is in askedQuestionIds.
  * If no question of the exact difficulty is found, it returns null.
  * @param topicValue The topic of the question.
- * @param askedQuestionIds An array of Firestore document IDs for questions already asked.
+ * @param askedFirestoreIds An array of Firestore document IDs for questions already asked.
  * @param targetDifficulty The desired difficulty level.
  * @returns A PredefinedQuestion (bilingual) or null.
  */
 export async function getPredefinedQuestion(
   topicValue: string,
-  askedQuestionIds: string[],
+  askedFirestoreIds: string[],
   targetDifficulty: DifficultyLevel
 ): Promise<PredefinedQuestion | null> {
-  console.log(`[getPredefinedQuestion] Attempting to fetch for topic: "${topicValue}", difficulty: "${targetDifficulty}". Asked IDs count: ${askedQuestionIds.length}`);
+  console.log(`[getPredefinedQuestion] Attempting to fetch for topic: "${topicValue}", difficulty: "${targetDifficulty}". Asked IDs count: ${askedFirestoreIds.length}`);
   try {
     const questionsRef = collection(db, PREDEFINED_QUESTIONS_COLLECTION);
     
@@ -36,12 +37,12 @@ export async function getPredefinedQuestion(
       questionsRef,
       where('topicValue', '==', topicValue),
       where('difficulty', '==', targetDifficulty),
-      limit(BATCH_SIZE_PER_DIFFICULTY * 5) // Fetch a larger batch to increase chances of finding an unasked one
+      limit(FIRESTORE_QUERY_LIMIT) 
     );
 
     const querySnapshot = await getDocs(q);
     const potentialQuestions: PredefinedQuestion[] = [];
-    console.log(`[getPredefinedQuestion] Firestore query for "${topicValue}" (diff: ${targetDifficulty}) returned ${querySnapshot.size} potential questions.`);
+    console.log(`[getPredefinedQuestion] Firestore query for "${topicValue}" (diff: ${targetDifficulty}) returned ${querySnapshot.size} potential questions (limit was ${FIRESTORE_QUERY_LIMIT}).`);
 
     querySnapshot.forEach((doc) => {
       const data = doc.data() as DocumentData;
@@ -61,10 +62,10 @@ export async function getPredefinedQuestion(
     });
 
     const unaskedQuestions = potentialQuestions.filter(
-      (pq) => !askedQuestionIds.includes(pq.id)
+      (pq) => !askedFirestoreIds.includes(pq.id)
     );
-    console.log(`[getPredefinedQuestion] After filtering ${potentialQuestions.length} potentials against ${askedQuestionIds.length} asked IDs, found ${unaskedQuestions.length} unasked questions for "${topicValue}" (diff: ${targetDifficulty}).`);
-    // console.log('[getPredefinedQuestion] Asked IDs:', JSON.stringify(askedQuestionIds));
+    console.log(`[getPredefinedQuestion] After filtering ${potentialQuestions.length} potentials against ${askedFirestoreIds.length} asked IDs, found ${unaskedQuestions.length} unasked questions for "${topicValue}" (diff: ${targetDifficulty}).`);
+    // console.log('[getPredefinedQuestion] Asked IDs:', JSON.stringify(askedFirestoreIds));
 
 
     if (unaskedQuestions.length > 0) {
