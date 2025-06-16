@@ -25,7 +25,8 @@ const PREDEFINED_QUESTIONS_COLLECTION = 'predefinedTriviaQuestions';
 const CATEGORIES_COLLECTION = 'triviaCategories';
 
 const ALL_DIFFICULTY_LEVELS_CONST: DifficultyLevel[] = ["easy", "medium", "hard"];
-const GENKIT_API_CALL_DELAY_MS = 1000;
+const GENKIT_API_CALL_DELAY_MS = 1000; // Delay between Genkit API calls
+const DEFAULT_MODEL_NAME = 'gemini-2.5-flash-preview-05-20'; // Default model if not specified
 
 // --- Argument Parsing with yargs ---
 const argv = yargs(hideBin(process.argv))
@@ -64,6 +65,17 @@ const argv = yargs(hideBin(process.argv))
     default: false,
     description: 'If true, do not pass previous questions/answers as context to the AI.',
   })
+  .option('model', {
+    alias: 'mod',
+    type: 'string',
+    description: `Genkit model name to use (e.g., googleai/gemini-1.5-flash). Defaults to ${DEFAULT_MODEL_NAME}.`,
+  })
+  .option('updateExistingSources', {
+    alias: 'ues',
+    type: 'boolean',
+    default: false,
+    description: 'If true, only update the "source" field of all existing questions and exit. Does not generate new questions.',
+  })
   .help()
   .alias('help', 'h')
   .parseSync();
@@ -76,15 +88,14 @@ const TARGET_QUESTIONS_PER_CATEGORY_DIFFICULTY: number = argv.targetPerDifficult
 const MAX_NEW_QUESTIONS_TO_FETCH_PER_RUN_PER_DIFFICULTY_TARGET: number = argv.maxNewPerRun;
 const QUESTIONS_TO_GENERATE_PER_API_CALL: number = argv.batchSize;
 const NO_CONTEXT_MODE: boolean = argv.noContext;
+const MODEL_TO_USE: string | undefined = argv.model;
+const UPDATE_EXISTING_SOURCES_MODE: boolean = argv.updateExistingSources;
 
 
 async function fetchCategoriesWithAdminSDK(): Promise<CategoryDefinition[]> {
   try {
     const categoriesRef = db.collection(CATEGORIES_COLLECTION);
     const querySnapshot = await categoriesRef.get();
-    
-    // console.log(`[AdminScript] Fetched ${querySnapshot.size} documents from "${CATEGORIES_COLLECTION}".`);
-
     const categories: CategoryDefinition[] = [];
     querySnapshot.forEach((doc) => {
       const data = doc.data();
@@ -94,8 +105,7 @@ async function fetchCategoriesWithAdminSDK(): Promise<CategoryDefinition[]> {
         data.icon && typeof data.icon === 'string' &&
         data.detailedPromptInstructions && typeof data.detailedPromptInstructions === 'string' &&
         (data.hasOwnProperty('isPredefined') ? typeof data.isPredefined === 'boolean' : true)
-      ) { 
-        
+      ) {
         const categoryToAdd: CategoryDefinition = {
           id: doc.id,
           topicValue: data.topicValue,
@@ -104,45 +114,71 @@ async function fetchCategoriesWithAdminSDK(): Promise<CategoryDefinition[]> {
           detailedPromptInstructions: data.detailedPromptInstructions,
           isPredefined: data.isPredefined === undefined ? true : data.isPredefined,
         };
-
         if (data.difficultySpecificGuidelines) {
           const validatedGuidelines: { [key: string]: string } = {};
           const allowedDifficulties: DifficultyLevel[] = ['easy', 'medium', 'hard'];
-
           for (const key in data.difficultySpecificGuidelines) {
             if (allowedDifficulties.includes(key as DifficultyLevel) && typeof data.difficultySpecificGuidelines[key] === 'string') {
               validatedGuidelines[key] = data.difficultySpecificGuidelines[key];
-            } else if (!allowedDifficulties.includes(key as DifficultyLevel)) {
-              // console.warn(`[AdminScript] Document ${doc.id}, invalid difficulty key "${key}" in difficultySpecificGuidelines for ${categoryToAdd.topicValue}. Allowed: ${allowedDifficulties.join(', ')}. Skipping.`);
-            } else {
-              // console.warn(`[AdminScript] Document ${doc.id}, difficultySpecificGuidelines for key "${key}" is not a string. Skipping this guideline.`);
             }
           }
           if(Object.keys(validatedGuidelines).length > 0){
              categoryToAdd.difficultySpecificGuidelines = validatedGuidelines;
-          } else if (Object.keys(data.difficultySpecificGuidelines).length > 0) {
-            //  console.warn(`[AdminScript] Document ${doc.id} had difficultySpecificGuidelines for ${categoryToAdd.topicValue} but none were valid strings or matched allowed difficulties. It will be omitted.`);
           }
         }
-        
         categories.push(categoryToAdd);
-
-      } else {
-        // console.warn(`[AdminScript] Document ${doc.id} in "${CATEGORIES_COLLECTION}" is missing one or more required fields or they are not in the expected format. Skipping.`);
-        // console.warn(`[AdminScript] Problematic data for doc ${doc.id}:`, JSON.stringify(data));
       }
     });
-    
-    // console.log('[AdminScript] Processed categories: ', categories.map(c => ({ id: c.id, name: c.name.en, isPredefined: c.isPredefined })));
-    
-    if (querySnapshot.size > 0 && categories.length === 0) {
-        // console.warn(`[AdminScript] All documents fetched from "${CATEGORIES_COLLECTION}" were skipped due to missing fields or incorrect format. Please check Firestore data and structure definitions.`);
-    }
-    
     return categories;
   } catch (error) {
-    console.error(`[AdminScript] Error fetching app categories from Firestore collection "${CATEGORIES_COLLECTION}" using Admin SDK:`, error);
+    console.error(`[AdminScript] Error fetching app categories:`, error);
     return [];
+  }
+}
+
+async function updateAllExistingQuestionSources() {
+  console.log('Starting update of "source" field for all existing predefined questions...');
+  const questionsRef = db.collection(PREDEFINED_QUESTIONS_COLLECTION);
+  const newSourceValue = `model:${DEFAULT_MODEL_NAME},context:true,api_batch_size:N/A`;
+  let questionsUpdated = 0;
+  let batch = db.batch();
+  let operationsInBatch = 0;
+
+  try {
+    const snapshot = await questionsRef.get();
+    console.log(`Found ${snapshot.size} total questions to check/update.`);
+
+    if (snapshot.empty) {
+      console.log("No questions found to update.");
+      return;
+    }
+
+    snapshot.forEach(doc => {
+      const currentSource = doc.data().source;
+      // Update if source is missing or different from the target newSourceValue
+      if (currentSource !== newSourceValue) {
+        batch.update(doc.ref, { source: newSourceValue });
+        operationsInBatch++;
+        questionsUpdated++;
+
+        if (operationsInBatch >= 499) { // Firestore batch limit is 500
+          console.log(`Committing batch of ${operationsInBatch} updates...`);
+          batch.commit().then(() => console.log('Batch committed.'));
+          batch = db.batch();
+          operationsInBatch = 0;
+        }
+      }
+    });
+
+    if (operationsInBatch > 0) {
+      console.log(`Committing final batch of ${operationsInBatch} updates...`);
+      await batch.commit();
+      console.log('Final batch committed.');
+    }
+
+    console.log(`Successfully updated "source" field for ${questionsUpdated} questions to: "${newSourceValue}".`);
+  } catch (error) {
+    console.error('Error updating existing question sources:', error);
   }
 }
 
@@ -156,8 +192,15 @@ async function populateQuestions() {
   console.log(`Max New Questions per Run: ${MAX_NEW_QUESTIONS_TO_FETCH_PER_RUN_PER_DIFFICULTY_TARGET}`);
   console.log(`Genkit API Batch Size: ${QUESTIONS_TO_GENERATE_PER_API_CALL}`);
   console.log(`No Context Mode (don't send previous questions to AI): ${NO_CONTEXT_MODE}`);
+  console.log(`Model to Use: ${MODEL_TO_USE || DEFAULT_MODEL_NAME + ' (default)'}`);
+  console.log(`Update Existing Sources Only Mode: ${UPDATE_EXISTING_SOURCES_MODE}`);
   console.log(`---------------------`);
 
+  if (UPDATE_EXISTING_SOURCES_MODE) {
+    await updateAllExistingQuestionSources();
+    console.log('Update existing sources mode finished. Exiting script.');
+    return;
+  }
 
   const allAppCategories = await fetchCategoriesWithAdminSDK();
   if (!allAppCategories || allAppCategories.length === 0) {
@@ -175,20 +218,18 @@ async function populateQuestions() {
      console.log(`Processing only specified category: "${TARGET_CATEGORY_TOPIC_VALUE}"`);
   }
 
-
   const difficultyLevelsToProcess: DifficultyLevel[] = TARGET_DIFFICULTY ? [TARGET_DIFFICULTY] : ALL_DIFFICULTY_LEVELS_CONST;
   if (TARGET_DIFFICULTY) {
     console.log(`Processing only specified difficulty: "${TARGET_DIFFICULTY}"`);
   }
 
-
   for (const category of categoriesToProcess) {
-    if (category.isPredefined === false) { 
+    if (category.isPredefined === false) {
         console.log(`\nSkipping Category: "${category.name.en}" (TopicValue: ${category.topicValue}) as it is not marked for predefined question population.`);
         continue;
     }
     console.log(`\nProcessing Category: "${category.name.en}" (TopicValue: ${category.topicValue})`);
-    
+
     for (const difficulty of difficultyLevelsToProcess) {
       console.log(`  Targeting Difficulty: "${difficulty}" for category "${category.name.en}"`);
 
@@ -201,15 +242,15 @@ async function populateQuestions() {
           .where('topicValue', '==', category.topicValue)
           .where('difficulty', '==', difficulty)
           .get();
-        
+
         difficultyContextSnapshot.forEach(doc => {
           const data = doc.data() as GenerateTriviaQuestionOutput & { topicValue: string };
-            if (data.question && data.question.en) { // Use 'en' as conceptual text
+            if (data.question && data.question.en) {
               existingQuestionConceptTextsForDifficulty.push(data.question.en);
             }
             if (data.answers && typeof data.correctAnswerIndex === 'number' && data.answers[data.correctAnswerIndex]) {
-              const correctAnswer = data.answers[data.correctAnswerIndex]!; 
-              if (correctAnswer.en) { // Use 'en' as conceptual text
+              const correctAnswer = data.answers[data.correctAnswerIndex]!;
+              if (correctAnswer.en) {
                 existingCorrectAnswerConceptTextsForDifficulty.push(correctAnswer.en);
               }
             }
@@ -237,7 +278,7 @@ async function populateQuestions() {
         MAX_NEW_QUESTIONS_TO_FETCH_PER_RUN_PER_DIFFICULTY_TARGET,
         TARGET_QUESTIONS_PER_CATEGORY_DIFFICULTY - numExistingForDifficulty
       );
-      
+
       if (maxNewQuestionsToFetchForThisDifficulty <= 0) {
           console.log(`    No new questions needed for ${category.name.en} - ${difficulty} in this run based on overall target or run limit.`);
           continue;
@@ -248,30 +289,31 @@ async function populateQuestions() {
       while (questionsGeneratedForThisDifficultyInThisRun < maxNewQuestionsToFetchForThisDifficulty) {
         const questionsStillNeededForThisRun = maxNewQuestionsToFetchForThisDifficulty - questionsGeneratedForThisDifficultyInThisRun;
         const questionsToRequestInThisAPICall = Math.min(
-          QUESTIONS_TO_GENERATE_PER_API_CALL, 
+          QUESTIONS_TO_GENERATE_PER_API_CALL,
           questionsStillNeededForThisRun
         );
 
         if (questionsToRequestInThisAPICall <= 0) {
-          break; 
+          break;
         }
-        
-        console.log(`      Generating a batch of ${questionsToRequestInThisAPICall} questions via Genkit (need ${questionsStillNeededForThisRun} more for this run for ${category.name.en} - ${difficulty})...`);
-        
+
+        console.log(`      Generating a batch of ${questionsToRequestInThisAPICall} questions via Genkit (need ${questionsStillNeededForThisRun} more for this run for ${category.name.en} - ${difficulty}). Using model: ${MODEL_TO_USE || DEFAULT_MODEL_NAME}.`);
+
         try {
           const input: GenerateTriviaQuestionsInput = {
-            topic: category.topicValue, 
-            previousQuestions: NO_CONTEXT_MODE ? [] : [...existingQuestionConceptTextsForDifficulty], 
-            previousCorrectAnswers: NO_CONTEXT_MODE ? [] : [...existingCorrectAnswerConceptTextsForDifficulty], 
+            topic: category.topicValue,
+            previousQuestions: NO_CONTEXT_MODE ? [] : [...existingQuestionConceptTextsForDifficulty],
+            previousCorrectAnswers: NO_CONTEXT_MODE ? [] : [...existingCorrectAnswerConceptTextsForDifficulty],
             targetDifficulty: difficulty,
             categoryInstructions: category.detailedPromptInstructions,
             count: questionsToRequestInThisAPICall,
+            modelName: MODEL_TO_USE, // Pass model name to the flow
           };
-          
+
           if (category.difficultySpecificGuidelines && category.difficultySpecificGuidelines[difficulty]) {
             input.difficultySpecificInstruction = category.difficultySpecificGuidelines[difficulty];
           }
-          
+
           const newQuestionsArray: GenerateTriviaQuestionOutput[] = await generateTriviaQuestions(input);
           let questionsSavedThisAPICall = 0;
 
@@ -279,7 +321,7 @@ async function populateQuestions() {
             for (const newQuestionData of newQuestionsArray) {
               if (questionsGeneratedForThisDifficultyInThisRun >= maxNewQuestionsToFetchForThisDifficulty) {
                   console.log(`        Max new questions for this run/difficulty (${maxNewQuestionsToFetchForThisDifficulty}) reached. Stopping save for this API call's results.`);
-                  break; 
+                  break;
               }
 
               if (newQuestionData && newQuestionData.question && newQuestionData.answers && newQuestionData.difficulty) {
@@ -287,18 +329,21 @@ async function populateQuestions() {
                     console.warn(`      AI generated question with difficulty "${newQuestionData.difficulty}" but target was "${difficulty}". Saving with AI's assessed difficulty.`);
                 }
 
+                const modelUsedForSource = MODEL_TO_USE || DEFAULT_MODEL_NAME;
+                const sourceInfo = `model:${modelUsedForSource},context:${!NO_CONTEXT_MODE},api_batch_size:${QUESTIONS_TO_GENERATE_PER_API_CALL}`;
+
                 const questionToSave = {
                   ...newQuestionData,
-                  topicValue: category.topicValue, 
+                  topicValue: category.topicValue,
                   createdAt: admin.firestore.FieldValue.serverTimestamp(),
-                  source: 'batch-script-v6-cli-context-options' 
+                  source: sourceInfo
                 };
 
                 await questionsRef.add(questionToSave);
                 questionsSavedThisAPICall++;
                 questionsGeneratedForThisDifficultyInThisRun++;
                 console.log(`        > Saved question (${questionsGeneratedForThisDifficultyInThisRun}/${maxNewQuestionsToFetchForThisDifficulty}) (AI diff: ${newQuestionData.difficulty}, Target: ${difficulty}): "${newQuestionData.question.en.substring(0,30)}..."`);
-                
+
                 if (!NO_CONTEXT_MODE) {
                     if (newQuestionData.question.en) existingQuestionConceptTextsForDifficulty.push(newQuestionData.question.en);
                     const correctAnswer = newQuestionData.answers[newQuestionData.correctAnswerIndex];
@@ -316,25 +361,25 @@ async function populateQuestions() {
           }
 
           console.log(`      Total generated for ${category.name.en} - ${difficulty} in this run: ${questionsGeneratedForThisDifficultyInThisRun}/${maxNewQuestionsToFetchForThisDifficulty}.`);
-          
+
           if (questionsGeneratedForThisDifficultyInThisRun < maxNewQuestionsToFetchForThisDifficulty && newQuestionsArray && newQuestionsArray.length > 0) {
             console.log(`      Waiting ${GENKIT_API_CALL_DELAY_MS / 1000}s before next API call for this same difficulty/category combination...`);
             await new Promise(resolve => setTimeout(resolve, GENKIT_API_CALL_DELAY_MS));
           } else if (questionsGeneratedForThisDifficultyInThisRun >= maxNewQuestionsToFetchForThisDifficulty) {
-             break; 
+             break;
           } else if (!newQuestionsArray || newQuestionsArray.length === 0) {
             console.warn(`      API call returned no questions. Breaking loop for ${category.name.en} - ${difficulty} to avoid potential infinite loop.`);
-            break; 
+            break;
           }
 
         } catch (error) {
           console.error(`      Error during Genkit API call for ${category.name.en} - ${difficulty}:`, error);
           console.log(`      Waiting ${GENKIT_API_CALL_DELAY_MS / 1000}s after error before potentially retrying or moving on...`);
           await new Promise(resolve => setTimeout(resolve, GENKIT_API_CALL_DELAY_MS));
-          break; 
+          break;
         }
-      } 
-      
+      }
+
       console.log(`    Finished generation attempts for ${category.name.en} - ${difficulty}. Generated ${questionsGeneratedForThisDifficultyInThisRun} questions in this run.`);
       if (questionsGeneratedForThisDifficultyInThisRun > 0 && questionsGeneratedForThisDifficultyInThisRun < maxNewQuestionsToFetchForThisDifficulty) {
         console.log(`    Note: Fewer questions were generated (${questionsGeneratedForThisDifficultyInThisRun}) than the target for this run (${maxNewQuestionsToFetchForThisDifficulty}).`);
@@ -342,14 +387,14 @@ async function populateQuestions() {
 
       const isLastDifficulty = difficultyLevelsToProcess.indexOf(difficulty) === difficultyLevelsToProcess.length - 1;
       const isLastCategory = categoriesToProcess.indexOf(category) === categoriesToProcess.length - 1;
-      if (maxNewQuestionsToFetchForThisDifficulty > 0 && !(isLastDifficulty && isLastCategory)) { 
+      if (maxNewQuestionsToFetchForThisDifficulty > 0 && !(isLastDifficulty && isLastCategory)) {
         console.log(`    Waiting ${GENKIT_API_CALL_DELAY_MS / 1000}s before processing next difficulty or category...`);
         await new Promise(resolve => setTimeout(resolve, GENKIT_API_CALL_DELAY_MS));
       }
 
-    } 
+    }
     console.log(`  Finished all difficulty levels for category: ${category.name.en}.`);
-  } 
+  }
   console.log('\nBatch question population script finished.');
 }
 

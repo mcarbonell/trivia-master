@@ -42,7 +42,8 @@ const GenerateTriviaQuestionsInputSchema = z.object({
   targetDifficulty: DifficultyLevelSchema.optional().describe('If provided, the AI should attempt to generate a question of this specific difficulty level. If not provided, the AI will assess and assign a difficulty level based on the content and its guidelines.'),
   categoryInstructions: z.string().optional().describe('Detailed English-only instructions for the AI on how to generate questions for this specific category.'),
   difficultySpecificInstruction: z.string().optional().describe('More granular English-only instructions for the AI, specific to the target difficulty level within this category.'),
-  count: z.number().min(1).max(1000).optional().default(1).describe('Number of distinct trivia questions to generate. Max 1000. Defaults to 1.')
+  count: z.number().min(1).max(1000).optional().default(1).describe('Number of distinct trivia questions to generate. Max 1000. Defaults to 1.'),
+  modelName: z.string().optional().describe('Optional Genkit model name to use for generation (e.g., googleai/gemini-1.5-pro).')
 });
 export type GenerateTriviaQuestionsInput = z.infer<typeof GenerateTriviaQuestionsInputSchema>;
 
@@ -154,17 +155,12 @@ Make sure that only one answer is correct (indicated by correctAnswerIndex).
 The number of question objects in the array SHOULD ideally match the requested "{{count}}", but it is more important that each object is valid.
 `;
 
-// Zod schema for the direct output from the LLM: an object with a "questions_batch" field containing an array of unknown items.
-const LLMOutputStructureSchema = z.object({
-  questions_batch: z.array(GenerateTriviaQuestionOutputSchema), // We will validate each item in the array individually
-});
-
 const generateTriviaQuestionsPrompt = ai.definePrompt({
   name: 'generateTriviaQuestionsPrompt',
   input: {schema: GenerateTriviaQuestionsInputSchema},
-  output: {schema: GenerateTriviaQuestionsOutputSchema}, // Expecting the raw batch structure
+  output: {schema: GenerateTriviaQuestionsOutputSchema}, 
   config: {
-    temperature: 1, // Reduced temperature for better format adherence
+    temperature: 1, 
   },
   prompt: promptTemplateString,
 });
@@ -173,12 +169,15 @@ const generateTriviaQuestionsFlow = ai.defineFlow(
   {
     name: 'generateTriviaQuestionsFlow',
     inputSchema: GenerateTriviaQuestionsInputSchema,
-    outputSchema: GenerateTriviaQuestionsOutputSchema, // Flow output is an array of VALID questions
+    outputSchema: GenerateTriviaQuestionsOutputSchema, 
   },
   async (input) => {
     const effectiveInput = { ...input, count: input.count || 1 };
 
-    const {output} = await generateTriviaQuestionsPrompt(effectiveInput);
+    const {output} = await generateTriviaQuestionsPrompt(
+        effectiveInput, 
+        effectiveInput.modelName ? { model: ai.model(effectiveInput.modelName) } : undefined
+      );
     
     if (!output || !Array.isArray(output)) {
       console.error('LLM did not return the expected array structure. Input:', JSON.stringify(effectiveInput), 'LLM Output:', JSON.stringify(output));
@@ -198,7 +197,7 @@ const generateTriviaQuestionsFlow = ai.defineFlow(
           validQuestions.push(parsedQuestion.data);
         } else {
           console.warn(`[generateTriviaQuestionsFlow] Discarding malformed question object at index ${i} from LLM batch. Errors:`, parsedQuestion.error.flatten().fieldErrors);
-          console.warn(`[generateTriviaQuestionsFlow] Malformed question data:`, JSON.stringify(rawQuestion)); // Uncomment for deep debugging
+          console.warn(`[generateTriviaQuestionsFlow] Malformed question data:`, JSON.stringify(rawQuestion)); 
         }
       }
     }
@@ -208,7 +207,6 @@ const generateTriviaQuestionsFlow = ai.defineFlow(
     } else if (llmReturnedCount < effectiveInput.count) {
       console.warn(`[generateTriviaQuestionsFlow] LLM was asked for ${effectiveInput.count} questions but only returned ${llmReturnedCount} raw items, of which ${validQuestions.length} were valid. For topic: ${effectiveInput.topic}`);
     }
-
 
     return validQuestions;
   }
