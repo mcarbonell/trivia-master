@@ -71,6 +71,21 @@ This document outlines the key features and improvements implemented in the AI T
     *   Configured with `@ducanh2912/next-pwa` for improved caching, offline capabilities (for app shell), and "add to home screen" functionality.
 *   **Visual Difficulty Indicator**:
     *   Displays the current adaptive difficulty level to the user.
+*   **Question Reporting**:
+    *   Users can report questions directly from the game interface (during or after answering).
+    *   A dialog allows users to select a reason for the report and provide optional details.
+    *   Reports are submitted to Firestore for admin review.
+
+## Analytics & Feedback
+
+*   **Firebase Analytics Integration**:
+    *   Tracks key user interactions within the game.
+    *   **`select_category`**: Logged when a user chooses a category (predefined or custom). Includes category name, topic value, and if it's custom.
+    *   **`start_game_with_difficulty`**: Logged when a user selects a difficulty mode and starts the game. Includes category, selected difficulty mode, and initial difficulty level.
+    *   **`answer_question`**: Logged for each question answered or timed out. Includes category, question difficulty, correctness, and if it was timed out.
+    *   **`use_hint`**: Logged when a user reveals a hint for a question. Includes category and question difficulty.
+*   **User Feedback System**:
+    *   Question reporting functionality allows users to provide direct feedback on question quality.
 
 ## Admin Panel & Management
 
@@ -93,9 +108,18 @@ This document outlines the key features and improvements implemented in the AI T
 *   **Predefined Question Management (`/admin/questions`)**:
     *   **List Questions**: View all predefined questions in a paginated table.
     *   **Filter**: Filter questions by category and/or difficulty.
+    *   **Search**: Search questions by ID, question text, or answer text.
     *   **Delete**: Remove specific predefined questions with confirmation.
     *   **Update**: Edit the content of existing predefined questions (bilingual question, answers, explanation, hint, difficulty, correct answer).
     *   Table displays question text (truncated with tooltip for full view), category name, difficulty, and correct answer.
+*   **Report Management (`/admin/reports`)**:
+    *   **View Reports**: Lists all user-submitted question reports, sortable and filterable by status.
+    *   **Report Details**: Shows reported question text (bilingual), category, difficulty, reason for report, user details, and date.
+    *   **Status Update**: Admins can change the status of a report (e.g., 'New', 'Reviewed', 'Resolved', 'Ignored').
+    *   **Actions on Reports**:
+        *   Copy Question ID: Allows quick copying of the reported question's Firestore ID (if applicable).
+        *   Delete Report: Removes the report ticket.
+        *   Delete Reported Question: If the report links to a predefined question ID, allows direct deletion of that question from the game (with confirmation).
 
 ## Technical Stack & Setup
 
@@ -104,8 +128,9 @@ This document outlines the key features and improvements implemented in the AI T
 *   **UI Components**: ShadCN UI
 *   **Styling**: Tailwind CSS
 *   **Language**: TypeScript
-*   **Database**: Firebase Firestore (for predefined questions and category definitions)
+*   **Database**: Firebase Firestore (for predefined questions, category definitions, and user reports)
 *   **Authentication**: Firebase Authentication
+*   **Analytics**: Firebase Analytics
 *   **Deployment**: Configured for Firebase App Hosting (`apphosting.yaml`).
 
 ## Development & Workflow
@@ -116,6 +141,7 @@ This document outlines the key features and improvements implemented in the AI T
 *   **Modular Genkit Flows**: AI logic encapsulated in `src/ai/flows/`.
 *   **Client-Side State Management**: React hooks for game state and UI.
 *   **Data Seeding Scripts**: For populating categories and questions in Firestore.
-*   **Service Layer**: Dedicated service files (`categoryService.ts`, `triviaService.ts`) for Firestore interactions.
+*   **Service Layer**: Dedicated service files (`categoryService.ts`, `triviaService.ts`, `reportService.ts`) for Firestore interactions.
 
 This list represents the major advancements made. The application provides a robust and engaging trivia experience with a strong foundation for future enhancements.
+

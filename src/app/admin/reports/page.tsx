@@ -261,6 +261,7 @@ export default function AdminReportsPage() {
                                 <TooltipContent><p>{t('copyQuestionIdButton')}</p></TooltipContent>
                             </Tooltip>
                             <Tooltip>
+                             <AlertDialog>
                                 <TooltipTrigger asChild={true}>
                                   <AlertDialogTrigger asChild={true}>
                                     <Button variant="ghost" size="icon" className="h-8 w-8 hover:bg-destructive hover:text-destructive-foreground">
@@ -284,6 +285,7 @@ export default function AdminReportsPage() {
                            </>
                         )}
                         <Tooltip>
+                        <AlertDialog>
                             <TooltipTrigger asChild={true}>
                               <AlertDialogTrigger asChild={true}>
                                 <Button variant="ghost" size="icon" className="h-8 w-8 hover:bg-destructive hover:text-destructive-foreground">
