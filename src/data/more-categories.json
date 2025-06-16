@@ -1,0 +1,97 @@
+
+[
+  {
+    "topicValue": "WorldCapitals",
+    "name": { "en": "World Capitals", "es": "Capitales del Mundo" },
+    "icon": "Building2",
+    "detailedPromptInstructions": "Generate questions about the capital cities of countries worldwide. Questions can involve identifying the capital of a given country, the country of a given capital, or interesting facts about capital cities. Ensure a global spread.",
+    "isPredefined": true
+  },
+  {
+    "topicValue": "FamousInventions",
+    "name": { "en": "Famous Inventions", "es": "Inventos Famosos" },
+    "icon": "Lightbulb",
+    "detailedPromptInstructions": "Generate questions about significant inventions throughout history, their inventors, the year/period of invention, and their impact on society. Cover a range of fields like communication, transport, medicine, etc.",
+    "isPredefined": true
+  },
+  {
+    "topicValue": "MythicalCreatures",
+    "name": { "en": "Mythical Creatures", "es": "Criaturas Míticas" },
+    "icon": "Ghost",
+    "detailedPromptInstructions": "Generate questions about legendary creatures from various mythologies and folklore around the world (e.g., griffins, unicorns, dragons, krakens, etc.). Questions can cover their characteristics, origins, and associated stories.",
+    "isPredefined": true
+  },
+  {
+    "topicValue": "SpaceExploration",
+    "name": { "en": "Space Exploration", "es": "Exploración Espacial" },
+    "icon": "Rocket",
+    "detailedPromptInstructions": "Generate questions about the history of space exploration, famous astronauts/cosmonauts, space missions (e.g., Apollo, Voyager), space agencies, celestial bodies explored, and technological advancements in space travel.",
+    "difficultySpecificGuidelines": {
+      "easy": "Focus on well-known facts like the first man on the moon or major space agencies.",
+      "medium": "Cover specific missions, key figures beyond the most famous, or basic concepts of space travel.",
+      "hard": "Delve into technical details of spacecraft, specific objectives of lesser-known missions, or scientific discoveries made through space exploration."
+    },
+    "isPredefined": true
+  },
+  {
+    "topicValue": "BoardGames",
+    "name": { "en": "Board Games", "es": "Juegos de Mesa" },
+    "icon": "Dice5",
+    "detailedPromptInstructions": "Generate questions about classic and modern board games, including their rules, objectives, origins, famous designers, or iconic game pieces/mechanics. Examples: Chess, Monopoly, Scrabble, Settlers of Catan.",
+    "isPredefined": true
+  },
+  {
+    "topicValue": "InternetCulture",
+    "name": { "en": "Internet Culture", "es": "Cultura de Internet" },
+    "icon": "Wifi",
+    "detailedPromptInstructions": "Generate questions about famous memes, viral trends, influential websites/platforms, historical internet events, and key figures in internet history. Focus on widely recognizable phenomena.",
+    "isPredefined": true
+  },
+  {
+    "topicValue": "HumanAnatomy",
+    "name": { "en": "Human Anatomy", "es": "Anatomía Humana" },
+    "icon": "HeartPulse",
+    "detailedPromptInstructions": "Generate questions about the organs, systems (e.g., circulatory, nervous, respiratory), bones, and basic physiological functions of the human body. Focus on generally known anatomical terms and functions.",
+    "isPredefined": true
+  },
+  {
+    "topicValue": "Dinosaurs",
+    "name": { "en": "Dinosaurs", "es": "Dinosaurios" },
+    "icon": "Footprints",
+    "detailedPromptInstructions": "Generate questions about various dinosaur species (e.g., T-Rex, Triceratops, Stegosaurus), their characteristics, the periods they lived in (Triassic, Jurassic, Cretaceous), and paleontology related to dinosaurs.",
+    "isPredefined": true
+  },
+  {
+    "topicValue": "FlagsOfTheWorld",
+    "name": { "en": "Flags of the World", "es": "Banderas del Mundo" },
+    "icon": "Flag",
+    "detailedPromptInstructions": "Generate questions that require identifying a country based on a description of its flag, or vice versa. Questions can also be about the symbolism or history of specific flags. Focus on flags of well-known countries.",
+    "isPredefined": true
+  },
+  {
+    "topicValue": "FamousQuotes",
+    "name": { "en": "Famous Quotes", "es": "Citas Célebres" },
+    "icon": "Quote",
+    "detailedPromptInstructions": "Generate questions asking to identify the person who said a famous quote, or to complete a well-known quote. Quotes can be from historical figures, literature, movies, or speeches.",
+    "isPredefined": true
+  },
+  {
+    "topicValue": "VideoGames",
+    "name": { "en": "Video Games", "es": "Videojuegos" },
+    "icon": "Gamepad2",
+    "detailedPromptInstructions": "Generate questions about popular video games (classic and modern), iconic characters, game consoles, genres (e.g., RPG, FPS, Platformer), and significant events in video game history.",
+    "difficultySpecificGuidelines": {
+        "easy": "Focus on extremely popular game franchises (e.g., Mario, Zelda, Pokemon) or very common gaming terms.",
+        "medium": "Cover well-known games from various genres, identify characters or main plot points.",
+        "hard": "Questions about specific game mechanics, development history, influential indie games, or niche genres."
+    },
+    "isPredefined": true
+  },
+  {
+    "topicValue": "ArchitecturalStyles",
+    "name": { "en": "Architectural Styles", "es": "Estilos Arquitectónicos" },
+    "icon": "Landmark",
+    "detailedPromptInstructions": "Generate questions about different architectural styles (e.g., Gothic, Baroque, Modernist, Art Deco), their key characteristics, famous architects associated with them, and iconic buildings representing these styles.",
+    "isPredefined": true
+  }
+]
