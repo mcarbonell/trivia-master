@@ -111,6 +111,7 @@
     "navCategories": "Categories",
     "navQuestions": "Questions",
     "navReports": "Reports",
+    "navSuggestions": "Suggestions",
     "logoutButton": "Logout",
     "loggedInAs": "Logged in as: {email}",
     "footerText": "© {year} AI Trivia Master - Admin"
@@ -206,7 +207,7 @@
     "paginationInfo": "Page {currentPage} of {totalPages}. Total: {totalItems} questions.",
     "previousPage": "Previous",
     "nextPage": "Next",
-    "searchPlaceholder": "Search questions, answers, or ID...",
+    "searchPlaceholder": "Search by ID, question text, or answer text...",
     "filterCategoryPlaceholder": "Filter by category...",
     "filterDifficultyPlaceholder": "Filter by difficulty...",
     "allCategories": "All Categories",
@@ -282,6 +283,26 @@
       "offensive_content": "Offensive Content",
       "other": "Other"
     }
+  },
+  "AdminSuggestionsPage": {
+    "title": "User Suggestions",
+    "description": "View and manage suggestions submitted by users.",
+    "suggestionsListTitle": "Suggestions List",
+    "suggestionsListDescription": "Found {count, plural, =0 {no suggestions} one {# suggestion} other {# suggestions}}.",
+    "noSuggestionsFound": "No suggestions found.",
+    "tableDate": "Date Submitted",
+    "tableSender": "Sender",
+    "tableMessage": "Message",
+    "tableLocale": "Locale",
+    "tableActions": "Actions",
+    "anonymousSender": "Anonymous",
+    "notAvailable": "N/A",
+    "errorLoading": "Error loading suggestions. Please try again.",
+    "toastDeleteSuccess": "Suggestion deleted successfully.",
+    "toastDeleteError": "Could not delete suggestion.",
+    "deleteConfirmTitle": "Delete Suggestion?",
+    "deleteConfirmDescription": "Are you sure you want to delete this suggestion? This action cannot be undone.",
+    "tooltipDeleteSuggestion": "Delete this suggestion"
   },
   "ReportDialog": {
     "title": "Report Question",

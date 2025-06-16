@@ -111,6 +111,7 @@
     "navCategories": "Categorías",
     "navQuestions": "Preguntas",
     "navReports": "Reportes",
+    "navSuggestions": "Sugerencias",
     "logoutButton": "Cerrar Sesión",
     "loggedInAs": "Sesión iniciada como: {email}",
     "footerText": "© {year} Maestro de Trivia IA - Admin"
@@ -193,7 +194,7 @@
     "questionsListDescriptionFiltered": "Mostrando {count, plural, =0 {ninguna pregunta} one {# pregunta} other {# preguntas}} (de {total} en total).",
     "noQuestions": "No se encontraron preguntas predefinidas. Puedes generarlas usando el script de población.",
     "noQuestionsFound": "No se encontraron preguntas que coincidan con los filtros actuales.",
-    "noQuestionsMatchFilters": "Intenta ajustar tus filtros o asegúrate de que se hayan poblado preguntas para los criterios seleccionados.",
+    "noQuestionsMatchFilters": "Try adjusting your filters or ensure questions have been populated for the selected criteria.",
     "tableQuestion": "Pregunta",
     "tableCategory": "Categoría",
     "tableDifficulty": "Dificultad",
@@ -206,7 +207,7 @@
     "paginationInfo": "Página {currentPage} de {totalPages}. Total: {totalItems} preguntas.",
     "previousPage": "Anterior",
     "nextPage": "Siguiente",
-    "searchPlaceholder": "Buscar preguntas, respuestas o ID...",
+    "searchPlaceholder": "Buscar por ID, texto de pregunta o respuesta...",
     "filterCategoryPlaceholder": "Filtrar por categoría...",
     "filterDifficultyPlaceholder": "Filtrar por dificultad...",
     "allCategories": "Todas las Categorías",
@@ -282,6 +283,26 @@
       "offensive_content": "Contenido Ofensivo",
       "other": "Otro"
     }
+  },
+  "AdminSuggestionsPage": {
+    "title": "Sugerencias de Usuarios",
+    "description": "Ver y gestionar las sugerencias enviadas por los usuarios.",
+    "suggestionsListTitle": "Lista de Sugerencias",
+    "suggestionsListDescription": "{count, plural, =0 {No se encontraron sugerencias} one {Se encontró # sugerencia} other {Se encontraron # sugerencias}}.",
+    "noSuggestionsFound": "No se encontraron sugerencias.",
+    "tableDate": "Fecha Envío",
+    "tableSender": "Remitente",
+    "tableMessage": "Mensaje",
+    "tableLocale": "Idioma",
+    "tableActions": "Acciones",
+    "anonymousSender": "Anónimo",
+    "notAvailable": "N/D",
+    "errorLoading": "Error al cargar las sugerencias. Por favor, inténtalo de nuevo.",
+    "toastDeleteSuccess": "Sugerencia eliminada correctamente.",
+    "toastDeleteError": "No se pudo eliminar la sugerencia.",
+    "deleteConfirmTitle": "¿Eliminar Sugerencia?",
+    "deleteConfirmDescription": "¿Estás seguro de que quieres eliminar esta sugerencia? Esta acción no se puede deshacer.",
+    "tooltipDeleteSuggestion": "Eliminar esta sugerencia"
   },
   "ReportDialog": {
     "title": "Reportar Pregunta",
