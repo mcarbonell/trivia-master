@@ -32,6 +32,10 @@
   "spanish": "Español",
   "save": "Save",
   "cancel": "Cancel",
+  "retryButton": "Retry",
+  "errorTitle": "An Error Occurred",
+  "toastErrorTitle": "Error!",
+  "toastSuccessTitle": "Success!",
   "categories": {
     "science": "Science",
     "history": "History",
@@ -100,8 +104,6 @@
     "editButton": "Edit",
     "deleteButton": "Delete",
     "errorLoading": "Error loading categories. Please try again.",
-    "errorTitle": "An Error Occurred",
-    "retryButton": "Retry",
     "yes": "Yes",
     "no": "No",
     "difficultyShort": {
@@ -133,8 +135,6 @@
     "formDifficultyMedium": "Medium Difficulty Instructions",
     "formDifficultyHard": "Hard Difficulty Instructions",
     "formDifficultyPlaceholder": "Instructions for {level} questions in this category...",
-    "toastSuccessTitle": "Success!",
-    "toastErrorTitle": "Error!",
     "toastAddSuccess": "Category added successfully.",
     "toastUpdateSuccess": "Category updated successfully.",
     "toastDeleteSuccess": "Category \"{name}\" deleted successfully.",
@@ -149,8 +149,20 @@
     "title": "Manage Questions",
     "description": "Browse, search, and manage predefined trivia questions.",
     "addButton": "Add Question (Manual)",
-    "questionsListTitle": "Questions List",
-    "questionsListDescription": "Predefined questions stored in Firestore.",
-    "comingSoon": "Question management features coming soon. You can currently populate questions using the script."
+    "questionsListTitle": "Predefined Questions",
+    "questionsListDescription": "Found {count, plural, =0 {no questions} one {# question} other {# questions}}.",
+    "noQuestions": "No predefined questions found. You can generate them using the population script.",
+    "tableQuestion": "Question (EN)",
+    "tableCategory": "Category",
+    "tableDifficulty": "Difficulty",
+    "tableCorrectAnswer": "Correct Answer (EN)",
+    "tableActions": "Actions",
+    "viewButton": "View Details",
+    "editButton": "Edit",
+    "deleteButton": "Delete",
+    "errorLoading": "Error loading questions. Please try again.",
+    "paginationInfo": "Page {currentPage} of {totalPages}. Total: {totalItems} questions.",
+    "previousPage": "Previous",
+    "nextPage": "Next"
   }
 }

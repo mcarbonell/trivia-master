@@ -32,6 +32,10 @@
   "spanish": "Español",
   "save": "Guardar",
   "cancel": "Cancelar",
+  "retryButton": "Reintentar",
+  "errorTitle": "Ocurrió un Error",
+  "toastErrorTitle": "¡Error!",
+  "toastSuccessTitle": "¡Éxito!",
   "categories": {
     "science": "Ciencia",
     "history": "Historia",
@@ -100,8 +104,6 @@
     "editButton": "Editar",
     "deleteButton": "Eliminar",
     "errorLoading": "Error al cargar las categorías. Por favor, inténtalo de nuevo.",
-    "errorTitle": "Ocurrió un Error",
-    "retryButton": "Reintentar",
     "yes": "Sí",
     "no": "No",
     "difficultyShort": {
@@ -133,8 +135,6 @@
     "formDifficultyMedium": "Instrucciones Dificultad Media",
     "formDifficultyHard": "Instrucciones Dificultad Difícil",
     "formDifficultyPlaceholder": "Instrucciones para preguntas de nivel {level} en esta categoría...",
-    "toastSuccessTitle": "¡Éxito!",
-    "toastErrorTitle": "¡Error!",
     "toastAddSuccess": "Categoría añadida correctamente.",
     "toastUpdateSuccess": "Categoría actualizada correctamente.",
     "toastDeleteSuccess": "Categoría \"{name}\" eliminada correctamente.",
@@ -149,8 +149,20 @@
     "title": "Gestionar Preguntas",
     "description": "Explorar, buscar y gestionar preguntas de trivia predefinidas.",
     "addButton": "Añadir Pregunta (Manual)",
-    "questionsListTitle": "Lista de Preguntas",
-    "questionsListDescription": "Preguntas predefinidas almacenadas en Firestore.",
-    "comingSoon": "Las funciones de gestión de preguntas estarán disponibles pronto. Actualmente puedes poblar preguntas usando el script."
+    "questionsListTitle": "Preguntas Predefinidas",
+    "questionsListDescription": "{count, plural, =0 {No se encontraron preguntas} one {Se encontró # pregunta} other {Se encontraron # preguntas}}.",
+    "noQuestions": "No se encontraron preguntas predefinidas. Puedes generarlas usando el script de población.",
+    "tableQuestion": "Pregunta (EN)",
+    "tableCategory": "Categoría",
+    "tableDifficulty": "Dificultad",
+    "tableCorrectAnswer": "Respuesta Correcta (EN)",
+    "tableActions": "Acciones",
+    "viewButton": "Ver Detalles",
+    "editButton": "Editar",
+    "deleteButton": "Eliminar",
+    "errorLoading": "Error al cargar las preguntas. Por favor, inténtalo de nuevo.",
+    "paginationInfo": "Página {currentPage} de {totalPages}. Total: {totalItems} preguntas.",
+    "previousPage": "Anterior",
+    "nextPage": "Siguiente"
   }
 }
