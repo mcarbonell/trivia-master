@@ -142,7 +142,7 @@ Each question object in the array must conform to the following structure:
   "correctAnswerIndex": 0,
   "explanation": { "en": "English Explanation", "es": "Spanish Explanation" },
   "hint": { "en": "English Hint", "es": "Spanish Hint (optional)" },
-  "difficulty": "easy" 
+  "difficulty": "easy"
 }
 Ensure the entire response is a single JSON object like: [ {question1_object}, {question2_object}, ... ]
 
@@ -158,9 +158,9 @@ The number of question objects in the array SHOULD ideally match the requested "
 const generateTriviaQuestionsPrompt = ai.definePrompt({
   name: 'generateTriviaQuestionsPrompt',
   input: {schema: GenerateTriviaQuestionsInputSchema},
-  output: {schema: GenerateTriviaQuestionsOutputSchema}, 
+  output: {schema: GenerateTriviaQuestionsOutputSchema},
   config: {
-    temperature: 1, 
+    temperature: 1,
   },
   prompt: promptTemplateString,
 });
@@ -169,16 +169,19 @@ const generateTriviaQuestionsFlow = ai.defineFlow(
   {
     name: 'generateTriviaQuestionsFlow',
     inputSchema: GenerateTriviaQuestionsInputSchema,
-    outputSchema: GenerateTriviaQuestionsOutputSchema, 
+    outputSchema: GenerateTriviaQuestionsOutputSchema,
   },
   async (input) => {
     const effectiveInput = { ...input, count: input.count || 1 };
 
+    console.log('[generateTriviaQuestionsFlow] Input received:', JSON.stringify(effectiveInput, null, 2));
+    console.log('[generateTriviaQuestionsFlow] Checking ai object and ai.model method. Type of ai.model:', typeof ai.model);
+
     const {output} = await generateTriviaQuestionsPrompt(
-        effectiveInput, 
+        effectiveInput,
         effectiveInput.modelName ? { model: ai.model(effectiveInput.modelName) } : undefined
       );
-    
+
     if (!output || !Array.isArray(output)) {
       console.error('LLM did not return the expected array structure. Input:', JSON.stringify(effectiveInput), 'LLM Output:', JSON.stringify(output));
       throw new Error('Failed to parse questions array from LLM response.');
@@ -197,11 +200,11 @@ const generateTriviaQuestionsFlow = ai.defineFlow(
           validQuestions.push(parsedQuestion.data);
         } else {
           console.warn(`[generateTriviaQuestionsFlow] Discarding malformed question object at index ${i} from LLM batch. Errors:`, parsedQuestion.error.flatten().fieldErrors);
-          console.warn(`[generateTriviaQuestionsFlow] Malformed question data:`, JSON.stringify(rawQuestion)); 
+          console.warn(`[generateTriviaQuestionsFlow] Malformed question data:`, JSON.stringify(rawQuestion));
         }
       }
     }
-    
+
     if (validQuestions.length !== effectiveInput.count && llmReturnedCount >= effectiveInput.count) {
       console.warn(`[generateTriviaQuestionsFlow] LLM was asked for ${effectiveInput.count} questions, returned ${llmReturnedCount} raw items, and ${validQuestions.length} were valid. This means ${llmReturnedCount - validQuestions.length} items failed individual validation. For topic: ${effectiveInput.topic}`);
     } else if (llmReturnedCount < effectiveInput.count) {
