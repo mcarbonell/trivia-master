@@ -7,7 +7,7 @@ import { es as esLocale, enUS as enLocale } from 'date-fns/locale';
 import { getReportedQuestions, updateReportStatus, deleteReport } from '@/services/reportService';
 import { deletePredefinedQuestion } from '@/services/triviaService';
 import { getAppCategories } from '@/services/categoryService';
-import type { ReportData, ReportStatus, CategoryDefinition, BilingualText } from '@/types';
+import type { ReportData, ReportStatus, CategoryDefinition } from '@/types'; // Removed BilingualText as it's not directly used here
 import type { AppLocale } from '@/lib/i18n-config';
 
 import { useTranslations, useLocale } from 'next-intl';
@@ -17,7 +17,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
-import { Loader2, AlertTriangle, RefreshCw, Trash2, Edit3, ExternalLink, ClipboardCopy } from 'lucide-react';
+import { Loader2, AlertTriangle, RefreshCw, Trash2, ClipboardCopy } from 'lucide-react'; // Removed Edit3, ExternalLink
 import { useToast } from '@/hooks/use-toast';
 
 const ITEMS_PER_PAGE = 10;
@@ -71,7 +71,7 @@ export default function AdminReportsPage() {
         return false;
       }
       return true;
-    });
+    }).sort((a, b) => new Date(b.reportedAt).getTime() - new Date(a.reportedAt).getTime()); // Ensure consistent sort after filtering
   }, [reports, activeFilters]);
 
   const paginatedReports = useMemo(() => {
@@ -102,7 +102,7 @@ export default function AdminReportsPage() {
     try {
       await deleteReport(reportId);
       toast({ title: tCommon('toastSuccessTitle') as string, description: t('toastReportDeleteSuccess') });
-      fetchAllData(); // Re-fetch to update list
+      fetchAllData(); 
     } catch (err) {
       console.error("Error deleting report:", err);
       toast({ variant: "destructive", title: tCommon('toastErrorTitle') as string, description: t('toastReportDeleteError') });
@@ -117,7 +117,6 @@ export default function AdminReportsPage() {
     try {
       await deletePredefinedQuestion(questionId);
       toast({ title: tCommon('toastSuccessTitle') as string, description: t('toastPredefinedQuestionDeleteSuccess', { question: truncateText(questionText, 30) }) });
-      // Optionally, mark related reports as resolved or re-fetch reports
       fetchAllData(); 
     } catch (err) {
       console.error("Error deleting predefined question:", err);
@@ -136,12 +135,13 @@ export default function AdminReportsPage() {
   };
 
   const truncateText = (text: string, maxLength: number = 50) => {
-    if (!text) return 'N/A';
+    if (!text) return t('tableNotAvailable');
     if (text.length <= maxLength) return text;
     return text.substring(0, maxLength) + "...";
   };
 
   const getQuestionTextForLocale = (report: ReportData) => {
+    // Use the locale of the report to decide which text to show primarily
     return report.locale === 'es' ? report.questionTextEs : report.questionTextEn;
   };
 
@@ -213,16 +213,14 @@ export default function AdminReportsPage() {
                   {paginatedReports.map((report) => (
                     <TableRow key={report.id}>
                       <TableCell className="hidden sm:table-cell">
-                        {report.reportedAt && typeof (report.reportedAt as Timestamp).toDate === 'function'
-                          ? format((report.reportedAt as Timestamp).toDate(), 'PPp', { locale: dateLocale })
-                          : t('notAvailable')}
+                        {report.reportedAt ? format(new Date(report.reportedAt), 'PPp', { locale: dateLocale }) : t('tableNotAvailable')}
                       </TableCell>
                       <TableCell>
                         <Tooltip>
                           <TooltipTrigger asChild><span className="cursor-default">{truncateText(getQuestionTextForLocale(report), 40)}</span></TooltipTrigger>
                           <TooltipContent side="top" className="max-w-md bg-background border shadow-lg p-2 rounded-md">
-                            <p><strong>EN:</strong> {report.questionTextEn}</p>
-                            <p><strong>ES:</strong> {report.questionTextEs}</p>
+                            <p><strong>EN:</strong> {report.questionTextEn || t('tableNotAvailable')}</p>
+                            <p><strong>ES:</strong> {report.questionTextEs || t('tableNotAvailable')}</p>
                             {report.questionId && <p className="mt-1 text-xs text-muted-foreground">ID: {report.questionId}</p>}
                           </TooltipContent>
                         </Tooltip>
@@ -327,4 +325,9 @@ export default function AdminReportsPage() {
       </Card>
     </div>
   );
+}
+
+// Define Timestamp type for Firestore compatibility (if needed for other parts, but here we convert to string)
+interface Timestamp {
+  toDate: () => Date;
 }

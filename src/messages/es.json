@@ -145,7 +145,6 @@
     "formDifficultyMedium": "Instrucciones Dificultad Media",
     "formDifficultyHard": "Instrucciones Dificultad Difícil",
     "formDifficultyPlaceholder": "Instrucciones para preguntas de nivel {level} en esta categoría...",
-    "toastSuccessTitle": "!Éxito!",
     "toastAddSuccess": "Categoría añadida correctamente.",
     "toastUpdateSuccess": "Categoría actualizada correctamente.",
     "toastDeleteSuccess": "Categoría \"{name}\" eliminada correctamente.",
@@ -220,6 +219,7 @@
     "tableReason": "Motivo",
     "tableStatus": "Estado",
     "tableActions": "Acciones",
+    "tableNotAvailable": "N/D",
     "filterByStatus": "Filtrar por estado",
     "allStatuses": "Todos los Estados",
     "statuses": {
@@ -245,7 +245,15 @@
     "deleteReportConfirmTitle": "¿Eliminar Reporte?",
     "deleteReportConfirmDescription": "¿Estás seguro de que quieres eliminar este reporte? Esta acción solo elimina el reporte, no la pregunta en sí.",
     "deletePredefinedQuestionConfirmTitle": "¿Eliminar Pregunta Predefinida?",
-    "deletePredefinedQuestionConfirmDescription": "¿Estás seguro de que quieres eliminar la pregunta predefinida: \"{question}\"? Esto la eliminará del juego y no se puede deshacer."
+    "deletePredefinedQuestionConfirmDescription": "¿Estás seguro de que quieres eliminar la pregunta predefinida: \"{question}\"? Esto la eliminará del juego y no se puede deshacer.",
+    "reasons": {
+      "incorrect_info": "Información Incorrecta",
+      "poorly_worded": "Mal Redactada / Confusa",
+      "typo_grammar": "Error Tipográfico / Gramatical",
+      "duplicate_question": "Pregunta Duplicada",
+      "offensive_content": "Contenido Ofensivo",
+      "other": "Otro"
+    }
   },
   "ReportDialog": {
     "title": "Reportar Pregunta",

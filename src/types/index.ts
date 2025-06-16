@@ -1,5 +1,5 @@
 // src/types/index.ts
-import type { FieldValue } from 'firebase/firestore';
+import type { FieldValue } from 'firebase/firestore'; // Keep for write operations if needed elsewhere
 import type { AppLocale } from '@/lib/i18n-config';
 
 export type DifficultyLevel = "easy" | "medium" | "hard";
@@ -22,7 +22,7 @@ export interface CategoryDefinition {
     "medium"?: CategoryDifficultyGuideline;
     "hard"?: CategoryDifficultyGuideline;
   };
-  isPredefined?: boolean; 
+  isPredefined?: boolean; // Controls visibility in the main game category selection UI
 }
 
 export type DifficultyMode = "adaptive" | DifficultyLevel;
@@ -38,18 +38,18 @@ export type ReportReason =
 export type ReportStatus = 'new' | 'reviewed' | 'resolved' | 'ignored';
 
 export interface ReportData {
-  id: string; // Firestore document ID for the report itself
-  questionId?: string; // Firestore ID of the predefined question, if reported from one
+  id: string; 
+  questionId?: string; 
   questionTextEn: string;
   questionTextEs: string;
   categoryTopicValue: string;
   difficulty: DifficultyLevel;
   reason: ReportReason;
   details?: string;
-  reportedAt: FieldValue | Timestamp; // Allow Timestamp for reading
+  reportedAt: string; // Changed to string for client components
   locale: AppLocale; 
   status: ReportStatus; 
 }
-// Add Timestamp for reading compatibility
+// Add Timestamp for reading compatibility where services interact directly with Firestore
+// but ensure conversion to string before passing to client.
 import type { Timestamp } from 'firebase/firestore';
-

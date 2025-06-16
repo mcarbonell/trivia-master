@@ -16,10 +16,10 @@ export async function addReport(
   reportData: Omit<ReportData, 'id' | 'reportedAt' | 'status'>
 ): Promise<void> {
   try {
-    const dataToSave: Omit<ReportData, 'id'> = {
+    const dataToSave = { // This is not strictly ReportData type but what Firestore expects for addDoc
       ...reportData,
-      reportedAt: serverTimestamp(),
-      status: 'new', // Default status for new reports
+      reportedAt: serverTimestamp(), // Firestore FieldValue
+      status: 'new' as ReportStatus, 
     };
     await addDoc(collection(db, REPORTS_COLLECTION), dataToSave);
     console.log('[reportService] Report added successfully for question related to:', reportData.questionTextEn);
@@ -42,6 +42,10 @@ export async function getReportedQuestions(): Promise<ReportData[]> {
     const reports: ReportData[] = [];
     querySnapshot.forEach((docSnapshot) => {
       const data = docSnapshot.data();
+      // Ensure reportedAt is converted to a serializable format (string)
+      const reportedAtTimestamp = data.reportedAt as Timestamp | null;
+      const reportedAtString = reportedAtTimestamp ? reportedAtTimestamp.toDate().toISOString() : new Date().toISOString(); // Fallback to now if null
+
       reports.push({
         id: docSnapshot.id,
         questionId: data.questionId,
@@ -51,10 +55,10 @@ export async function getReportedQuestions(): Promise<ReportData[]> {
         difficulty: data.difficulty,
         reason: data.reason,
         details: data.details,
-        reportedAt: data.reportedAt as Timestamp, // Cast to Timestamp for consistent handling
+        reportedAt: reportedAtString, // Pass as string
         locale: data.locale,
         status: data.status,
-      });
+      } as ReportData); // Cast to ReportData as reportedAt is now string
     });
     return reports;
   } catch (error) {
