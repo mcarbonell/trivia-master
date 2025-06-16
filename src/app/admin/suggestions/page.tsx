@@ -155,27 +155,31 @@ export default function AdminSuggestionsPage() {
                         </span>
                         </TableCell>
                       <TableCell className="text-right">
-                        <AlertDialog>
-                          <AlertDialogTrigger asChild>
-                            <Button variant="ghost" size="icon" className="h-8 w-8 hover:bg-destructive hover:text-destructive-foreground">
-                              <Trash2 className="h-4 w-4" />
-                              <span className="sr-only">{tCommon('deleteButton')}</span>
-                            </Button>
-                          </AlertDialogTrigger>
-                           <TooltipContent side="top"><p>{t('tooltipDeleteSuggestion')}</p></TooltipContent>
-                          <AlertDialogContent>
-                            <AlertDialogHeader>
-                              <AlertDialogTitle>{t('deleteConfirmTitle')}</AlertDialogTitle>
-                              <AlertDialogDescription>{t('deleteConfirmDescription')}</AlertDialogDescription>
-                            </AlertDialogHeader>
-                            <AlertDialogFooter>
-                              <AlertDialogCancel>{tCommon('cancel')}</AlertDialogCancel>
-                              <AlertDialogAction onClick={() => handleDelete(suggestion.id)} className="bg-destructive hover:bg-destructive/90">
-                                {tCommon('deleteButton')}
-                              </AlertDialogAction>
-                            </AlertDialogFooter>
-                          </AlertDialogContent>
-                        </AlertDialog>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <AlertDialog>
+                              <AlertDialogTrigger asChild>
+                                <Button variant="ghost" size="icon" className="h-8 w-8 hover:bg-destructive hover:text-destructive-foreground">
+                                  <Trash2 className="h-4 w-4" />
+                                  <span className="sr-only">{tCommon('deleteButton')}</span>
+                                </Button>
+                              </AlertDialogTrigger>
+                              <AlertDialogContent>
+                                <AlertDialogHeader>
+                                  <AlertDialogTitle>{t('deleteConfirmTitle')}</AlertDialogTitle>
+                                  <AlertDialogDescription>{t('deleteConfirmDescription')}</AlertDialogDescription>
+                                </AlertDialogHeader>
+                                <AlertDialogFooter>
+                                  <AlertDialogCancel>{tCommon('cancel')}</AlertDialogCancel>
+                                  <AlertDialogAction onClick={() => handleDelete(suggestion.id)} className="bg-destructive hover:bg-destructive/90">
+                                    {tCommon('deleteButton')}
+                                  </AlertDialogAction>
+                                </AlertDialogFooter>
+                              </AlertDialogContent>
+                            </AlertDialog>
+                          </TooltipTrigger>
+                          <TooltipContent side="top"><p>{t('tooltipDeleteSuggestion')}</p></TooltipContent>
+                        </Tooltip>
                       </TableCell>
                     </TableRow>
                   ))}
@@ -203,3 +207,4 @@ export default function AdminSuggestionsPage() {
     </div>
   );
 }
+
