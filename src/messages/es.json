@@ -141,6 +141,7 @@
     "formDifficultyMedium": "Instrucciones Dificultad Media",
     "formDifficultyHard": "Instrucciones Dificultad Difícil",
     "formDifficultyPlaceholder": "Instrucciones para preguntas de nivel {level} en esta categoría...",
+    "toastSuccessTitle": "!Éxito!",
     "toastAddSuccess": "Categoría añadida correctamente.",
     "toastUpdateSuccess": "Categoría actualizada correctamente.",
     "toastDeleteSuccess": "Categoría \"{name}\" eliminada correctamente.",

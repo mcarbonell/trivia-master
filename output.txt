@@ -1,0 +1,2391 @@
+
+> nextn@0.1.0 populate:questions
+> tsx scripts/populate-firestore-questions.ts -c Animals2 -d easy -m 500 --mod googleai/gemini-1.5-flash -b 100
+
+Starting Firestore question population script...
+--- Configuration ---
+Target Category: Animals2
+Target Difficulty: easy
+Target Questions per Combo: 10000
+Max New Questions per Run: 500
+Genkit API Batch Size: 100
+No Context Mode (don't send previous questions to AI): false
+Model to Use: googleai/gemini-1.5-flash
+Update Existing Sources Only Mode: false
+---------------------
+Processing only specified category: "Animals2"
+Processing only specified difficulty: "easy"
+
+Processing Category: "Animals2" (TopicValue: Animals2)
+  Targeting Difficulty: "easy" for category "Animals2"
+    Found 319 existing question concepts and 319 correct answer concepts for Animals2 - easy to use as context.
+    Found 319 existing questions for Animals2 with difficulty "easy". Target is 10000.
+    Attempting to generate up to 500 new questions for Animals2 - easy.
+      Generating a batch of 100 questions via Genkit (need 500 more for this run for Animals2 - easy). Using model: googleai/gemini-1.5-flash.
+[generateTriviaQuestionsFlow] Checking ai object and ai.model method. Type of ai.model: undefined
+      Error during Genkit API call for Animals2 - easy: ValidationError [GenkitError]: INVALID_ARGUMENT: Schema validation failed. Parse Errors:
+
+- 53: must have required property 'question'
+
+Provided data:
+
+[
+  {
+    "answers": [
+      {
+        "en": "Cow",
+        "es": "Vaca"
+      },
+      {
+        "en": "Sheep",
+        "es": "Oveja"
+      },
+      {
+        "en": "Goat",
+        "es": "Cabra"
+      },
+      {
+        "en": "Pig",
+        "es": "Cerdo"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "difficulty": "easy",
+    "explanation": {
+      "en": "Cows are commonly farmed for their milk and meat.",
+      "es": "Las vacas se crían comúnmente por su leche y carne."
+    },
+    "hint": {
+      "en": "This animal is known for producing a liquid humans drink.",
+      "es": "Este animal es conocido por producir un líquido que beben los humanos."
+    },
+    "question": {
+      "en": "Which of these animals is commonly farmed for its milk and meat?",
+      "es": "¿Cuál de estos animales se cría comúnmente por su leche y carne?"
+    }
+  },
+  {
+    "answers": [
+      {
+        "en": "Dog",
+        "es": "Perro"
+      },
+      {
+        "en": "Cat",
+        "es": "Gato"
+      },
+      {
+        "en": "Horse",
+        "es": "Caballo"
+      },
+      {
+        "en": "Elephant",
+        "es": "Elefante"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "difficulty": "easy",
+    "explanation": {
+      "en": "Dogs are often considered man's best friend and are domesticated animals.",
+      "es": "Los perros a menudo se consideran el mejor amigo del hombre y son animales domesticados."
+    },
+    "hint": {
+      "en": "This animal is often referred to as man's best friend.",
+      "es": "A este animal a menudo se le llama el mejor amigo del hombre."
+    },
+    "question": {
+      "en": "Which animal is often considered man's best friend?",
+      "es": "¿Qué animal a menudo se considera el mejor amigo del hombre?"
+    }
+  },
+  {
+    "answers": [
+      {
+        "en": "Tiger",
+        "es": "Tigre"
+      },
+      {
+        "en": "Lion",
+        "es": "León"
+      },
+      {
+        "en": "Leopard",
+        "es": "Leopardo"
+      },
+      {
+        "en": "Cheetah",
+        "es": "Guepardo"
+      }
+    ],
+    "correctAnswerIndex": 1,
+    "difficulty": "easy",
+    "explanation": {
+      "en": "Lions are large cats that are native to Africa.",
+      "es": "Los leones son gatos grandes que son nativos de África."
+    },
+    "hint": {
+      "en": "This large cat is known for its mane.",
+      "es": "Este gato grande es conocido por su melena."
+    },
+    "question": {
+      "en": "Which of these animals is native to Africa and known for its mane?",
+      "es": "¿Cuál de estos animales es nativo de África y conocido por su melena?"
+    }
+  },
+  {
+    "answers": [
+      {
+        "en": "Scales",
+        "es": "Escamas"
+      },
+      {
+        "en": "Fur",
+        "es": "Piel"
+      },
+      {
+        "en": "Feathers",
+        "es": "Plumas"
+      },
+      {
+        "en": "Skin",
+        "es": "Piel"
+      }
+    ],
+    "correctAnswerIndex": 2,
+    "difficulty": "easy",
+    "explanation": {
+      "en": "Birds are covered in feathers, which help them fly and stay warm.",
+      "es": "Las aves están cubiertas de plumas, lo que las ayuda a volar y mantenerse calientes."
+    },
+    "hint": {
+      "en": "Think about what helps birds fly and keep warm.",
+      "es": "Piensa en lo que ayuda a las aves a volar y mantenerse calientes."
+    },
+    "question": {
+      "en": "What typically covers a bird's body?",
+      "es": "¿Qué cubre típicamente el cuerpo de un ave?"
+    }
+  },
+  {
+    "answers": [
+      {
+        "en": "Warm-blooded",
+        "es": "De sangre caliente"
+      },
+      {
+        "en": "Cold-blooded",
+        "es": "De sangre fría"
+      },
+      {
+        "en": "Amphibious",
+        "es": "Anfibio"
+      },
+      {
+        "en": "Reptilian",
+        "es": "Reptil"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "difficulty": "easy",
+    "explanation": {
+      "en": "Mammals are known for maintaining a constant body temperature.",
+      "es": "Los mamíferos se caracterizan por mantener una temperatura corporal constante."
+    },
+    "hint": {
+      "en": "Think about how mammals regulate their body temperature.",
+      "es": "Piensa en cómo los mamíferos regulan su temperatura corporal."
+    },
+    "question": {
+      "en": "What is a common characteristic of mammals regarding their body temperature?",
+      "es": "¿Qué característica común tienen los mamíferos con respecto a su temperatura corporal?"
+    }
+  },
+  {
+    "answers": [
+      {
+        "en": "Ocean",
+        "es": "Océano"
+      },
+      {
+        "en": "Forest",
+        "es": "Bosque"
+      },
+      {
+        "en": "Desert",
+        "es": "Desierto"
+      },
+      {
+        "en": "Arctic",
+        "es": "Ártico"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "difficulty": "easy",
+    "explanation": {
+      "en": "Whales are large marine mammals that live in the ocean.",
+      "es": "Las ballenas son grandes mamíferos marinos que viven en el océano."
+    },
+    "hint": {
+      "en": "Think about where whales spend their time.",
+      "es": "Piensa dónde pasan su tiempo las ballenas."
+    },
+    "question": {
+      "en": "Where do whales live?",
+      "es": "¿Dónde viven las ballenas?"
+    }
+  },
+  {
+    "answers": [
+      {
+        "en": "They have stripes",
+        "es": "Tienen rayas"
+      },
+      {
+        "en": "They have long necks",
+        "es": "Tienen cuellos largos"
+      },
+      {
+        "en": "They have spots",
+        "es": "Tienen manchas"
+      },
+      {
+        "en": "They have long ears",
+        "es": "Tienen orejas largas"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "difficulty": "easy",
+    "explanation": {
+      "en": "Zebras are easily recognized by their distinctive black and white stripes.",
+      "es": "Las cebras se reconocen fácilmente por sus distintivas rayas blancas y negras."
+    },
+    "hint": {
+      "en": "Think about the pattern on their coats.",
+      "es": "Piensa en el patrón de su pelaje."
+    },
+    "question": {
+      "en": "What is a distinctive feature of a zebra?",
+      "es": "¿Qué característica distintiva tiene una cebra?"
+    }
+  },
+  {
+    "answers": [
+      {
+        "en": "They fly",
+        "es": "Vuelan"
+      },
+      {
+        "en": "They swim",
+        "es": "Nadaban"
+      },
+      {
+        "en": "They hop",
+        "es": "Saltaban"
+      },
+      {
+        "en": "They crawl",
+        "es": "Se arrastran"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "difficulty": "easy",
+    "explanation": {
+      "en": "Most birds have wings and are capable of flight.",
+      "es": "La mayoría de las aves tienen alas y son capaces de volar."
+    },
+    "hint": {
+      "en": "Think about their primary method of movement.",
+      "es": "Piensa en su método principal de movimiento."
+    },
+    "question": {
+      "en": "What do most birds do?",
+      "es": "¿Qué hacen la mayoría de las aves?"
+    }
+  },
+  {
+    "answers": [
+      {
+        "en": "They live in hives",
+        "es": "Viven en colmenas"
+      },
+      {
+        "en": "They live in burrows",
+        "es": "Viven en madrigueras"
+      },
+      {
+        "en": "They live in nests",
+        "es": "Viven en nidos"
+      },
+      {
+        "en": "They live in trees",
+        "es": "Viven en árboles"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "difficulty": "easy",
+    "explanation": {
+      "en": "Honeybees are social insects that live in colonies in hives.",
+      "es": "Las abejas melíferas son insectos sociales que viven en colonias en colmenas."
+    },
+    "hint": {
+      "en": "Think about where they build their homes.",
+      "es": "Piensa dónde construyen sus hogares."
+    },
+    "question": {
+      "en": "Where do honeybees typically make their homes?",
+      "es": "¿Dónde suelen hacer sus hogares las abejas melíferas?"
+    }
+  },
+  {
+    "answers": [
+      {
+        "en": "Bear",
+        "es": "Oso"
+      },
+      {
+        "en": "Lion",
+        "es": "León"
+      },
+      {
+        "en": "Tiger",
+        "es": "Tigre"
+      },
+      {
+        "en": "Squirrel",
+        "es": "Ardilla"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "difficulty": "easy",
+    "explanation": {
+      "en": "Bears are known for their hibernation behavior.",
+      "es": "Los osos son conocidos por su comportamiento de hibernación."
+    },
+    "hint": {
+      "en": "This animal sleeps through the winter.",
+      "es": "Este animal duerme durante el invierno."
+    },
+    "question": {
+      "en": "Which animal is known for hibernating?",
+      "es": "¿Qué animal es conocido por hibernar?"
+    }
+  },
+  {
+    "answers": [
+      {
+        "en": "They are carnivores",
+        "es": "Son carnívoros"
+      },
+      {
+        "en": "They are herbivores",
+        "es": "Son herbívoros"
+      },
+      {
+        "en": "They are omnivores",
+        "es": "Son omnívoros"
+      },
+      {
+        "en": "They are insectivores",
+        "es": "Son insectívoros"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "difficulty": "easy",
+    "explanation": {
+      "en": "Lions are carnivores, which means they mainly eat meat.",
+      "es": "Los leones son carnívoros, lo que significa que comen principalmente carne."
+    },
+    "hint": {
+      "en": "Think about what type of food they eat.",
+      "es": "Piensa en el tipo de comida que comen."
+    },
+    "question": {
+      "en": "What type of animal is a lion in terms of its diet?",
+      "es": "¿Qué tipo de animal es un león en términos de su dieta?"
+    }
+  },
+  {
+    "answers": [
+      {
+        "en": "They have long necks",
+        "es": "Tienen cuellos largos"
+      },
+      {
+        "en": "They have long legs",
+        "es": "Tienen patas largas"
+      },
+      {
+        "en": "They have long tails",
+        "es": "Tienen colas largas"
+      },
+      {
+        "en": "They have long ears",
+        "es": "Tienen orejas largas"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "difficulty": "easy",
+    "explanation": {
+      "en": "Giraffes are known for their extremely long necks.",
+      "es": "Las jirafas son conocidas por sus cuellos extremadamente largos."
+    },
+    "hint": {
+      "en": "Think about their most striking physical feature.",
+      "es": "Piensa en su característica física más llamativa."
+    },
+    "question": {
+      "en": "What is a striking characteristic of giraffes?",
+      "es": "¿Cuál es una característica llamativa de las jirafas?"
+    }
+  },
+  {
+    "answers": [
+      {
+        "en": "Scales",
+        "es": "Escamas"
+      },
+      {
+        "en": "Feathers",
+        "es": "Plumas"
+      },
+      {
+        "en": "Fur",
+        "es": "Piel"
+      },
+      {
+        "en": "Skin",
+        "es": "Piel"
+      }
+    ],
+    "correctAnswerIndex": 2,
+    "difficulty": "easy",
+    "explanation": {
+      "en": "A bird's body is covered in feathers.",
+      "es": "El cuerpo de un ave está cubierto de plumas."
+    },
+    "hint": {
+      "en": "Think about what helps a bird fly.",
+      "es": "Piensa en lo que ayuda a un ave a volar."
+    },
+    "question": {
+      "en": "What covers a bird's body?",
+      "es": "¿Qué cubre el cuerpo de un ave?"
+    }
+  },
+  {
+    "answers": [
+      {
+        "en": "They lay eggs",
+        "es": "Ponen huevos"
+      },
+      {
+        "en": "They give birth to live young",
+        "es": "Paren crías vivas"
+      },
+      {
+        "en": "They reproduce asexually",
+        "es": "Se reproducen asexualmente"
+      },
+      {
+        "en": "They are hermaphrodites",
+        "es": "Son hermafroditas"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "difficulty": "easy",
+    "explanation": {
+      "en": "Birds are oviparous, meaning they reproduce by laying eggs.",
+      "es": "Las aves son ovíparas, lo que significa que se reproducen poniendo huevos."
+    },
+    "hint": {
+      "en": "How do birds produce their offspring?",
+      "es": "¿Cómo producen las aves a sus crías?"
+    },
+    "question": {
+      "en": "How do most birds reproduce?",
+      "es": "¿Cómo se reproducen la mayoría de las aves?"
+    }
+  },
+  {
+    "answers": [
+      {
+        "en": "They have wings",
+        "es": "Tienen alas"
+      },
+      {
+        "en": "They have fur",
+        "es": "Tienen piel"
+      },
+      {
+        "en": "They have scales",
+        "es": "Tienen escamas"
+      },
+      {
+        "en": "They have long necks",
+        "es": "Tienen cuellos largos"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "difficulty": "easy",
+    "explanation": {
+      "en": "Wings enable most birds to fly.",
+      "es": "Las alas permiten que la mayoría de las aves vuelen."
+    },
+    "hint": {
+      "en": "This feature helps most birds fly.",
+      "es": "Esta característica ayuda a la mayoría de las aves a volar."
+    },
+    "question": {
+      "en": "What essential feature allows most birds to fly?",
+      "es": "¿Qué característica esencial permite que la mayoría de las aves vuelen?"
+    }
+  },
+  {
+    "answers": [
+      {
+        "en": "They are warm-blooded",
+        "es": "Son de sangre caliente"
+      },
+      {
+        "en": "They are cold-blooded",
+        "es": "Son de sangre fría"
+      },
+      {
+        "en": "They are amphibians",
+        "es": "Son anfibios"
+      },
+      {
+        "en": "They are reptiles",
+        "es": "Son reptiles"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "difficulty": "easy",
+    "explanation": {
+      "en": "Birds maintain a constant internal body temperature.",
+      "es": "Las aves mantienen una temperatura corporal interna constante."
+    },
+    "hint": {
+      "en": "Think about how they regulate their body temperature.",
+      "es": "Piensa en cómo regulan su temperatura corporal."
+    },
+    "question": {
+      "en": "What is a characteristic of most birds regarding their body temperature?",
+      "es": "¿Qué característica tienen la mayoría de las aves con respecto a su temperatura corporal?"
+    }
+  },
+  {
+    "answers": [
+      {
+        "en": "They migrate",
+        "es": "Migran"
+      },
+      {
+        "en": "They hibernate",
+        "es": "Hibernan"
+      },
+      {
+        "en": "They build nests",
+        "es": "Construyen nidos"
+      },
+      {
+        "en": "They molt",
+        "es": "Mudan"
+      }
+    ],
+    "correctAnswerIndex": 2,
+    "difficulty": "easy",
+    "explanation": {
+      "en": "Birds build nests to lay their eggs and raise their young.",
+      "es": "Las aves construyen nidos para poner sus huevos y criar a sus crías."
+    },
+    "hint": {
+      "en": "What do birds create to protect their young?",
+      "es": "¿Qué crean las aves para proteger a sus crías?"
+    },
+    "question": {
+      "en": "What do many birds do to prepare for raising their young?",
+      "es": "¿Qué hacen muchas aves para prepararse para criar a sus crías?"
+    }
+  },
+  {
+    "answers": [
+      {
+        "en": "They have long ears",
+        "es": "Tienen orejas largas"
+      },
+      {
+        "en": "They have short tails",
+        "es": "Tienen colas cortas"
+      },
+      {
+        "en": "They have long hind legs",
+        "es": "Tienen patas traseras largas"
+      },
+      {
+        "en": "They have big eyes",
+        "es": "Tienen ojos grandes"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "difficulty": "easy",
+    "explanation": {
+      "en": "Rabbits are known for their long ears.",
+      "es": "Los conejos son conocidos por sus largas orejas."
+    },
+    "hint": {
+      "en": "Think of a defining physical feature of this mammal.",
+      "es": "Piensa en una característica física definitoria de este mamífero."
+    },
+    "question": {
+      "en": "What is a noticeable feature of rabbits?",
+      "es": "¿Qué característica notable tienen los conejos?"
+    }
+  },
+  {
+    "answers": [
+      {
+        "en": "They use echolocation",
+        "es": "Usan la ecolocación"
+      },
+      {
+        "en": "They have excellent eyesight",
+        "es": "Tienen excelente vista"
+      },
+      {
+        "en": "They have a keen sense of smell",
+        "es": "Tienen un agudo sentido del olfato"
+      },
+      {
+        "en": "They have powerful claws",
+        "es": "Tienen garras poderosas"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "difficulty": "easy",
+    "explanation": {
+      "en": "Bats use echolocation to navigate in the dark.",
+      "es": "Los murciélagos usan la ecolocación para navegar en la oscuridad."
+    },
+    "hint": {
+      "en": "Think about how they navigate at night.",
+      "es": "Piensa cómo navegan por la noche."
+    },
+    "question": {
+      "en": "How do bats navigate in the dark?",
+      "es": "¿Cómo navegan los murciélagos en la oscuridad?"
+    }
+  },
+  {
+    "answers": [
+      {
+        "en": "They are mammals",
+        "es": "Son mamíferos"
+      },
+      {
+        "en": "They are reptiles",
+        "es": "Son reptiles"
+      },
+      {
+        "en": "They are amphibians",
+        "es": "Son anfibios"
+      },
+      {
+        "en": "They are birds",
+        "es": "Son aves"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "difficulty": "easy",
+    "explanation": {
+      "en": "Dogs belong to the class of mammals.",
+      "es": "Los perros pertenecen a la clase de los mamíferos."
+    },
+    "hint": {
+      "en": "Consider their characteristics and classification.",
+      "es": "Considera sus características y clasificación."
+    },
+    "question": {
+      "en": "What type of animal is a dog?",
+      "es": "¿Qué tipo de animal es un perro?"
+    }
+  },
+  {
+    "answers": [
+      {
+        "en": "Arctic",
+        "es": "Ártico"
+      },
+      {
+        "en": "Tropical",
+        "es": "Tropical"
+      },
+      {
+        "en": "Temperate",
+        "es": "Templado"
+      },
+      {
+        "en": "Desert",
+        "es": "Desierto"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "difficulty": "easy",
+    "explanation": {
+      "en": "Polar bears live in the Arctic region.",
+      "es": "Los osos polares viven en la región ártica."
+    },
+    "hint": {
+      "en": "Think about the climate of their natural habitat.",
+      "es": "Piensa en el clima de su hábitat natural."
+    },
+    "question": {
+      "en": "What type of climate do polar bears live in?",
+      "es": "¿Qué tipo de clima tienen los osos polares?"
+    }
+  },
+  {
+    "answers": [
+      {
+        "en": "They are warm-blooded",
+        "es": "Son de sangre caliente"
+      },
+      {
+        "en": "They are cold-blooded",
+        "es": "Son de sangre fría"
+      },
+      {
+        "en": "They are amphibians",
+        "es": "Son anfibios"
+      },
+      {
+        "en": "They are reptiles",
+        "es": "Son reptiles"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "difficulty": "easy",
+    "explanation": {
+      "en": "Cats, like most mammals, are warm-blooded.",
+      "es": "Los gatos, como la mayoría de los mamíferos, son de sangre caliente."
+    },
+    "hint": {
+      "en": "Think about how they regulate their body temperature.",
+      "es": "Piensa en cómo regulan su temperatura corporal."
+    },
+    "question": {
+      "en": "What is a key characteristic of cats regarding their body temperature?",
+      "es": "¿Cuál es una característica clave de los gatos con respecto a su temperatura corporal?"
+    }
+  },
+  {
+    "answers": [
+      {
+        "en": "They have fur",
+        "es": "Tienen pelo"
+      },
+      {
+        "en": "They have scales",
+        "es": "Tienen escamas"
+      },
+      {
+        "en": "They have feathers",
+        "es": "Tienen plumas"
+      },
+      {
+        "en": "They have skin",
+        "es": "Tienen piel"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "difficulty": "easy",
+    "explanation": {
+      "en": "Cats have fur for warmth and protection.",
+      "es": "Los gatos tienen pelo para abrigarse y protegerse."
+    },
+    "hint": {
+      "en": "What kind of covering is on their skin?",
+      "es": "¿Qué tipo de recubrimiento tiene su piel?"
+    },
+    "question": {
+      "en": "What covers a cat's body?",
+      "es": "¿Qué cubre el cuerpo de un gato?"
+    }
+  },
+  {
+    "answers": [
+      {
+        "en": "They give birth to live young",
+        "es": "Paren crías vivas"
+      },
+      {
+        "en": "They lay eggs",
+        "es": "Ponen huevos"
+      },
+      {
+        "en": "They reproduce asexually",
+        "es": "Se reproducen asexualmente"
+      },
+      {
+        "en": "They are hermaphrodites",
+        "es": "Son hermafroditas"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "difficulty": "easy",
+    "explanation": {
+      "en": "Mammals typically give birth to live young.",
+      "es": "Los mamíferos normalmente paren crías vivas."
+    },
+    "hint": {
+      "en": "How do most mammals reproduce?",
+      "es": "¿Cómo se reproducen la mayoría de los mamíferos?"
+    },
+    "question": {
+      "en": "How do mammals primarily reproduce?",
+      "es": "¿Cómo se reproducen principalmente los mamíferos?"
+    }
+  },
+  {
+    "answers": [
+      {
+        "en": "Milk",
+        "es": "Leche"
+      },
+      {
+        "en": "Honey",
+        "es": "Miel"
+      },
+      {
+        "en": "Eggs",
+        "es": "Huevos"
+      },
+      {
+        "en": "Meat",
+        "es": "Carne"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "difficulty": "easy",
+    "explanation": {
+      "en": "Many mammals, including cows, produce milk that humans drink.",
+      "es": "Muchos mamíferos, incluyendo las vacas, producen leche que los humanos beben."
+    },
+    "hint": {
+      "en": "Think about a liquid produced by mammals that people consume.",
+      "es": "Piensa en un líquido producido por mamíferos que los humanos consumen."
+    },
+    "question": {
+      "en": "What liquid do many mammals produce that humans consume?",
+      "es": "¿Qué líquido producen muchos mamíferos que los humanos consumen?"
+    }
+  },
+  {
+    "answers": [
+      {
+        "en": "They have stripes",
+        "es": "Tienen rayas"
+      },
+      {
+        "en": "They have spots",
+        "es": "Tienen manchas"
+      },
+      {
+        "en": "They have long necks",
+        "es": "Tienen cuellos largos"
+      },
+      {
+        "en": "They have long tails",
+        "es": "Tienen colas largas"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "difficulty": "easy",
+    "explanation": {
+      "en": "Zebras are known for their distinctive black and white stripes.",
+      "es": "Las cebras son conocidas por sus distintivas rayas blancas y negras."
+    },
+    "hint": {
+      "en": "Think about their unique pattern.",
+      "es": "Piensa en su patrón único."
+    },
+    "question": {
+      "en": "What is a distinctive feature of zebras?",
+      "es": "¿Cuál es una característica distintiva de las cebras?"
+    }
+  },
+  {
+    "answers": [
+      {
+        "en": "Flippers",
+        "es": "Aletas"
+      },
+      {
+        "en": "Wings",
+        "es": "Alas"
+      },
+      {
+        "en": "Legs",
+        "es": "Patas"
+      },
+      {
+        "en": "Claws",
+        "es": "Garras"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "difficulty": "easy",
+    "explanation": {
+      "en": "Penguins use their flippers to swim effectively.",
+      "es": "Los pingüinos usan sus aletas para nadar eficazmente."
+    },
+    "hint": {
+      "en": "Think about how they move in water.",
+      "es": "Piensa en cómo se mueven en el agua."
+    },
+    "question": {
+      "en": "What body part helps penguins swim?",
+      "es": "¿Qué parte del cuerpo ayuda a los pingüinos a nadar?"
+    }
+  },
+  {
+    "answers": [
+      {
+        "en": "They are carnivores",
+        "es": "Son carnívoros"
+      },
+      {
+        "en": "They are herbivores",
+        "es": "Son herbívoros"
+      },
+      {
+        "en": "They are omnivores",
+        "es": "Son omnívoros"
+      },
+      {
+        "en": "They are insectivores",
+        "es": "Son insectívoros"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "difficulty": "easy",
+    "explanation": {
+      "en": "Tigers are carnivorous animals, meaning they primarily eat meat.",
+      "es": "Los tigres son animales carnívoros, lo que significa que se alimentan principalmente de carne."
+    },
+    "hint": {
+      "en": "What type of diet do these big cats have?",
+      "es": "¿Qué tipo de dieta tienen estos grandes felinos?"
+    },
+    "question": {
+      "en": "What type of eater is a tiger?",
+      "es": "¿Qué tipo de animal es un tigre en cuanto a su alimentación?"
+    }
+  },
+  {
+    "answers": [
+      {
+        "en": "They live in trees",
+        "es": "Viven en los árboles"
+      },
+      {
+        "en": "They live in burrows",
+        "es": "Viven en madrigueras"
+      },
+      {
+        "en": "They live in nests",
+        "es": "Viven en nidos"
+      },
+      {
+        "en": "They live in the ocean",
+        "es": "Viven en el océano"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "difficulty": "easy",
+    "explanation": {
+      "en": "Many monkey species live in trees.",
+      "es": "Muchas especies de monos viven en los árboles."
+    },
+    "hint": {
+      "en": "Think about their usual habitat.",
+      "es": "Piensa en su hábitat habitual."
+    },
+    "question": {
+      "en": "Where do many monkeys live?",
+      "es": "¿Dónde viven muchos monos?"
+    }
+  },
+  {
+    "answers": [
+      {
+        "en": "Bark",
+        "es": "Ladrido"
+      },
+      {
+        "en": "Meow",
+        "es": "Miau"
+      },
+      {
+        "en": "Moo",
+        "es": "Mu"
+      },
+      {
+        "en": "Oink",
+        "es": "Oink"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "difficulty": "easy",
+    "explanation": {
+      "en": "Dogs are known for their barking sound.",
+      "es": "Los perros son conocidos por su ladrido."
+    },
+    "hint": {
+      "en": "What is a common sound dogs make?",
+      "es": "¿Qué sonido común hacen los perros?"
+    },
+    "question": {
+      "en": "What sound does a dog make?",
+      "es": "¿Qué sonido hace un perro?"
+    }
+  },
+  {
+    "answers": [
+      {
+        "en": "They are mammals",
+        "es": "Son mamíferos"
+      },
+      {
+        "en": "They are reptiles",
+        "es": "Son reptiles"
+      },
+      {
+        "en": "They are birds",
+        "es": "Son aves"
+      },
+      {
+        "en": "They are amphibians",
+        "es": "Son anfibios"
+      }
+    ],
+    "correctAnswerIndex": 2,
+    "difficulty": "easy",
+    "explanation": {
+      "en": "Penguins belong to the class Aves (birds).",
+      "es": "Los pingüinos pertenecen a la clase Aves (aves)."
+    },
+    "hint": {
+      "en": "Consider their classification.",
+      "es": "Considera su clasificación."
+    },
+    "question": {
+      "en": "What type of animal is a penguin?",
+      "es": "¿Qué tipo de animal es un pingüino?"
+    }
+  },
+  {
+    "answers": [
+      {
+        "en": "They have fur",
+        "es": "Tienen pelo"
+      },
+      {
+        "en": "They have scales",
+        "es": "Tienen escamas"
+      },
+      {
+        "en": "They have feathers",
+        "es": "Tienen plumas"
+      },
+      {
+        "en": "They have skin",
+        "es": "Tienen piel"
+      }
+    ],
+    "correctAnswerIndex": 2,
+    "difficulty": "easy",
+    "explanation": {
+      "en": "Feathers are characteristic of birds.",
+      "es": "Las plumas son características de las aves."
+    },
+    "hint": {
+      "en": "Think about a bird's outer covering.",
+      "es": "Piensa en el recubrimiento externo de un ave."
+    },
+    "question": {
+      "en": "What typically covers a bird's body?",
+      "es": "¿Qué cubre típicamente el cuerpo de un ave?"
+    }
+  },
+  {
+    "answers": [
+      {
+        "en": "They are warm-blooded",
+        "es": "Son de sangre caliente"
+      },
+      {
+        "en": "They are cold-blooded",
+        "es": "Son de sangre fría"
+      },
+      {
+        "en": "They are amphibians",
+        "es": "Son anfibios"
+      },
+      {
+        "en": "They are reptiles",
+        "es": "Son reptiles"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "difficulty": "easy",
+    "explanation": {
+      "en": "Mammals are warm-blooded animals.",
+      "es": "Los mamíferos son animales de sangre caliente."
+    },
+    "hint": {
+      "en": "Think about how they regulate their temperature.",
+      "es": "Piensa en cómo regulan su temperatura."
+    },
+    "question": {
+      "en": "What is a key characteristic of mammals?",
+      "es": "¿Cuál es una característica clave de los mamíferos?"
+    }
+  },
+  {
+    "answers": [
+      {
+        "en": "They have webbed feet",
+        "es": "Tienen pies palmeados"
+      },
+      {
+        "en": "They have sharp claws",
+        "es": "Tienen garras afiladas"
+      },
+      {
+        "en": "They have long necks",
+        "es": "Tienen cuellos largos"
+      },
+      {
+        "en": "They have strong beaks",
+        "es": "Tienen picos fuertes"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "difficulty": "easy",
+    "explanation": {
+      "en": "Webbed feet help ducks swim more efficiently.",
+      "es": "Los pies palmeados ayudan a los patos a nadar más eficientemente."
+    },
+    "hint": {
+      "en": "Think about what helps them swim better.",
+      "es": "Piensa en lo que les ayuda a nadar mejor."
+    },
+    "question": {
+      "en": "What adaptation helps a duck swim effectively?",
+      "es": "¿Qué adaptación ayuda a un pato a nadar eficazmente?"
+    }
+  },
+  {
+    "answers": [
+      {
+        "en": "They live in trees",
+        "es": "Viven en los árboles"
+      },
+      {
+        "en": "They live in nests",
+        "es": "Viven en nidos"
+      },
+      {
+        "en": "They live in burrows",
+        "es": "Viven en madrigueras"
+      },
+      {
+        "en": "They live underground",
+        "es": "Viven bajo tierra"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "difficulty": "easy",
+    "explanation": {
+      "en": "Many monkey species inhabit trees.",
+      "es": "Muchas especies de monos habitan los árboles."
+    },
+    "hint": {
+      "en": "Where do these primates typically reside?",
+      "es": "¿Dónde residen típicamente estos primates?"
+    },
+    "question": {
+      "en": "Where do many monkey species live?",
+      "es": "¿Dónde viven muchas especies de monos?"
+    }
+  },
+  {
+    "answers": [
+      {
+        "en": "They have long legs",
+        "es": "Tienen piernas largas"
+      },
+      {
+        "en": "They have big eyes",
+        "es": "Tienen ojos grandes"
+      },
+      {
+        "en": "They have long tails",
+        "es": "Tienen colas largas"
+      },
+      {
+        "en": "They have short ears",
+        "es": "Tienen orejas cortas"
+      }
+    ],
+    "correctAnswerIndex": 2,
+    "difficulty": "easy",
+    "explanation": {
+      "en": "Many monkeys have long tails for balance and mobility in trees.",
+      "es": "Muchos monos tienen colas largas para el equilibrio y la movilidad en los árboles."
+    },
+    "hint": {
+      "en": "Consider the function in their arboreal lifestyle.",
+      "es": "Considera la función en su estilo de vida arbóreo."
+    },
+    "question": {
+      "en": "What is a common feature of many monkeys?",
+      "es": "¿Qué característica común tienen muchos monos?"
+    }
+  },
+  {
+    "answers": [
+      {
+        "en": "They are warm-blooded",
+        "es": "Son de sangre caliente"
+      },
+      {
+        "en": "They are cold-blooded",
+        "es": "Son de sangre fría"
+      },
+      {
+        "en": "They are amphibians",
+        "es": "Son anfibios"
+      },
+      {
+        "en": "They are reptiles",
+        "es": "Son reptiles"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "difficulty": "easy",
+    "explanation": {
+      "en": "Dogs, like other mammals, are warm-blooded animals.",
+      "es": "Los perros, como otros mamíferos, son animales de sangre caliente."
+    },
+    "hint": {
+      "en": "Think about their body temperature regulation.",
+      "es": "Piensa en su regulación de la temperatura corporal."
+    },
+    "question": {
+      "en": "What is a key characteristic of dogs regarding their body temperature?",
+      "es": "¿Qué característica clave tienen los perros con respecto a su temperatura corporal?"
+    }
+  },
+  {
+    "answers": [
+      {
+        "en": "They have fur",
+        "es": "Tienen pelo"
+      },
+      {
+        "en": "They have scales",
+        "es": "Tienen escamas"
+      },
+      {
+        "en": "They have feathers",
+        "es": "Tienen plumas"
+      },
+      {
+        "en": "They have skin",
+        "es": "Tienen piel"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "difficulty": "easy",
+    "explanation": {
+      "en": "Dogs are covered in fur.",
+      "es": "Los perros están cubiertos de pelo."
+    },
+    "hint": {
+      "en": "What kind of covering do dogs have on their bodies?",
+      "es": "¿Qué tipo de recubrimiento tienen los perros en sus cuerpos?"
+    },
+    "question": {
+      "en": "What covers a dog's body?",
+      "es": "¿Qué cubre el cuerpo de un perro?"
+    }
+  },
+  {
+    "answers": [
+      {
+        "en": "They use echolocation",
+        "es": "Usan la ecolocación"
+      },
+      {
+        "en": "They have excellent night vision",
+        "es": "Tienen excelente visión nocturna"
+      },
+      {
+        "en": "They have a keen sense of smell",
+        "es": "Tienen un agudo sentido del olfato"
+      },
+      {
+        "en": "They have sharp claws",
+        "es": "Tienen garras afiladas"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "difficulty": "easy",
+    "explanation": {
+      "en": "Bats navigate using echolocation.",
+      "es": "Los murciélagos navegan usando la ecolocación."
+    },
+    "hint": {
+      "en": "How do they find their way in the dark?",
+      "es": "¿Cómo se orientan en la oscuridad?"
+    },
+    "question": {
+      "en": "How do bats navigate at night?",
+      "es": "¿Cómo navegan los murciélagos por la noche?"
+    }
+  },
+  {
+    "answers": [
+      {
+        "en": "They eat meat",
+        "es": "Comen carne"
+      },
+      {
+        "en": "They eat plants",
+        "es": "Comen plantas"
+      },
+      {
+        "en": "They eat insects",
+        "es": "Comen insectos"
+      },
+      {
+        "en": "They eat both plants and meat",
+        "es": "Comen tanto plantas como carne"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "difficulty": "easy",
+    "explanation": {
+      "en": "Lions are carnivores, meaning they primarily consume meat.",
+      "es": "Los leones son carnívoros, lo que significa que consumen principalmente carne."
+    },
+    "hint": {
+      "en": "Think about their main food source.",
+      "es": "Piensa en su principal fuente de alimento."
+    },
+    "question": {
+      "en": "What do lions primarily eat?",
+      "es": "¿Qué comen principalmente los leones?"
+    }
+  },
+  {
+    "answers": [
+      {
+        "en": "They are herbivores",
+        "es": "Son herbívoros"
+      },
+      {
+        "en": "They are carnivores",
+        "es": "Son carnívoros"
+      },
+      {
+        "en": "They are omnivores",
+        "es": "Son omnívoros"
+      },
+      {
+        "en": "They are insectivores",
+        "es": "Son insectívoros"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "difficulty": "easy",
+    "explanation": {
+      "en": "Deer are herbivores, meaning their diet consists primarily of plants.",
+      "es": "Los ciervos son herbívoros, lo que significa que su dieta consiste principalmente en plantas."
+    },
+    "hint": {
+      "en": "What type of food do they mainly consume?",
+      "es": "¿Qué tipo de alimento consumen principalmente?"
+    },
+    "question": {
+      "en": "What type of eater is a deer?",
+      "es": "¿Qué tipo de animal es un ciervo en cuanto a su alimentación?"
+    }
+  },
+  {
+    "answers": [
+      {
+        "en": "They are mammals",
+        "es": "Son mamíferos"
+      },
+      {
+        "en": "They are reptiles",
+        "es": "Son reptiles"
+      },
+      {
+        "en": "They are birds",
+        "es": "Son aves"
+      },
+      {
+        "en": "They are amphibians",
+        "es": "Son anfibios"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "difficulty": "easy",
+    "explanation": {
+      "en": "Cows are mammals.",
+      "es": "Las vacas son mamíferos."
+    },
+    "hint": {
+      "en": "Think about their characteristics.",
+      "es": "Piensa en sus características."
+    },
+    "question": {
+      "en": "What type of animal is a cow?",
+      "es": "¿Qué tipo de animal es una vaca?"
+    }
+  },
+  {
+    "answers": [
+      {
+        "en": "They are warm-blooded",
+        "es": "Son de sangre caliente"
+      },
+      {
+        "en": "They are cold-blooded",
+        "es": "Son de sangre fría"
+      },
+      {
+        "en": "They are amphibians",
+        "es": "Son anfibios"
+      },
+      {
+        "en": "They are reptiles",
+        "es": "Son reptiles"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "difficulty": "easy",
+    "explanation": {
+      "en": "Sheep, like other mammals, maintain a constant body temperature.",
+      "es": "Las ovejas, como otros mamíferos, mantienen una temperatura corporal constante."
+    },
+    "hint": {
+      "en": "Consider their body temperature regulation.",
+      "es": "Considera su regulación de la temperatura corporal."
+    },
+    "question": {
+      "en": "What is a key characteristic of sheep regarding their body temperature?",
+      "es": "¿Cuál es una característica clave de las ovejas con respecto a su temperatura corporal?"
+    }
+  },
+  {
+    "answers": [
+      {
+        "en": "They have long ears",
+        "es": "Tienen orejas largas"
+      },
+      {
+        "en": "They have short tails",
+        "es": "Tienen colas cortas"
+      },
+      {
+        "en": "They have long legs",
+        "es": "Tienen piernas largas"
+      },
+      {
+        "en": "They have short necks",
+        "es": "Tienen cuellos cortos"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "difficulty": "easy",
+    "explanation": {
+      "en": "Rabbits have long ears for enhanced hearing and heat dissipation.",
+      "es": "Los conejos tienen orejas largas para una mejor audición y disipación del calor."
+    },
+    "hint": {
+      "en": "Focus on one of their noticeable features.",
+      "es": "Concéntrate en una de sus características notables."
+    },
+    "question": {
+      "en": "What is a distinctive physical feature of rabbits?",
+      "es": "¿Cuál es una característica física distintiva de los conejos?"
+    }
+  },
+  {
+    "answers": [
+      {
+        "en": "They make nests",
+        "es": "Hacen nidos"
+      },
+      {
+        "en": "They dig burrows",
+        "es": "Cavan madrigueras"
+      },
+      {
+        "en": "They build dams",
+        "es": "Construyen presas"
+      },
+      {
+        "en": "They live in hives",
+        "es": "Viven en colmenas"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "difficulty": "easy",
+    "explanation": {
+      "en": "Birds commonly create nests to lay eggs and raise their young.",
+      "es": "Las aves comúnmente crean nidos para poner huevos y criar a sus crías."
+    },
+    "hint": {
+      "en": "What structure do they create for their young?",
+      "es": "¿Qué estructura crean para sus crías?"
+    },
+    "question": {
+      "en": "What do birds build to raise their young?",
+      "es": "¿Qué construyen las aves para criar a sus crías?"
+    }
+  },
+  {
+    "answers": [
+      {
+        "en": "They are warm-blooded",
+        "es": "Son de sangre caliente"
+      },
+      {
+        "en": "They are cold-blooded",
+        "es": "Son de sangre fría"
+      },
+      {
+        "en": "They are amphibians",
+        "es": "Son anfibios"
+      },
+      {
+        "en": "They are reptiles",
+        "es": "Son reptiles"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "difficulty": "easy",
+    "explanation": {
+      "en": "Pigs are mammals and therefore warm-blooded.",
+      "es": "Los cerdos son mamíferos y por lo tanto de sangre caliente."
+    },
+    "hint": {
+      "en": "Think about their body temperature regulation.",
+      "es": "Piensa en su regulación de la temperatura corporal."
+    },
+    "question": {
+      "en": "What is a key characteristic of pigs regarding their body temperature?",
+      "es": "¿Cuál es una característica clave de los cerdos con respecto a su temperatura corporal?"
+    }
+  },
+  {
+    "answers": [
+      {
+        "en": "They are herbivores",
+        "es": "Son herbívoros"
+      },
+      {
+        "en": "They are carnivores",
+        "es": "Son carnívoros"
+      },
+      {
+        "en": "They are omnivores",
+        "es": "Son omnívoros"
+      },
+      {
+        "en": "They are insectivores",
+        "es": "Son insectívoros"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "difficulty": "easy",
+    "explanation": {
+      "en": "Goats primarily eat plants.",
+      "es": "Las cabras comen principalmente plantas."
+    },
+    "hint": {
+      "en": "Consider what kind of diet they primarily have.",
+      "es": "Considera qué tipo de dieta tienen principalmente."
+    },
+    "question": {
+      "en": "What type of eater is a goat?",
+      "es": "¿Qué tipo de animal es una cabra en cuanto a su alimentación?"
+    }
+  },
+  {
+    "answers": [
+      {
+        "en": "They have fur",
+        "es": "Tienen pelo"
+      },
+      {
+        "en": "They have scales",
+        "es": "Tienen escamas"
+      },
+      {
+        "en": "They have feathers",
+        "es": "Tienen plumas"
+      },
+      {
+        "en": "They have skin",
+        "es": "Tienen piel"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "difficulty": "easy",
+    "explanation": {
+      "en": "Sheep have a coat of wool or fur.",
+      "es": "Las ovejas tienen un pelaje de lana o piel."
+    },
+    "hint": {
+      "en": "Think about the covering on their skin.",
+      "es": "Piensa en el recubrimiento de su piel."
+    },
+    "question": {
+      "en": "What covers a sheep's body?",
+      "es": "¿Qué cubre el cuerpo de una oveja?"
+    }
+  },
+  {
+    "answers": [
+      {
+        "en": "They are warm-blooded",
+        "es": "Son de sangre caliente"
+      },
+      {
+        "en": "They are cold-blooded",
+        "es": "Son de sangre fría"
+      },
+      {
+        "en": "They are amphibians",
+        "es": "Son anfibios"
+      },
+      {
+        "en": "They are reptiles",
+        "es": "Son reptiles"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "difficulty": "easy",
+    "explanation": {
+      "en": "Goats, like many mammals, are warm-blooded.",
+      "es": "Las cabras, como muchos mamíferos, son de sangre caliente."
+    },
+    "hint": {
+      "en": "Think about how they regulate their body temperature.",
+      "es": "Piensa en cómo regulan su temperatura corporal."
+    },
+    "question": {
+      "en": "What is a key characteristic of goats regarding their body temperature?",
+      "es": "¿Cuál es una característica clave de las cabras con respecto a su temperatura corporal?"
+    }
+  },
+  {
+    "answers": [
+      {
+        "en": "They have long necks",
+        "es": "Tienen cuellos largos"
+      },
+      {
+        "en": "They have long legs",
+        "es": "Tienen piernas largas"
+      },
+      {
+        "en": "They have long tails",
+        "es": "Tienen colas largas"
+      },
+      {
+        "en": "They have short ears",
+        "es": "Tienen orejas cortas"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "difficulty": "easy",
+    "explanation": {
+      "en": "Giraffes are famous for their extraordinarily long necks.",
+      "es": "Las jirafas son famosas por sus cuellos extraordinariamente largos."
+    },
+    "hint": {
+      "en": "What is their most distinctive feature?",
+      "es": "¿Cuál es su característica más distintiva?"
+    },
+    "question": {
+      "en": "What is a striking characteristic of a giraffe?",
+      "es": "¿Qué característica llamativa tiene una jirafa?"
+    }
+  },
+  {
+    "answers": [
+      {
+        "en": "They are mammals",
+        "es": "Son mamíferos"
+      },
+      {
+        "en": "They are reptiles",
+        "es": "Son reptiles"
+      },
+      {
+        "en": "They are birds",
+        "es": "Son aves"
+      },
+      {
+        "en": "They are amphibians",
+        "es": "Son anfibios"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "difficulty": "easy",
+    "explanation": {
+      "en": "Elephants are large land mammals.",
+      "es": "Los elefantes son grandes mamíferos terrestres."
+    },
+    "hint": {
+      "en": "Consider their classification.",
+      "es": "Considera su clasificación."
+    },
+    "question": {
+      "en": "What type of animal is an elephant?",
+      "es": "¿Qué tipo de animal es un elefante?"
+    }
+  },
+  {
+    "answers": [
+      {
+        "en": "They live in hives",
+        "es": "Viven en colmenas"
+      },
+      {
+        "en": "They live in burrows",
+        "es": "Viven en madrigueras"
+      },
+      {
+        "en": "They live in nests",
+        "es": "Viven en nidos"
+      },
+      {
+        "en": "They live in trees",
+        "es": "Viven en árboles"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "difficulty": "easy",
+    "explanation": {
+      "en": "Bees live in hives or colonies.",
+      "es": "Las abejas viven en colmenas o colonias."
+    },
+    "hint": {
+      "en": "Think about where they live collectively.",
+      "es": "Piensa en dónde viven colectivamente."
+    },
+    "question": {
+      "en": "Where do bees typically live?",
+      "es": "¿Dónde viven típicamente las abejas?"
+    }
+  },
+  {
+    "answers": [
+      {
+        "en": "They are omnivores",
+        "es": "Son omnívoros"
+      },
+      {
+        "en": "They are carnivores",
+        "es": "Son carnívoros"
+      },
+      {
+        "en": "They are herbivores",
+        "es": "Son herbívoros"
+      },
+      {
+        "en": "They are insectivores",
+        "es": "Son insectívoros"
+      }
+    ],
+    "correctAnswerIndex": 2,
+    "difficulty": "easy",
+    "explanation": {
+      "en": "Pigs have a diet that includes both plants and meat.",
+      "es": "Los cerdos tienen una dieta que incluye tanto plantas como carne."
+    },
+    "hint": {
+      "en": "Think about the variety of their diet.",
+      "es": "Piensa en la variedad de su dieta."
+    },
+    "question": {
+      "en": "What type of eater is a pig?",
+      "es": "¿Qué tipo de animal es un cerdo en cuanto a su alimentación?"
+    }
+  },
+  {
+    "answers": [
+      {
+        "en": "They are mammals"
+      }
+    ]
+  }
+]
+
+Required JSON schema:
+
+{
+  "type": "array",
+  "items": {
+    "type": "object",
+    "properties": {
+      "question": {
+        "type": "object",
+        "properties": {
+          "en": {
+            "type": "string",
+            "description": "English version of the text."
+          },
+          "es": {
+            "type": "string",
+            "description": "Spanish version of the text."
+          }
+        },
+        "required": [
+          "en",
+          "es"
+        ],
+        "additionalProperties": true,
+        "description": "The trivia question in English and Spanish."
+      },
+      "answers": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "en": {
+              "type": "string",
+              "description": "English version of the answer."
+            },
+            "es": {
+              "type": "string",
+              "description": "Spanish version of the answer."
+            }
+          },
+          "required": [
+            "en",
+            "es"
+          ],
+          "additionalProperties": true
+        },
+        "minItems": 4,
+        "maxItems": 4,
+        "description": "Four possible answers to the question, each in English and Spanish."
+      },
+      "correctAnswerIndex": {
+        "type": "number",
+        "minimum": 0,
+        "maximum": 3,
+        "description": "The index (0-3) of the correct answer in the answers array. This index applies to both language versions of the answers."
+      },
+      "explanation": {
+        "type": "object",
+        "properties": {
+          "en": {
+            "type": "string",
+            "description": "English version of the text."
+          },
+          "es": {
+            "type": "string",
+            "description": "Spanish version of the text."
+          }
+        },
+        "required": [
+          "en",
+          "es"
+        ],
+        "additionalProperties": true,
+        "description": "A brief explanation (1-2 sentences) of why the correct answer is correct, in English and Spanish."
+      },
+      "hint": {
+        "type": "object",
+        "properties": {
+          "en": {
+            "type": "string",
+            "description": "English version of the text."
+          },
+          "es": {
+            "type": "string",
+            "description": "Spanish version of the text."
+          }
+        },
+        "required": [
+          "en",
+          "es"
+        ],
+        "additionalProperties": true,
+        "description": "A concise hint (1 short sentence) to help the user deduce the answer without revealing it directly, in English and Spanish."
+      },
+      "difficulty": {
+        "type": "string",
+        "enum": [
+          "easy",
+          "medium",
+          "hard"
+        ],
+        "description": "The assessed or targeted difficulty level of the question."
+      }
+    },
+    "required": [
+      "question",
+      "answers",
+      "correctAnswerIndex",
+      "explanation",
+      "hint",
+      "difficulty"
+    ],
+    "additionalProperties": true
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}
+    at parseSchema (/home/user/studio/node_modules/@genkit-ai/core/src/schema.ts:133:21)
+    at GenerateResponse.assertValidSchema (/home/user/studio/node_modules/@genkit-ai/ai/src/generate/response.ts:101:7)
+    at generate (/home/user/studio/node_modules/@genkit-ai/ai/src/generate/action.ts:340:45)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async <anonymous> (/home/user/studio/node_modules/@genkit-ai/ai/src/generate/action.ts:131:22)
+    at async <anonymous> (/home/user/studio/node_modules/@genkit-ai/core/src/tracing/instrumentation.ts:115:24)
+    at async runInNewSpan (/home/user/studio/node_modules/@genkit-ai/core/src/tracing/instrumentation.ts:103:10)
+    at async generateHelper (/home/user/studio/node_modules/@genkit-ai/ai/src/generate/action.ts:118:10)
+    at async <anonymous> (/home/user/studio/node_modules/@genkit-ai/ai/src/generate.ts:346:24)
+    at async generate (/home/user/studio/node_modules/@genkit-ai/ai/src/generate.ts:342:10) {
+  source: undefined,
+  status: 'INVALID_ARGUMENT',
+  detail: {
+    errors: [ [Object] ],
+    schema: {
+      type: 'array',
+      items: [Object],
+      '$schema': 'http://json-schema.org/draft-07/schema#'
+    }
+  },
+  code: 400,
+  originalMessage: 'Schema validation failed. Parse Errors:\n' +
+    '\n' +
+    "- 53: must have required property 'question'\n" +
+    '\n' +
+    'Provided data:\n' +
+    '\n' +
+    '[\n' +
+    '  {\n' +
+    '    "answers": [\n' +
+    '      {\n' +
+    '        "en": "Cow",\n' +
+    '        "es": "Vaca"\n' +
+    '      },\n' +
+    '      {\n' +
+    '        "en": "Sheep",\n' +
+    '        "es": "Oveja"\n' +
+    '      },\n' +
+    '      {\n' +
+    '        "en": "Goat",\n' +
+    '        "es": "Cabra"\n' +
+    '      },\n' +
+    '      {\n' +
+    '        "en": "Pig",\n' +
+    '        "es": "Cerdo"\n' +
+    '      }\n' +
+    '    ],\n' +
+    '    "correctAnswerIndex": 0,\n' +
+    '    "difficulty": "easy",\n' +
+    '    "explanation": {\n' +
+    '      "en": "Cows are commonly farmed for their milk and meat.",\n' +
+    '      "es": "Las vacas se crían comúnmente por su leche y carne."\n' +
+    '    },\n' +
+    '    "hint": {\n' +
+    '      "en": "This animal is known for producing a liquid humans drink.",\n' +
+    '      "es": "Este animal es conocido por producir un líquido que beben los humanos."\n' +
+    '    },\n' +
+    '    "question": {\n' +
+    '      "en": "Which of these animals is commonly farmed for its milk and meat?",\n' +
+    '      "es": "¿Cuál de estos animales se cría comúnmente por su leche y carne?"\n' +
+    '    }\n' +
+    '  },\n' +
+    '  {\n' +
+    '    "answers": [\n' +
+    '      {\n' +
+    '        "en": "Dog",\n' +
+    '        "es": "Perro"\n' +
+    '      },\n' +
+    '      {\n' +
+    '        "en": "Cat",\n' +
+    '        "es": "Gato"\n' +
+    '      },\n' +
+    '      {\n' +
+    '        "en": "Horse",\n' +
+    '        "es": "Caballo"\n' +
+    '      },\n' +
+    '      {\n' +
+    '        "en": "Elephant",\n' +
+    '        "es": "Elefante"\n' +
+    '      }\n' +
+    '    ],\n' +
+    '    "correctAnswerIndex": 0,\n' +
+    '    "difficulty": "easy",\n' +
+    '    "explanation": {\n' +
+    `      "en": "Dogs are often considered man's best friend and are domesticated animals.",\n` +
+    '      "es": "Los perros a menudo se consideran el mejor amigo del hombre y son animales domesticados."\n' +
+    '    },\n' +
+    '    "hint": {\n' +
+    `      "en": "This animal is often referred to as man's best friend.",\n` +
+    '      "es": "A este animal a menudo se le llama el mejor amigo del hombre."\n' +
+    '    },\n' +
+    '    "question": {\n' +
+    `      "en": "Which animal is often considered man's best friend?",\n` +
+    '      "es": "¿Qué animal a menudo se considera el mejor amigo del hombre?"\n' +
+    '    }\n' +
+    '  },\n' +
+    '  {\n' +
+    '    "answers": [\n' +
+    '      {\n' +
+    '        "en": "Tiger",\n' +
+    '        "es": "Tigre"\n' +
+    '      },\n' +
+    '      {\n' +
+    '        "en": "Lion",\n' +
+    '        "es": "León"\n' +
+    '      },\n' +
+    '      {\n' +
+    '        "en": "Leopard",\n' +
+    '        "es": "Leopardo"\n' +
+    '      },\n' +
+    '      {\n' +
+    '        "en": "Cheetah",\n' +
+    '        "es": "Guepardo"\n' +
+    '      }\n' +
+    '    ],\n' +
+    '    "correctAnswerIndex": 1,\n' +
+    '    "difficulty": "easy",\n' +
+    '    "explanation": {\n' +
+    '      "en": "Lions are large cats that are native to Africa.",\n' +
+    '      "es": "Los leones son gatos grandes que son nativos de África."\n' +
+    '    },\n' +
+    '    "hint": {\n' +
+    '      "en": "This large cat is known for its mane.",\n' +
+    '      "es": "Este gato grande es conocido por su melena."\n' +
+    '    },\n' +
+    '    "question": {\n' +
+    '      "en": "Which of these animals is native to Africa and known for its mane?",\n' +
+    '      "es": "¿Cuál de estos animales es nativo de África y conocido por su melena?"\n' +
+    '    }\n' +
+    '  },\n' +
+    '  {\n' +
+    '    "answers": [\n' +
+    '      {\n' +
+    '        "en": "Scales",\n' +
+    '        "es": "Escamas"\n' +
+    '      },\n' +
+    '      {\n' +
+    '        "en": "Fur",\n' +
+    '        "es": "Piel"\n' +
+    '      },\n' +
+    '      {\n' +
+    '        "en": "Feathers",\n' +
+    '        "es": "Plumas"\n' +
+    '      },\n' +
+    '      {\n' +
+    '        "en": "Skin",\n' +
+    '        "es": "Piel"\n' +
+    '      }\n' +
+    '    ],\n' +
+    '    "correctAnswerIndex": 2,\n' +
+    '    "difficulty": "easy",\n' +
+    '    "explanation": {\n' +
+    '      "en": "Birds are covered in feathers, which help them fly and stay warm.",\n' +
+    '      "es": "Las aves están cubiertas de plumas, lo que las ayuda a volar y mantenerse calientes."\n' +
+    '    },\n' +
+    '    "hint": {\n' +
+    '      "en": "Think about what helps birds fly and keep warm.",\n' +
+    '      "es": "Piensa en lo que ayuda a las aves a volar y mantenerse calientes."\n' +
+    '    },\n' +
+    '    "question": {\n' +
+    `      "en": "What typically covers a bird's body?",\n` +
+    '      "es": "¿Qué cubre típicamente el cuerpo de un ave?"\n' +
+    '    }\n' +
+    '  },\n' +
+    '  {\n' +
+    '    "answers": [\n' +
+    '      {\n' +
+    '        "en": "Warm-blooded",\n' +
+    '        "es": "De sangre caliente"\n' +
+    '      },\n' +
+    '      {\n' +
+    '        "en": "Cold-blooded",\n' +
+    '        "es": "De sangre fría"\n' +
+    '      },\n' +
+    '      {\n' +
+    '        "en": "Amphibious",\n' +
+    '        "es": "Anfibio"\n' +
+    '      },\n' +
+    '      {\n' +
+    '        "en": "Reptilian",\n' +
+    '        "es": "Reptil"\n' +
+    '      }\n' +
+    '    ],\n' +
+    '    "correctAnswerIndex": 0,\n' +
+    '    "difficulty": "easy",\n' +
+    '    "explanation": {\n' +
+    '      "en": "Mammals are known for maintaining a constant body temperature.",\n' +
+    '      "es": "Los mamíferos se caracterizan por mantener una temperatura corporal constante."\n' +
+    '    },\n' +
+    '    "hint": {\n' +
+    '      "en": "Think about how mammals regulate their body temperature.",\n' +
+    '      "es": "Piensa en cómo los mamíferos regulan su temperatura corporal."\n' +
+    '    },\n' +
+    '    "question": {\n' +
+    '      "en": "What is a common characteristic of mammals regarding their body temperature?",\n' +
+    '      "es": "¿Qué característica común tienen los mamíferos con respecto a su temperatura corporal?"\n' +
+    '    }\n' +
+    '  },\n' +
+    '  {\n' +
+    '    "answers": [\n' +
+    '      {\n' +
+    '        "en": "Ocean",\n' +
+    '        "es": "Océano"\n' +
+    '      },\n' +
+    '      {\n' +
+    '        "en": "Forest",\n' +
+    '        "es": "Bosque"\n' +
+    '      },\n' +
+    '      {\n' +
+    '        "en": "Desert",\n' +
+    '        "es": "Desierto"\n' +
+    '      },\n' +
+    '      {\n' +
+    '        "en": "Arctic",\n' +
+    '        "es": "Ártico"\n' +
+    '      }\n' +
+    '    ],\n' +
+    '    "correctAnswerIndex": 0,\n' +
+    '    "difficulty": "easy",\n' +
+    '    "explanation": {\n' +
+    '      "en": "Whales are large marine mammals that live in the ocean.",\n' +
+    '      "es": "Las ballenas son grandes mamíferos marinos que viven en el océano."\n' +
+    '    },\n' +
+    '    "hint": {\n' +
+    '      "en": "Think about where whales spend their time.",\n' +
+    '      "es": "Piensa dónde pasan su tiempo las ballenas."\n' +
+    '    },\n' +
+    '    "question": {\n' +
+    '      "en": "Where do whales live?",\n' +
+    '      "es": "¿Dónde viven las ballenas?"\n' +
+    '    }\n' +
+    '  },\n' +
+    '  {\n' +
+    '    "answers": [\n' +
+    '      {\n' +
+    '        "en": "They have stripes",\n' +
+    '        "es": "Tienen rayas"\n' +
+    '      },\n' +
+    '      {\n' +
+    '        "en": "They have long necks",\n' +
+    '        "es": "Tienen cuellos largos"\n' +
+    '      },\n' +
+    '      {\n' +
+    '        "en": "They have spots",\n' +
+    '        "es": "Tienen manchas"\n' +
+    '      },\n' +
+    '      {\n' +
+    '        "en": "They have long ears",\n' +
+    '        "es": "Tienen orejas largas"\n' +
+    '      }\n' +
+    '    ],\n' +
+    '    "correctAnswerIndex": 0,\n' +
+    '    "difficulty": "easy",\n' +
+    '    "explanation": {\n' +
+    '      "en": "Zebras are easily recognized by their distinctive black and white stripes.",\n' +
+    '      "es": "Las cebras se reconocen fácilmente por sus distintivas rayas blancas y negras."\n' +
+    '    },\n' +
+    '    "hint": {\n' +
+    '      "en": "Think about the pattern on their coats.",\n' +
+    '      "es": "Piensa en el patrón de su pelaje."\n' +
+    '    },\n' +
+    '    "question": {\n' +
+    '      "en": "What is a distinctive feature of a zebra?",\n' +
+    '      "es": "¿Qué característica distintiva tiene una cebra?"\n' +
+    '    }\n' +
+    '  },\n' +
+    '  {\n' +
+    '    "answers": [\n' +
+    '      {\n' +
+    '        "en": "They fly",\n' +
+    '        "es": "Vuelan"\n' +
+    '      },\n' +
+    '      {\n' +
+    '        "en": "They swim",\n' +
+    '        "es": "Nadaban"\n' +
+    '      },\n' +
+    '      {\n' +
+    '        "en": "They hop",\n' +
+    '        "es": "Saltaban"\n' +
+    '      },\n' +
+    '      {\n' +
+    '        "en": "They crawl",\n' +
+    '        "es": "Se arrastran"\n' +
+    '      }\n' +
+    '    ],\n' +
+    '    "correctAnswerIndex": 0,\n' +
+    '    "difficulty": "easy",\n' +
+    '    "explanation": {\n' +
+    '      "en": "Most birds have wings and are capable of flight.",\n' +
+    '      "es": "La mayoría de las aves tienen alas y son capaces de volar."\n' +
+    '    },\n' +
+    '    "hint": {\n' +
+    '      "en": "Think about their primary method of movement.",\n' +
+    '      "es": "Piensa en su método principal de movimiento."\n' +
+    '    },\n' +
+    '    "question": {\n' +
+    '      "en": "What do most birds do?",\n' +
+    '      "es": "¿Qué hacen la mayoría de las aves?"\n' +
+    '    }\n' +
+    '  },\n' +
+    '  {\n' +
+    '    "answers": [\n' +
+    '      {\n' +
+    '        "en": "They live in hives",\n' +
+    '        "es": "Viven en colmenas"\n' +
+    '      },\n' +
+    '      {\n' +
+    '        "en": "They live in burrows",\n' +
+    '        "es": "Viven en madrigueras"\n' +
+    '      },\n' +
+    '      {\n' +
+    '        "en": "They live in nests",\n' +
+    '        "es": "Viven en nidos"\n' +
+    '      },\n' +
+    '      {\n' +
+    '        "en": "They live in trees",\n' +
+    '        "es": "Viven en árboles"\n' +
+    '      }\n' +
+    '    ],\n' +
+    '    "correctAnswerIndex": 0,\n' +
+    '    "difficulty": "easy",\n' +
+    '    "explanation": {\n' +
+    '      "en": "Honeybees are social insects that live in colonies in hives.",\n' +
+    '      "es": "Las abejas melíferas son insectos sociales que viven en colonias en colmenas."\n' +
+    '    },\n' +
+    '    "hint": {\n' +
+    '      "en": "Think about where they build their homes.",\n' +
+    '      "es": "Piensa dónde construyen sus hogares."\n' +
+    '    },\n' +
+    '    "question": {\n' +
+    '      "en": "Where do honeybees typically make their homes?",\n' +
+    '      "es": "¿Dónde suelen hacer sus hogares las abejas melíferas?"\n' +
+    '    }\n' +
+    '  },\n' +
+    '  {\n' +
+    '    "answers": [\n' +
+    '      {\n' +
+    '        "en": "Bear",\n' +
+    '        "es": "Oso"\n' +
+    '      },\n' +
+    '      {\n' +
+    '        "en": "Lion",\n' +
+    '        "es": "León"\n' +
+    '      },\n' +
+    '      {\n' +
+    '        "en": "Tiger",\n' +
+    '        "es": "Tigre"\n' +
+    '      },\n' +
+    '      {\n' +
+    '        "en": "Squirrel",\n' +
+    '        "es": "Ardilla"\n' +
+    '      }\n' +
+    '    ],\n' +
+    '    "correctAnswerIndex": 0,\n' +
+    '    "difficulty": "easy",\n' +
+    '    "explanation": {\n' +
+    '      "en": "Bears are known for their hibernation behavior.",\n' +
+    '      "es": "Los osos son conocidos por su comportamiento de hibernación."\n' +
+    '    },\n' +
+    '    "hint": {\n' +
+    '      "en": "This animal sleeps through the winter.",\n' +
+    '      "es": "Este animal duerme durante el invierno."\n' +
+    '    },\n' +
+    '    "question": {\n' +
+    '      "en": "Which animal is known for hibernating?",\n' +
+    '      "es": "¿Qué animal es conocido por hibernar?"\n' +
+    '    }\n' +
+    '  },\n' +
+    '  {\n' +
+    '    "answers": [\n' +
+    '      {\n' +
+    '        "en": "They are carnivores",\n' +
+    '        "es": "Son carnívoros"\n' +
+    '      },\n' +
+    '      {\n' +
+    '        "en": "They are herbivores",\n' +
+    '        "es": "Son herbívoros"\n' +
+    '      },\n' +
+    '      {\n' +
+    '        "en": "They are omnivores",\n' +
+    '        "es": "Son omnívoros"\n' +
+    '      },\n' +
+    '      {\n' +
+    '        "en": "They are insectivores",\n' +
+    '        "es": "Son insectívoros"\n' +
+    '      }\n' +
+    '    ],\n' +
+    '    "correctAnswerIndex": 0,\n' +
+    '    "difficulty": "easy",\n' +
+    '    "explanation": {\n' +
+    '      "en": "Lions are carnivores, which means they mainly eat meat.",\n' +
+    '      "es": "Los leones son carnívoros, lo que significa que comen principalmente carne."\n' +
+    '    },\n' +
+    '    "hint": {\n' +
+    '      "en": "Think about what type of food they eat.",\n' +
+    '      "es": "Piensa en el tipo de comida que comen."\n' +
+    '    },\n' +
+    '    "question": {\n' +
+    '      "en": "What type of animal is a lion in terms of its diet?",\n' +
+    '      "es": "¿Qué tipo de animal es un león en términos de su dieta?"\n' +
+    '    }\n' +
+    '  },\n' +
+    '  {\n' +
+    '    "answers": [\n' +
+    '      {\n' +
+    '        "en": "They have long necks",\n' +
+    '        "es": "Tienen cuellos largos"\n' +
+    '      },\n' +
+    '      {\n' +
+    '        "en": "They have long legs",\n' +
+    '        "es": "Tienen patas largas"\n' +
+    '      },\n' +
+    '      {\n' +
+    '        "en": "They have long tails",\n' +
+    '        "es": "Tienen colas largas"\n' +
+    '      },\n' +
+    '      {\n' +
+    '        "en": "They have long ears",\n' +
+    '        "es": "Tienen orejas largas"\n' +
+    '      }\n' +
+    '    ],\n' +
+    '    "correctAnswerIndex": 0,\n' +
+    '    "difficulty": "easy",\n' +
+    '    "explanation": {\n' +
+    '      "en": "'... 39214 more characters,
+  traceId: '0e607f35c42d8524ad4c04ce21825a91'
+}
+      Waiting 1s after error before potentially retrying or moving on...
+    Finished generation attempts for Animals2 - easy. Generated 0 questions in this run.
+  Finished all difficulty levels for category: Animals2.
+
+Batch question population script finished.

@@ -57,13 +57,15 @@ const GenerateTriviaQuestionOutputSchema = z.object({
     .max(3)
     .describe('The index (0-3) of the correct answer in the answers array. This index applies to both language versions of the answers.'),
   explanation: BilingualTextSchema.describe('A brief explanation (1-2 sentences) of why the correct answer is correct, in English and Spanish.'),
-  hint: BilingualTextSchema.optional().describe('A concise hint (1 short sentence) to help the user deduce the answer without revealing it directly, in English and Spanish.'),
+  hint: BilingualTextSchema.describe('A concise hint (1 short sentence) to help the user deduce the answer without revealing it directly, in English and Spanish.'),
   difficulty: DifficultyLevelSchema,
 });
 export type GenerateTriviaQuestionOutput = z.infer<typeof GenerateTriviaQuestionOutputSchema>;
 
 // The flow will output an array of GenerateTriviaQuestionOutput (valid questions)
-const GenerateTriviaQuestionsOutputSchema = z.array(GenerateTriviaQuestionOutputSchema);
+// This schema is used for internal validation within the flow, not for the prompt's direct output.
+const ValidatedQuestionsArraySchema = z.array(GenerateTriviaQuestionOutputSchema);
+
 
 export async function generateTriviaQuestions(input: GenerateTriviaQuestionsInput): Promise<GenerateTriviaQuestionOutput[]> {
   return generateTriviaQuestionsFlow(input);
@@ -73,6 +75,7 @@ const promptTemplateString = `You are an expert trivia question generator. Given
 
 IMPORTANT: You MUST generate all textual content (question, each of the four answers, the explanation, and the hint) in BOTH English (en) and Spanish (es).
 
+Your response MUST be a valid JSON string that represents an array of question objects.
 
 Topic: {{{topic}}}
 Number of distinct questions to generate: {{{count}}}
@@ -127,9 +130,6 @@ The user has requested questions of "{{targetDifficulty}}" difficulty. Please tr
 Please assess the inherent difficulty of each question you generate based on the guidelines above AND any difficulty-specific instructions provided, and set the 'difficulty' field in each question's output accordingly.
 {{/if}}
 
-Your response should be a JSON array, which is an array of question objects.
-CRITICALLY IMPORTANT FORMATTING RULE: For each question object in the array, the 'question' field, 'explanation' field, 'hint' field, AND EACH of the four 'answers' objects within the 'answers' array, MUST BE JSON OBJECTS. These objects MUST contain two string properties: "en" for the English text and "es" for the Spanish text.
-
 Each question object in the array must conform to the following structure:
 {
   "question": { "en": "English Question Text", "es": "Spanish Question Text" },
@@ -144,7 +144,7 @@ Each question object in the array must conform to the following structure:
   "hint": { "en": "English Hint", "es": "Spanish Hint (optional)" },
   "difficulty": "easy"
 }
-Ensure the entire response is a single JSON object like: [ {question1_object}, {question2_object}, ... ]
+Ensure the entire response is a single JSON string like: "[ {question1_object}, {question2_object}, ... ]"
 
 Example for the 'question' object: { "en": "What is the capital of France?", "es": "¿Cuál es la capital de Francia?" }
 Example for a single answer object within the 'answers' array: { "en": "Paris", "es": "París" }
@@ -152,13 +152,14 @@ Example for the 'hint' object: { "en": "It's a famous European city known for a 
 
 Make sure that only one answer is correct (indicated by correctAnswerIndex).
 
-The number of question objects in the array SHOULD ideally match the requested "{{count}}", but it is more important that each object is valid.
+The number of question objects in the JSON array string SHOULD ideally match the requested "{{count}}", but it is more important that each object is valid.
 `;
 
 const generateTriviaQuestionsPrompt = ai.definePrompt({
   name: 'generateTriviaQuestionsPrompt',
   input: {schema: GenerateTriviaQuestionsInputSchema},
-  output: {schema: GenerateTriviaQuestionsOutputSchema},
+  // The prompt now outputs a JSON string. The flow will parse and validate it.
+  output: {schema: z.string().describe("A JSON string representing an array of trivia question objects.")},
   config: {
     temperature: 1,
   },
@@ -169,48 +170,59 @@ const generateTriviaQuestionsFlow = ai.defineFlow(
   {
     name: 'generateTriviaQuestionsFlow',
     inputSchema: GenerateTriviaQuestionsInputSchema,
-    outputSchema: GenerateTriviaQuestionsOutputSchema,
+    // The flow's final output is still an array of valid questions.
+    outputSchema: ValidatedQuestionsArraySchema,
   },
   async (input) => {
     const effectiveInput = { ...input, count: input.count || 1 };
-
-    console.log('[generateTriviaQuestionsFlow] Input received:', JSON.stringify(effectiveInput, null, 2));
     console.log('[generateTriviaQuestionsFlow] Checking ai object and ai.model method. Type of ai.model:', typeof ai.model);
 
-    const {output} = await generateTriviaQuestionsPrompt(
+    // The prompt's output is now expected to be a JSON string.
+    const {output: jsonStringOutput} = await generateTriviaQuestionsPrompt(
         effectiveInput,
         effectiveInput.modelName ? { model: effectiveInput.modelName } : undefined // Pass modelName string directly
       );
 
-    if (!output || !Array.isArray(output)) {
-      console.error('LLM did not return the expected array structure. Input:', JSON.stringify(effectiveInput), 'LLM Output:', JSON.stringify(output));
-      throw new Error('Failed to parse questions array from LLM response.');
+    if (typeof jsonStringOutput !== 'string') {
+      console.error('[generateTriviaQuestionsFlow] LLM did not return a JSON string as expected. Output type:', typeof jsonStringOutput, "Output:", jsonStringOutput);
+      return []; 
+    }
+    
+    let parsedJsonArray: any[];
+    try {
+      parsedJsonArray = JSON.parse(jsonStringOutput);
+    } catch (parseError) {
+      console.error('[generateTriviaQuestionsFlow] Failed to parse JSON string from LLM. String:', jsonStringOutput, 'Error:', parseError);
+      return []; 
     }
 
+    if (!Array.isArray(parsedJsonArray)) {
+      console.error('[generateTriviaQuestionsFlow] Parsed JSON is not an array. Parsed data:', parsedJsonArray);
+      return []; 
+    }
+    
     const validQuestions: GenerateTriviaQuestionOutput[] = [];
-    let llmReturnedCount = 0;
+    let llmReturnedCount = parsedJsonArray.length;
 
-    if (output) {
-      llmReturnedCount = output.length;
-      for (let i = 0; i < output.length; i++) {
-        const rawQuestion = output[i];
-        const parsedQuestion = GenerateTriviaQuestionOutputSchema.safeParse(rawQuestion);
+    for (let i = 0; i < parsedJsonArray.length; i++) {
+      const rawQuestion = parsedJsonArray[i];
+      // Validate each individual question object
+      const parsedQuestion = GenerateTriviaQuestionOutputSchema.safeParse(rawQuestion);
 
-        if (parsedQuestion.success) {
-          validQuestions.push(parsedQuestion.data);
-        } else {
-          console.warn(`[generateTriviaQuestionsFlow] Discarding malformed question object at index ${i} from LLM batch. Errors:`, parsedQuestion.error.flatten().fieldErrors);
-          console.warn(`[generateTriviaQuestionsFlow] Malformed question data:`, JSON.stringify(rawQuestion));
-        }
+      if (parsedQuestion.success) {
+        validQuestions.push(parsedQuestion.data);
+      } else {
+        console.warn(`[generateTriviaQuestionsFlow] Discarding malformed question object at index ${i} from LLM batch. Errors:`, parsedQuestion.error.flatten().fieldErrors);
+        console.warn(`[generateTriviaQuestionsFlow] Malformed question data:`, JSON.stringify(rawQuestion));
       }
     }
 
     if (validQuestions.length !== effectiveInput.count && llmReturnedCount >= effectiveInput.count) {
-      console.warn(`[generateTriviaQuestionsFlow] LLM was asked for ${effectiveInput.count} questions, returned ${llmReturnedCount} raw items, and ${validQuestions.length} were valid. This means ${llmReturnedCount - validQuestions.length} items failed individual validation. For topic: ${effectiveInput.topic}`);
+      console.warn(`[generateTriviaQuestionsFlow] LLM was asked for ${effectiveInput.count} questions, JSON string contained ${llmReturnedCount} raw items, and ${validQuestions.length} were valid. This means ${llmReturnedCount - validQuestions.length} items failed individual validation. For topic: ${effectiveInput.topic}`);
     } else if (llmReturnedCount < effectiveInput.count) {
-      console.warn(`[generateTriviaQuestionsFlow] LLM was asked for ${effectiveInput.count} questions but only returned ${llmReturnedCount} raw items, of which ${validQuestions.length} were valid. For topic: ${effectiveInput.topic}`);
+      console.warn(`[generateTriviaQuestionsFlow] LLM was asked for ${effectiveInput.count} questions, JSON string contained ${llmReturnedCount} raw items, of which ${validQuestions.length} were valid. For topic: ${effectiveInput.topic}`);
     }
-
+    
     return validQuestions;
   }
 );
