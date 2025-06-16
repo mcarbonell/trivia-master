@@ -27,7 +27,7 @@ import {
   SignalMedium,
   SignalHigh
 } from "lucide-react";
-import { logEvent as firebaseLogEvent, analytics } from "@/lib/firebase"; // Import analytics and logEvent
+import { logEvent as logEventFromLib, analytics } from "@/lib/firebase"; // Renombrado y se usa analytics de aquí
 
 type GameState = 'loading_categories' | 'category_selection' | 'difficulty_selection' | 'loading_question' | 'playing' | 'showing_feedback' | 'error';
 
@@ -67,12 +67,12 @@ export default function TriviaPage() {
   // Analytics Helper
   const logAnalyticsEvent = useCallback((eventName: string, eventParams?: { [key: string]: any }) => {
     if (analytics) { // analytics instance from @/lib/firebase
-      firebaseLogEvent(analytics, eventName, eventParams);
+      logEventFromLib(eventName, eventParams); // LLAMADA CORREGIDA
       console.log(`[Analytics] Event: ${eventName}`, eventParams);
     } else {
       console.log(`[Analytics] SKIPPED (not supported/initialized): ${eventName}`, eventParams);
     }
-  }, []);
+  }, [analytics, logEventFromLib]); // Dependencias añadidas
 
   useEffect(() => {
     setCurrentYear(new Date().getFullYear());
@@ -100,7 +100,7 @@ export default function TriviaPage() {
       }
     };
     fetchAndSetCategories();
-  }, [t]);
+  }, [t, logAnalyticsEvent]); // logAnalyticsEvent añadido a dependencias si se usa aquí, aunque no parece usarse directamente en este useEffect
 
   const clearTimer = useCallback(() => {
     if (timerIntervalRef.current) {
