@@ -24,3 +24,4 @@ export interface CategoryDefinition {
   isPredefined?: boolean; // True if the category comes from the initial set
 }
 
+export type DifficultyMode = "adaptive" | DifficultyLevel;
