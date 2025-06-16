@@ -179,7 +179,7 @@ const generateTriviaQuestionsFlow = ai.defineFlow(
 
     const {output} = await generateTriviaQuestionsPrompt(
         effectiveInput,
-        effectiveInput.modelName ? { model: ai.model(effectiveInput.modelName) } : undefined
+        effectiveInput.modelName ? { model: effectiveInput.modelName } : undefined // Pass modelName string directly
       );
 
     if (!output || !Array.isArray(output)) {
