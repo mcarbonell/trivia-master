@@ -65,7 +65,7 @@ export default function AdminQuestionsPage() {
   const { toast } = useToast();
 
   const [allQuestions, setAllQuestions] = useState<PredefinedQuestion[]>([]);
-  const [categories, setCategories] = useState<CategoryDefinition[]>([]);
+  const [categoriesForFilter, setCategoriesForFilter] = useState<CategoryDefinition[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
@@ -88,14 +88,14 @@ export default function AdminQuestionsPage() {
     try {
       const [fetchedQuestions, fetchedCategories] = await Promise.all([
         getAllPredefinedQuestions(),
-        getAppCategories(),
+        getAppCategories(), // Fetches ALL categories from Firestore
       ]);
       setAllQuestions(fetchedQuestions);
-      setCategories(fetchedCategories.filter(cat => cat.isPredefined !== false));
+      setCategoriesForFilter(fetchedCategories); // Use all fetched categories for the admin filter
     } catch (err) {
       console.error("Error fetching data:", err);
       setError(t('errorLoading'));
-      toast({ variant: "destructive", title: tCommon('toastErrorTitle'), description: t('errorLoading') });
+      toast({ variant: "destructive", title: tCommon('toastErrorTitle') as string, description: t('errorLoading') });
     } finally {
       setLoading(false);
     }
@@ -106,8 +106,8 @@ export default function AdminQuestionsPage() {
   }, [fetchAllData]);
 
   const categoryMap = useMemo(() => {
-    return new Map(categories.map(cat => [cat.topicValue, cat.name[locale]]));
-  }, [categories, locale]);
+    return new Map(categoriesForFilter.map(cat => [cat.topicValue, cat.name[locale]]));
+  }, [categoriesForFilter, locale]);
 
   const filteredQuestions = useMemo(() => {
     const lowerSearchQuery = searchQuery.toLowerCase();
@@ -161,11 +161,11 @@ export default function AdminQuestionsPage() {
   const handleDeleteQuestion = async (questionId: string, questionText: string) => {
     try {
       await deletePredefinedQuestion(questionId);
-      toast({ title: tCommon('toastSuccessTitle'), description: t('toastDeleteSuccess', { question: truncateText(questionText, 30) }) });
+      toast({ title: tCommon('toastSuccessTitle') as string, description: t('toastDeleteSuccess', { question: truncateText(questionText, 30) }) });
       await fetchAllData(); 
     } catch (err) {
       console.error("Error deleting question:", err);
-      toast({ variant: "destructive", title: tCommon('toastErrorTitle'), description: t('toastDeleteError') });
+      toast({ variant: "destructive", title: tCommon('toastErrorTitle') as string, description: t('toastDeleteError') });
     }
   };
 
@@ -215,12 +215,12 @@ export default function AdminQuestionsPage() {
 
     try {
       await updatePredefinedQuestion(currentQuestionToEdit.id, updatedQuestionData);
-      toast({ title: tCommon('toastSuccessTitle'), description: t('toastUpdateSuccess') });
+      toast({ title: tCommon('toastSuccessTitle') as string, description: t('toastUpdateSuccess') });
       await fetchAllData();
       setIsQuestionDialogOpen(false);
     } catch (err) {
       console.error("Error updating question:", err);
-      toast({ variant: "destructive", title: tCommon('toastErrorTitle'), description: t('toastUpdateError') });
+      toast({ variant: "destructive", title: tCommon('toastErrorTitle') as string, description: t('toastUpdateError') });
     } finally {
       setIsSubmittingQuestion(false);
     }
@@ -295,7 +295,7 @@ export default function AdminQuestionsPage() {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value={ALL_FILTER_VALUE}>{t('allCategories')}</SelectItem>
-                  {categories.map(cat => (
+                  {categoriesForFilter.map(cat => ( // Use categoriesForFilter here
                     <SelectItem key={cat.topicValue} value={cat.topicValue}>
                       {cat.name[locale]}
                     </SelectItem>
@@ -479,7 +479,7 @@ export default function AdminQuestionsPage() {
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          {['0', '1', '2', '3'].map(idx_str => ( // Renamed idx to idx_str
+                          {['0', '1', '2', '3'].map(idx_str => ( 
                             <SelectItem key={idx_str} value={idx_str}>{tForm('answerOption', { letter: String.fromCharCode(65 + parseInt(idx_str)) })}</SelectItem>
                           ))}
                         </SelectContent>
@@ -523,3 +523,4 @@ export default function AdminQuestionsPage() {
     </div>
   );
 }
+

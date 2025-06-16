@@ -23,6 +23,7 @@
   "errorLoadingQuestionDetail": "Could not fetch a new question. Please check your connection or try a different topic.",
   "errorLoadingCategories": "Error loading categories.",
   "errorLoadingCategoriesDetail": "Could not fetch categories. Please try refreshing the page.",
+  "errorNoUICategories": "No categories are currently set to display. You can still try a custom topic.",
   "errorNoQuestionForDifficulty": "Could not fetch a new question for the \"{difficulty}\" level. Please try again or a different topic.",
   "errorTryAgainTopic": "Try Again Topic: \"{topic}\"",
   "errorTryAgainTopicWithMode": "Try Again \"{difficulty}\" on \"{topic}\"",
@@ -104,7 +105,7 @@
     "tableName": "Name",
     "tableTopicValue": "Topic Value (ID)",
     "tableIcon": "Icon",
-    "tableIsPredefined": "Predefined",
+    "tableIsPredefined": "Visible in App",
     "tableQuestionCounts": "Question Counts",
     "tableActions": "Actions",
     "editButton": "Edit",
@@ -133,8 +134,8 @@
     "formIconPlaceholder": "e.g., Rocket, Film",
     "formDetailedInstructions": "Detailed Prompt Instructions (English)",
     "formDetailedInstructionsPlaceholder": "Provide specific guidelines for AI question generation for this category...",
-    "formIsPredefined": "Is Predefined Category?",
-    "formIsPredefinedHint": "Predefined categories are part of the core set.",
+    "formIsPredefined": "Visible in App?",
+    "formIsPredefinedHint": "Controls if this category appears in the main selection screen of the app.",
     "formDifficultyGuidelinesTitle": "Difficulty-Specific Guidelines (Optional, English)",
     "formDifficultyGuidelinesDesc": "Provide more granular instructions for each difficulty level if needed.",
     "formDifficultyEasy": "Easy Difficulty Instructions",
@@ -203,3 +204,4 @@
     }
   }
 }
+

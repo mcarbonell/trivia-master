@@ -23,6 +23,7 @@
   "errorLoadingQuestionDetail": "No se pudo obtener una nueva pregunta. Por favor, revisa tu conexión o intenta con un tema diferente.",
   "errorLoadingCategories": "Error al cargar las categorías.",
   "errorLoadingCategoriesDetail": "No se pudieron obtener las categorías. Por favor, intenta refrescar la página.",
+  "errorNoUICategories": "No hay categorías configuradas para mostrar. Aún puedes intentar con un tema personalizado.",
   "errorNoQuestionForDifficulty": "No se pudo obtener una nueva pregunta para el nivel \"{difficulty}\". Por favor, intenta de nuevo o con un tema diferente.",
   "errorTryAgainTopic": "Reintentar Tema: \"{topic}\"",
   "errorTryAgainTopicWithMode": "Reintentar \"{difficulty}\" en \"{topic}\"",
@@ -104,7 +105,7 @@
     "tableName": "Nombre",
     "tableTopicValue": "Valor del Tema (ID)",
     "tableIcon": "Icono",
-    "tableIsPredefined": "Predefinida",
+    "tableIsPredefined": "Visible en App",
     "tableQuestionCounts": "Nº Preguntas",
     "tableActions": "Acciones",
     "editButton": "Editar",
@@ -133,8 +134,8 @@
     "formIconPlaceholder": "Ej: Rocket, Film",
     "formDetailedInstructions": "Instrucciones Detalladas del Prompt (Inglés)",
     "formDetailedInstructionsPlaceholder": "Proporciona guías específicas para la generación de preguntas de IA para esta categoría...",
-    "formIsPredefined": "¿Es Categoría Predefinida?",
-    "formIsPredefinedHint": "Las categorías predefinidas forman parte del conjunto principal.",
+    "formIsPredefined": "¿Visible en la App?",
+    "formIsPredefinedHint": "Controla si esta categoría aparece en la pantalla principal de selección de la aplicación.",
     "formDifficultyGuidelinesTitle": "Guías Específicas de Dificultad (Opcional, Inglés)",
     "formDifficultyGuidelinesDesc": "Proporciona instrucciones más granulares para cada nivel de dificultad si es necesario.",
     "formDifficultyEasy": "Instrucciones Dificultad Fácil",
@@ -204,3 +205,4 @@
     }
   }
 }
+

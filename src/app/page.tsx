@@ -67,17 +67,33 @@ export default function TriviaPage() {
   useEffect(() => {
     setCurrentYear(new Date().getFullYear());
 
-    const fetchCategories = async () => {
-      const categories = await getAppCategories();
-      setAppCategories(categories);
-      if (categories.length > 0) {
-        setGameState('category_selection');
-      } else {
-        setFeedback({ message: t('errorLoadingCategories'), detailedMessage: t('errorLoadingCategoriesDetail'), isCorrect: false });
-        setGameState('error');
+    const fetchAndSetCategories = async () => {
+      try {
+        const allCategories = await getAppCategories();
+        // Filter categories to show in the UI: only those marked as predefined (or where isPredefined is undefined, defaulting to true)
+        const uiCategories = allCategories.filter(cat => cat.isPredefined !== false);
+        setAppCategories(uiCategories);
+        if (uiCategories.length > 0) {
+          setGameState('category_selection');
+        } else {
+          // If no categories are marked for UI, it could be a configuration issue or intentional.
+          // For now, treat as "no categories available for selection".
+          console.warn("[TriviaPage] No categories marked for UI display (isPredefined: true). User will only be able to use custom topics or may see an error if none are found at all.");
+          setFeedback({ message: t('errorLoadingCategories'), detailedMessage: t('errorNoUICategories'), isCorrect: false });
+          // If allCategories is also empty, then it's a more general loading error.
+          if (allCategories.length === 0) {
+            setGameState('error');
+          } else {
+             setGameState('category_selection'); // Still allow custom topic input
+          }
+        }
+      } catch (error) {
+         console.error("[TriviaPage] Error fetching categories:", error);
+         setFeedback({ message: t('errorLoadingCategories'), detailedMessage: t('errorLoadingCategoriesDetail'), isCorrect: false });
+         setGameState('error');
       }
     };
-    fetchCategories();
+    fetchAndSetCategories();
   }, [t]);
 
   const clearTimer = useCallback(() => {
@@ -147,7 +163,7 @@ export default function TriviaPage() {
   }, [gameState, questionData, startTimer, clearTimer]);
 
 
-  const fetchQuestion = useCallback(async (topic: string, difficulty: DifficultyLevel, categoryDetails: CategoryDefinition | null) => {
+  const fetchQuestion = useCallback(async (topic: string, difficulty: DifficultyLevel, categoryDetailsForSelectedTopic: CategoryDefinition | null) => {
     console.log(`[TriviaPage] fetchQuestion called. Topic: "${topic}", Difficulty: "${difficulty}"`);
     console.log(`[TriviaPage] Current askedFirestoreIds count: ${askedFirestoreIds.length}`);
     console.log(`[TriviaPage] Current askedQuestionTextsForAI count: ${askedQuestionTextsForAI.length}`);
@@ -160,24 +176,24 @@ export default function TriviaPage() {
 
     let newQuestionArray: GenerateTriviaQuestionOutput[] | null = null;
     let newQuestionData: CurrentQuestionData | null = null;
-    const isPredefinedTopic = appCategories.some(cat => cat.topicValue === topic);
-    console.log(`[TriviaPage] Is "${topic}" a predefined topic? ${isPredefinedTopic}. Category marked as predefined?: ${categoryDetails?.isPredefined}`);
-
-
-    if (isPredefinedTopic && categoryDetails?.isPredefined !== false) {
-      console.log(`[TriviaPage] Attempting to fetch PREDEFINED question for topic "${topic}" (difficulty: ${difficulty}). Passing ${askedFirestoreIds.length} asked Firestore IDs.`);
+    
+    // If categoryDetailsForSelectedTopic exists, it means the user selected from the UI (which are all `isPredefined:true` now)
+    // OR it's a topic the admin defined in Firestore for which pre-generated questions might exist.
+    // The key is, if there's a CategoryDefinition for it, we try Firestore.
+    if (categoryDetailsForSelectedTopic) {
+      console.log(`[TriviaPage] Attempting to fetch PREDEFINED question for known category "${topic}" (difficulty: ${difficulty}).`);
       try {
         newQuestionData = await getPredefinedQuestion(topic, askedFirestoreIds, difficulty);
         if (newQuestionData) {
           console.log(`[TriviaPage] Successfully fetched PREDEFINED question (ID: ${newQuestionData.id}) for "${topic}".`);
         } else {
-          console.log(`[TriviaPage] No PREDEFINED question found by getPredefinedQuestion for "${topic}" (difficulty: ${difficulty}).`);
+          console.log(`[TriviaPage] No UNASKED predefined question found by getPredefinedQuestion for "${topic}" (difficulty: ${difficulty}). Will try AI.`);
         }
       } catch (firestoreError) {
-        console.warn(`[TriviaPage] Error fetching from Firestore for predefined topic "${topic}", will fall back to Genkit:`, firestoreError);
+        console.warn(`[TriviaPage] Error fetching from Firestore for topic "${topic}", will fall back to Genkit:`, firestoreError);
       }
     } else {
-        console.log(`[TriviaPage] Topic "${topic}" is custom or not marked as predefined. Will use Genkit directly.`);
+        console.log(`[TriviaPage] Topic "${topic}" is custom (no categoryDetails). Will use Genkit directly.`);
     }
 
     if (!newQuestionData) {
@@ -190,13 +206,14 @@ export default function TriviaPage() {
         count: 1, 
       };
 
-      if (categoryDetails) { 
-        inputForAI.categoryInstructions = categoryDetails.detailedPromptInstructions; 
-        if (categoryDetails.difficultySpecificGuidelines && categoryDetails.difficultySpecificGuidelines[difficulty]) {
-          inputForAI.difficultySpecificInstruction = categoryDetails.difficultySpecificGuidelines[difficulty]; 
+      // If categoryDetailsForSelectedTopic exists (even if no predefined question was found), use its instructions for Genkit
+      if (categoryDetailsForSelectedTopic) { 
+        inputForAI.categoryInstructions = categoryDetailsForSelectedTopic.detailedPromptInstructions; 
+        if (categoryDetailsForSelectedTopic.difficultySpecificGuidelines && categoryDetailsForSelectedTopic.difficultySpecificGuidelines[difficulty]) {
+          inputForAI.difficultySpecificInstruction = categoryDetailsForSelectedTopic.difficultySpecificGuidelines[difficulty]; 
         }
       }
-      console.log('[TriviaPage] Input for Genkit AI:', JSON.stringify(inputForAI, null, 2));
+      // console.log('[TriviaPage] Input for Genkit AI:', JSON.stringify(inputForAI, null, 2));
       
       try {
         newQuestionArray = await generateTriviaQuestions(inputForAI);
@@ -235,17 +252,48 @@ export default function TriviaPage() {
       setFeedback({ message: t('errorLoadingQuestion'), detailedMessage: t('errorNoQuestionForDifficulty', {difficulty: t(`difficultyLevels.${difficulty}` as any) as string }), isCorrect: false });
       setGameState('error');
     }
-  }, [locale, askedFirestoreIds, askedQuestionTextsForAI, askedCorrectAnswerTexts, appCategories, t]); 
+  }, [locale, askedFirestoreIds, askedQuestionTextsForAI, askedCorrectAnswerTexts, t]); 
 
-  const handleStartGame = (topicOrTopicValue: string) => {
-    console.log(`[TriviaPage] handleStartGame called with topic: "${topicOrTopicValue}"`);
-    const selectedPredefinedCategory = appCategories.find(cat => cat.topicValue === topicOrTopicValue);
+  const handleStartGame = async (topicOrTopicValue: string) => {
+    console.log(`[TriviaPage] handleStartGame called with topicValue: "${topicOrTopicValue}"`);
+    
+    // Check if it's one of the categories fetched for the UI (which are filtered by isPredefined: true)
+    let selectedCategoryData = appCategories.find(cat => cat.topicValue === topicOrTopicValue);
+
+    if (!selectedCategoryData) {
+      // If not found in UI categories, it might be a custom topic or a category from Firestore not marked for UI.
+      // For custom topics, categoryDetails will be null. For others, we could try fetching it.
+      // For simplicity, if it's not in appCategories (UI list), treat it as a custom topic if it's not from the form.
+      // The CategorySelector passes topicValue. If it's not in appCategories, it must be customTopicInput.
+      // This logic assumes `onSelectTopic` from CategorySelector passes `topicValue` for predefined, and `customTopicInput` for custom.
+       if (topicOrTopicValue === customTopicInput.trim()) {
+         console.log(`[TriviaPage] Topic "${topicOrTopicValue}" is being treated as custom (matches customTopicInput).`);
+         setCurrentCategoryDetails(null); // It's a truly custom topic
+       } else {
+          // This case should ideally not happen if CategorySelector only shows filtered appCategories.
+          // However, to be robust, if it's not customTopicInput, we might assume it's a topicValue for a category
+          // that *exists* in Firestore but isn't in the UI list. We'd need to fetch its details.
+          // For now, we'll simplify: if not in `appCategories` (UI list), it's custom or we can't get details easily here.
+          // The script `populate-firestore-questions.ts` works with ALL categories from Firestore.
+          // The game page.tsx should primarily use categories intended for the UI.
+          // Let's fetch all categories once to get details if needed, but only show `isPredefined:true` ones.
+          // Better: currentCategoryDetails passed to fetchQuestion will get all its data from Firestore if it exists.
+          // We need to ensure `currentCategoryDetails` is set correctly for *any* known category.
+          // For topics selected from the list, `selectedCategoryData` will have the details.
+          // For custom topics, `selectedCategoryData` will be null.
+          // Let's ensure currentCategoryDetails is based on a fresh full fetch if topic not in UI list.
+          const allCategories = await getAppCategories(); // Fetch all, not just UI ones
+          selectedCategoryData = allCategories.find(cat => cat.topicValue === topicOrTopicValue) || null;
+          console.log(`[TriviaPage] Topic "${topicOrTopicValue}" not in UI list. Fetched from all categories. Found: ${!!selectedCategoryData}`);
+          setCurrentCategoryDetails(selectedCategoryData);
+       }
+    } else {
+        setCurrentCategoryDetails(selectedCategoryData);
+    }
     
     setCurrentTopic(topicOrTopicValue); 
-    setCurrentCategoryDetails(selectedPredefinedCategory || null); 
     
     setScore({ correct: 0, incorrect: 0 });
-    // Reset all tracking arrays for the new game session
     setAskedFirestoreIds([]);
     setAskedQuestionTextsForAI([]);
     setAskedCorrectAnswerTexts([]);
@@ -330,7 +378,6 @@ export default function TriviaPage() {
     setCustomTopicInput('');
     setCurrentCategoryDetails(null);
     
-    // Reset all tracking arrays
     setAskedFirestoreIds([]);
     setAskedQuestionTextsForAI([]);
     setAskedCorrectAnswerTexts([]);
@@ -347,18 +394,18 @@ export default function TriviaPage() {
     let text = t(`difficultyLevels.${currentDifficultyLevel}` as any); 
 
     if (selectedDifficultyMode === "adaptive") {
-        Icon = Zap; // Or BarChart3, ShieldQuestion
+        Icon = Zap; 
         text = `${t('difficultyModeAdaptive')} (${text})`;
     } else {
         const levelIndex = DIFFICULTY_LEVELS_ORDER.indexOf(currentDifficultyLevel);
-        if (levelIndex === 0) { // Easy
-            Icon = SignalLow; //ChevronDown;
+        if (levelIndex === 0) { 
+            Icon = SignalLow; 
             color = "text-green-500";
-        } else if (levelIndex === 1) { // Medium
-            Icon = SignalMedium; //Minus;
+        } else if (levelIndex === 1) { 
+            Icon = SignalMedium; 
             color = "text-yellow-500";
-        } else { // Hard (levelIndex === 2)
-            Icon = SignalHigh; //ChevronUp;
+        } else { 
+            Icon = SignalHigh; 
             color = "text-red-500";
         }
     }
@@ -410,9 +457,9 @@ export default function TriviaPage() {
             </CardContent>
           </Card>
         )}
-        {gameState === 'category_selection' && appCategories.length > 0 && (
+        {gameState === 'category_selection' && ( // appCategories is already filtered
           <CategorySelector
-            predefinedCategories={appCategories}
+            predefinedCategories={appCategories} 
             customTopicInput={customTopicInput}
             onCustomTopicChange={setCustomTopicInput}
             onSelectTopic={handleStartGame} 

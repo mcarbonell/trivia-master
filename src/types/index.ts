@@ -21,7 +21,12 @@ export interface CategoryDefinition {
     "medium"?: CategoryDifficultyGuideline;
     "hard"?: CategoryDifficultyGuideline;
   };
-  isPredefined?: boolean; // True if the category comes from the initial set
+  /** Controls if this category appears in the main selection screen of the app.
+   *  Defaults to true if populated from initial-categories.json.
+   *  The question population script will attempt to generate questions for ALL categories
+   *  in Firestore, regardless of this flag. */
+  isPredefined?: boolean; 
 }
 
 export type DifficultyMode = "adaptive" | DifficultyLevel;
+

@@ -186,6 +186,7 @@ const generateTriviaQuestionsFlow = ai.defineFlow(
       console.log(`[generateTriviaQuestionsFlow] Prompt call successful, Genkit validated ${llmOutputArray?.length || 0} items against schema.`);
 
     } catch (error: any) {
+      console.log('ERROR', error);
       console.warn(`[generateTriviaQuestionsFlow] Genkit prompt validation failed for the batch. Attempting to parse raw data from error. Error: ${error.name} - ${error.message}`);
       if (error.name === 'GenkitError' && error.status === 'INVALID_ARGUMENT') {
         // Attempt to get raw data from error.detail.data or error.detail.input

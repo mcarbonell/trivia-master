@@ -84,20 +84,17 @@ export default function AdminCategoriesPage() {
     setError(null);
     try {
       const fetchedCategories = await getAppCategories();
-      // Initialize categories with isLoadingCounts true for predefined ones
+      // Initialize categories with isLoadingCounts true for all categories
+      // as question counts are relevant for any category defined in Firestore
       const categoriesWithLoadingState: CategoryWithCounts[] = fetchedCategories.map(cat => ({
         ...cat,
-        isLoadingCounts: cat.isPredefined, 
+        isLoadingCounts: true, 
       }));
       setCategories(categoriesWithLoadingState);
       setLoading(false); // Base categories loaded
 
-      // Now fetch counts for predefined categories
+      // Now fetch counts for ALL categories
       const countPromises = fetchedCategories.map(async (category) => {
-        if (!category.isPredefined) {
-          return { ...category, isLoadingCounts: false };
-        }
-
         try {
           const counts: Partial<QuestionCounts> = {};
           const questionsRef = collection(db, 'predefinedTriviaQuestions');
@@ -110,7 +107,6 @@ export default function AdminCategoriesPage() {
           return { ...category, questionCounts: counts as QuestionCounts, isLoadingCounts: false };
         } catch (countError) {
           console.error(`Error fetching counts for category ${category.topicValue}:`, countError);
-          // Keep category but mark as error for counts or just no counts
           return { ...category, questionCounts: undefined, isLoadingCounts: false }; 
         }
       });
@@ -121,10 +117,10 @@ export default function AdminCategoriesPage() {
     } catch (err) {
       console.error("Error fetching categories:", err);
       setError(t('errorLoading'));
-      toast({ variant: "destructive", title: t('toastErrorTitle'), description: t('errorLoading') });
+      toast({ variant: "destructive", title: tCommon('toastErrorTitle') as string, description: t('errorLoading') });
       setLoading(false); 
     }
-  }, [t, toast]);
+  }, [t, tCommon, toast]);
 
   useEffect(() => {
     fetchCategoriesAndCounts();
@@ -178,17 +174,17 @@ export default function AdminCategoriesPage() {
     try {
       if (formMode === 'add') {
         await addCategory(categoryDataToSave);
-        toast({ title: t('toastSuccessTitle'), description: t('toastAddSuccess') });
+        toast({ title: tCommon('toastSuccessTitle') as string, description: t('toastAddSuccess') });
       } else if (currentCategory) {
         await updateCategory(currentCategory.id, categoryDataToSave);
-        toast({ title: t('toastSuccessTitle'), description: t('toastUpdateSuccess') });
+        toast({ title: tCommon('toastSuccessTitle') as string, description: t('toastUpdateSuccess') });
       }
       await fetchCategoriesAndCounts(); 
       setIsDialogOpen(false);
     } catch (err: any) {
       console.error("Error saving category:", err);
       const errorMessage = err.message.includes("already exists") ? t('errorTopicValueExists', {topicValue: data.topicValue}) : (formMode === 'add' ? t('toastAddError') : t('toastUpdateError'));
-      toast({ variant: "destructive", title: t('toastErrorTitle'), description: errorMessage });
+      toast({ variant: "destructive", title: tCommon('toastErrorTitle') as string, description: errorMessage });
     } finally {
       setIsSubmitting(false);
     }
@@ -197,11 +193,11 @@ export default function AdminCategoriesPage() {
   const handleDeleteCategory = async (categoryId: string, categoryName: string) => {
     try {
       await deleteCategory(categoryId);
-      toast({ title: t('toastSuccessTitle'), description: t('toastDeleteSuccess', { name: categoryName }) });
+      toast({ title: tCommon('toastSuccessTitle') as string, description: t('toastDeleteSuccess', { name: categoryName }) });
       await fetchCategoriesAndCounts(); 
     } catch (err) {
       console.error("Error deleting category:", err);
-      toast({ variant: "destructive", title: t('toastErrorTitle'), description: t('toastDeleteError') });
+      toast({ variant: "destructive", title: tCommon('toastErrorTitle') as string, description: t('toastDeleteError') });
     }
   };
   
@@ -225,7 +221,7 @@ export default function AdminCategoriesPage() {
         <CardFooter>
             <Button onClick={fetchCategoriesAndCounts} variant="outline">
                 <RefreshCw className="mr-2 h-4 w-4" />
-                {t('retryButton')}
+                {tCommon('retryButton')}
             </Button>
         </CardFooter>
       </Card>
@@ -281,10 +277,8 @@ export default function AdminCategoriesPage() {
                           <span>{t('difficultyShort.medium')}: {category.questionCounts.medium}</span>
                           <span>{t('difficultyShort.hard')}: {category.questionCounts.hard}</span>
                         </div>
-                      ) : category.isPredefined ? (
-                        t('noCounts')
                       ) : (
-                        t('notApplicableShort')
+                        t('noCounts')
                       )}
                     </TableCell>
                     <TableCell className="text-right space-x-2">
@@ -485,3 +479,4 @@ export default function AdminCategoriesPage() {
     </div>
   );
 }
+
