@@ -224,11 +224,6 @@ async function populateQuestions() {
   }
 
   for (const category of categoriesToProcess) {
-    // Predefined needs redefinition, will be selected in the home screen
-    // if (category.isPredefined === false) {
-    //     console.log(`\nSkipping Category: "${category.name.en}" (TopicValue: ${category.topicValue}) as it is not marked for predefined question population.`);
-    //     continue;
-    // }
     console.log(`\nProcessing Category: "${category.name.en}" (TopicValue: ${category.topicValue})`);
 
     for (const difficulty of difficultyLevelsToProcess) {
@@ -320,10 +315,10 @@ async function populateQuestions() {
 
           if (newQuestionsArray && newQuestionsArray.length > 0) {
             for (const newQuestionData of newQuestionsArray) {
-              if (questionsGeneratedForThisDifficultyInThisRun >= maxNewQuestionsToFetchForThisDifficulty) {
-                  console.log(`        Max new questions for this run/difficulty (${maxNewQuestionsToFetchForThisDifficulty}) reached. Stopping save for this API call's results.`);
-                  break;
-              }
+              // if (questionsGeneratedForThisDifficultyInThisRun >= maxNewQuestionsToFetchForThisDifficulty) {
+              //    console.log(`        Max new questions for this run/difficulty (${maxNewQuestionsToFetchForThisDifficulty}) reached. Stopping save for this API call's results.`);
+              //    break;
+              // }
 
               if (newQuestionData && newQuestionData.question && newQuestionData.answers && newQuestionData.difficulty) {
                 if (newQuestionData.difficulty !== difficulty) {
