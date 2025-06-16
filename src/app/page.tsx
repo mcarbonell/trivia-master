@@ -27,7 +27,7 @@ import {
   SignalMedium,
   SignalHigh
 } from "lucide-react";
-
+import { logEvent as firebaseLogEvent, analytics } from "@/lib/firebase"; // Import analytics and logEvent
 
 type GameState = 'loading_categories' | 'category_selection' | 'difficulty_selection' | 'loading_question' | 'playing' | 'showing_feedback' | 'error';
 
@@ -51,11 +51,9 @@ export default function TriviaPage() {
   const [feedback, setFeedback] = useState<{ message: string; isCorrect: boolean; detailedMessage?: string; explanation?: string } | null>(null);
   const [customTopicInput, setCustomTopicInput] = useState('');
   
-  // State for tracking asked questions
-  const [askedFirestoreIds, setAskedFirestoreIds] = useState<string[]>([]); // For Firestore predefined question IDs
-  const [askedQuestionTextsForAI, setAskedQuestionTextsForAI] = useState<string[]>([]); // For AI (texts of all questions)
-  const [askedCorrectAnswerTexts, setAskedCorrectAnswerTexts] = useState<string[]>([]); // For AI (texts of correct answers)
-
+  const [askedFirestoreIds, setAskedFirestoreIds] = useState<string[]>([]);
+  const [askedQuestionTextsForAI, setAskedQuestionTextsForAI] = useState<string[]>([]);
+  const [askedCorrectAnswerTexts, setAskedCorrectAnswerTexts] = useState<string[]>([]);
 
   const [currentDifficultyLevel, setCurrentDifficultyLevel] = useState<DifficultyLevel>("medium");
   const [selectedDifficultyMode, setSelectedDifficultyMode] = useState<DifficultyMode | null>(null);
@@ -63,6 +61,18 @@ export default function TriviaPage() {
 
   const [timeLeft, setTimeLeft] = useState<number | null>(null);
   const timerIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const [isHintVisible, setIsHintVisible] = useState(false);
+
+
+  // Analytics Helper
+  const logAnalyticsEvent = useCallback((eventName: string, eventParams?: { [key: string]: any }) => {
+    if (analytics) { // analytics instance from @/lib/firebase
+      firebaseLogEvent(analytics, eventName, eventParams);
+      console.log(`[Analytics] Event: ${eventName}`, eventParams);
+    } else {
+      console.log(`[Analytics] SKIPPED (not supported/initialized): ${eventName}`, eventParams);
+    }
+  }, []);
 
   useEffect(() => {
     setCurrentYear(new Date().getFullYear());
@@ -70,21 +80,17 @@ export default function TriviaPage() {
     const fetchAndSetCategories = async () => {
       try {
         const allCategories = await getAppCategories();
-        // Filter categories to show in the UI: only those marked as predefined (or where isPredefined is undefined, defaulting to true)
         const uiCategories = allCategories.filter(cat => cat.isPredefined !== false);
         setAppCategories(uiCategories);
         if (uiCategories.length > 0) {
           setGameState('category_selection');
         } else {
-          // If no categories are marked for UI, it could be a configuration issue or intentional.
-          // For now, treat as "no categories available for selection".
           console.warn("[TriviaPage] No categories marked for UI display (isPredefined: true). User will only be able to use custom topics or may see an error if none are found at all.");
           setFeedback({ message: t('errorLoadingCategories'), detailedMessage: t('errorNoUICategories'), isCorrect: false });
-          // If allCategories is also empty, then it's a more general loading error.
           if (allCategories.length === 0) {
             setGameState('error');
           } else {
-             setGameState('category_selection'); // Still allow custom topic input
+             setGameState('category_selection');
           }
         }
       } catch (error) {
@@ -134,6 +140,15 @@ export default function TriviaPage() {
       explanation: explanationText
     });
 
+    logAnalyticsEvent('answer_question', {
+      category_topic_value: currentTopic,
+      category_name: currentCategoryDetails?.name[locale] || currentTopic,
+      question_difficulty: questionData.difficulty,
+      is_correct: false,
+      timed_out: true,
+      question_id: questionData.id
+    });
+
     if (selectedDifficultyMode === "adaptive") {
       const currentIndex = DIFFICULTY_LEVELS_ORDER.indexOf(currentDifficultyLevel);
       if (currentIndex > 0) {
@@ -141,7 +156,7 @@ export default function TriviaPage() {
       }
     }
     setGameState('showing_feedback');
-  }, [questionData, gameState, clearTimer, currentDifficultyLevel, selectedDifficultyMode, locale, t, setScore, setFeedback, setCurrentDifficultyLevel, setGameState, setSelectedAnswerIndex]);
+  }, [questionData, gameState, clearTimer, currentDifficultyLevel, selectedDifficultyMode, locale, t, currentTopic, currentCategoryDetails, logAnalyticsEvent]);
 
 
   useEffect(() => {
@@ -162,42 +177,38 @@ export default function TriviaPage() {
     };
   }, [gameState, questionData, startTimer, clearTimer]);
 
+  // Track hint usage
+  useEffect(() => {
+    if (isHintVisible && questionData && gameState === 'playing') {
+      logAnalyticsEvent('use_hint', {
+        category_topic_value: currentTopic,
+        category_name: currentCategoryDetails?.name[locale] || currentTopic,
+        question_difficulty: questionData.difficulty,
+        question_id: questionData.id
+      });
+    }
+  }, [isHintVisible, questionData, gameState, currentTopic, currentCategoryDetails, locale, logAnalyticsEvent]);
+
 
   const fetchQuestion = useCallback(async (topic: string, difficulty: DifficultyLevel, categoryDetailsForSelectedTopic: CategoryDefinition | null) => {
-    console.log(`[TriviaPage] fetchQuestion called. Topic: "${topic}", Difficulty: "${difficulty}"`);
-    console.log(`[TriviaPage] Current askedFirestoreIds count: ${askedFirestoreIds.length}`);
-    console.log(`[TriviaPage] Current askedQuestionTextsForAI count: ${askedQuestionTextsForAI.length}`);
-    console.log(`[TriviaPage] Current askedCorrectAnswerTexts count: ${askedCorrectAnswerTexts.length}`);
-
     setGameState('loading_question');
     setSelectedAnswerIndex(null);
     setFeedback(null);
     setTimeLeft(null); 
+    setIsHintVisible(false);
 
     let newQuestionArray: GenerateTriviaQuestionOutput[] | null = null;
     let newQuestionData: CurrentQuestionData | null = null;
     
-    // If categoryDetailsForSelectedTopic exists, it means the user selected from the UI (which are all `isPredefined:true` now)
-    // OR it's a topic the admin defined in Firestore for which pre-generated questions might exist.
-    // The key is, if there's a CategoryDefinition for it, we try Firestore.
     if (categoryDetailsForSelectedTopic) {
-      console.log(`[TriviaPage] Attempting to fetch PREDEFINED question for known category "${topic}" (difficulty: ${difficulty}).`);
       try {
         newQuestionData = await getPredefinedQuestion(topic, askedFirestoreIds, difficulty);
-        if (newQuestionData) {
-          console.log(`[TriviaPage] Successfully fetched PREDEFINED question (ID: ${newQuestionData.id}) for "${topic}".`);
-        } else {
-          console.log(`[TriviaPage] No UNASKED predefined question found by getPredefinedQuestion for "${topic}" (difficulty: ${difficulty}). Will try AI.`);
-        }
       } catch (firestoreError) {
         console.warn(`[TriviaPage] Error fetching from Firestore for topic "${topic}", will fall back to Genkit:`, firestoreError);
       }
-    } else {
-        console.log(`[TriviaPage] Topic "${topic}" is custom (no categoryDetails). Will use Genkit directly.`);
     }
 
     if (!newQuestionData) {
-      console.log(`[TriviaPage] FALLING BACK to Genkit AI generation for topic "${topic}" (difficulty: ${difficulty}).`);
       const inputForAI: GenerateTriviaQuestionsInput = {
         topic,
         previousQuestions: askedQuestionTextsForAI, 
@@ -206,22 +217,17 @@ export default function TriviaPage() {
         count: 1, 
       };
 
-      // If categoryDetailsForSelectedTopic exists (even if no predefined question was found), use its instructions for Genkit
       if (categoryDetailsForSelectedTopic) { 
         inputForAI.categoryInstructions = categoryDetailsForSelectedTopic.detailedPromptInstructions; 
         if (categoryDetailsForSelectedTopic.difficultySpecificGuidelines && categoryDetailsForSelectedTopic.difficultySpecificGuidelines[difficulty]) {
           inputForAI.difficultySpecificInstruction = categoryDetailsForSelectedTopic.difficultySpecificGuidelines[difficulty]; 
         }
       }
-      // console.log('[TriviaPage] Input for Genkit AI:', JSON.stringify(inputForAI, null, 2));
       
       try {
         newQuestionArray = await generateTriviaQuestions(inputForAI);
         if (newQuestionArray && newQuestionArray.length > 0) {
             newQuestionData = newQuestionArray[0]!; 
-            console.log(`[TriviaPage] Successfully generated question with Genkit for "${topic}". Question: "${newQuestionData.question[locale]?.substring(0,50)}..."`);
-        } else {
-            console.warn(`[TriviaPage] Genkit returned no questions for topic "${topic}" (difficulty: ${difficulty}).`);
         }
       } catch (genkitError) {
         console.error(`[TriviaPage] Failed to generate question with Genkit (topic: ${topic}, difficulty: ${difficulty}):`, genkitError);
@@ -237,72 +243,44 @@ export default function TriviaPage() {
       const correctAnswerTextInLocale = newQuestionData.answers[newQuestionData.correctAnswerIndex]![locale];
 
       setAskedQuestionTextsForAI(prev => [...new Set([...prev, questionTextInLocale])]);
-      console.log(`[TriviaPage] Added question text to askedQuestionTextsForAI: "${questionTextInLocale.substring(0,50)}..."`);
-      
       setAskedCorrectAnswerTexts(prev => [...new Set([...prev, correctAnswerTextInLocale])]);
-      console.log(`[TriviaPage] Added correct answer to askedCorrectAnswerTexts: "${correctAnswerTextInLocale}"`);
 
-      if ((newQuestionData as CurrentQuestionData).id) { // Predefined question with Firestore ID
+      if ((newQuestionData as CurrentQuestionData).id) {
         setAskedFirestoreIds(prev => [...new Set([...prev, (newQuestionData as CurrentQuestionData).id!])]);
-        console.log(`[TriviaPage] Added PREDEFINED question ID to askedFirestoreIds: "${(newQuestionData as CurrentQuestionData).id!}"`);
       }
       setGameState('playing'); 
     } else {
-      console.warn(`[TriviaPage] NO QUESTION DATA (neither predefined nor AI) for topic "${topic}", difficulty "${difficulty}". Setting error state.`);
       setFeedback({ message: t('errorLoadingQuestion'), detailedMessage: t('errorNoQuestionForDifficulty', {difficulty: t(`difficultyLevels.${difficulty}` as any) as string }), isCorrect: false });
       setGameState('error');
     }
-  }, [locale, askedFirestoreIds, askedQuestionTextsForAI, askedCorrectAnswerTexts, t]); 
+  }, [locale, askedFirestoreIds, askedQuestionTextsForAI, askedCorrectAnswerTexts, t, logAnalyticsEvent]); 
 
   const handleStartGame = async (topicOrTopicValue: string) => {
-    console.log(`[TriviaPage] handleStartGame called with topicValue: "${topicOrTopicValue}"`);
-    
-    // Check if it's one of the categories fetched for the UI (which are filtered by isPredefined: true)
     let selectedCategoryData = appCategories.find(cat => cat.topicValue === topicOrTopicValue);
+    const isCustom = !selectedCategoryData;
 
-    if (!selectedCategoryData) {
-      // If not found in UI categories, it might be a custom topic or a category from Firestore not marked for UI.
-      // For custom topics, categoryDetails will be null. For others, we could try fetching it.
-      // For simplicity, if it's not in appCategories (UI list), treat it as a custom topic if it's not from the form.
-      // The CategorySelector passes topicValue. If it's not in appCategories, it must be customTopicInput.
-      // This logic assumes `onSelectTopic` from CategorySelector passes `topicValue` for predefined, and `customTopicInput` for custom.
-       if (topicOrTopicValue === customTopicInput.trim()) {
-         console.log(`[TriviaPage] Topic "${topicOrTopicValue}" is being treated as custom (matches customTopicInput).`);
-         setCurrentCategoryDetails(null); // It's a truly custom topic
-       } else {
-          // This case should ideally not happen if CategorySelector only shows filtered appCategories.
-          // However, to be robust, if it's not customTopicInput, we might assume it's a topicValue for a category
-          // that *exists* in Firestore but isn't in the UI list. We'd need to fetch its details.
-          // For now, we'll simplify: if not in `appCategories` (UI list), it's custom or we can't get details easily here.
-          // The script `populate-firestore-questions.ts` works with ALL categories from Firestore.
-          // The game page.tsx should primarily use categories intended for the UI.
-          // Let's fetch all categories once to get details if needed, but only show `isPredefined:true` ones.
-          // Better: currentCategoryDetails passed to fetchQuestion will get all its data from Firestore if it exists.
-          // We need to ensure `currentCategoryDetails` is set correctly for *any* known category.
-          // For topics selected from the list, `selectedCategoryData` will have the details.
-          // For custom topics, `selectedCategoryData` will be null.
-          // Let's ensure currentCategoryDetails is based on a fresh full fetch if topic not in UI list.
-          const allCategories = await getAppCategories(); // Fetch all, not just UI ones
-          selectedCategoryData = allCategories.find(cat => cat.topicValue === topicOrTopicValue) || null;
-          console.log(`[TriviaPage] Topic "${topicOrTopicValue}" not in UI list. Fetched from all categories. Found: ${!!selectedCategoryData}`);
-          setCurrentCategoryDetails(selectedCategoryData);
-       }
+    if (isCustom) {
+      setCurrentCategoryDetails(null);
+      setCurrentTopic(customTopicInput.trim());
     } else {
-        setCurrentCategoryDetails(selectedCategoryData);
+      setCurrentCategoryDetails(selectedCategoryData!);
+      setCurrentTopic(selectedCategoryData!.topicValue);
     }
     
-    setCurrentTopic(topicOrTopicValue); 
+    logAnalyticsEvent('select_category', {
+      category_topic_value: isCustom ? customTopicInput.trim() : selectedCategoryData!.topicValue,
+      category_name: isCustom ? customTopicInput.trim() : selectedCategoryData!.name[locale],
+      is_custom_topic: isCustom
+    });
     
     setScore({ correct: 0, incorrect: 0 });
     setAskedFirestoreIds([]);
     setAskedQuestionTextsForAI([]);
     setAskedCorrectAnswerTexts([]);
-    console.log('[TriviaPage] Score, askedFirestoreIds, askedQuestionTextsForAI, and askedCorrectAnswerTexts RESET for new game.');
     setGameState('difficulty_selection');
   };
 
   const handleDifficultySelect = (mode: DifficultyMode) => {
-    console.log(`[TriviaPage] handleDifficultySelect called with mode: "${mode}" for topic: "${currentTopic}"`);
     setSelectedDifficultyMode(mode);
     let initialDifficulty: DifficultyLevel;
     if (mode === "adaptive") {
@@ -311,13 +289,19 @@ export default function TriviaPage() {
       initialDifficulty = mode;
     }
     setCurrentDifficultyLevel(initialDifficulty);
-    console.log(`[TriviaPage] Initial difficulty set to: "${initialDifficulty}"`);
+
+    logAnalyticsEvent('start_game_with_difficulty', {
+      category_topic_value: currentTopic,
+      category_name: currentCategoryDetails?.name[locale] || currentTopic,
+      difficulty_mode_selected: mode,
+      initial_difficulty_level: initialDifficulty
+    });
+
     fetchQuestion(currentTopic, initialDifficulty, currentCategoryDetails);
   };
 
   const handleAnswerSelect = (answerIndex: number) => {
     if (!questionData || gameState !== 'playing') return;
-    console.log(`[TriviaPage] handleAnswerSelect: User selected answer index ${answerIndex}. Correct index: ${questionData.correctAnswerIndex}`);
 
     clearTimer(); 
     setSelectedAnswerIndex(answerIndex);
@@ -325,22 +309,25 @@ export default function TriviaPage() {
     const correctAnswerTextInLocale = questionData.answers[questionData.correctAnswerIndex]![locale];
     const explanationInLocale = questionData.explanation[locale];
     
+    logAnalyticsEvent('answer_question', {
+      category_topic_value: currentTopic,
+      category_name: currentCategoryDetails?.name[locale] || currentTopic,
+      question_difficulty: questionData.difficulty,
+      is_correct: isCorrect,
+      timed_out: false,
+      question_id: questionData.id
+    });
+    
     if (isCorrect) {
-      console.log('[TriviaPage] Answer was CORRECT.');
       setScore(prev => ({ ...prev, correct: prev.correct + 1 }));
       setFeedback({ message: t('correct'), isCorrect: true, explanation: explanationInLocale });
       if (selectedDifficultyMode === "adaptive") {
         const currentIndex = DIFFICULTY_LEVELS_ORDER.indexOf(currentDifficultyLevel);
         if (currentIndex < DIFFICULTY_LEVELS_ORDER.length - 1) {
-          const newDifficulty = DIFFICULTY_LEVELS_ORDER[currentIndex + 1]!;
-          console.log(`[TriviaPage] Adaptive difficulty: Correct answer, increasing difficulty from ${currentDifficultyLevel} to ${newDifficulty}`);
-          setCurrentDifficultyLevel(newDifficulty);
-        } else {
-          console.log('[TriviaPage] Adaptive difficulty: Correct answer, already at max difficulty.');
+          setCurrentDifficultyLevel(DIFFICULTY_LEVELS_ORDER[currentIndex + 1]!);
         }
       }
     } else {
-      console.log('[TriviaPage] Answer was INCORRECT.');
       setScore(prev => ({ ...prev, incorrect: prev.incorrect + 1 }));
       setFeedback({
         message: t('incorrect'),
@@ -351,11 +338,7 @@ export default function TriviaPage() {
       if (selectedDifficultyMode === "adaptive") {
         const currentIndex = DIFFICULTY_LEVELS_ORDER.indexOf(currentDifficultyLevel);
         if (currentIndex > 0) {
-           const newDifficulty = DIFFICULTY_LEVELS_ORDER[currentIndex - 1]!;
-           console.log(`[TriviaPage] Adaptive difficulty: Incorrect answer, decreasing difficulty from ${currentDifficultyLevel} to ${newDifficulty}`);
-          setCurrentDifficultyLevel(newDifficulty);
-        } else {
-            console.log('[TriviaPage] Adaptive difficulty: Incorrect answer, already at min difficulty.');
+          setCurrentDifficultyLevel(DIFFICULTY_LEVELS_ORDER[currentIndex - 1]!);
         }
       }
     }
@@ -363,12 +346,10 @@ export default function TriviaPage() {
   };
 
   const handleNextQuestion = () => {
-    console.log(`[TriviaPage] handleNextQuestion called. Next question will be difficulty: "${currentDifficultyLevel}" for topic: "${currentTopic}"`);
     fetchQuestion(currentTopic, currentDifficultyLevel, currentCategoryDetails);
   };
 
   const handleNewGame = () => {
-    console.log('[TriviaPage] handleNewGame called. Resetting game state.');
     setGameState('category_selection'); 
     setScore({ correct: 0, incorrect: 0 });
     setQuestionData(null);
@@ -385,7 +366,7 @@ export default function TriviaPage() {
     setCurrentDifficultyLevel("medium"); 
     setSelectedDifficultyMode(null); 
     setTimeLeft(null); 
-    console.log('[TriviaPage] All states reset for new game, including all asked question tracking arrays.');
+    setIsHintVisible(false);
   };
   
   const DifficultyIndicator = () => {
@@ -457,7 +438,7 @@ export default function TriviaPage() {
             </CardContent>
           </Card>
         )}
-        {gameState === 'category_selection' && ( // appCategories is already filtered
+        {gameState === 'category_selection' && (
           <CategorySelector
             predefinedCategories={appCategories} 
             customTopicInput={customTopicInput}
@@ -535,6 +516,7 @@ export default function TriviaPage() {
             gameState={gameState}
             timeLeft={timeLeft}
             questionTimeLimitSeconds={QUESTION_TIME_LIMIT_SECONDS}
+            onShowHint={() => setIsHintVisible(true)} // Pass handler to QuestionCard
           />
         )}
          {gameState === 'error' && feedback && (

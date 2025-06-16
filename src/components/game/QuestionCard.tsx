@@ -28,6 +28,7 @@ interface QuestionCardProps {
   gameState: 'playing' | 'showing_feedback';
   timeLeft: number | null;
   questionTimeLimitSeconds: number;
+  onShowHint: () => void; // New prop
 }
 
 export function QuestionCard({
@@ -39,6 +40,7 @@ export function QuestionCard({
   gameState,
   timeLeft,
   questionTimeLimitSeconds,
+  onShowHint, // New prop
 }: QuestionCardProps) {
   const t = useTranslations();
   const { question, answers, correctAnswerIndex, explanation, hint } = questionData;
@@ -46,11 +48,12 @@ export function QuestionCard({
   const [isHintVisible, setIsHintVisible] = useState(false);
 
   useEffect(() => {
-    setIsHintVisible(false);
+    setIsHintVisible(false); // Reset hint visibility when question changes
   }, [question]);
 
-  const handleShowHint = () => {
+  const handleShowHintClick = () => {
     setIsHintVisible(true);
+    onShowHint(); // Call the passed handler
   };
 
   const progressValue = timeLeft !== null && questionTimeLimitSeconds > 0 
@@ -134,7 +137,7 @@ export function QuestionCard({
 
         {hint && gameState === 'playing' && !isHintVisible && (
           <div className="pt-3 mt-3 border-t border-border flex justify-center">
-            <Button variant="outline" onClick={handleShowHint} className="text-primary border-primary hover:bg-primary/10">
+            <Button variant="outline" onClick={handleShowHintClick} className="text-primary border-primary hover:bg-primary/10">
               <Lightbulb className="mr-2 h-4 w-4" />
               {t('showHintButton')}
             </Button>
