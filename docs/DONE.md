@@ -46,6 +46,7 @@ This document outlines the key features and improvements implemented in the AI T
     *   Generates and stores a target number of questions for each predefined category and for each difficulty level, using the detailed category instructions from Firestore.
     *   Includes logic to avoid conceptual duplication by passing existing content as context to the AI.
     *   Respects API rate limits with configurable delays.
+    *   Validates each question individually from AI batch responses, discarding malformed ones while keeping valid ones.
 *   **Client-Side Fetching Strategy**:
     *   The application first attempts to fetch questions from the Firestore cache for predefined categories and the current target difficulty.
     *   If no suitable pre-generated question is found, it falls back to dynamic AI generation using Genkit, providing the AI with detailed category and difficulty instructions.
@@ -71,6 +72,31 @@ This document outlines the key features and improvements implemented in the AI T
 *   **Visual Difficulty Indicator**:
     *   Displays the current adaptive difficulty level to the user.
 
+## Admin Panel & Management
+
+*   **Firebase Authentication**:
+    *   Secure admin area (`/admin/*`) accessible via email/password login.
+    *   Authentication state managed via `AuthContext`.
+*   **Admin Layout**:
+    *   Consistent layout for all admin pages with navigation sidebar.
+    *   Logout functionality.
+    *   Bilingual UI support for the admin panel.
+*   **Admin Dashboard (`/admin/dashboard`)**:
+    *   Landing page for the admin section with quick links to management areas.
+*   **Category Management (`/admin/categories`)**:
+    *   **CRUD Operations**:
+        *   **Create**: Add new categories with bilingual names, icon, topic value, detailed AI prompt instructions, and optional difficulty-specific guidelines.
+        *   **Read**: View all categories in a paginated table.
+        *   **Update**: Edit existing category details (except topic value).
+        *   **Delete**: Remove categories with confirmation.
+    *   **Question Counts**: Displays the number of predefined questions available for each difficulty level (easy, medium, hard) per category.
+*   **Predefined Question Management (`/admin/questions`)**:
+    *   **List Questions**: View all predefined questions in a paginated table.
+    *   **Filter**: Filter questions by category and/or difficulty.
+    *   **Delete**: Remove specific predefined questions with confirmation.
+    *   **Update**: Edit the content of existing predefined questions (bilingual question, answers, explanation, hint, difficulty, correct answer).
+    *   Table displays question text (truncated with tooltip for full view), category name, difficulty, and correct answer.
+
 ## Technical Stack & Setup
 
 *   **Framework**: Next.js 15+ (App Router)
@@ -79,6 +105,7 @@ This document outlines the key features and improvements implemented in the AI T
 *   **Styling**: Tailwind CSS
 *   **Language**: TypeScript
 *   **Database**: Firebase Firestore (for predefined questions and category definitions)
+*   **Authentication**: Firebase Authentication
 *   **Deployment**: Configured for Firebase App Hosting (`apphosting.yaml`).
 
 ## Development & Workflow
@@ -89,7 +116,6 @@ This document outlines the key features and improvements implemented in the AI T
 *   **Modular Genkit Flows**: AI logic encapsulated in `src/ai/flows/`.
 *   **Client-Side State Management**: React hooks for game state and UI.
 *   **Data Seeding Scripts**: For populating categories and questions in Firestore.
+*   **Service Layer**: Dedicated service files (`categoryService.ts`, `triviaService.ts`) for Firestore interactions.
 
 This list represents the major advancements made. The application provides a robust and engaging trivia experience with a strong foundation for future enhancements.
-
-    
