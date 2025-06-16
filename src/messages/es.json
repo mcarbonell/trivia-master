@@ -64,6 +64,35 @@
   "deleteButton": "Eliminar",
   "notAvailable": "N/D",
 
+  "AboutPage": {
+    "title": "Acerca de y Contacto",
+    "backToGame": "Volver al Juego",
+    "aboutSection": {
+      "title": "Acerca de Maestro de Trivia IA",
+      "intro": "¡Bienvenido a Maestro de Trivia IA! Este juego interactivo pone a prueba tus conocimientos en diversas categorías o temas personalizados. Las preguntas, respuestas y explicaciones son generadas dinámicamente por IA, ofreciendo una experiencia única cada vez.",
+      "featuresTitle": "Características Principales:",
+      "featureAI": "Preguntas Generadas por IA: Trivia fresca sobre cualquier tema.",
+      "featureCategories": "Categorías Flexibles: Elige predefinidas o ingresa temas personalizados.",
+      "featureDifficulty": "Dificultad Adaptativa: Las preguntas se ajustan a tu nivel.",
+      "featureBilingual": "Soporte Bilingüe: Juega y aprende en inglés o español.",
+      "techStack": "Construido con {nextjs}, {genkit} para IA, {shadcn}, {tailwind}, y {firebase}.",
+      "feedbackEncouragement": "¡Valoramos tu opinión! Usa el formulario a continuación para sugerencias o comentarios."
+    },
+    "contactForm": {
+      "title": "Sugerencias y Comentarios",
+      "description": "¿Tienes una idea para mejorar el juego o algún comentario general? ¡Háznoslo saber!",
+      "nameLabel": "Nombre (Opcional)",
+      "namePlaceholder": "Tu Nombre",
+      "emailLabel": "Correo Electrónico (Opcional)",
+      "emailPlaceholder": "tu.correo@ejemplo.com",
+      "messageLabel": "Mensaje / Sugerencia",
+      "messagePlaceholder": "Escribe tu mensaje aquí...",
+      "submitButton": "Enviar Sugerencia",
+      "submitSuccess": "Sugerencia enviada correctamente. ¡Gracias!",
+      "submitError": "Error al enviar la sugerencia. Por favor, inténtalo de nuevo."
+    }
+  },
+
   "LoginPage": {
     "title": "Acceso de Administrador",
     "description": "Por favor, ingresa tus credenciales para acceder al panel de administración.",
@@ -122,7 +151,7 @@
       "hard": "D"
     },
     "noCounts": "Sin recuentos",
-    "notApplicableShort": "N/A",
+    "notAvailable": "N/D",
     "addDialogTitle": "Añadir Nueva Categoría",
     "addDialogDescription": "Completa los detalles para la nueva categoría.",
     "editDialogTitle": "Editar Categoría",
@@ -229,7 +258,6 @@
       "ignored": "Ignorado"
     },
     "copyQuestionIdButton": "Copiar ID Pregunta",
-    "editReportedQuestionButton": "Editar Pregunta Reportada",
     "deleteReportedQuestionButton": "Eliminar Pregunta Reportada (del juego)",
     "deleteReportButton": "Eliminar Este Ticket de Reporte",
     "errorLoading": "Error al cargar los reportes. Por favor, inténtalo de nuevo.",

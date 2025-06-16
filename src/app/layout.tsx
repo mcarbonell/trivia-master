@@ -5,6 +5,7 @@ import {NextIntlClientProvider} from 'next-intl';
 import {getLocale, getMessages} from 'next-intl/server';
 import { ClientLocaleInitializer } from '@/components/ClientLocaleInitializer';
 import { AuthProvider } from '@/contexts/AuthContext';
+import Link from 'next/link'; // Added Link import
 
 // Define metadata function to allow dynamic title based on locale
 export async function generateMetadata(): Promise<Metadata> {
@@ -14,10 +15,10 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     title: pageTitle,
     description: 'Test your knowledge with AI-generated trivia questions!',
-    manifest: '/manifest.json', // Added by next-pwa, but good for explicitness if needed
+    manifest: '/manifest.json', 
     appleWebApp: {
       capable: true,
-      statusBarStyle: 'default', // Or 'black', 'black-translucent'
+      statusBarStyle: 'default', 
       title: pageTitle,
     },
   };
@@ -25,8 +26,8 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export const viewport: Viewport = {
   themeColor: [
-    { media: '(prefers-color-scheme: light)', color: '#F0F2F5' }, // Light theme background from globals.css
-    { media: '(prefers-color-scheme: dark)', color: '#1C1E24' },   // Dark theme background from globals.css
+    { media: '(prefers-color-scheme: light)', color: '#F0F2F5' }, 
+    { media: '(prefers-color-scheme: dark)', color: '#1C1E24' },   
   ],
 }
 
@@ -45,7 +46,6 @@ export default async function RootLayout({
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
         <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
-        {/* next-pwa should add manifest link automatically, but these are good for iOS */}
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
       </head>
@@ -55,6 +55,11 @@ export default async function RootLayout({
             <ClientLocaleInitializer />
             {children}
             <Toaster />
+            <footer className="py-4 text-center text-xs text-muted-foreground">
+              <Link href="/about" className="hover:text-primary underline underline-offset-2">
+                {locale === 'es' ? 'Acerca de / Contactar' : 'About / Contact'}
+              </Link>
+            </footer>
           </AuthProvider>
         </NextIntlClientProvider>
       </body>

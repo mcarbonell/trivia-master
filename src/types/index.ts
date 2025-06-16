@@ -46,10 +46,21 @@ export interface ReportData {
   difficulty: DifficultyLevel;
   reason: ReportReason;
   details?: string;
-  reportedAt: string; // Changed to string for client components
+  reportedAt: string; 
   locale: AppLocale; 
   status: ReportStatus; 
 }
+
+export interface SuggestionData {
+  id: string;
+  name?: string;
+  email?: string;
+  message: string;
+  submittedAt: string; // Changed to string for client components
+  locale: AppLocale;
+}
+
 // Add Timestamp for reading compatibility where services interact directly with Firestore
 // but ensure conversion to string before passing to client.
 import type { Timestamp } from 'firebase/firestore';
+
