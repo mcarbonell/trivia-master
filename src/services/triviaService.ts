@@ -2,17 +2,17 @@
 'use server';
 
 import { db } from '@/lib/firebase';
-import { collection, query, where, getDocs, limit, DocumentData, orderBy, Timestamp } from 'firebase/firestore'; // Added orderBy and Timestamp
+import { collection, query, where, getDocs, limit, DocumentData, orderBy, Timestamp, doc, deleteDoc } from 'firebase/firestore'; // Added doc, deleteDoc
 import type { GenerateTriviaQuestionOutput, DifficultyLevel, BilingualText } from '@/ai/flows/generate-trivia-question';
 
 export interface PredefinedQuestion extends GenerateTriviaQuestionOutput {
   id: string;
   topicValue: string;
-  createdAt?: string; // Changed to string for ISO date format
+  createdAt?: string; 
 }
 
 const PREDEFINED_QUESTIONS_COLLECTION = 'predefinedTriviaQuestions';
-const BATCH_SIZE_PER_DIFFICULTY = 5; // Fetch a smaller batch if filtering by difficulty
+const BATCH_SIZE_PER_DIFFICULTY = 5; 
 
 /**
  * Fetches a predefined bilingual trivia question from Firestore for a given topicValue and targetDifficulty.
@@ -109,6 +109,21 @@ export async function getAllPredefinedQuestions(): Promise<PredefinedQuestion[]>
     return questions;
   } catch (error) {
     console.error(`[triviaService] Error fetching all predefined questions:`, error);
+    throw error; // Re-throw to be caught by caller
+  }
+}
+
+/**
+ * Deletes a predefined question from Firestore.
+ * @param questionId The ID of the question to delete.
+ * @returns A promise that resolves when the question is deleted.
+ */
+export async function deletePredefinedQuestion(questionId: string): Promise<void> {
+  try {
+    const questionRef = doc(db, PREDEFINED_QUESTIONS_COLLECTION, questionId);
+    await deleteDoc(questionRef);
+  } catch (error) {
+    console.error(`[triviaService] Error deleting question ${questionId}:`, error);
     throw error; // Re-throw to be caught by caller
   }
 }

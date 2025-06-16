@@ -2,7 +2,7 @@
 'use client';
 
 import { useEffect, useState, useCallback, useMemo } from 'react';
-import { getAllPredefinedQuestions, type PredefinedQuestion } from '@/services/triviaService';
+import { getAllPredefinedQuestions, deletePredefinedQuestion, type PredefinedQuestion } from '@/services/triviaService';
 import { getAppCategories } from '@/services/categoryService';
 import type { CategoryDefinition, DifficultyLevel } from '@/types';
 import type { AppLocale } from '@/lib/i18n-config';
@@ -11,6 +11,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { Loader2, AlertTriangle, PlusCircle, Eye, Edit, Trash2, RefreshCw } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
@@ -47,7 +48,7 @@ export default function AdminQuestionsPage() {
         getAppCategories(),
       ]);
       setAllQuestions(fetchedQuestions);
-      setCategories(fetchedCategories.filter(cat => cat.isPredefined !== false)); // Only show predefined categories for filtering
+      setCategories(fetchedCategories.filter(cat => cat.isPredefined !== false));
     } catch (err) {
       console.error("Error fetching data:", err);
       setError(t('errorLoading'));
@@ -101,6 +102,17 @@ export default function AdminQuestionsPage() {
   const handlePreviousPage = () => {
     if (currentPage > 1) {
       setCurrentPage(currentPage - 1);
+    }
+  };
+
+  const handleDeleteQuestion = async (questionId: string, questionText: string) => {
+    try {
+      await deletePredefinedQuestion(questionId);
+      toast({ title: tCommon('toastSuccessTitle'), description: t('toastDeleteSuccess', { question: truncateText(questionText, 30) }) });
+      await fetchAllData(); // Refetch all data to update the list
+    } catch (err) {
+      console.error("Error deleting question:", err);
+      toast({ variant: "destructive", title: tCommon('toastErrorTitle'), description: t('toastDeleteError') });
     }
   };
 
@@ -216,10 +228,28 @@ export default function AdminQuestionsPage() {
                         <Edit className="h-4 w-4" />
                         <span className="sr-only">{t('editButton')}</span>
                       </Button>
-                      <Button variant="destructive" size="icon" className="h-8 w-8" disabled>
-                        <Trash2 className="h-4 w-4" />
-                        <span className="sr-only">{t('deleteButton')}</span>
-                      </Button>
+                      <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                          <Button variant="destructive" size="icon" className="h-8 w-8">
+                            <Trash2 className="h-4 w-4" />
+                            <span className="sr-only">{t('deleteButton')}</span>
+                          </Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>{t('deleteConfirmTitle')}</AlertDialogTitle>
+                            <AlertDialogDescription>
+                              {t('deleteConfirmDescription', { question: truncateText(question.question[locale] || 'N/A', 50) })}
+                            </AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                            <AlertDialogCancel>{tCommon('cancel')}</AlertDialogCancel>
+                            <AlertDialogAction onClick={() => handleDeleteQuestion(question.id, question.question[locale] || 'N/A')} className="bg-destructive hover:bg-destructive/90">
+                              {t('deleteButton')}
+                            </AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
                     </TableCell>
                   </TableRow>
                 ))}

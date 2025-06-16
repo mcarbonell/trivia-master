@@ -170,6 +170,10 @@
     "filterCategoryPlaceholder": "Filter by category...",
     "filterDifficultyPlaceholder": "Filter by difficulty...",
     "allCategories": "All Categories",
-    "allDifficulties": "All Difficulties"
+    "allDifficulties": "All Difficulties",
+    "deleteConfirmTitle": "Are you sure?",
+    "deleteConfirmDescription": "Are you sure you want to delete the question \"{question}\"? This action cannot be undone.",
+    "toastDeleteSuccess": "Question \"{question}\" deleted successfully.",
+    "toastDeleteError": "Could not delete question. Please try again."
   }
 }

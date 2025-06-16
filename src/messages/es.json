@@ -170,6 +170,10 @@
     "filterCategoryPlaceholder": "Filtrar por categoría...",
     "filterDifficultyPlaceholder": "Filtrar por dificultad...",
     "allCategories": "Todas las Categorías",
-    "allDifficulties": "Todas las Dificultades"
+    "allDifficulties": "Todas las Dificultades",
+    "deleteConfirmTitle": "¿Estás seguro?",
+    "deleteConfirmDescription": "¿Estás seguro de que quieres eliminar la pregunta \"{question}\"? Esta acción no se puede deshacer.",
+    "toastDeleteSuccess": "Pregunta \"{question}\" eliminada correctamente.",
+    "toastDeleteError": "No se pudo eliminar la pregunta. Por favor, inténtalo de nuevo."
   }
 }
