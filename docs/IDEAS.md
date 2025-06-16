@@ -1,4 +1,3 @@
-
 # Ideas para Mejorar AI Trivia Master y Estrategias para Android
 
 Este documento recopila ideas para futuras mejoras de la aplicación AI Trivia Master y explora diferentes enfomas para convertirla en una aplicación de Android.
@@ -121,6 +120,7 @@ Existen varias vías para monetizar una aplicación como "AI Trivia Master":
     *   **Versión Sin Anuncios:** Un pago único para eliminar toda la publicidad.
     *   **Paquetes de Pistas:** Vender conjuntos de pistas.
     *   **Desbloqueo de Categorías Premium:** Ofrecer categorías base gratuitas y categorías especiales de pago.
+    *   **Paquetes de Preguntas Temáticas Premium:** Generar muchas categorías de diferentes temáticas de nicho (ej. superfans de Star Wars, Harry Potter, Marvel, equipos de fútbol específicos) y vender paquetes de un gran volumen de preguntas (ej. 10,000 preguntas) por un precio fijo (ej. 1 Euro/Dólar). Esto aprovecha la capacidad de generación masiva de la IA.
     *   **Personalización (futuro):** Avatares, temas de colores, insignias (si se añaden perfiles de usuario).
 
 3.  **Modelo de Suscripción (Freemium):**
@@ -131,6 +131,7 @@ Existen varias vías para monetizar una aplicación como "AI Trivia Master":
         *   Estadísticas avanzadas.
         *   Acceso anticipado a nuevas funciones.
         *   Número de pistas gratuitas al mes.
+        *   Acceso ilimitado a la generación de preguntas sobre temas personalizados (si se decide limitar en el nivel gratuito).
 
 4.  **Contenido Patrocinado (Más avanzado):**
     *   Colaborar con marcas para crear categorías temáticas patrocinadas (requiere una base de usuarios considerable).
@@ -139,7 +140,7 @@ Existen varias vías para monetizar una aplicación como "AI Trivia Master":
 
 *   **Gratis con Anuncios:** Banners discretos y vídeos bonificados para obtener pistas.
 *   **IAP para "Eliminar Anuncios":** Un pago único para una experiencia sin publicidad.
-*   **IAP para "Paquetes de Categorías Premium":** Algunas categorías muy atractivas o especializadas.
+*   **IAP para "Paquetes de Categorías Premium" o "Paquetes de Preguntas Temáticas":** Algunas categorías muy atractivas o especializadas, o grandes volúmenes de preguntas de nicho.
 
 ### Consideraciones Importantes para la Monetización:
 
@@ -209,5 +210,3 @@ Esta es una optimización significativa que puede mejorar drásticamente el rend
 *   **Complejidad de Implementación:** Configurar Service Workers, IndexedDB y la lógica de sincronización requiere un esfuerzo de desarrollo inicial mayor.
 *   **Gestión de Datos:** Definir el proceso para generar, almacenar y actualizar las preguntas pre-generadas.
 *   **Experiencia de Usuario (UX):** Proveer feedback claro al usuario sobre el estado de la conexión, el progreso de las descargas y qué contenido está disponible offline.
-
-    
