@@ -11,8 +11,8 @@ This document outlines the key features and improvements implemented in the AI T
 *   **Bilingual Content Generation**:
     *   AI generates all textual content (questions, answers, explanations, hints) simultaneously in both English and Spanish within a single API call.
 *   **Controlled Difficulty Levels**:
-    *   The application requests questions of a specific difficulty level from the AI ("very easy", "easy", "medium", "hard", "very hard").
-    *   AI is guided by detailed definitions for each difficulty level (e.g., "very easy" = primary school, "hard" = university level).
+    *   The application requests questions of a specific difficulty level from the AI ("easy", "medium", "hard").
+    *   AI is guided by detailed definitions for each difficulty level (e.g., "easy" = primary/secundary school, "hard" = university level).
     *   The application implements adaptive difficulty: the difficulty of the next question is adjusted based on whether the user answered the previous question correctly or incorrectly.
 *   **Hints**:
     *   The AI generates a concise, bilingual hint for each question.
@@ -21,6 +21,9 @@ This document outlines the key features and improvements implemented in the AI T
     *   Players have a configurable time limit (30 seconds) to answer each question.
     *   A progress bar and countdown timer are displayed.
     *   If time runs out, the answer is considered incorrect.
+*   **Fixed Game Length**:
+    *   Implemented a fixed number of questions per game session (currently 10 questions).
+    *   Includes a "Game Over" screen displaying the final score and offering options to play again (same topic/difficulty) or start a completely new game.
 
 ## Categories & Content Management
 
@@ -30,8 +33,8 @@ This document outlines the key features and improvements implemented in the AI T
         *   Bilingual names (`name.en`, `name.es`).
         *   Lucide icon name (`icon`).
         *   A `topicValue` for AI interaction.
-        *   Detailed bilingual prompt instructions (`detailedPromptInstructions`) to guide AI question generation for that category.
-        *   Optional bilingual difficulty-specific guidelines (`difficultySpecificGuidelines`) for even finer control.
+        *   Detailed prompt instructions (`detailedPromptInstructions`) to guide AI question generation for that category.
+        *   Optional difficulty-specific guidelines (`difficultySpecificGuidelines`) for even finer control.
     *   The application fetches and displays these categories dynamically.
 *   **Category Seeding Script (`scripts/populate-firestore-categories.ts`)**:
     *   Populates the `triviaCategories` collection in Firestore from a local JSON file (`src/data/initial-categories.json`).
@@ -61,6 +64,8 @@ This document outlines the key features and improvements implemented in the AI T
     *   Visual feedback for correct/incorrect answers, including explanations.
 *   **Score Tracking**:
     *   Displays the number of correct and incorrect answers during the game.
+*   **Game Progress Display**:
+    *   The UI now shows the current question number out of the total for the game (e.g., "Question 1 of 10").
 *   **Internationalization (i18n)**:
     *   Full UI and AI-generated content support for English and Spanish.
     *   Language switcher component allows users to change language, with preference persisted in a cookie.
@@ -75,6 +80,9 @@ This document outlines the key features and improvements implemented in the AI T
     *   Users can report questions directly from the game interface (during or after answering).
     *   A dialog allows users to select a reason for the report and provide optional details.
     *   Reports are submitted to Firestore for admin review.
+*   **"About / Contact" Page**:
+    *   Added an `/about` page with project information.
+    *   Includes a contact form for users to submit general suggestions or feedback, which are stored in Firestore.
 
 ## Analytics & Feedback
 
@@ -84,8 +92,10 @@ This document outlines the key features and improvements implemented in the AI T
     *   **`start_game_with_difficulty`**: Logged when a user selects a difficulty mode and starts the game. Includes category, selected difficulty mode, and initial difficulty level.
     *   **`answer_question`**: Logged for each question answered or timed out. Includes category, question difficulty, correctness, and if it was timed out.
     *   **`use_hint`**: Logged when a user reveals a hint for a question. Includes category and question difficulty.
+    *   **`game_over`**: Logged when a game session (e.g., 10 questions) concludes. Includes category, final score, and difficulty mode.
 *   **User Feedback System**:
     *   Question reporting functionality allows users to provide direct feedback on question quality.
+    *   A dedicated "About/Contact" page with a form for general suggestions and feedback, stored in Firestore.
 
 ## Admin Panel & Management
 
@@ -120,6 +130,9 @@ This document outlines the key features and improvements implemented in the AI T
         *   Copy Question ID: Allows quick copying of the reported question's Firestore ID (if applicable).
         *   Delete Report: Removes the report ticket.
         *   Delete Reported Question: If the report links to a predefined question ID, allows direct deletion of that question from the game (with confirmation).
+*   **Suggestion Management (`/admin/suggestions`)**:
+    *   New admin section to view and delete user-submitted suggestions from the "About/Contact" page.
+    *   Suggestions are displayed in a paginated table with details like date, sender information (if provided), message content, and the locale of submission.
 
 ## Technical Stack & Setup
 
@@ -128,7 +141,7 @@ This document outlines the key features and improvements implemented in the AI T
 *   **UI Components**: ShadCN UI
 *   **Styling**: Tailwind CSS
 *   **Language**: TypeScript
-*   **Database**: Firebase Firestore (for predefined questions, category definitions, and user reports)
+*   **Database**: Firebase Firestore (for predefined questions, category definitions, user reports, and user suggestions)
 *   **Authentication**: Firebase Authentication
 *   **Analytics**: Firebase Analytics
 *   **Deployment**: Configured for Firebase App Hosting (`apphosting.yaml`).
@@ -141,7 +154,13 @@ This document outlines the key features and improvements implemented in the AI T
 *   **Modular Genkit Flows**: AI logic encapsulated in `src/ai/flows/`.
 *   **Client-Side State Management**: React hooks for game state and UI.
 *   **Data Seeding Scripts**: For populating categories and questions in Firestore.
-*   **Service Layer**: Dedicated service files (`categoryService.ts`, `triviaService.ts`, `reportService.ts`) for Firestore interactions.
+*   **Service Layer**: Dedicated service files (`categoryService.ts`, `triviaService.ts`, `reportService.ts`, `suggestionService.ts`) for Firestore interactions.
+*   **Robust Batch Question Generation**:
+    *   The `populate-firestore-questions.ts` script was enhanced to handle cases where the Genkit AI model returns a partially valid batch of questions. The script now attempts to parse and save individually valid questions even if the overall batch response has schema issues, significantly improving the yield of pre-generated questions.
+    *   Resolved issue with default model usage in `populate-firestore-questions.ts`.
+*   **Flexible Category Population Script**:
+    *   The `scripts/populate-firestore-categories.ts` script now accepts a `--source` argument, allowing dynamic selection of different category JSON files for import (e.g., `initial-categories.json`, `sports-categories.json`).
+*   **Expanded Category Data Files**:
+    *   Created new JSON data files for diverse trivia categories: `more-categories.json`, `education-categories.json`, `country-categories.json`, and `sports-categories.json` to facilitate broader content population.
 
 This list represents the major advancements made. The application provides a robust and engaging trivia experience with a strong foundation for future enhancements.
-
