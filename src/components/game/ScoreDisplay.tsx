@@ -12,9 +12,9 @@ interface ScoreDisplayProps {
     incorrect: number;
   };
   onNewGame: () => void;
-  currentQuestionNumber: number; // Changed from questionsAnsweredThisGame
+  currentQuestionNumber: number; 
   totalQuestionsInGame: number;
-  gameState: string; // To know if we are actively playing or not
+  gameState: string; 
 }
 
 export function ScoreDisplay({ 
@@ -26,16 +26,18 @@ export function ScoreDisplay({
 }: ScoreDisplayProps) {
   const t = useTranslations();
 
-  // Display 1 for the first question, up to totalQuestionsInGame
-  // If game is over, currentQuestionNumber might be totalQuestionsInGame + 1
   const displayQuestionNumber = Math.min(Math.max(1, currentQuestionNumber), totalQuestionsInGame);
-  const questionProgressText = gameState === 'game_over' 
+  
+  const questionProgressText = 
+    gameState === 'game_over' 
     ? t('questionProgressFinished', { total: totalQuestionsInGame })
-    : t('questionProgress', { current: displayQuestionNumber, total: totalQuestionsInGame });
+    : (gameState === 'playing' || gameState === 'showing_feedback') && currentQuestionNumber > 0 
+      ? t('questionProgress', { current: displayQuestionNumber, total: totalQuestionsInGame })
+      : ""; // Don't show progress if not started or 0
 
 
   return (
-    <Card className="mb-2 w-full max-w-xl shadow-lg">
+    <Card className="mb-2 w-full shadow-lg">
       <CardContent className="p-4 flex flex-col sm:flex-row justify-between items-center gap-3 sm:gap-2">
         <div className="flex items-center space-x-3 text-base sm:text-lg">
           <span className="font-semibold flex items-center text-success">
@@ -49,9 +51,11 @@ export function ScoreDisplay({
             {score.incorrect}
           </span>
         </div>
-        <div className="text-sm sm:text-base text-muted-foreground font-medium">
-          {questionProgressText}
-        </div>
+        {questionProgressText && (
+          <div className="text-sm sm:text-base text-muted-foreground font-medium">
+            {questionProgressText}
+          </div>
+        )}
         <Button 
           onClick={onNewGame} 
           variant="outline" 

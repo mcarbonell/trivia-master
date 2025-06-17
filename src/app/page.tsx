@@ -194,7 +194,7 @@ export default function TriviaPage() {
     setTimeLeft(null); 
     setIsHintVisible(false);
 
-    setCurrentQuestionNumberInGame(prev => prev + 1); // Increment for the question about to be fetched
+    setCurrentQuestionNumberInGame(prev => prev + 1);
 
     let fetchedQuestionData: CurrentQuestionData | null = null;
     
@@ -231,6 +231,7 @@ export default function TriviaPage() {
         console.error(`[TriviaPage] Failed to generate question with Genkit (topic: ${topic}, difficulty: ${difficulty}):`, genkitError);
         setFeedback({ message: t('errorLoadingQuestion'), detailedMessage: t('errorLoadingQuestionDetail'), isCorrect: false });
         setGameState('error');
+        setCurrentQuestionNumberInGame(prev => Math.max(0, prev -1)); // Decrement if fetch failed before next attempt
         return;
       }
     }
@@ -250,6 +251,7 @@ export default function TriviaPage() {
     } else {
       setFeedback({ message: t('errorLoadingQuestion'), detailedMessage: t('errorNoQuestionForDifficulty', {difficulty: t(`difficultyLevels.${difficulty}` as any) as string }), isCorrect: false });
       setGameState('error');
+      setCurrentQuestionNumberInGame(prev => Math.max(0, prev -1)); // Decrement if no question found
     }
   }, [locale, askedFirestoreIds, askedQuestionTextsForAI, askedCorrectAnswerTexts, t]); 
 
@@ -438,11 +440,11 @@ export default function TriviaPage() {
 
   return (
     <div className="container mx-auto p-4 flex flex-col items-center min-h-screen text-foreground">
-      <header className="my-6 sm:my-8 text-center w-full">
-        <div className="flex justify-between items-center mb-2 sm:mb-4">
-          <div></div> 
-          <h1 className="text-3xl sm:text-5xl font-headline font-bold text-primary">{t('pageTitle')}</h1>
+      <header className="my-6 sm:my-8 text-center w-full max-w-2xl">
+        <div className="flex justify-between items-center w-full mb-2 sm:mb-4">
           <LanguageSwitcher />
+          <h1 className="text-3xl sm:text-5xl font-headline font-bold text-primary">{t('pageTitle')}</h1>
+          <div className="w-10 h-10" /> {/* Placeholder to balance LanguageSwitcher for centering H1 */}
         </div>
         <p className="text-muted-foreground mt-1 text-sm sm:text-base">{t('pageDescription')}</p>
       </header>
@@ -590,7 +592,6 @@ export default function TriviaPage() {
               {currentTopic && gameState === 'error' && !feedback.message.includes(t('errorLoadingCategories')) && (
                 <Button 
                     onClick={() => {
-                        setCurrentQuestionNumberInGame(prev => Math.max(0, prev -1)); // Decrement before retry if fetch failed
                         fetchQuestion(currentTopic, currentDifficultyLevel, currentCategoryDetails);
                     }}
                     variant="outline"
