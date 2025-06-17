@@ -12,17 +12,28 @@ interface ScoreDisplayProps {
     incorrect: number;
   };
   onNewGame: () => void;
-  questionsAnsweredThisGame: number;
+  currentQuestionNumber: number; // Changed from questionsAnsweredThisGame
   totalQuestionsInGame: number;
+  gameState: string; // To know if we are actively playing or not
 }
 
 export function ScoreDisplay({ 
   score, 
   onNewGame,
-  questionsAnsweredThisGame,
-  totalQuestionsInGame
+  currentQuestionNumber,
+  totalQuestionsInGame,
+  gameState
 }: ScoreDisplayProps) {
   const t = useTranslations();
+
+  // Display 1 for the first question, up to totalQuestionsInGame
+  // If game is over, currentQuestionNumber might be totalQuestionsInGame + 1
+  const displayQuestionNumber = Math.min(Math.max(1, currentQuestionNumber), totalQuestionsInGame);
+  const questionProgressText = gameState === 'game_over' 
+    ? t('questionProgressFinished', { total: totalQuestionsInGame })
+    : t('questionProgress', { current: displayQuestionNumber, total: totalQuestionsInGame });
+
+
   return (
     <Card className="mb-2 w-full max-w-xl shadow-lg">
       <CardContent className="p-4 flex flex-col sm:flex-row justify-between items-center gap-3 sm:gap-2">
@@ -39,7 +50,7 @@ export function ScoreDisplay({
           </span>
         </div>
         <div className="text-sm sm:text-base text-muted-foreground font-medium">
-          {t('questionProgress', { current: questionsAnsweredThisGame + 1, total: totalQuestionsInGame })}
+          {questionProgressText}
         </div>
         <Button 
           onClick={onNewGame} 

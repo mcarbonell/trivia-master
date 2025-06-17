@@ -2,21 +2,21 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import type { DifficultyLevel, BilingualText } from "@/types"; // Updated imports
+import type { DifficultyLevel, BilingualText } from "@/types"; 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { cn } from "@/lib/utils";
-import { CheckCircle2, XCircle, ChevronRight, Info, Lightbulb, Clock, Flag } from "lucide-react"; // Added Flag
+import { CheckCircle2, XCircle, ChevronRight, Info, Lightbulb, Clock, Flag, BarChart3 } from "lucide-react"; 
 import { useTranslations } from "next-intl";
-import { ReportQuestionDialog } from "./ReportQuestionDialog"; // Import the new dialog
+import { ReportQuestionDialog } from "./ReportQuestionDialog"; 
 
 interface LocalizedQuestionData {
   question: string;
   answers: string[];
   correctAnswerIndex: number;
   explanation: string;
-  difficulty: DifficultyLevel; // Keep for display consistency
+  difficulty: DifficultyLevel; 
   hint?: string;
 }
 
@@ -30,11 +30,12 @@ interface QuestionCardProps {
   timeLeft: number | null;
   questionTimeLimitSeconds: number;
   onShowHint: () => void;
-  // Props needed for reporting
-  questionId?: string; // Firestore ID of the question, if predefined
-  bilingualQuestionText: BilingualText; // Full bilingual question text for reporting
+  questionId?: string; 
+  bilingualQuestionText: BilingualText; 
   categoryTopicValue: string;
-  currentDifficulty: DifficultyLevel; // The actual difficulty it was fetched with or adapted to
+  currentDifficulty: DifficultyLevel; 
+  questionsAnsweredThisGame: number; // To determine if it's the last question
+  totalQuestionsInGame: number;      // To determine if it's the last question
 }
 
 export function QuestionCard({
@@ -51,6 +52,8 @@ export function QuestionCard({
   bilingualQuestionText,
   categoryTopicValue,
   currentDifficulty,
+  questionsAnsweredThisGame,
+  totalQuestionsInGame,
 }: QuestionCardProps) {
   const t = useTranslations();
   const { question, answers, correctAnswerIndex, explanation, hint } = questionData;
@@ -59,7 +62,7 @@ export function QuestionCard({
   const [isReportDialogOpen, setIsReportDialogOpen] = useState(false);
 
   useEffect(() => {
-    setIsHintVisible(false); // Reset hint visibility when question changes
+    setIsHintVisible(false); 
   }, [question]);
 
   const handleShowHintClick = () => {
@@ -71,13 +74,15 @@ export function QuestionCard({
     ? (timeLeft / questionTimeLimitSeconds) * 100 
     : 0;
 
+  const isLastQuestionOfGame = questionsAnsweredThisGame >= totalQuestionsInGame;
+
   return (
     <>
       <Card className="w-full shadow-xl animate-fadeIn">
         <CardHeader>
           <div className="flex justify-between items-start">
             <CardTitle className="font-headline text-2xl md:text-3xl text-center text-primary flex-grow">{question}</CardTitle>
-            {gameState === 'playing' && (
+            {(gameState === 'playing' || (gameState === 'showing_feedback' && !isLastQuestionOfGame) ) && (
               <Button
                 variant="ghost"
                 size="icon"
@@ -191,7 +196,15 @@ export function QuestionCard({
                 <Flag className="mr-2 h-4 w-4" /> {t('ReportDialog.reportThisQuestionButton')}
               </Button>
             <Button onClick={onNextQuestion} className="bg-primary hover:bg-primary/90 text-primary-foreground">
-              {t('nextQuestionButton')} <ChevronRight className="ml-2 h-5 w-5" />
+              {isLastQuestionOfGame ? (
+                <>
+                  {t('viewResultsButton')} <BarChart3 className="ml-2 h-5 w-5" />
+                </>
+              ) : (
+                <>
+                  {t('nextQuestionButton')} <ChevronRight className="ml-2 h-5 w-5" />
+                </>
+              )}
             </Button>
           </CardFooter>
         )}
@@ -208,4 +221,3 @@ export function QuestionCard({
     </>
   );
 }
-

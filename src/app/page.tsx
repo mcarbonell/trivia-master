@@ -24,8 +24,8 @@ import {
   SignalLow,
   SignalMedium,
   SignalHigh,
-  RotateCcw, // For Play Again
-  Home // For New Game
+  RotateCcw, 
+  Home 
 } from "lucide-react";
 import { logEvent as logEventFromLib, analytics } from "@/lib/firebase";
 
@@ -35,7 +35,7 @@ type CurrentQuestionData = GenerateTriviaQuestionOutput & { id?: string };
 
 const DIFFICULTY_LEVELS_ORDER: DifficultyLevel[] = ["easy", "medium", "hard"];
 const QUESTION_TIME_LIMIT_SECONDS = 30;
-const QUESTIONS_PER_GAME = 10; // Define number of questions per game
+const QUESTIONS_PER_GAME = 10; 
 
 export default function TriviaPage() {
   const t = useTranslations();
@@ -65,6 +65,8 @@ export default function TriviaPage() {
   const [isHintVisible, setIsHintVisible] = useState(false);
 
   const [questionsAnsweredThisGame, setQuestionsAnsweredThisGame] = useState(0);
+  const [currentQuestionNumberInGame, setCurrentQuestionNumberInGame] = useState(0);
+
 
   const logAnalyticsEvent = useCallback((eventName: string, eventParams?: { [key: string]: any }) => {
     if (analytics) {
@@ -81,7 +83,7 @@ export default function TriviaPage() {
         const uiCategories = allCategories.filter(cat => cat.isPredefined !== false);
         setAppCategories(uiCategories);
 
-        if (uiCategories.length > 0 || allCategories.length > 0) { // Allow custom even if no predefined
+        if (uiCategories.length > 0 || allCategories.length > 0) { 
           setGameState('category_selection');
         } else {
           console.warn("[TriviaPage] No categories defined at all.");
@@ -192,6 +194,8 @@ export default function TriviaPage() {
     setTimeLeft(null); 
     setIsHintVisible(false);
 
+    setCurrentQuestionNumberInGame(prev => prev + 1); // Increment for the question about to be fetched
+
     let fetchedQuestionData: CurrentQuestionData | null = null;
     
     if (categoryDetailsForSelectedTopic) {
@@ -271,7 +275,8 @@ export default function TriviaPage() {
     setAskedFirestoreIds([]);
     setAskedQuestionTextsForAI([]);
     setAskedCorrectAnswerTexts([]);
-    setQuestionsAnsweredThisGame(0); // Reset for a new game session
+    setQuestionsAnsweredThisGame(0); 
+    setCurrentQuestionNumberInGame(0);
     setGameState('difficulty_selection');
   };
 
@@ -284,7 +289,8 @@ export default function TriviaPage() {
       initialDifficulty = mode;
     }
     setCurrentDifficultyLevel(initialDifficulty);
-    setQuestionsAnsweredThisGame(0); // Reset for this game
+    setQuestionsAnsweredThisGame(0); 
+    setCurrentQuestionNumberInGame(0);
 
     logAnalyticsEvent('start_game_with_difficulty', {
       category_topic_value: currentTopic,
@@ -360,11 +366,11 @@ export default function TriviaPage() {
 
   const handlePlayAgain = () => {
     setScore({ correct: 0, incorrect: 0 });
-    setAskedFirestoreIds([]); // Potentially keep for very long sessions or make this smarter
+    setAskedFirestoreIds([]); 
     setAskedQuestionTextsForAI([]);
     setAskedCorrectAnswerTexts([]);
     setQuestionsAnsweredThisGame(0);
-    // currentTopic, currentCategoryDetails, currentDifficultyLevel, selectedDifficultyMode remain the same
+    setCurrentQuestionNumberInGame(0);
     fetchQuestion(currentTopic, currentDifficultyLevel, currentCategoryDetails);
   };
 
@@ -387,6 +393,7 @@ export default function TriviaPage() {
     setTimeLeft(null); 
     setIsHintVisible(false);
     setQuestionsAnsweredThisGame(0);
+    setCurrentQuestionNumberInGame(0);
   };
   
   const DifficultyIndicator = () => {
@@ -445,8 +452,9 @@ export default function TriviaPage() {
            <ScoreDisplay 
              score={score} 
              onNewGame={handleNewGame} 
-             questionsAnsweredThisGame={questionsAnsweredThisGame}
+             currentQuestionNumber={currentQuestionNumberInGame}
              totalQuestionsInGame={QUESTIONS_PER_GAME}
+             gameState={gameState}
            />
            <div className="flex justify-center mt-2">
              <DifficultyIndicator />
@@ -539,6 +547,8 @@ export default function TriviaPage() {
             bilingualQuestionText={questionData.question} 
             categoryTopicValue={currentTopic}
             currentDifficulty={currentDifficultyLevel}
+            questionsAnsweredThisGame={questionsAnsweredThisGame}
+            totalQuestionsInGame={QUESTIONS_PER_GAME}
           />
         )}
         {gameState === 'game_over' && (
@@ -579,7 +589,10 @@ export default function TriviaPage() {
             <CardFooter className="flex flex-col sm:flex-row justify-center gap-2">
               {currentTopic && gameState === 'error' && !feedback.message.includes(t('errorLoadingCategories')) && (
                 <Button 
-                    onClick={() => fetchQuestion(currentTopic, currentDifficultyLevel, currentCategoryDetails)} 
+                    onClick={() => {
+                        setCurrentQuestionNumberInGame(prev => Math.max(0, prev -1)); // Decrement before retry if fetch failed
+                        fetchQuestion(currentTopic, currentDifficultyLevel, currentCategoryDetails);
+                    }}
                     variant="outline"
                 >
                     {t('errorTryAgainTopicWithMode', {
