@@ -24,6 +24,7 @@
   "errorLoadingCategories": "Error al cargar las categorías.",
   "errorLoadingCategoriesDetail": "No se pudieron obtener las categorías. Por favor, intenta refrescar la página.",
   "errorNoUICategories": "No hay categorías configuradas para mostrar. Aún puedes intentar con un tema personalizado.",
+  "errorNoCategoriesDefined": "No hay categorías definidas en el sistema. Por favor, contacta a un administrador o prueba un tema personalizado.",
   "errorNoQuestionForDifficulty": "No se pudo obtener una nueva pregunta para el nivel \"{difficulty}\". Por favor, intenta de nuevo o con un tema diferente.",
   "errorTryAgainTopic": "Reintentar Tema: \"{topic}\"",
   "errorTryAgainTopicWithMode": "Reintentar \"{difficulty}\" en \"{topic}\"",
@@ -63,6 +64,12 @@
   "timeLeft": "Tiempo Restante: {seconds}s",
   "deleteButton": "Eliminar",
   "notAvailable": "N/D",
+  "questionProgress": "Pregunta {current} de {total}",
+  "gameOverTitle": "¡Juego Terminado!",
+  "gameOverScore": "Puntuación Final: {correct} correctas, {incorrect} incorrectas de {total} preguntas.",
+  "gameOverTopic": "Tema: {topic} ({difficulty})",
+  "gameOverPlayAgain": "Jugar de Nuevo (Misma Config.)",
+  "gameOverNewGame": "Nuevo Juego (Elegir Tema)",
 
   "AboutPage": {
     "title": "Acerca de y Contacto",
@@ -152,7 +159,6 @@
       "hard": "D"
     },
     "noCounts": "Sin recuentos",
-    "notAvailable": "N/D",
     "addDialogTitle": "Añadir Nueva Categoría",
     "addDialogDescription": "Completa los detalles para la nueva categoría.",
     "editDialogTitle": "Editar Categoría",
@@ -249,7 +255,6 @@
     "tableReason": "Motivo",
     "tableStatus": "Estado",
     "tableActions": "Acciones",
-    "notAvailable": "N/D",
     "filterByStatus": "Filtrar por estado",
     "allStatuses": "Todos los Estados",
     "statuses": {

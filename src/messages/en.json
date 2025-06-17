@@ -24,6 +24,7 @@
   "errorLoadingCategories": "Error loading categories.",
   "errorLoadingCategoriesDetail": "Could not fetch categories. Please try refreshing the page.",
   "errorNoUICategories": "No categories are currently set to display. You can still try a custom topic.",
+  "errorNoCategoriesDefined": "No categories are defined in the system. Please contact an administrator or try a custom topic.",
   "errorNoQuestionForDifficulty": "Could not fetch a new question for the \"{difficulty}\" level. Please try again or a different topic.",
   "errorTryAgainTopic": "Try Again Topic: \"{topic}\"",
   "errorTryAgainTopicWithMode": "Try Again \"{difficulty}\" on \"{topic}\"",
@@ -63,6 +64,12 @@
   "timeLeft": "Time Left: {seconds}s",
   "deleteButton": "Delete",
   "notAvailable": "N/A",
+  "questionProgress": "Question {current} of {total}",
+  "gameOverTitle": "Game Over!",
+  "gameOverScore": "Final Score: {correct} correct, {incorrect} incorrect out of {total} questions.",
+  "gameOverTopic": "Topic: {topic} ({difficulty})",
+  "gameOverPlayAgain": "Play Again (Same Settings)",
+  "gameOverNewGame": "New Game (Choose Topic)",
 
   "AboutPage": {
     "title": "About & Contact",
@@ -152,7 +159,6 @@
       "hard": "H"
     },
     "noCounts": "No counts",
-    "notAvailable": "N/A",
     "addDialogTitle": "Add New Category",
     "addDialogDescription": "Fill in the details for the new category.",
     "editDialogTitle": "Edit Category",
@@ -249,7 +255,6 @@
     "tableReason": "Reason",
     "tableStatus": "Status",
     "tableActions": "Actions",
-    "notAvailable": "N/A",
     "filterByStatus": "Filter by status",
     "allStatuses": "All Statuses",
     "statuses": {

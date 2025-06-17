@@ -44,7 +44,7 @@ const argv = yargs(hideBin(process.argv))
   .option('targetPerDifficulty', {
     alias: 't',
     type: 'number',
-    default: 10000,
+    default: 200,
     description: 'Target total number of questions per category/difficulty combination.',
   })
   .option('maxNewPerRun', {
