@@ -23,6 +23,8 @@ firebase-debug.log
 firestore-debug.log
 ui-debug.log
 
+# app execution
+output.txt
 
 # production
 /build
@@ -80,5 +82,3 @@ node_modules
 *.web.app
 *.firebaseapp.com
 
-# app execution
-output.txt
