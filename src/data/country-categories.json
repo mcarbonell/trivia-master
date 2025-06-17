@@ -10,7 +10,7 @@
       "medium": "Cover important facts about a broader range of countries, including lesser-known capitals, significant cultural contributions, or important historical events. Examples: 'The Andes mountain range runs along the western edge of which continent?', 'What currency is used in Japan?', 'Name the longest river in Africa.'",
       "hard": "Delve into specific historical details, lesser-known geographical features, unique cultural traditions of smaller nations, or comparative questions about different countries. Examples: 'Which European country is a constitutional monarchy ruled by a Grand Duke?', 'What is the significance of the Treaty of Tordesillas in shaping global territories?', 'Compare the primary exports of Brazil and Australia.'"
     },
-    "isPredefined": true
+    "isPredefined": false
   },
   {
     "topicValue": "Country_USA",
@@ -22,7 +22,7 @@
       "medium": "Cover important historical events, well-known landmarks, or significant cultural aspects. Ex: 'What was the main cause of the American Civil War?' or 'Name the longest river in the USA.' or 'Which US city is famous for its Golden Gate Bridge?'",
       "hard": "Delve into specific historical details, lesser-known influential figures, constitutional aspects, or significant cultural movements. Ex: 'Explain the significance of the Louisiana Purchase.' or 'Which constitutional amendment abolished slavery?' or 'Name the author of \"The Great Gatsby\".'"
     },
-    "isPredefined": true
+    "isPredefined": false
   },
   {
     "topicValue": "Country_Spain",
@@ -34,7 +34,7 @@
       "medium": "Cover important historical periods, well-known landmarks, or significant cultural aspects. Ex: 'What currency is used in Spain?' or 'Name a famous Spanish dish.' or 'Which Spanish explorer is known for his voyages to the Americas?'",
       "hard": "Delve into specific historical details, regional cultures, lesser-known influential figures, or artistic movements. Ex: 'What was the Spanish Reconquista?' or 'Name three autonomous communities of Spain and their capitals.' or 'Who wrote \"Don Quixote\"?'"
     },
-    "isPredefined": true
+    "isPredefined": false
   },
   {
     "topicValue": "Country_Mexico",
@@ -46,7 +46,7 @@
       "medium": "Cover important historical events, well-known cultural traditions, or significant geographical features. Ex: 'What is the official language of Mexico?' or 'Who is a famous Mexican painter known for self-portraits?' or 'What currency is used in Mexico?'",
       "hard": "Delve into specific historical details of pre-Columbian cultures, regional traditions, or influential figures in Mexican arts and politics. Ex: 'What was the name of the Aztec capital city, now Mexico City?' or 'Explain the significance of Cinco de Mayo.' or 'Name a traditional Mexican spirit made from agave.'"
     },
-    "isPredefined": true
+    "isPredefined": false
   },
   {
     "topicValue": "Country_Argentina",
@@ -58,7 +58,7 @@
       "medium": "Cover important historical periods, well-known geographical regions, or significant cultural aspects. Ex: 'What is the main ingredient in the Argentine drink 'mate'?' or 'What region is known for its glaciers and mountains in southern Argentina?' or 'Who was Eva Perón?'",
       "hard": "Delve into specific historical events, literary movements, regional cultures, or influential figures in Argentine politics or arts. Ex: 'What is 'asado' in Argentina?' or 'Name a famous Argentine writer.' or 'Which mountain range forms the western border of Argentina?'"
     },
-    "isPredefined": true
+    "isPredefined": false
   },
   {
     "topicValue": "Country_Brazil",
@@ -70,7 +70,7 @@
       "medium": "Cover important historical periods, well-known cultural traditions, or significant geographical features. Ex: 'What language is spoken in Brazil?' or 'Name a famous Brazilian soccer player.' or 'What is the name of the iconic statue in Rio de Janeiro?'",
       "hard": "Delve into specific historical details, regional cultures, biodiversity of the Amazon, or influential figures in Brazilian arts or politics. Ex: 'What is 'feijoada'?' or 'Who was the last Emperor of Brazil?' or 'Explain the origins of Samba music.'"
     },
-    "isPredefined": true
+    "isPredefined": false
   },
   {
     "topicValue": "Country_UnitedKingdom",
@@ -82,7 +82,7 @@
       "medium": "Cover important historical events, well-known landmarks within the constituent countries, or significant cultural aspects. Ex: 'Which river flows through London?' or 'Name the constituent countries of the United Kingdom.' or 'Who wrote \"Hamlet\"?'",
       "hard": "Delve into specific historical details, parliamentary procedures, regional identities, or influential figures in British arts and sciences. Ex: 'What was the significance of the Battle of Hastings?' or 'Explain the difference between the House of Commons and the House of Lords.' or 'Which British scientist developed the theory of evolution by natural selection?'"
     },
-    "isPredefined": true
+    "isPredefined": false
   },
   {
     "topicValue": "Country_France",
@@ -94,7 +94,7 @@
       "medium": "Cover important historical events, well-known landmarks, or significant cultural aspects. Ex: 'What was the French Revolution?' or 'Which French general became Emperor?' or 'What famous art museum is located in Paris?'",
       "hard": "Delve into specific historical details, philosophical movements, regional cuisines, or influential figures in French arts and politics. Ex: 'Explain the motto of the French Republic.' or 'Who wrote \"Les Misérables\"?' or 'What region of France is famous for its sparkling wine?'"
     },
-    "isPredefined": true
+    "isPredefined": false
   },
   {
     "topicValue": "Country_Germany",
@@ -106,7 +106,7 @@
       "medium": "Cover important historical periods, well-known landmarks, or significant cultural aspects. Ex: 'What structure famously divided Berlin during the Cold War?' or 'Name a famous German car brand.' or 'Which German composer wrote \"Für Elise\"?'",
       "hard": "Delve into specific historical details of German unification, philosophical concepts, regional traditions, or influential figures in German science and politics. Ex: 'Who was the first Chancellor of a unified Germany in 1871?' or 'Explain the concept of \"Sturm und Drang\" in German literature.' or 'What is the significance of the Treaty of Versailles for Germany?'"
     },
-    "isPredefined": true
+    "isPredefined": false
   },
   {
     "topicValue": "Country_Italy",
@@ -118,7 +118,7 @@
       "medium": "Cover important historical periods like the Renaissance, well-known artists or landmarks, or significant cultural aspects. Ex: 'Who painted the ceiling of the Sistine Chapel?' or 'What volcano destroyed Pompeii?' or 'Name an Italian luxury sports car brand.'",
       "hard": "Delve into specific historical details of the Roman Republic/Empire, artistic techniques of the Renaissance, regional cuisines, or influential figures in Italian politics or arts. Ex: 'What was the Risorgimento in Italian history?' or 'Explain the architectural style of the Florence Cathedral.' or 'Who is considered the father of the Italian language?'"
     },
-    "isPredefined": true
+    "isPredefined": false
   },
   {
     "topicValue": "Country_Japan",
@@ -130,7 +130,7 @@
       "medium": "Cover important historical periods, well-known cultural traditions (e.g., cherry blossoms), or significant technological contributions. Ex: 'What was a samurai?' or 'Name a popular Japanese animation style.' or 'What currency is used in Japan?'",
       "hard": "Delve into specific historical details of different eras, religious/philosophical concepts (Shinto, Zen Buddhism), traditional art forms, or influential figures in Japanese arts and technology. Ex: 'What is the significance of the Meiji Restoration?' or 'Explain the concept of 'wabi-sabi'.' or 'Who wrote \"The Tale of Genji\"?'"
     },
-    "isPredefined": true
+    "isPredefined": false
   },
   {
     "topicValue": "Country_China",
@@ -142,7 +142,7 @@
       "medium": "Cover important historical dynasties, well-known philosophical concepts, or significant cultural traditions. Ex: 'Who was Confucius?' or 'What is the longest river in China?' or 'What is the Chinese New Year also known as?'",
       "hard": "Delve into specific historical details of different dynasties, artistic styles, regional cuisines, or influential figures in Chinese philosophy or politics. Ex: 'What was the purpose of the Terracotta Army?' or 'Explain the concept of Yin and Yang.' or 'Name a major Chinese dialect group other than Mandarin.'"
     },
-    "isPredefined": true
+    "isPredefined": false
   },
   {
     "topicValue": "Country_India",
@@ -154,7 +154,7 @@
       "medium": "Cover important historical periods, well-known cultural practices, or significant geographical features. Ex: 'Who was Mahatma Gandhi?' or 'What is the name of the Indian film industry based in Mumbai?' or 'What currency is used in India?'",
       "hard": "Delve into specific historical details of various empires, philosophical concepts from Indian religions, regional diversity, or influential figures in India's independence movement or arts. Ex: 'What was the Green Revolution in India?' or 'Explain the concept of Dharma in Hinduism.' or 'Name a classical Indian dance form.'"
     },
-    "isPredefined": true
+    "isPredefined": false
   },
   {
     "topicValue": "Country_Canada",
@@ -166,7 +166,7 @@
       "medium": "Cover important historical events like Confederation, well-known geographical features, or significant cultural aspects. Ex: 'Name two official languages of Canada.' or 'Which Canadian city hosted the 1976 Summer Olympics?' or 'What is a 'toonie' in Canadian currency?'",
       "hard": "Delve into specific details of indigenous history, provincial governance, contributions to arts and sciences, or significant political figures. Ex: 'What is the significance of Nunavut in Canada?' or 'Who was Louis Riel?' or 'Name a famous Canadian author.'"
     },
-    "isPredefined": true
+    "isPredefined": false
   },
   {
     "topicValue": "Country_Australia",
@@ -178,7 +178,7 @@
       "medium": "Cover important historical events, well-known geographical regions, or significant cultural aspects. Ex: 'What is the Great Barrier Reef famous for?' or 'Which Australian city is known for its Opera House?' or 'What is the term for Australia's indigenous people?'",
       "hard": "Delve into specific details of its political system, unique ecosystems, history of European settlement, or influential figures in Australian arts and culture. Ex: 'What does ANZAC Day commemorate?' or 'Explain the concept of 'Dreamtime' in Aboriginal culture.' or 'Name the largest desert in Australia.'"
     },
-    "isPredefined": true
+    "isPredefined": false
   }
 ]
 

@@ -5,6 +5,8 @@ config(); // Load environment variables from .env file
 import admin from 'firebase-admin';
 import fs from 'fs/promises';
 import path from 'path';
+import yargs from 'yargs';
+import { hideBin } from 'yargs/helpers';
 import type { CategoryDefinition } from '../src/types'; // Adjust path as necessary
 
 // Initialize Firebase Admin SDK
@@ -21,21 +23,45 @@ try {
 
 const db = admin.firestore();
 const CATEGORIES_COLLECTION = 'triviaCategories';
-const INITIAL_CATEGORIES_PATH = path.join(__dirname, '../src/data/more-categories.json');
+
+// --- Argument Parsing with yargs ---
+const argv = yargs(hideBin(process.argv))
+  .option('source', {
+    alias: 's',
+    type: 'string',
+    description: 'The prefix of the JSON categories file to import (e.g., "initial" for "initial-categories.json", "sports" for "sports-categories.json").',
+    default: 'initial', // Default to 'initial' if no source is provided
+  })
+  .help()
+  .alias('help', 'h')
+  .parseSync();
+
+const sourceFilePrefix: string = argv.source;
+const categoriesJsonFileName = `${sourceFilePrefix}-categories.json`;
+const CATEGORIES_FILE_PATH = path.join(__dirname, '../src/data/', categoriesJsonFileName);
 
 async function populateCategories() {
-  console.log(`Starting Firestore category population script from ${INITIAL_CATEGORIES_PATH}...`);
+  console.log(`Starting Firestore category population script using source file: "${categoriesJsonFileName}" (path: ${CATEGORIES_FILE_PATH})...`);
 
   try {
-    const categoriesJson = await fs.readFile(INITIAL_CATEGORIES_PATH, 'utf-8');
+    // Check if the file exists
+    try {
+      await fs.access(CATEGORIES_FILE_PATH, fs.constants.F_OK);
+      console.log(`File "${categoriesJsonFileName}" found. Proceeding with import.`);
+    } catch (fileAccessError) {
+      console.error(`Error: Source file "${categoriesJsonFileName}" not found at path "${CATEGORIES_FILE_PATH}". Please ensure the file exists.`);
+      process.exit(1);
+    }
+
+    const categoriesJson = await fs.readFile(CATEGORIES_FILE_PATH, 'utf-8');
     const categoriesData: any[] = JSON.parse(categoriesJson); // Read as any first for validation
 
     if (!categoriesData || categoriesData.length === 0) {
-      console.log('No categories found in the JSON file. Exiting.');
+      console.log(`No categories found in the file "${categoriesJsonFileName}". Exiting.`);
       return;
     }
 
-    console.log(`Found ${categoriesData.length} categories to process.`);
+    console.log(`Found ${categoriesData.length} categories to process from "${categoriesJsonFileName}".`);
 
     const batch = db.batch();
     let operationsCount = 0;
@@ -93,15 +119,15 @@ async function populateCategories() {
 
     if (operationsCount > 0) {
       await batch.commit();
-      console.log(`Successfully committed ${operationsCount} category operations to Firestore.`);
+      console.log(`Successfully committed ${operationsCount} category operations to Firestore from "${categoriesJsonFileName}".`);
     } else {
       console.log('No valid category operations to commit.');
     }
 
   } catch (error) {
-    console.error('Error populating categories:', error);
+    console.error(`Error populating categories from file "${categoriesJsonFileName}":`, error);
     if (error instanceof SyntaxError) {
-        console.error('This might be due to an invalid JSON format in initial-categories.json.');
+        console.error(`This might be due to an invalid JSON format in "${categoriesJsonFileName}".`);
     }
   }
 

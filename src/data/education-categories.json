@@ -10,7 +10,7 @@
       "medium": "High school level algebra, geometry concepts, basic probability. Example: 'Solve for x: 2x + 5 = 11' or 'What is the area of a circle with radius r?'",
       "hard": "University-level concepts in calculus, linear algebra, abstract algebra, number theory, or advanced statistics. Example: 'What is a Taylor series expansion?' or 'Define a Group in abstract algebra.'"
     },
-    "isPredefined": true
+    "isPredefined": false
   },
   {
     "topicValue": "Physics",
@@ -22,7 +22,7 @@
       "medium": "High school physics concepts, including basic formulas and laws. Example: 'What is Ohm's Law?' or 'Explain the difference between kinetic and potential energy.'",
       "hard": "University-level concepts such as quantum field theory, special/general relativity paradoxes, advanced thermodynamics, or specific experiments/theorists. Example: 'Explain the significance of Maxwell's equations.' or 'What is Hawking radiation?'"
     },
-    "isPredefined": true
+    "isPredefined": false
   },
   {
     "topicValue": "Chemistry",
@@ -34,7 +34,7 @@
       "medium": "High school chemistry concepts, balancing simple equations, types of bonds, or basic organic functional groups. Example: 'What is the pH scale?' or 'Name a noble gas.'",
       "hard": "University-level topics like quantum chemistry, advanced organic reaction mechanisms, spectroscopy, or complex inorganic chemistry. Example: 'Describe the mechanism of an SN2 reaction.' or 'What are the principles of NMR spectroscopy?'"
     },
-    "isPredefined": true
+    "isPredefined": false
   },
   {
     "topicValue": "Biology",
@@ -46,7 +46,7 @@
       "medium": "High school biology concepts like Mendelian genetics, cell structures, or ecological relationships. Example: 'What are mitochondria?' or 'Explain natural selection in simple terms.'",
       "hard": "University-level topics like molecular genetics, complex physiological systems, advanced evolutionary theory, or detailed ecological modeling. Example: 'Describe the process of protein synthesis, including transcription and translation.' or 'What is the role of CRISPR-Cas9 in gene editing?'"
     },
-    "isPredefined": true
+    "isPredefined": false
   },
   {
     "topicValue": "ComputerScience",
@@ -58,7 +58,7 @@
       "medium": "Common programming concepts, types of software, or basic hardware components. Example: 'What is an algorithm?' or 'What is the difference between RAM and ROM?'",
       "hard": "University-level topics like computational complexity theory, advanced algorithms, distributed systems, or specific AI paradigms. Example: 'Explain the P vs NP problem.' or 'Describe the CAP theorem in distributed database systems.'"
     },
-    "isPredefined": true
+    "isPredefined": false
   },
   {
     "topicValue": "WorldLiterature",
@@ -70,7 +70,7 @@
       "medium": "Characters from well-known novels, major literary periods, or authors of significant classics. Example: 'Who is the protagonist of \"Pride and Prejudice\"?' or 'What literary movement is associated with authors like Virginia Woolf and James Joyce?'",
       "hard": "University-level analysis of literary themes, specific literary theories, obscure but critically acclaimed authors, or detailed knowledge of literary history. Example: 'Discuss the concept of the 'unreliable narrator' in postmodern literature.' or 'What are the key tenets of Russian Formalism?'"
     },
-    "isPredefined": true
+    "isPredefined": false
   },
   {
     "topicValue": "Philosophy",
@@ -82,7 +82,7 @@
       "medium": "Key concepts from major philosophers or branches of philosophy. Example: 'What is utilitarianism?' or 'Briefly explain Cartesian dualism.'",
       "hard": "University-level philosophical arguments, detailed critiques of philosophical theories, or concepts from less mainstream philosophers. Example: 'Explain Kant's categorical imperative and one common criticism of it.' or 'What is the Gettier problem in epistemology?'"
     },
-    "isPredefined": true
+    "isPredefined": false
   },
   {
     "topicValue": "Economics",
@@ -94,7 +94,7 @@
       "medium": "Core economic concepts like inflation, unemployment, or types of markets. Example: 'What is GDP?' or 'Explain the difference between a monopoly and perfect competition.'",
       "hard": "University-level economic theories, econometric models, or international economic policies. Example: 'Explain the IS-LM model.' or 'What is comparative advantage and how does it relate to international trade?'"
     },
-    "isPredefined": true
+    "isPredefined": false
   },
   {
     "topicValue": "Psychology",
@@ -106,7 +106,7 @@
       "medium": "Key psychological concepts, stages of development, or common research methods. Example: 'What is the difference between classical and operant conditioning?' or 'Describe one of Maslow's hierarchy of needs.'",
       "hard": "University-level topics like advanced neuropsychology, specific therapeutic techniques, complex statistical methods in psychological research, or critiques of major theories. Example: 'Explain the diathesis-stress model of psychological disorders.' or 'What are the main criticisms of Kohlberg's stages of moral development?'"
     },
-    "isPredefined": true
+    "isPredefined": false
   },
   {
     "topicValue": "PoliticalScience",
@@ -118,7 +118,7 @@
       "medium": "Key political ideologies, branches of government, or significant international organizations. Example: 'What is the difference between a parliamentary and presidential system?' or 'What is the United Nations?'",
       "hard": "University-level political theory, comparative politics, international relations theories, or detailed analysis of political systems. Example: 'Explain John Rawls' concept of the 'veil of ignorance'.' or 'Discuss the core tenets of realism in international relations theory.'"
     },
-    "isPredefined": true
+    "isPredefined": false
   },
   {
     "topicValue": "Sociology",
@@ -130,7 +130,7 @@
       "medium": "Key sociological terms, concepts of social inequality, or major social institutions. Example: 'What is culture?' or 'Explain the concept of social mobility.'",
       "hard": "University-level sociological theories, research methodologies, or in-depth analysis of social phenomena. Example: 'Compare and contrast Marx's and Weber's views on social class.' or 'What is anomie, according to Durkheim?'"
     },
-    "isPredefined": true
+    "isPredefined": false
   },
   {
     "topicValue": "Astronomy",
@@ -142,7 +142,7 @@
       "medium": "Basic characteristics of celestial bodies, types of galaxies, or famous astronomers. Example: 'What is the Kuiper Belt?' or 'Who developed the laws of planetary motion?'",
       "hard": "University-level astrophysics, detailed stellar evolution, cosmological models, or specifics of astronomical observation techniques. Example: 'Explain the Hertzsprung-Russell diagram.' or 'What is dark matter and what is the evidence for it?'"
     },
-    "isPredefined": true
+    "isPredefined": false
   },
   {
     "topicValue": "Geology",
@@ -154,7 +154,7 @@
       "medium": "The rock cycle, types of plate boundaries, or major geological eras. Example: 'What is the Mohs scale of hardness used for?' or 'Describe how mountains are formed.'",
       "hard": "University-level mineralogy, petrology, structural geology, or detailed geochronology. Example: 'Explain Bowen's reaction series.' or 'What are the different types of seismic waves and how are they used to study Earth's interior?'"
     },
-    "isPredefined": true
+    "isPredefined": false
   },
   {
     "topicValue": "Linguistics",
@@ -166,7 +166,7 @@
       "medium": "Core branches of linguistics, parts of speech, or basic language change concepts. Example: 'What is the difference between syntax and semantics?' or 'What is a morpheme?'",
       "hard": "University-level linguistic theories, detailed phonological rules, comparative linguistics, or sociolinguistic phenomena. Example: 'Explain Chomsky's concept of 'generative grammar'.' or 'What is Grimm's Law in historical linguistics?'"
     },
-    "isPredefined": true
+    "isPredefined": false
   },
   {
     "topicValue": "MusicTheory",
@@ -178,7 +178,7 @@
       "medium": "Major and minor scales, basic chord types, or common time signatures. Example: 'How many beats are in a measure of 4/4 time?' or 'What is a triad?'",
       "hard": "University-level harmony, counterpoint, musical form analysis, or advanced notation concepts. Example: 'Explain the function of a Neapolitan chord.' or 'What is a fugue?'"
     },
-    "isPredefined": true
+    "isPredefined": false
   }
 ]
     
