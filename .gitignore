@@ -79,3 +79,6 @@ node_modules
 .apphosting/
 *.web.app
 *.firebaseapp.com
+
+# app execution
+output.txt
