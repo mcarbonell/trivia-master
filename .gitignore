@@ -23,7 +23,8 @@ firebase-debug.log
 firestore-debug.log
 ui-debug.log
 
-# app execution
+# excluded files
+serviceAccountKey.json
 output.txt
 
 # production
