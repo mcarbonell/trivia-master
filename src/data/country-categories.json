@@ -1,0 +1,173 @@
+
+[
+  {
+    "topicValue": "Country_USA",
+    "name": { "en": "United States", "es": "Estados Unidos" },
+    "icon": "MapPin",
+    "detailedPromptInstructions": "Generate diverse trivia questions about the United States of America. Topics should include its history (e.g., founding, Civil War, major presidents, key amendments), geography (e.g., states, capitals, famous landmarks like the Grand Canyon or Mount Rushmore, national parks, major rivers and mountain ranges), culture (e.g., music genres like jazz or blues, iconic movies and filmmakers, influential literature, traditions, holidays), famous personalities (e.g., inventors, artists, political figures, athletes), and significant national events. Questions should be verifiable and broadly interesting.",
+    "difficultySpecificGuidelines": {
+      "easy": "Focus on widely known facts. Ex: 'What is the capital of the USA?' or 'Who was the first US president?' or 'What are the colors of the US flag?'",
+      "medium": "Cover important historical events, well-known landmarks, or significant cultural aspects. Ex: 'What was the main cause of the American Civil War?' or 'Name the longest river in the USA.' or 'Which US city is famous for its Golden Gate Bridge?'",
+      "hard": "Delve into specific historical details, lesser-known influential figures, constitutional aspects, or significant cultural movements. Ex: 'Explain the significance of the Louisiana Purchase.' or 'Which constitutional amendment abolished slavery?' or 'Name the author of \"The Great Gatsby\".'"
+    },
+    "isPredefined": true
+  },
+  {
+    "topicValue": "Country_Spain",
+    "name": { "en": "Spain", "es": "España" },
+    "icon": "MapPin",
+    "detailedPromptInstructions": "Generate diverse trivia questions about Spain. Topics should include its history (e.g., Roman Hispania, Al-Andalus, Reconquista, Spanish Empire, Civil War), geography (e.g., regions, major cities like Madrid or Barcelona, famous landmarks like the Sagrada Familia or Alhambra, islands, mountain ranges like the Pyrenees), culture (e.g., flamenco, bullfighting, festivals like La Tomatina, famous artists like Picasso or Dalí, influential writers like Cervantes, gastronomy like paella or tapas), famous personalities, and significant events.",
+    "difficultySpecificGuidelines": {
+      "easy": "Focus on widely known facts. Ex: 'What is the capital of Spain?' or 'What is a famous Spanish dance?' or 'Which famous Spanish artist painted \"Guernica\"?'",
+      "medium": "Cover important historical periods, well-known landmarks, or significant cultural aspects. Ex: 'What currency is used in Spain?' or 'Name a famous Spanish dish.' or 'Which Spanish explorer is known for his voyages to the Americas?'",
+      "hard": "Delve into specific historical details, regional cultures, lesser-known influential figures, or artistic movements. Ex: 'What was the Spanish Reconquista?' or 'Name three autonomous communities of Spain and their capitals.' or 'Who wrote \"Don Quixote\"?'"
+    },
+    "isPredefined": true
+  },
+  {
+    "topicValue": "Country_Mexico",
+    "name": { "en": "Mexico", "es": "México" },
+    "icon": "MapPin",
+    "detailedPromptInstructions": "Generate diverse trivia questions about Mexico. Topics should include its pre-Columbian civilizations (e.g., Maya, Aztec), colonial history, independence, modern history, geography (e.g., states, major cities, landmarks like Chichen Itza, beaches, mountain ranges), culture (e.g., Day of the Dead, mariachi music, artists like Frida Kahlo or Diego Rivera, influential writers, gastronomy like tacos or mole), famous personalities, and significant events.",
+    "difficultySpecificGuidelines": {
+      "easy": "Focus on widely known facts. Ex: 'What is the capital of Mexico?' or 'What ancient civilization built Chichen Itza?' or 'Name a famous Mexican food.'",
+      "medium": "Cover important historical events, well-known cultural traditions, or significant geographical features. Ex: 'What is the official language of Mexico?' or 'Who is a famous Mexican painter known for self-portraits?' or 'What currency is used in Mexico?'",
+      "hard": "Delve into specific historical details of pre-Columbian cultures, regional traditions, or influential figures in Mexican arts and politics. Ex: 'What was the name of the Aztec capital city, now Mexico City?' or 'Explain the significance of Cinco de Mayo.' or 'Name a traditional Mexican spirit made from agave.'"
+    },
+    "isPredefined": true
+  },
+  {
+    "topicValue": "Country_Argentina",
+    "name": { "en": "Argentina", "es": "Argentina" },
+    "icon": "MapPin",
+    "detailedPromptInstructions": "Generate diverse trivia questions about Argentina. Topics should include its history (e.g., independence, Peronism, Falklands/Malvinas War), geography (e.g., Patagonia, Andes, Pampas, Buenos Aires, Iguazu Falls), culture (e.g., tango, gaucho tradition, famous writers like Borges or Cortázar, film, gastronomy like asado or mate), famous personalities (e.g., Eva Perón, Maradona, Messi), and significant events.",
+    "difficultySpecificGuidelines": {
+      "easy": "Focus on widely known facts. Ex: 'What is the capital of Argentina?' or 'What is the name of the famous Argentine dance?' or 'Which Argentine soccer player is considered one of the greatest of all time?'",
+      "medium": "Cover important historical periods, well-known geographical regions, or significant cultural aspects. Ex: 'What is the main ingredient in the Argentine drink 'mate'?' or 'What region is known for its glaciers and mountains in southern Argentina?' or 'Who was Eva Perón?'",
+      "hard": "Delve into specific historical events, literary movements, regional cultures, or influential figures in Argentine politics or arts. Ex: 'What is 'asado' in Argentina?' or 'Name a famous Argentine writer.' or 'Which mountain range forms the western border of Argentina?'"
+    },
+    "isPredefined": true
+  },
+  {
+    "topicValue": "Country_Brazil",
+    "name": { "en": "Brazil", "es": "Brasil" },
+    "icon": "MapPin",
+    "detailedPromptInstructions": "Generate diverse trivia questions about Brazil. Topics should include its history (e.g., Portuguese colonization, empire, independence, modern history), geography (e.g., Amazon rainforest, major cities like Rio de Janeiro or São Paulo, Iguazu Falls, beaches), culture (e.g., Carnival, samba, bossa nova, capoeira, famous writers, gastronomy like feijoada), famous personalities (e.g., Pelé), and significant events.",
+    "difficultySpecificGuidelines": {
+      "easy": "Focus on widely known facts. Ex: 'What is the capital of Brazil?' or 'What is the most famous festival in Brazil?' or 'What is the largest rainforest in Brazil?'",
+      "medium": "Cover important historical periods, well-known cultural traditions, or significant geographical features. Ex: 'What language is spoken in Brazil?' or 'Name a famous Brazilian soccer player.' or 'What is the name of the iconic statue in Rio de Janeiro?'",
+      "hard": "Delve into specific historical details, regional cultures, biodiversity of the Amazon, or influential figures in Brazilian arts or politics. Ex: 'What is 'feijoada'?' or 'Who was the last Emperor of Brazil?' or 'Explain the origins of Samba music.'"
+    },
+    "isPredefined": true
+  },
+  {
+    "topicValue": "Country_UnitedKingdom",
+    "name": { "en": "United Kingdom", "es": "Reino Unido" },
+    "icon": "MapPin",
+    "detailedPromptInstructions": "Generate diverse trivia questions about the United Kingdom (England, Scotland, Wales, Northern Ireland). Topics should include its history (e.g., Roman Britain, Norman Conquest, Tudor period, British Empire, World Wars), geography (e.g., capital cities, famous landmarks like Stonehenge or Big Ben, major rivers, mountain ranges), culture (e.g., monarchy, literature - Shakespeare, Dickens; music - The Beatles, Queen; traditions, sports like cricket or rugby), famous personalities (e.g., Winston Churchill, Queen Elizabeth II), and significant events.",
+    "difficultySpecificGuidelines": {
+      "easy": "Focus on widely known facts. Ex: 'What is the capital of the United Kingdom?' or 'Who is the current monarch of the UK?' or 'What is a famous British band from the 1960s?'",
+      "medium": "Cover important historical events, well-known landmarks within the constituent countries, or significant cultural aspects. Ex: 'Which river flows through London?' or 'Name the constituent countries of the United Kingdom.' or 'Who wrote \"Hamlet\"?'",
+      "hard": "Delve into specific historical details, parliamentary procedures, regional identities, or influential figures in British arts and sciences. Ex: 'What was the significance of the Battle of Hastings?' or 'Explain the difference between the House of Commons and the House of Lords.' or 'Which British scientist developed the theory of evolution by natural selection?'"
+    },
+    "isPredefined": true
+  },
+  {
+    "topicValue": "Country_France",
+    "name": { "en": "France", "es": "Francia" },
+    "icon": "MapPin",
+    "detailedPromptInstructions": "Generate diverse trivia questions about France. Topics should include its history (e.g., Gaul, French Revolution, Napoleonic era, World Wars, Fifth Republic), geography (e.g., Paris, Alps, Riviera, major rivers like the Seine or Loire, famous landmarks like the Eiffel Tower or Louvre Museum), culture (e.g., cuisine - cheese, wine, pastries; fashion, art movements - Impressionism; literature - Victor Hugo, Albert Camus; philosophy), famous personalities (e.g., Napoleon Bonaparte, Joan of Arc, Marie Curie), and significant events.",
+    "difficultySpecificGuidelines": {
+      "easy": "Focus on widely known facts. Ex: 'What is the capital of France?' or 'What is a famous tower in Paris?' or 'Name a famous French cheese.'",
+      "medium": "Cover important historical events, well-known landmarks, or significant cultural aspects. Ex: 'What was the French Revolution?' or 'Which French general became Emperor?' or 'What famous art museum is located in Paris?'",
+      "hard": "Delve into specific historical details, philosophical movements, regional cuisines, or influential figures in French arts and politics. Ex: 'Explain the motto of the French Republic.' or 'Who wrote \"Les Misérables\"?' or 'What region of France is famous for its sparkling wine?'"
+    },
+    "isPredefined": true
+  },
+  {
+    "topicValue": "Country_Germany",
+    "name": { "en": "Germany", "es": "Alemania" },
+    "icon": "MapPin",
+    "detailedPromptInstructions": "Generate diverse trivia questions about Germany. Topics should include its history (e.g., Holy Roman Empire, Prussia, unification, World Wars, Cold War and reunification, modern Germany), geography (e.g., Berlin, Bavarian Alps, Rhine river, Black Forest, famous landmarks like the Brandenburg Gate), culture (e.g., Oktoberfest, classical composers like Bach or Beethoven, philosophers like Kant or Nietzsche, literature, engineering, automotive industry), famous personalities (e.g., Albert Einstein, Angela Merkel), and significant events.",
+    "difficultySpecificGuidelines": {
+      "easy": "Focus on widely known facts. Ex: 'What is the capital of Germany?' or 'What is a famous German festival involving beer?' or 'Which German physicist developed the theory of relativity?'",
+      "medium": "Cover important historical periods, well-known landmarks, or significant cultural aspects. Ex: 'What structure famously divided Berlin during the Cold War?' or 'Name a famous German car brand.' or 'Which German composer wrote \"Für Elise\"?'",
+      "hard": "Delve into specific historical details of German unification, philosophical concepts, regional traditions, or influential figures in German science and politics. Ex: 'Who was the first Chancellor of a unified Germany in 1871?' or 'Explain the concept of \"Sturm und Drang\" in German literature.' or 'What is the significance of the Treaty of Versailles for Germany?'"
+    },
+    "isPredefined": true
+  },
+  {
+    "topicValue": "Country_Italy",
+    "name": { "en": "Italy", "es": "Italia" },
+    "icon": "MapPin",
+    "detailedPromptInstructions": "Generate diverse trivia questions about Italy. Topics should include its history (e.g., Roman Empire, Renaissance, unification, World Wars, modern Italy), geography (e.g., Rome, Venice, Florence, Alps, Mount Vesuvius, Sicily, Sardinia, famous landmarks like the Colosseum or Leaning Tower of Pisa), culture (e.g., cuisine - pizza, pasta; art - Michelangelo, Leonardo da Vinci; opera, fashion, cinema), famous personalities (e.g., Julius Caesar, Galileo Galilei), and significant events.",
+    "difficultySpecificGuidelines": {
+      "easy": "Focus on widely known facts. Ex: 'What is the capital of Italy?' or 'What is a famous Italian food?' or 'Which Italian city is known for its canals?'",
+      "medium": "Cover important historical periods like the Renaissance, well-known artists or landmarks, or significant cultural aspects. Ex: 'Who painted the ceiling of the Sistine Chapel?' or 'What volcano destroyed Pompeii?' or 'Name an Italian luxury sports car brand.'",
+      "hard": "Delve into specific historical details of the Roman Republic/Empire, artistic techniques of the Renaissance, regional cuisines, or influential figures in Italian politics or arts. Ex: 'What was the Risorgimento in Italian history?' or 'Explain the architectural style of the Florence Cathedral.' or 'Who is considered the father of the Italian language?'"
+    },
+    "isPredefined": true
+  },
+  {
+    "topicValue": "Country_Japan",
+    "name": { "en": "Japan", "es": "Japón" },
+    "icon": "MapPin",
+    "detailedPromptInstructions": "Generate diverse trivia questions about Japan. Topics should include its history (e.g., feudal period, shogunate, Meiji Restoration, World War II, modern Japan), geography (e.g., Tokyo, Mount Fuji, Hokkaido, Okinawa, famous temples and shrines), culture (e.g., samurai, geisha, anime, manga, sumo wrestling, tea ceremony, cuisine - sushi, ramen; technology, traditional arts like ikebana or origami), famous personalities, and significant events.",
+    "difficultySpecificGuidelines": {
+      "easy": "Focus on widely known facts. Ex: 'What is the capital of Japan?' or 'What is a famous Japanese martial art?' or 'What is the name of the highest mountain in Japan?'",
+      "medium": "Cover important historical periods, well-known cultural traditions (e.g., cherry blossoms), or significant technological contributions. Ex: 'What was a samurai?' or 'Name a popular Japanese animation style.' or 'What currency is used in Japan?'",
+      "hard": "Delve into specific historical details of different eras, religious/philosophical concepts (Shinto, Zen Buddhism), traditional art forms, or influential figures in Japanese arts and technology. Ex: 'What is the significance of the Meiji Restoration?' or 'Explain the concept of 'wabi-sabi'.' or 'Who wrote \"The Tale of Genji\"?'"
+    },
+    "isPredefined": true
+  },
+  {
+    "topicValue": "Country_China",
+    "name": { "en": "China", "es": "China" },
+    "icon": "MapPin",
+    "detailedPromptInstructions": "Generate diverse trivia questions about China. Topics should include its ancient dynasties (e.g., Han, Tang, Ming, Qing), inventions (e.g., paper, gunpowder, compass, printing), Great Wall, Forbidden City, modern history (e.g., Communist Revolution, economic reforms), geography (e.g., Beijing, Shanghai, Yangtze River, Himalayas), culture (e.g., calligraphy, traditional medicine, festivals, cuisine, martial arts like Kung Fu), famous personalities (e.g., Confucius, Mao Zedong), and significant events.",
+    "difficultySpecificGuidelines": {
+      "easy": "Focus on widely known facts. Ex: 'What is the capital of China?' or 'What famous landmark was built to protect China from invaders?' or 'Name a famous Chinese invention.'",
+      "medium": "Cover important historical dynasties, well-known philosophical concepts, or significant cultural traditions. Ex: 'Who was Confucius?' or 'What is the longest river in China?' or 'What is the Chinese New Year also known as?'",
+      "hard": "Delve into specific historical details of different dynasties, artistic styles, regional cuisines, or influential figures in Chinese philosophy or politics. Ex: 'What was the purpose of the Terracotta Army?' or 'Explain the concept of Yin and Yang.' or 'Name a major Chinese dialect group other than Mandarin.'"
+    },
+    "isPredefined": true
+  },
+  {
+    "topicValue": "Country_India",
+    "name": { "en": "India", "es": "India" },
+    "icon": "MapPin",
+    "detailedPromptInstructions": "Generate diverse trivia questions about India. Topics should include its ancient civilizations (e.g., Indus Valley), history (e.g., Mauryan Empire, Mughal Empire, British Raj, independence movement), geography (e.g., New Delhi, Himalayas, Ganges River, Taj Mahal), culture (e.g., Bollywood, classical dance forms, festivals like Diwali or Holi, religions - Hinduism, Buddhism, Sikhism, Jainism; cuisine, yoga), famous personalities (e.g., Mahatma Gandhi, Jawaharlal Nehru), and significant events.",
+    "difficultySpecificGuidelines": {
+      "easy": "Focus on widely known facts. Ex: 'What is the capital of India?' or 'What is a famous monument in India built for love?' or 'Which major religion originated in India?'",
+      "medium": "Cover important historical periods, well-known cultural practices, or significant geographical features. Ex: 'Who was Mahatma Gandhi?' or 'What is the name of the Indian film industry based in Mumbai?' or 'What currency is used in India?'",
+      "hard": "Delve into specific historical details of various empires, philosophical concepts from Indian religions, regional diversity, or influential figures in India's independence movement or arts. Ex: 'What was the Green Revolution in India?' or 'Explain the concept of Dharma in Hinduism.' or 'Name a classical Indian dance form.'"
+    },
+    "isPredefined": true
+  },
+  {
+    "topicValue": "Country_Canada",
+    "name": { "en": "Canada", "es": "Canadá" },
+    "icon": "MapPin",
+    "detailedPromptInstructions": "Generate diverse trivia questions about Canada. Topics should include its history (e.g., indigenous peoples, French and British colonization, Confederation, modern history), geography (e.g., provinces and territories, Ottawa, Rocky Mountains, Great Lakes, Niagara Falls, national parks), culture (e.g., bilingualism, ice hockey, maple syrup, multiculturalism, famous musicians and actors), famous personalities (e.g., prime ministers, inventors), and significant events.",
+    "difficultySpecificGuidelines": {
+      "easy": "Focus on widely known facts. Ex: 'What is the capital of Canada?' or 'What is a famous Canadian symbol found on its flag?' or 'What is Canada's national winter sport?'",
+      "medium": "Cover important historical events like Confederation, well-known geographical features, or significant cultural aspects. Ex: 'Name two official languages of Canada.' or 'Which Canadian city hosted the 1976 Summer Olympics?' or 'What is a 'toonie' in Canadian currency?'",
+      "hard": "Delve into specific details of indigenous history, provincial governance, contributions to arts and sciences, or significant political figures. Ex: 'What is the significance of Nunavut in Canada?' or 'Who was Louis Riel?' or 'Name a famous Canadian author.'"
+    },
+    "isPredefined": true
+  },
+  {
+    "topicValue": "Country_Australia",
+    "name": { "en": "Australia", "es": "Australia" },
+    "icon": "MapPin",
+    "detailedPromptInstructions": "Generate diverse trivia questions about Australia. Topics should include its indigenous history and culture, European colonization, Federation, geography (e.g., states and territories, Canberra, Sydney Opera House, Uluru/Ayers Rock, Great Barrier Reef, Outback), unique wildlife (e.g., kangaroos, koalas), culture (e.g., sports like cricket and Aussie Rules football, slang, famous actors and musicians), famous personalities, and significant events.",
+    "difficultySpecificGuidelines": {
+      "easy": "Focus on widely known facts. Ex: 'What is the capital of Australia?' or 'Name an animal native to Australia that carries its young in a pouch.' or 'What is a famous natural landmark in the center of Australia?'",
+      "medium": "Cover important historical events, well-known geographical regions, or significant cultural aspects. Ex: 'What is the Great Barrier Reef famous for?' or 'Which Australian city is known for its Opera House?' or 'What is the term for Australia's indigenous people?'",
+      "hard": "Delve into specific details of its political system, unique ecosystems, history of European settlement, or influential figures in Australian arts and culture. Ex: 'What does ANZAC Day commemorate?' or 'Explain the concept of 'Dreamtime' in Aboriginal culture.' or 'Name the largest desert in Australia.'"
+    },
+    "isPredefined": true
+  }
+]
+
+    

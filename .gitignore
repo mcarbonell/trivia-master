@@ -1,14 +1,11 @@
+
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
 # dependencies
 /node_modules
 /.pnp
-.pnp.*
-.yarn/*
-!.yarn/patches
-!.yarn/plugins
-!.yarn/releases
-!.yarn/versions
+.pnp.js
+.yarn/install-state.gz
 
 # testing
 /coverage
@@ -17,31 +14,68 @@
 /.next/
 /out/
 
+# genkit & firebase
+/.firebase
+/.genkit/
+/.genkit-state.json
+/genkit.log
+firebase-debug.log
+firestore-debug.log
+ui-debug.log
+
+
 # production
 /build
 
 # misc
 .DS_Store
 *.pem
+*.seed
+*.log
+*.local
 
-# debug
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-.pnpm-debug.log*
+# Environment Variables
+.env
+.env*.local
+.env.development.local
+.env.test.local
+.env.production.local
 
-# vercel
-.vercel
+# IDEs and editors
+/.idea
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+
+# IDE - VSCode
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+*.code-workspace
+
+# Editor Editors
+*.swp
+*~
+*.bak
 
 # typescript
 *.tsbuildinfo
-next-env.d.ts
+tsconfig.tsbuildinfo
 
-.genkit/*
-.env*
+# Output files for populate scripts (optional, good to ignore if they get large or contain sensitive test data)
+# output.txt
 
-# firebase
-firebase-debug.log
-firestore-debug.log
+# Patch Package
+.DS_Store
+node_modules
+# /patches patches should be committed
 
-serviceAccountKey.json
+# Firebase App Hosting
+.apphosting/
+*.web.app
+*.firebaseapp.com
