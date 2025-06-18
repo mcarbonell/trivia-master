@@ -39,7 +39,7 @@ type GameState =
   'difficulty_selection' | 
   'loading_question' | 
   'loading_custom_batch' |
-  'downloading_category_questions' | // Nuevo estado para descarga bajo demanda
+  'downloading_category_questions' | 
   'playing' | 
   'showing_feedback' | 
   'game_over' | 
@@ -52,7 +52,7 @@ const QUESTION_TIME_LIMIT_SECONDS = 30;
 const QUESTIONS_PER_GAME = 10;
 const DEFAULT_MODEL_FOR_GAME = 'googleai/gemini-2.5-flash';
 
-const CURRENT_CONTENT_VERSION = "v1.0.1"; // Incrementado para probar lógica de limpieza
+const CURRENT_CONTENT_VERSION = "v1.0.1"; 
 const CONTENT_VERSION_STORAGE_KEY = 'downloadedContentVersion';
 const DOWNLOADED_TOPICS_STORAGE_KEY = 'downloadedTopicValues_v1';
 
@@ -70,7 +70,7 @@ export default function TriviaPage() {
   
   const [gameState, setGameState] = useState<GameState>('initial_loading');
   const [initialLoadMessage, setInitialLoadMessage] = useState<string>('');
-  const [loadingMessage, setLoadingMessage] = useState<string>(''); // Para mensajes de descarga específicos
+  const [loadingMessage, setLoadingMessage] = useState<string>(''); 
 
   const [currentTopic, setCurrentTopic] = useState<string>('');
   const [currentCategoryDetails, setCurrentCategoryDetails] = useState<CategoryDefinition | null>(null);
@@ -128,7 +128,7 @@ export default function TriviaPage() {
             localDownloadedTopics = new Set(JSON.parse(storedTopicsString));
           } catch (e) {
             console.error("Error parsing downloaded topics from localStorage", e);
-            localStorage.removeItem(DOWNLOADED_TOPICS_STORAGE_KEY); // Clear corrupted data
+            localStorage.removeItem(DOWNLOADED_TOPICS_STORAGE_KEY); 
           }
         }
       }
@@ -137,11 +137,11 @@ export default function TriviaPage() {
         setInitialLoadMessage(t('updatingOfflineContentVersion'));
         if (typeof window !== 'undefined' && window.indexedDB) {
           try {
-            await clearAllQuestionsFromDB(); // Clear entire DB for new content version
+            await clearAllQuestionsFromDB(); 
             console.log("[TriviaPage] Content version mismatch. Cleared IndexedDB.");
             localStorage.setItem(CONTENT_VERSION_STORAGE_KEY, CURRENT_CONTENT_VERSION);
-            localStorage.removeItem(DOWNLOADED_TOPICS_STORAGE_KEY); // Clear list of downloaded topics
-            localDownloadedTopics = new Set(); // Reset in-memory set
+            localStorage.removeItem(DOWNLOADED_TOPICS_STORAGE_KEY); 
+            localDownloadedTopics = new Set(); 
             toast({ title: t('toastSuccessTitle') as string, description: t('offlineContentVersionUpdated')});
           } catch (error) {
             console.error("[TriviaPage] Error clearing IndexedDB for content update:", error);
@@ -184,12 +184,12 @@ export default function TriviaPage() {
   const downloadQuestionsForTopic = async (categoryToDownload: CategoryDefinition): Promise<boolean> => {
     if (downloadedTopicValues.has(categoryToDownload.topicValue) && localStorage.getItem(CONTENT_VERSION_STORAGE_KEY) === CURRENT_CONTENT_VERSION) {
       // console.log(`[TriviaPage] Questions for ${categoryToDownload.topicValue} already downloaded and content version matches.`);
-      return true; // Already downloaded and version is current
+      return true; 
     }
 
-    if (categoryToDownload.isPredefined === false) { // isPredefined can be undefined, treat as true
+    if (categoryToDownload.isPredefined === false) { 
         // console.log(`[TriviaPage] Category ${categoryToDownload.topicValue} is not predefined. Skipping download.`);
-        return true; // No download needed for non-predefined (custom-like) categories from DB
+        return true; 
     }
     
     const originalGameState = gameState;
@@ -204,15 +204,15 @@ export default function TriviaPage() {
       const newDownloadedTopics = new Set(downloadedTopicValues).add(categoryToDownload.topicValue);
       setDownloadedTopicValues(newDownloadedTopics);
       localStorage.setItem(DOWNLOADED_TOPICS_STORAGE_KEY, JSON.stringify(Array.from(newDownloadedTopics)));
-      localStorage.setItem(CONTENT_VERSION_STORAGE_KEY, CURRENT_CONTENT_VERSION); // Ensure version is set/updated on successful download
+      localStorage.setItem(CONTENT_VERSION_STORAGE_KEY, CURRENT_CONTENT_VERSION); 
       
       toast({ title: t('toastSuccessTitle') as string, description: t('categoryDownloadComplete', { categoryName: categoryToDownload.name[locale] }) });
-      setGameState(originalGameState === 'downloading_category_questions' ? 'difficulty_selection' : originalGameState); // Restore or move to next
+      setGameState(originalGameState === 'downloading_category_questions' ? 'difficulty_selection' : originalGameState); 
       return true;
     } catch (error) {
       console.error(`[TriviaPage] Error downloading questions for topic ${categoryToDownload.topicValue}:`, error);
       toast({ variant: "destructive", title: t('toastErrorTitle') as string, description: t('categoryDownloadError', { categoryName: categoryToDownload.name[locale] }) });
-      setGameState(originalGameState === 'downloading_category_questions' ? 'error' : originalGameState); // Restore or go to error
+      setGameState(originalGameState === 'downloading_category_questions' ? 'error' : originalGameState); 
       setFeedback({ message: t('errorLoadingQuestion'), detailedMessage: t('categoryDownloadError', { categoryName: categoryToDownload.name[locale] }), isCorrect: false });
       return false;
     }
@@ -250,7 +250,7 @@ export default function TriviaPage() {
 
     setAskedQuestionTextsForAI(prev => [...new Set([...prev, questionTextInLocale])]);
 
-    if (qData.id && !isCustomTopicGameActive && categoryDetails?.isPredefined !== false) { 
+    if (qData.id && !isCustomTopicGameActive && currentCategoryDetails?.isPredefined !== false) { 
       setAskedFirestoreIds(prev => [...new Set([...prev, qData.id!])]);
     }
     setSelectedAnswerIndex(null);
@@ -313,7 +313,7 @@ export default function TriviaPage() {
       setCurrentQuestionNumberInGame(prev => Math.max(0, prev - 1)); 
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [locale, askedFirestoreIds, askedQuestionTextsForAI, askedCorrectAnswerTexts, t]);
+  }, [locale, askedFirestoreIds, askedQuestionTextsForAI, askedCorrectAnswerTexts, t, currentCategoryDetails]);
 
 
   const handleTimeout = useCallback(() => {
@@ -385,10 +385,10 @@ export default function TriviaPage() {
   // --- Category Navigation Logic ---
   const handleCategoryClick = async (category: CategoryDefinition) => {
     const children = allAppCategories.filter(cat => cat.parentTopicValue === category.topicValue);
-    const isCustom = !allAppCategories.some(appCat => appCat.topicValue === category.topicValue); // True if it's a custom topic string
+    const isCustom = !allAppCategories.some(appCat => appCat.topicValue === category.topicValue); 
 
-    if (isCustom) { // Custom topic string was entered
-        setCurrentTopic(category.topicValue); // topicValue here is the custom string
+    if (isCustom) { 
+        setCurrentTopic(category.topicValue); 
         setCurrentCategoryDetails(null);
         setIsCustomTopicGameActive(true);
         setCustomTopicQuestionsCache([]);
@@ -396,17 +396,16 @@ export default function TriviaPage() {
         setGameState('difficulty_selection');
          logAnalyticsEvent('select_category', {
             category_topic_value: category.topicValue,
-            category_name: category.topicValue, // Custom topic string as name
+            category_name: category.topicValue, 
             is_custom_topic: true
         });
-    } else if (children.length > 0) { // Predefined category with children
+    } else if (children.length > 0) { 
         setCurrentBreadcrumb(prev => [...prev, category]);
         setCategoriesForCurrentView(children);
-        // gameState remains 'category_selection' but view updates
-    } else { // Predefined category, no children - proceed to play
-        // Logic to download questions if needed will be here
+    } else { 
+        
         const downloadSuccess = await downloadQuestionsForTopic(category);
-        if (!downloadSuccess) return; // Stop if download failed
+        if (!downloadSuccess) return; 
 
         setCurrentTopic(category.topicValue);
         setCurrentCategoryDetails(category);
@@ -419,7 +418,7 @@ export default function TriviaPage() {
             is_custom_topic: false
         });
     }
-    // Reset game state for new selection flow
+    
     setScore({ correct: 0, incorrect: 0 });
     setAskedFirestoreIds([]);
     setAskedQuestionTextsForAI([]);
@@ -431,22 +430,22 @@ export default function TriviaPage() {
   const handlePlayParentCategory = async () => {
     const parentCategory = currentBreadcrumb.at(-1);
     if (parentCategory) {
-      // Logic to download questions if needed will be here
+      
       const downloadSuccess = await downloadQuestionsForTopic(parentCategory);
       if (!downloadSuccess) return;
 
       setCurrentTopic(parentCategory.topicValue);
       setCurrentCategoryDetails(parentCategory);
-      setIsCustomTopicGameActive(false); // Parent categories are predefined
+      setIsCustomTopicGameActive(false); 
       setGameState('difficulty_selection');
-       logAnalyticsEvent('select_category', { // Log playing parent as a category selection
+       logAnalyticsEvent('select_category', { 
             category_topic_value: parentCategory.topicValue,
             category_name: parentCategory.name[locale],
             is_custom_topic: false,
             played_as_parent: true
         });
     }
-     // Reset game state for new selection flow
+     
     setScore({ correct: 0, incorrect: 0 });
     setAskedFirestoreIds([]);
     setAskedQuestionTextsForAI([]);
@@ -466,11 +465,10 @@ export default function TriviaPage() {
       if (newParent) {
         const children = allAppCategories.filter(cat => cat.parentTopicValue === newParent.topicValue);
         setCategoriesForCurrentView(children);
-      } else { // Fallback to top-level if something unexpected happens
+      } else { 
         setCategoriesForCurrentView(topLevelCategories);
       }
     }
-    // gameState remains 'category_selection'
   };
   // --- End Category Navigation Logic ---
 
@@ -497,7 +495,7 @@ export default function TriviaPage() {
     if (isCustomTopicGameActive) {
       setGameState('loading_custom_batch');
       const inputForAI: GenerateTriviaQuestionsInput = {
-        topic: currentTopic, // currentTopic here is the custom topic string
+        topic: currentTopic, 
         previousQuestions: askedQuestionTextsForAI,
         previousCorrectAnswers: askedCorrectAnswerTexts, 
         targetDifficulty: initialDifficulty,
@@ -522,7 +520,7 @@ export default function TriviaPage() {
         setGameState('error');
         setCurrentQuestionNumberInGame(0);
       }
-    } else { // Predefined category
+    } else { 
       fetchPredefinedOrSingleAIQuestion(currentTopic, initialDifficulty, currentCategoryDetails);
     }
   };
@@ -604,11 +602,11 @@ export default function TriviaPage() {
   };
 
   const handlePlayAgainSameSettings = async () => {
-    // For predefined categories, ensure questions are "downloaded" or skip download if already done.
+    
     if (!isCustomTopicGameActive && currentCategoryDetails) {
         const downloadSuccess = await downloadQuestionsForTopic(currentCategoryDetails);
         if (!downloadSuccess) {
-            // Error handled by downloadQuestionsForTopic, maybe set game state to error or allow retry
+            
             return; 
         }
     }
@@ -616,29 +614,26 @@ export default function TriviaPage() {
     setScore({ correct: 0, incorrect: 0 });
     setQuestionsAnsweredThisGame(0);
     setCurrentQuestionNumberInGame(1); 
-    // Reset asked questions specific to this game session, but keep broader asked context for AI variety if desired
-    // For predefined questions, it's important to reset askedFirestoreIds for the new game session if we want repeats from DB.
-    // For now, we'll keep askedFirestoreIds to ensure variety *across* "play again" sessions on the same topic.
-    // If you want the DB to be re-queried freshly for each "play again", reset askedFirestoreIds here:
-    // setAskedFirestoreIds([]); 
+    
+    
     
     if (isCustomTopicGameActive) {
         if (customTopicQuestionsCache.length > 0) {
             setCurrentBatchQuestionIndex(0); 
             prepareAndSetQuestion(customTopicQuestionsCache[0]!);
         } else {
-            // Re-fetch batch for custom topic if cache is empty (should ideally not happen if game started)
+            
             handleDifficultySelect(selectedDifficultyMode!); 
         }
-    } else { // Predefined category
+    } else { 
         fetchPredefinedOrSingleAIQuestion(currentTopic, currentDifficultyLevel, currentCategoryDetails);
     }
   };
 
   const handleNewGameFullReset = () => {
     setGameState('category_selection'); 
-    setCategoriesForCurrentView(topLevelCategories); // Reset to top-level view
-    setCurrentBreadcrumb([]); // Clear breadcrumb
+    setCategoriesForCurrentView(topLevelCategories); 
+    setCurrentBreadcrumb([]); 
     setScore({ correct: 0, incorrect: 0 });
     setQuestionData(null);
     setSelectedAnswerIndex(null);
