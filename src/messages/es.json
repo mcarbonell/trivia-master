@@ -75,6 +75,14 @@
   "gameOverTopic": "Tema: {topic} ({difficulty})",
   "gameOverPlayAgain": "Jugar de Nuevo (Misma Config.)",
   "gameOverNewGame": "Nuevo Juego (Elegir Tema)",
+  "initialLoadCheck": "Comprobando preguntas offline...",
+  "initialDownloadStart": "Descargando preguntas para juego offline...",
+  "initialDownloadCategory": "Descargando preguntas para {categoryName}...",
+  "initialDownloadComplete": "¡Preguntas offline descargadas!",
+  "initialDownloadError": "Error al descargar preguntas offline. Algunas funciones podrían estar limitadas.",
+  "initialDownloadNoCategories": "No se encontraron categorías predefinidas para descargar para juego offline.",
+  "initialLoadDone": "Preguntas offline listas.",
+  "initialLoadSkipped": "Preguntas offline no disponibles (problema IndexedDB o primera vez).",
 
   "AboutPage": {
     "title": "Acerca de y Contacto",
@@ -336,4 +344,3 @@
     }
   }
 }
-

@@ -5,7 +5,7 @@ import { useEffect, useState, useCallback, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import { getAllPredefinedQuestions, deletePredefinedQuestion, updatePredefinedQuestion, type PredefinedQuestion } from '@/services/triviaService';
+import { getAllPredefinedQuestionsForAdmin, deletePredefinedQuestion, updatePredefinedQuestion, type PredefinedQuestion } from '@/services/triviaService'; // Updated to use renamed function
 import { getAppCategories } from '@/services/categoryService';
 import type { CategoryDefinition, DifficultyLevel, BilingualText } from '@/types';
 import type { GenerateTriviaQuestionOutput } from '@/ai/flows/generate-trivia-question';
@@ -87,7 +87,7 @@ export default function AdminQuestionsPage() {
     setError(null);
     try {
       const [fetchedQuestions, fetchedCategories] = await Promise.all([
-        getAllPredefinedQuestions(),
+        getAllPredefinedQuestionsForAdmin(), // Using the renamed function
         getAppCategories(), 
       ]);
       setAllQuestions(fetchedQuestions);
@@ -118,10 +118,8 @@ export default function AdminQuestionsPage() {
       .filter(q => selectedDifficulty === ALL_FILTER_VALUE || q.difficulty === selectedDifficulty)
       .filter(q => {
         if (!trimmedSearchQuery) return true;
-        // Check if search query is an exact match for question ID (case-sensitive)
         if (q.id === trimmedSearchQuery) return true;
         
-        // For text search, use lower case
         const inQuestion = q.question.en.toLowerCase().includes(lowerSearchQuery) || q.question.es.toLowerCase().includes(lowerSearchQuery);
         if (inQuestion) return true;
         
@@ -530,4 +528,3 @@ export default function AdminQuestionsPage() {
     </div>
   );
 }
-

@@ -75,6 +75,14 @@
   "gameOverTopic": "Topic: {topic} ({difficulty})",
   "gameOverPlayAgain": "Play Again (Same Settings)",
   "gameOverNewGame": "New Game (Choose Topic)",
+  "initialLoadCheck": "Checking for offline questions...",
+  "initialDownloadStart": "Downloading questions for offline play...",
+  "initialDownloadCategory": "Downloading questions for {categoryName}...",
+  "initialDownloadComplete": "Offline questions downloaded!",
+  "initialDownloadError": "Error downloading offline questions. Some features may be limited.",
+  "initialDownloadNoCategories": "No predefined categories found to download for offline play.",
+  "initialLoadDone": "Offline questions ready.",
+  "initialLoadSkipped": "Offline questions not available (IndexedDB issue or first time).",
 
   "AboutPage": {
     "title": "About & Contact",
@@ -298,7 +306,7 @@
     "title": "User Suggestions",
     "description": "View and manage suggestions submitted by users.",
     "suggestionsListTitle": "Suggestions List",
-    "suggestionsListDescription": "Found {count, plural, =0 {no suggestions} one {# suggestion} other {# suggestions}}.",
+    "suggestionsListDescription": "{count, plural, =0 {No se encontraron sugerencias} one {Se encontró # sugerencia} other {Se encontraron # sugerencias}}.",
     "noSuggestionsFound": "No suggestions found.",
     "tableDate": "Date Submitted",
     "tableSender": "Sender",
@@ -336,4 +344,3 @@
     }
   }
 }
-
