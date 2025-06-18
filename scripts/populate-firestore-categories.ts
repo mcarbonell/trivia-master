@@ -73,20 +73,22 @@ async function populateCategories() {
         !categoryData.name || typeof categoryData.name.en !== 'string' || typeof categoryData.name.es !== 'string' ||
         !categoryData.icon || typeof categoryData.icon !== 'string' ||
         !categoryData.detailedPromptInstructions || typeof categoryData.detailedPromptInstructions !== 'string'
-        // Removed isPredefined validation
       ) {
         console.warn(`Skipping category due to missing/invalid required fields (topicValue, name, icon, detailedPromptInstructions as string): ${JSON.stringify(categoryData)}`);
         continue;
       }
 
-      const categoryToSave: Omit<CategoryDefinition, 'id'> = { // Use Omit as ID is doc ID
+      // Build the object to save, conditionally adding parentTopicValue
+      const categoryToSave: { [key: string]: any } = {
         topicValue: categoryData.topicValue,
         name: categoryData.name,
         icon: categoryData.icon,
         detailedPromptInstructions: categoryData.detailedPromptInstructions,
-        parentTopicValue: categoryData.parentTopicValue || undefined,
-        // isPredefined removed
       };
+
+      if (categoryData.parentTopicValue && typeof categoryData.parentTopicValue === 'string' && categoryData.parentTopicValue.trim() !== '') {
+        categoryToSave.parentTopicValue = categoryData.parentTopicValue.trim();
+      }
       
       if (categoryData.difficultySpecificGuidelines) {
         const guidelines: { [key: string]: string } = {};
