@@ -1,3 +1,4 @@
+
 // src/app/admin/questions/page.tsx
 'use client';
 
@@ -113,7 +114,7 @@ export default function AdminQuestionsPage() {
     const trimmedSearchQuery = searchQuery.trim();
     const lowerSearchQuery = trimmedSearchQuery.toLowerCase();
 
-    return allQuestions
+    let questions = allQuestions
       .filter(q => selectedCategory === ALL_FILTER_VALUE || q.topicValue === selectedCategory)
       .filter(q => selectedDifficulty === ALL_FILTER_VALUE || q.difficulty === selectedDifficulty)
       .filter(q => {
@@ -128,7 +129,17 @@ export default function AdminQuestionsPage() {
         );
         return inAnswers;
       });
-  }, [allQuestions, selectedCategory, selectedDifficulty, searchQuery]);
+
+    if (selectedCategory !== ALL_FILTER_VALUE) {
+      questions = questions.sort((a, b) => {
+        const textA = a.question[locale]?.toLowerCase() || '';
+        const textB = b.question[locale]?.toLowerCase() || '';
+        return textA.localeCompare(textB);
+      });
+    }
+
+    return questions;
+  }, [allQuestions, selectedCategory, selectedDifficulty, searchQuery, locale]);
 
   const displayQuestions = useMemo(() => {
     return filteredQuestions.map(q => ({
@@ -528,3 +539,4 @@ export default function AdminQuestionsPage() {
     </div>
   );
 }
+
