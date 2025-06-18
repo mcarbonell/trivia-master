@@ -243,8 +243,16 @@
     "questionsListTitle": "Predefined Questions",
     "questionsListDescription": "Found {count, plural, =0 {no questions} one {# question} other {# questions}}.",
     "questionsListDescriptionFiltered": "Showing {count, plural, =0 {no questions} one {# question} other {# questions}} (out of {total} total).",
+    "questionsListDescriptionCategory": "Showing {count, plural, =0 {no questions} one {# question} other {# questions}} for category \"{category}\".",
+    "selectCategoryPrompt": "Please select a category to view its questions.",
+    "selectCategoryPromptTable": "Select a category from the dropdown above to display questions.",
+    "loadingCategories": "Loading categories...",
+    "errorLoadingCategories": "Error loading categories. Please ensure they are set up.",
+    "errorLoadingQuestions": "Error loading questions for the selected category.",
+    "noCategoriesFoundAdmin": "No categories found. Please add categories first.",
+    "loadingQuestionsForCategory": "Loading questions for \"{category}\"...",
     "noQuestions": "No predefined questions found. You can generate them using the population script.",
-    "noQuestionsFound": "No questions found matching the current filters.",
+    "noQuestionsFound": "No questions found matching the current filters for this category.",
     "noQuestionsMatchFilters": "Try adjusting your filters or ensure questions have been populated for the selected criteria.",
     "tableQuestion": "Question",
     "tableCategory": "Category",
@@ -259,7 +267,7 @@
     "previousPage": "Previous",
     "nextPage": "Next",
     "searchPlaceholder": "Search by ID, question text, or answer text...",
-    "filterCategoryPlaceholder": "Filter by category...",
+    "filterCategoryPlaceholder": "Select a category",
     "filterDifficultyPlaceholder": "Filter by difficulty...",
     "allCategories": "All Categories",
     "allDifficulties": "All Difficulties",
@@ -385,3 +393,4 @@
     }
   }
 }
+

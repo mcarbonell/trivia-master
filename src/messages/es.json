@@ -243,8 +243,16 @@
     "questionsListTitle": "Preguntas Predefinidas",
     "questionsListDescription": "{count, plural, =0 {No se encontraron preguntas} one {Se encontró # pregunta} other {Se encontraron # preguntas}}.",
     "questionsListDescriptionFiltered": "Mostrando {count, plural, =0 {ninguna pregunta} one {# pregunta} other {# preguntas}} (de {total} en total).",
+    "questionsListDescriptionCategory": "Mostrando {count, plural, =0 {ninguna pregunta} one {# pregunta} other {# preguntas}} para la categoría \"{category}\".",
+    "selectCategoryPrompt": "Por favor, selecciona una categoría para ver sus preguntas.",
+    "selectCategoryPromptTable": "Selecciona una categoría del desplegable de arriba para mostrar las preguntas.",
+    "loadingCategories": "Cargando categorías...",
+    "errorLoadingCategories": "Error al cargar las categorías. Por favor, asegúrate de que están configuradas.",
+    "errorLoadingQuestions": "Error al cargar las preguntas para la categoría seleccionada.",
+    "noCategoriesFoundAdmin": "No se encontraron categorías. Por favor, añade categorías primero.",
+    "loadingQuestionsForCategory": "Cargando preguntas para \"{category}\"...",
     "noQuestions": "No se encontraron preguntas predefinidas. Puedes generarlas usando el script de población.",
-    "noQuestionsFound": "No se encontraron preguntas que coincidan con los filtros actuales.",
+    "noQuestionsFound": "No se encontraron preguntas que coincidan con los filtros actuales para esta categoría.",
     "noQuestionsMatchFilters": "Try adjusting your filters or ensure questions have been populated for the selected criteria.",
     "tableQuestion": "Pregunta",
     "tableCategory": "Categoría",
@@ -259,7 +267,7 @@
     "previousPage": "Anterior",
     "nextPage": "Siguiente",
     "searchPlaceholder": "Buscar por ID, texto de pregunta o respuesta...",
-    "filterCategoryPlaceholder": "Filtrar por categoría...",
+    "filterCategoryPlaceholder": "Selecciona una categoría",
     "filterDifficultyPlaceholder": "Filtrar por dificultad...",
     "allCategories": "Todas las Categorías",
     "allDifficulties": "Todas las Dificultades",
@@ -385,3 +393,4 @@
     }
   }
 }
+

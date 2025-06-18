@@ -6,7 +6,7 @@ import { useEffect, useState, useCallback, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import { getAllPredefinedQuestionsForAdmin, deletePredefinedQuestion, updatePredefinedQuestion, type PredefinedQuestion } from '@/services/triviaService'; // Updated to use renamed function
+import { getAllPredefinedQuestionsForAdmin, deletePredefinedQuestion, updatePredefinedQuestion, type PredefinedQuestion } from '@/services/triviaService'; 
 import { getAppCategories } from '@/services/categoryService';
 import type { CategoryDefinition, DifficultyLevel, BilingualText } from '@/types';
 import type { GenerateTriviaQuestionOutput } from '@/ai/flows/generate-trivia-question';
@@ -27,7 +27,7 @@ import { Loader2, AlertTriangle, PlusCircle, Eye, Edit, Trash2, RefreshCw, Searc
 import { useToast } from '@/hooks/use-toast';
 
 const ITEMS_PER_PAGE = 10;
-const ALL_FILTER_VALUE = 'all';
+// const ALL_FILTER_VALUE = 'all'; // No longer used for category selection logic
 
 interface DisplayQuestion extends PredefinedQuestion {
   categoryName?: string;
@@ -65,14 +65,15 @@ export default function AdminQuestionsPage() {
   const locale = useLocale() as AppLocale;
   const { toast } = useToast();
 
-  const [allQuestions, setAllQuestions] = useState<PredefinedQuestion[]>([]);
+  const [questionsForSelectedCategory, setQuestionsForSelectedCategory] = useState<PredefinedQuestion[]>([]);
   const [categoriesForFilter, setCategoriesForFilter] = useState<CategoryDefinition[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loadingCategories, setLoadingCategories] = useState(true);
+  const [isLoadingQuestions, setIsLoadingQuestions] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
 
-  const [selectedCategory, setSelectedCategory] = useState<string>(ALL_FILTER_VALUE);
-  const [selectedDifficulty, setSelectedDifficulty] = useState<string>(ALL_FILTER_VALUE);
+  const [selectedCategory, setSelectedCategory] = useState<string>(''); // Initialize as empty
+  const [selectedDifficulty, setSelectedDifficulty] = useState<string>('all'); // 'all' is fine for difficulty
   const [searchQuery, setSearchQuery] = useState<string>('');
 
   const [isQuestionDialogOpen, setIsQuestionDialogOpen] = useState(false);
@@ -83,28 +84,60 @@ export default function AdminQuestionsPage() {
     resolver: zodResolver(questionFormSchema),
   });
 
-  const fetchAllData = useCallback(async () => {
-    setLoading(true);
+  const fetchCategories = useCallback(async () => {
+    setLoadingCategories(true);
     setError(null);
     try {
-      const [fetchedQuestions, fetchedCategories] = await Promise.all([
-        getAllPredefinedQuestionsForAdmin(), // Using the renamed function
-        getAppCategories(), 
-      ]);
-      setAllQuestions(fetchedQuestions);
-      setCategoriesForFilter(fetchedCategories); 
+      const fetchedCategories = await getAppCategories();
+      setCategoriesForFilter(fetchedCategories);
+      if (fetchedCategories.length > 0 && !selectedCategory) {
+        // Auto-select the first category if none is selected yet
+        setSelectedCategory(fetchedCategories[0]!.topicValue);
+      } else if (fetchedCategories.length === 0) {
+        setQuestionsForSelectedCategory([]); // No categories, so no questions
+      }
     } catch (err) {
-      console.error("Error fetching data:", err);
-      setError(t('errorLoading'));
-      toast({ variant: "destructive", title: tCommon('toastErrorTitle') as string, description: t('errorLoading') });
+      console.error("Error fetching categories:", err);
+      setError(t('errorLoadingCategories')); // Assuming this key exists or create it
+      toast({ variant: "destructive", title: tCommon('toastErrorTitle') as string, description: t('errorLoadingCategories') });
     } finally {
-      setLoading(false);
+      setLoadingCategories(false);
     }
-  }, [t, tCommon, toast]);
+  }, [t, tCommon, toast, selectedCategory]); // Add selectedCategory to dependency array
 
   useEffect(() => {
-    fetchAllData();
-  }, [fetchAllData]);
+    fetchCategories();
+  }, [fetchCategories]);
+
+
+  const fetchQuestionsForCurrentCategory = useCallback(async () => {
+    if (!selectedCategory) {
+      setQuestionsForSelectedCategory([]);
+      return;
+    }
+    setIsLoadingQuestions(true);
+    setError(null);
+    try {
+      const fetchedQuestions = await getAllPredefinedQuestionsForAdmin(selectedCategory);
+      setQuestionsForSelectedCategory(fetchedQuestions);
+    } catch (err) {
+      console.error(`Error fetching questions for category ${selectedCategory}:`, err);
+      setError(t('errorLoadingQuestions')); // Assuming this key exists or create it
+      toast({ variant: "destructive", title: tCommon('toastErrorTitle') as string, description: t('errorLoadingQuestions') });
+      setQuestionsForSelectedCategory([]);
+    } finally {
+      setIsLoadingQuestions(false);
+    }
+  }, [selectedCategory, t, tCommon, toast]);
+
+  useEffect(() => {
+    if (selectedCategory) {
+      fetchQuestionsForCurrentCategory();
+    } else {
+      setQuestionsForSelectedCategory([]); // Clear questions if no category is selected
+    }
+  }, [selectedCategory, fetchQuestionsForCurrentCategory]);
+
 
   const categoryMap = useMemo(() => {
     return new Map(categoriesForFilter.map(cat => [cat.topicValue, cat.name[locale]]));
@@ -114,9 +147,8 @@ export default function AdminQuestionsPage() {
     const trimmedSearchQuery = searchQuery.trim();
     const lowerSearchQuery = trimmedSearchQuery.toLowerCase();
 
-    let questions = allQuestions
-      .filter(q => selectedCategory === ALL_FILTER_VALUE || q.topicValue === selectedCategory)
-      .filter(q => selectedDifficulty === ALL_FILTER_VALUE || q.difficulty === selectedDifficulty)
+    let questions = questionsForSelectedCategory // Start with questions of the selected category
+      .filter(q => selectedDifficulty === 'all' || q.difficulty === selectedDifficulty)
       .filter(q => {
         if (!trimmedSearchQuery) return true;
         if (q.id === trimmedSearchQuery) return true;
@@ -130,7 +162,8 @@ export default function AdminQuestionsPage() {
         return inAnswers;
       });
 
-    if (selectedCategory !== ALL_FILTER_VALUE) {
+    // Order only if a category is selected (which is always true now if questions are shown)
+    if (selectedCategory) {
       questions = questions.sort((a, b) => {
         const textA = a.question[locale]?.toLowerCase() || '';
         const textB = b.question[locale]?.toLowerCase() || '';
@@ -139,7 +172,7 @@ export default function AdminQuestionsPage() {
     }
 
     return questions;
-  }, [allQuestions, selectedCategory, selectedDifficulty, searchQuery, locale]);
+  }, [questionsForSelectedCategory, selectedCategory, selectedDifficulty, searchQuery, locale]);
 
   const displayQuestions = useMemo(() => {
     return filteredQuestions.map(q => ({
@@ -160,7 +193,11 @@ export default function AdminQuestionsPage() {
     setCurrentPage(1);
   };
 
+  // This useEffect will now be triggered when selectedCategory changes,
+  // which in turn triggers fetchQuestionsForCurrentCategory,
+  // and then the useMemo for filteredQuestions re-runs.
   useEffect(handleFilterChange, [selectedCategory, selectedDifficulty, searchQuery]);
+
 
   const handleNextPage = () => {
     if (currentPage < totalPages) {
@@ -178,7 +215,9 @@ export default function AdminQuestionsPage() {
     try {
       await deletePredefinedQuestion(questionId);
       toast({ title: tCommon('toastSuccessTitle') as string, description: t('toastDeleteSuccess', { question: truncateText(questionText, 30) }) });
-      await fetchAllData(); 
+      if (selectedCategory) { // Re-fetch questions for the current category
+        fetchQuestionsForCurrentCategory();
+      }
     } catch (err) {
       console.error("Error deleting question:", err);
       toast({ variant: "destructive", title: tCommon('toastErrorTitle') as string, description: t('toastDeleteError') });
@@ -232,7 +271,9 @@ export default function AdminQuestionsPage() {
     try {
       await updatePredefinedQuestion(currentQuestionToEdit.id, updatedQuestionData);
       toast({ title: tCommon('toastSuccessTitle') as string, description: t('toastUpdateSuccess') });
-      await fetchAllData();
+      if (selectedCategory) { // Re-fetch questions for the current category
+        fetchQuestionsForCurrentCategory();
+      }
       setIsQuestionDialogOpen(false);
     } catch (err) {
       console.error("Error updating question:", err);
@@ -247,10 +288,11 @@ export default function AdminQuestionsPage() {
     return text.substring(0, maxLength) + "...";
   };
 
-  if (loading) {
+  if (loadingCategories) {
     return (
       <div className="flex items-center justify-center py-10">
         <Loader2 className="h-12 w-12 animate-spin text-primary" />
+        <p className="ml-4">{t('loadingCategories')}</p>
       </div>
     );
   }
@@ -265,7 +307,7 @@ export default function AdminQuestionsPage() {
           <p className="text-destructive">{error}</p>
         </CardContent>
          <CardFooter>
-            <Button onClick={fetchAllData} variant="outline">
+            <Button onClick={fetchCategories} variant="outline"> 
                 <RefreshCw className="mr-2 h-4 w-4" />
                 {tCommon('retryButton')}
             </Button>
@@ -273,6 +315,20 @@ export default function AdminQuestionsPage() {
       </Card>
     );
   }
+  
+  if (categoriesForFilter.length === 0) {
+    return (
+      <Card className="shadow-lg">
+        <CardHeader>
+          <CardTitle>{t('title')}</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p className="text-muted-foreground">{t('noCategoriesFoundAdmin')}</p>
+        </CardContent>
+      </Card>
+    );
+  }
+
 
   return (
     <div className="space-y-6">
@@ -292,7 +348,12 @@ export default function AdminQuestionsPage() {
           <div className="flex flex-col md:flex-row justify-between md:items-start gap-4">
             <div className="flex-grow">
               <CardTitle>{t('questionsListTitle')}</CardTitle>
-              <CardDescription>{t('questionsListDescriptionFiltered', { count: displayQuestions.length, total: allQuestions.length })}</CardDescription>
+              <CardDescription>
+                {selectedCategory 
+                  ? t('questionsListDescriptionCategory', { category: categoryMap.get(selectedCategory) || selectedCategory, count: displayQuestions.length })
+                  : t('selectCategoryPrompt')
+                }
+              </CardDescription>
             </div>
             <div className="flex flex-col sm:flex-row gap-2 md:gap-4 w-full md:w-auto">
               <div className="relative w-full sm:w-auto md:flex-grow">
@@ -303,14 +364,15 @@ export default function AdminQuestionsPage() {
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     className="pl-8 w-full sm:w-[200px] md:w-full"
+                    disabled={!selectedCategory || isLoadingQuestions}
                   />
               </div>
-              <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+              <Select value={selectedCategory} onValueChange={setSelectedCategory} disabled={loadingCategories}>
                 <SelectTrigger className="w-full sm:w-[200px]">
                   <SelectValue placeholder={t('filterCategoryPlaceholder')} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value={ALL_FILTER_VALUE}>{t('allCategories')}</SelectItem>
+                  {/* Option for 'All Categories' removed as per requirement to always have one selected */}
                   {categoriesForFilter.map(cat => ( 
                     <SelectItem key={cat.topicValue} value={cat.topicValue}>
                       {cat.name[locale]}
@@ -318,12 +380,12 @@ export default function AdminQuestionsPage() {
                   ))}
                 </SelectContent>
               </Select>
-              <Select value={selectedDifficulty} onValueChange={setSelectedDifficulty}>
+              <Select value={selectedDifficulty} onValueChange={setSelectedDifficulty} disabled={!selectedCategory || isLoadingQuestions}>
                 <SelectTrigger className="w-full sm:w-[180px]">
                   <SelectValue placeholder={t('filterDifficultyPlaceholder')} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value={ALL_FILTER_VALUE}>{t('allDifficulties')}</SelectItem>
+                  <SelectItem value={'all'}>{t('allDifficulties')}</SelectItem>
                   {ALL_DIFFICULTY_LEVELS.map(diff => (
                      <SelectItem key={diff} value={diff}>
                         {tCommon(`difficultyLevels.${diff}` as any)}
@@ -335,7 +397,14 @@ export default function AdminQuestionsPage() {
           </div>
         </CardHeader>
         <CardContent>
-          {paginatedQuestions.length === 0 ? (
+          {isLoadingQuestions ? (
+            <div className="flex items-center justify-center py-10">
+              <Loader2 className="h-10 w-10 animate-spin text-primary" />
+              <p className="ml-3">{t('loadingQuestionsForCategory', { category: categoryMap.get(selectedCategory) || selectedCategory })}</p>
+            </div>
+          ) : !selectedCategory ? (
+             <p className="text-muted-foreground text-center py-4">{t('selectCategoryPromptTable')}</p>
+          ) : paginatedQuestions.length === 0 ? (
             <p className="text-muted-foreground text-center py-4">{t('noQuestionsFound')}</p>
           ) : (
             <TooltipProvider delayDuration={100}>
@@ -410,7 +479,7 @@ export default function AdminQuestionsPage() {
             </TooltipProvider>
           )}
         </CardContent>
-        {totalPages > 1 && (
+        {totalPages > 1 && selectedCategory && !isLoadingQuestions && (
           <CardFooter className="flex items-center justify-between border-t pt-4">
             <div className="text-sm text-muted-foreground">
               {t('paginationInfo', { currentPage, totalPages, totalItems: displayQuestions.length })}
@@ -425,7 +494,7 @@ export default function AdminQuestionsPage() {
             </div>
           </CardFooter>
         )}
-         {displayQuestions.length === 0 && allQuestions.length > 0 && (
+         {displayQuestions.length === 0 && selectedCategory && !isLoadingQuestions && (
             <CardFooter className="pt-4">
                 <p className="text-sm text-muted-foreground">{t('noQuestionsMatchFilters')}</p>
             </CardFooter>

@@ -11,7 +11,7 @@ export interface PredefinedQuestion extends GenerateTriviaQuestionOutput {
   createdAt?: string; 
 }
 
-const PREDEFINED_QUESTIONS_COLLECTION = 'predefinedTriviaQuestions'; // Removed export, still used internally
+const PREDEFINED_QUESTIONS_COLLECTION = 'predefinedTriviaQuestions';
 const FIRESTORE_QUERY_LIMIT_FOR_SINGLE_FETCH = 200; 
 
 /**
@@ -24,7 +24,7 @@ const FIRESTORE_QUERY_LIMIT_FOR_SINGLE_FETCH = 200;
  * @param targetDifficulty The desired difficulty level.
  * @returns A PredefinedQuestion (bilingual) or null.
  */
-export async function getPredefinedQuestionFromFirestore( // Renamed to clarify its source
+export async function getPredefinedQuestionFromFirestore( 
   topicValue: string,
   askedFirestoreIds: string[],
   targetDifficulty: DifficultyLevel
@@ -123,13 +123,22 @@ export async function getAllQuestionsForTopic(topicValue: string): Promise<Prede
 
 
 /**
- * Fetches all predefined bilingual trivia questions from Firestore (for Admin Panel).
+ * Fetches all predefined bilingual trivia questions from Firestore for a specific category (for Admin Panel).
+ * If no topicValue is provided, it returns an empty array.
+ * @param topicValue The topicValue of the category to fetch questions for. If null/undefined, returns empty.
  * @returns A promise that resolves to an array of PredefinedQuestion.
  */
-export async function getAllPredefinedQuestionsForAdmin(): Promise<PredefinedQuestion[]> { // Renamed for clarity
+export async function getAllPredefinedQuestionsForAdmin(topicValue: string | null): Promise<PredefinedQuestion[]> {
+  if (!topicValue) {
+    return []; // Return empty if no category is selected
+  }
   try {
     const questionsRef = collection(db, PREDEFINED_QUESTIONS_COLLECTION);
-    const q = query(questionsRef, orderBy('topicValue'), orderBy('difficulty')); 
+    const q = query(
+        questionsRef, 
+        where('topicValue', '==', topicValue), 
+        orderBy('difficulty') // Keep some basic ordering within category
+    ); 
     const querySnapshot = await getDocs(q);
     
     const questions: PredefinedQuestion[] = [];
@@ -152,7 +161,7 @@ export async function getAllPredefinedQuestionsForAdmin(): Promise<PredefinedQue
     
     return questions;
   } catch (error) {
-    console.error(`[triviaService] Error fetching all predefined questions for admin:`, error);
+    console.error(`[triviaService] Error fetching predefined questions for admin (topic: ${topicValue}):`, error);
     throw error; 
   }
 }
@@ -176,6 +185,3 @@ export async function updatePredefinedQuestion(questionId: string, data: Partial
     throw error; 
   }
 }
-
-// It might be useful to have PREDEFINED_QUESTIONS_COLLECTION exported if other services need it directly
-// export const PREDEFINED_QUESTIONS_COLLECTION = 'predefinedTriviaQuestions';
