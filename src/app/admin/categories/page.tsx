@@ -1,4 +1,3 @@
-
 // src/app/admin/categories/page.tsx
 'use client';
 
@@ -18,11 +17,11 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Loader2, PlusCircle, Edit, Trash2, AlertTriangle, RefreshCw, Indent, Pilcrow } from 'lucide-react'; // Added RefreshCw
+import { Loader2, PlusCircle, Edit, Trash2, AlertTriangle, RefreshCw, Indent, Pilcrow } from 'lucide-react';
 import { useTranslations, useLocale } from 'next-intl';
 import type { AppLocale } from '@/lib/i18n-config';
 import { useToast } from '@/hooks/use-toast';
-import { db } from '@/lib/firebase'; // Import db for Firestore queries
+import { db } from '@/lib/firebase';
 import { collection, query, where, getCountFromServer } from 'firebase/firestore';
 
 const categoryFormSchema = z.object({
@@ -51,6 +50,7 @@ interface CategoryWithCounts extends CategoryDefinition {
 }
 
 const DIFFICULTIES: DifficultyLevel[] = ['easy', 'medium', 'hard'];
+const NO_PARENT_SELECT_VALUE = "__NO_PARENT_VALUE__"; // Special value for "No Parent" option
 
 export default function AdminCategoriesPage() {
   const t = useTranslations('AdminCategoriesPage');
@@ -75,7 +75,7 @@ export default function AdminCategoriesPage() {
       nameEs: '',
       icon: '',
       detailedPromptInstructions: '',
-      parentTopicValue: '',
+      parentTopicValue: '', // Will be '' if no parent initially, placeholder will show
       isPredefined: true,
       difficultyEasy: '',
       difficultyMedium: '',
@@ -136,7 +136,7 @@ export default function AdminCategoriesPage() {
       nameEs: category.name.es,
       icon: category.icon,
       detailedPromptInstructions: category.detailedPromptInstructions,
-      parentTopicValue: category.parentTopicValue || '',
+      parentTopicValue: category.parentTopicValue || '', // Set to '' if undefined/null for placeholder
       isPredefined: category.isPredefined === undefined ? true : category.isPredefined,
       difficultyEasy: category.difficultySpecificGuidelines?.easy || '',
       difficultyMedium: category.difficultySpecificGuidelines?.medium || '',
@@ -147,7 +147,7 @@ export default function AdminCategoriesPage() {
       nameEs: '',
       icon: '',
       detailedPromptInstructions: '',
-      parentTopicValue: '',
+      parentTopicValue: '', // Default to '' for new category
       isPredefined: true,
       difficultyEasy: '',
       difficultyMedium: '',
@@ -163,7 +163,8 @@ export default function AdminCategoriesPage() {
       name: { en: data.nameEn, es: data.nameEs },
       icon: data.icon,
       detailedPromptInstructions: data.detailedPromptInstructions,
-      parentTopicValue: data.parentTopicValue || undefined, // Save as undefined if empty
+      // Convert special value or empty string for parentTopicValue to undefined
+      parentTopicValue: (data.parentTopicValue === NO_PARENT_SELECT_VALUE || data.parentTopicValue === '') ? undefined : data.parentTopicValue,
       isPredefined: data.isPredefined,
       difficultySpecificGuidelines: {
         ...(data.difficultyEasy && { easy: data.difficultyEasy }),
@@ -388,16 +389,20 @@ export default function AdminCategoriesPage() {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>{t('formParentCategoryLabel')}</FormLabel>
-                    <Select onValueChange={field.onChange} value={field.value || ''}>
+                    <Select 
+                      onValueChange={field.onChange} 
+                      value={field.value || ''} // Ensures placeholder shows if value is ''
+                    >
                       <FormControl>
                         <SelectTrigger>
                           <SelectValue placeholder={t('formParentCategoryPlaceholder')} />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem value="">{t('noParent')}</SelectItem>
+                        {/* Use a special non-empty value for "No Parent" option */}
+                        <SelectItem value={NO_PARENT_SELECT_VALUE}>{t('noParent')}</SelectItem>
                         {categories
-                          .filter(cat => !currentCategory || cat.topicValue !== currentCategory.topicValue) // Prevent self-parenting
+                          .filter(cat => !currentCategory || cat.topicValue !== currentCategory.topicValue) 
                           .map(cat => (
                             <SelectItem key={cat.topicValue} value={cat.topicValue}>
                               {cat.name[locale]} ({cat.topicValue})
@@ -520,4 +525,3 @@ export default function AdminCategoriesPage() {
     </div>
   );
 }
-
