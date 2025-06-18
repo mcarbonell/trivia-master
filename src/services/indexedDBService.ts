@@ -1,3 +1,4 @@
+
 // src/services/indexedDBService.ts
 'use client';
 
@@ -49,7 +50,7 @@ export async function saveQuestionsToDB(questions: PredefinedQuestion[]): Promis
 
     for (const question of questions) {
       if (!question.id) {
-        console.warn('Attempted to save question without ID to IndexedDB:', question);
+        console.warn('[DEBUG] [IndexedDB] Attempted to save question without ID to IndexedDB:', question);
         continue;
       }
       store.put(question); // put will add or update
@@ -57,16 +58,16 @@ export async function saveQuestionsToDB(questions: PredefinedQuestion[]): Promis
 
     return new Promise((resolve, reject) => {
       transaction.oncomplete = () => {
-        // console.log(`[IndexedDB] Successfully saved/updated ${questions.length} questions.`);
+        console.log(`[DEBUG] [IndexedDB] Successfully saved/updated ${questions.length} questions.`);
         resolve();
       };
       transaction.onerror = (event) => {
-        console.error('[IndexedDB] Transaction error saving questions:', (event.target as IDBTransaction).error);
+        console.error('[DEBUG] [IndexedDB] Transaction error saving questions:', (event.target as IDBTransaction).error);
         reject((event.target as IDBTransaction).error);
       };
     });
   } catch (error) {
-    console.error('[IndexedDB] Error opening DB or initiating transaction for saving questions:', error);
+    console.error('[DEBUG] [IndexedDB] Error opening DB or initiating transaction for saving questions:', error);
     throw error;
   }
 }
@@ -76,38 +77,39 @@ export async function getQuestionFromDB(
   difficulty: DifficultyLevel,
   askedIds: string[]
 ): Promise<PredefinedQuestion | null> {
+  console.log(`[DEBUG] [IndexedDB] getQuestionFromDB: topicValue=${topicValue}, difficulty=${difficulty}, askedIdsCount=${askedIds.length}`);
   try {
     const db = await openDB();
     const transaction = db.transaction(QUESTIONS_STORE_NAME, 'readonly');
     const store = transaction.objectStore(QUESTIONS_STORE_NAME);
     const index = store.index('topicValue_difficulty');
     
-    // Using a key range for compound index
     const keyRange = IDBKeyRange.only([topicValue, difficulty]);
     const request = index.getAll(keyRange);
 
     return new Promise<PredefinedQuestion | null>((resolve, reject) => {
       request.onsuccess = () => {
         const allMatchingQuestions = request.result as PredefinedQuestion[];
+        console.log(`[DEBUG] [IndexedDB] getQuestionFromDB: Found ${allMatchingQuestions.length} total matching questions for ${topicValue} - ${difficulty}.`);
         const unaskedQuestions = allMatchingQuestions.filter(q => !askedIds.includes(q.id));
 
         if (unaskedQuestions.length > 0) {
           const randomIndex = Math.floor(Math.random() * unaskedQuestions.length);
-          // console.log(`[IndexedDB] Found ${unaskedQuestions.length} unasked questions for ${topicValue} - ${difficulty}. Returning one.`);
+          console.log(`[DEBUG] [IndexedDB] getQuestionFromDB: Found ${unaskedQuestions.length} unasked questions. Returning one (ID: ${unaskedQuestions[randomIndex]!.id}).`);
           resolve(unaskedQuestions[randomIndex]!);
         } else {
-          // console.log(`[IndexedDB] No unasked questions found for ${topicValue} - ${difficulty} with ${askedIds.length} asked IDs.`);
+          console.log(`[DEBUG] [IndexedDB] getQuestionFromDB: No unasked questions found for ${topicValue} - ${difficulty} (asked IDs: ${askedIds.join(', ')}).`);
           resolve(null);
         }
       };
       request.onerror = (event) => {
-        console.error('[IndexedDB] Error fetching question:', (event.target as IDBRequest).error);
+        console.error('[DEBUG] [IndexedDB] getQuestionFromDB: Error fetching question:', (event.target as IDBRequest).error);
         reject((event.target as IDBRequest).error);
       };
     });
   } catch (error) {
-    console.error('[IndexedDB] Error opening DB or initiating transaction for getting question:', error);
-    return null; // Or rethrow, depending on desired error handling
+    console.error('[DEBUG] [IndexedDB] getQuestionFromDB: Error opening DB or initiating transaction:', error);
+    return null; 
   }
 }
 
@@ -133,16 +135,16 @@ export async function clearAllQuestionsFromDB(): Promise<void> {
     
     return new Promise<void>((resolve, reject) => {
       transaction.oncomplete = () => {
-        // console.log('[IndexedDB] All questions cleared.');
+        console.log('[DEBUG] [IndexedDB] All questions cleared.');
         resolve();
       };
       transaction.onerror = (event) => {
-        console.error('[IndexedDB] Error clearing questions:', (event.target as IDBTransaction).error);
+        console.error('[DEBUG] [IndexedDB] Error clearing questions:', (event.target as IDBTransaction).error);
         reject((event.target as IDBTransaction).error);
       };
     });
   } catch (error) {
-    console.error('[IndexedDB] Error opening DB or initiating transaction for clearing questions:', error);
+    console.error('[DEBUG] [IndexedDB] Error opening DB or initiating transaction for clearing questions:', error);
     throw error;
   }
 }
@@ -243,3 +245,4 @@ if (typeof window !== 'undefined') {
     }
   };
 }
+
