@@ -11,7 +11,7 @@ export interface PredefinedQuestion extends GenerateTriviaQuestionOutput {
   createdAt?: string; 
 }
 
-const PREDEFINED_QUESTIONS_COLLECTION = 'predefinedTriviaQuestions';
+const PREDEFINED_QUESTIONS_COLLECTION = 'predefinedTriviaQuestions'; // Removed export, still used internally
 const FIRESTORE_QUERY_LIMIT_FOR_SINGLE_FETCH = 200; 
 
 /**
@@ -176,3 +176,6 @@ export async function updatePredefinedQuestion(questionId: string, data: Partial
     throw error; 
   }
 }
+
+// It might be useful to have PREDEFINED_QUESTIONS_COLLECTION exported if other services need it directly
+// export const PREDEFINED_QUESTIONS_COLLECTION = 'predefinedTriviaQuestions';
