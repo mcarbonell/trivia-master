@@ -41,7 +41,7 @@ import {
   Sparkles,
   ThumbsDown,
   ScrollText,
-  ListChecks // Added ListChecks
+  ListChecks
 } from "lucide-react";
 import { logEvent as logEventFromLib, analytics } from "@/lib/firebase";
 
@@ -92,7 +92,6 @@ export default function TriviaPage() {
   const [currentBreadcrumb, setCurrentBreadcrumb] = useState<CategoryDefinition[]>([]);
   
   const [gameState, setGameState] = useState<GameState>('initial_loading');
-  const [loadingMessage, setLoadingMessage] = useState<string>(''); 
 
   const [currentTopicValue, setCurrentTopicValue] = useState<string>(''); // Can be predefined topicValue or customTopicValue
   const [currentCategoryDetails, setCurrentCategoryDetails] = useState<ActiveCategoryDetails | null>(null);
@@ -118,12 +117,6 @@ export default function TriviaPage() {
 
   const [questionsAnsweredThisGame, setQuestionsAnsweredThisGame] = useState(0);
   const [currentQuestionNumberInGame, setCurrentQuestionNumberInGame] = useState(0);
-
-  // isCustomTopicGameActive is now derived from currentCategoryDetails.isCustomActive
-  // const [isCustomTopicGameActive, setIsCustomTopicGameActive] = useState<boolean>(false);
-  // customTopicQuestionsCache is no longer needed as we fetch from IDB directly for custom topics too.
-  // const [customTopicQuestionsCache, setCustomTopicQuestionsCache] = useState<(PredefinedQuestion | CustomQuestion)[]>([]);
-  // const [currentBatchQuestionIndex, setCurrentBatchQuestionIndex] = useState<number>(0);
 
   const [downloadedPredefinedTopicValues, setDownloadedPredefinedTopicValues] = useState<Set<string>>(new Set());
   const [userGeneratedCustomTopics, setUserGeneratedCustomTopics] = useState<CustomTopicMeta[]>([]);
@@ -243,7 +236,6 @@ export default function TriviaPage() {
     }
     
     setGameState('downloading_category_questions');
-    setLoadingMessage(t('downloadingCategoryQuestions', { categoryName: categoryToDownload.name[locale] }));
     console.log(`[DEBUG] downloadQuestionsForTopic: GameState set to downloading_category_questions for ${categoryToDownload.topicValue}`);
 
     try {
@@ -273,7 +265,6 @@ export default function TriviaPage() {
       setFeedback({ message: t('errorLoadingQuestion'), detailedMessage: t('categoryDownloadError', { categoryName: categoryToDownload.name[locale] }), isCorrect: false });
       return false;
     } finally {
-      setLoadingMessage(''); 
     }
   };
 
@@ -469,8 +460,6 @@ export default function TriviaPage() {
     setAskedCorrectAnswerTexts([]);
     setQuestionsAnsweredThisGame(0);
     setCurrentQuestionNumberInGame(0);
-    // setCustomTopicQuestionsCache([]); // Not used anymore
-    // setCurrentBatchQuestionIndex(0); // Not used anymore
 
     if (children.length > 0) { 
         setCurrentBreadcrumb(prev => [...prev, category]);
@@ -501,7 +490,6 @@ export default function TriviaPage() {
             }
             return newBreadcrumb;
         });
-        // setIsCustomTopicGameActive(false); // This is now part of currentCategoryDetails
         console.log(`[DEBUG] handleCategoryClick: Proceeding to difficulty_selection for ${categoryToPlay.topicValue}.`);
         setGameState('difficulty_selection');
         logAnalyticsEvent('select_category', { 
@@ -520,7 +508,6 @@ export default function TriviaPage() {
     setAskedCorrectAnswerTexts([]);
     setQuestionsAnsweredThisGame(0);
     setCurrentQuestionNumberInGame(0);
-    // setCurrentBatchQuestionIndex(0); // Not used
 
     setCurrentTopicValue(customTopicMeta.customTopicValue);
     const activeDetails: ActiveCategoryDetails = {
@@ -532,7 +519,6 @@ export default function TriviaPage() {
         isCustomActive: true,
     };
     setCurrentCategoryDetails(activeDetails);
-    // setIsCustomTopicGameActive(true); // Handled by activeDetails
     setCurrentBreadcrumb([]); 
     setGameState('difficulty_selection');
     logAnalyticsEvent('select_category', { 
@@ -613,8 +599,6 @@ export default function TriviaPage() {
     setAskedCorrectAnswerTexts([]);
     setQuestionsAnsweredThisGame(0);
     setCurrentQuestionNumberInGame(0);
-    // setCustomTopicQuestionsCache([]); // Not used
-    // setCurrentBatchQuestionIndex(0); // Not used
     
     setCurrentTopicValue(newMeta.customTopicValue); 
     const activeDetails: ActiveCategoryDetails = {
@@ -627,7 +611,6 @@ export default function TriviaPage() {
     };
     setCurrentCategoryDetails(activeDetails);
     setCurrentBreadcrumb([]); 
-    // setIsCustomTopicGameActive(true); // Handled by activeDetails
     setGameState('difficulty_selection');
     setCustomTopicToConfirm(null);
     setCustomTopicInput(''); 
@@ -659,8 +642,6 @@ export default function TriviaPage() {
         setAskedCorrectAnswerTexts([]);
         setQuestionsAnsweredThisGame(0);
         setCurrentQuestionNumberInGame(0);
-        // setCustomTopicQuestionsCache([]); // Not used
-        // setCurrentBatchQuestionIndex(0); // Not used
 
         if (!downloadedPredefinedTopicValues.has(parentCategory.topicValue)) {
             console.log(`[DEBUG] handlePlayParentCategory: Parent category ${parentCategory.topicValue} needs download.`);
@@ -675,7 +656,6 @@ export default function TriviaPage() {
         
         setCurrentTopicValue(parentCategory.topicValue);
         setCurrentCategoryDetails({...parentCategory, isCustomActive: false });
-        // setIsCustomTopicGameActive(false); // Handled by currentCategoryDetails
         console.log(`[DEBUG] handlePlayParentCategory: Proceeding to difficulty_selection for parent ${parentCategory.topicValue}.`);
         setGameState('difficulty_selection');
         logAnalyticsEvent('select_category', { 
@@ -891,9 +871,6 @@ export default function TriviaPage() {
     setIsHintVisible(false);
     setQuestionsAnsweredThisGame(0);
     setCurrentQuestionNumberInGame(0);
-    // setIsCustomTopicGameActive(false); // Handled by currentCategoryDetails
-    // setCustomTopicQuestionsCache([]); // Not used
-    // setCurrentBatchQuestionIndex(0); // Not used
     setCustomTopicToConfirm(null);
     setIsCustomTopicValidating(false);
      getCustomTopicsMeta().then(setUserGeneratedCustomTopics).catch(e => console.error("Error reloading custom topics meta on full reset", e));
@@ -947,7 +924,7 @@ export default function TriviaPage() {
             { gameState === 'downloading_category_questions' && <DownloadCloud className="h-16 w-16 text-primary mx-auto mb-4" /> }
             { gameState === 'validating_custom_topic' && <Sparkles className="h-16 w-16 text-primary mx-auto mb-4" /> }
             <p className="mt-4 text-xl font-semibold text-muted-foreground">
-              {gameState === 'validating_custom_topic' ? t('validatingCustomTopic') : (loadingMessage || t('downloadingDefaultMessage'))}
+              {gameState === 'validating_custom_topic' ? t('validatingCustomTopic') : t('downloadingCategoryQuestions', { categoryName: currentCategoryDetails?.name[locale] || '...' })}
             </p>
             <Loader2 className="h-8 w-8 animate-spin text-primary mx-auto mt-6" />
           </CardContent>
@@ -1075,14 +1052,11 @@ export default function TriviaPage() {
               <Button variant="link" onClick={() => {
                  console.log("[DEBUG] Back to category selection clicked from difficulty screen.");
                 setGameState('category_selection');
-                // If it was a custom topic, just reset it fully.
                 if (currentCategoryDetails?.isCustomActive) {
-                    // setIsCustomTopicGameActive(false); // Handled by currentCategoryDetails
                     setCurrentCategoryDetails(null);
                     setCustomTopicInput(''); 
                     setCurrentTopicValue('');
                 }
-                // For predefined, try to go back up the breadcrumb.
                 else if (currentBreadcrumb.length > 1 && currentCategoryDetails && 'parentTopicValue' in currentCategoryDetails && (currentCategoryDetails as CategoryDefinition).parentTopicValue) { 
                    const parentOfCurrent = allAppCategories.find(c => c.topicValue === (currentCategoryDetails as CategoryDefinition).parentTopicValue);
                    if(parentOfCurrent){

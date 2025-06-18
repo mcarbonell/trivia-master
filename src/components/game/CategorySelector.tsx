@@ -11,9 +11,11 @@ import { Label } from "@/components/ui/label";
 import { useTranslations } from "next-intl";
 import type { CategoryDefinition } from "@/types";
 import type { AppLocale } from '@/lib/i18n-config';
-import { ArrowLeft, Loader2 } from 'lucide-react';
+import { ArrowLeft, Loader2, Sparkles, ListChecks } from 'lucide-react'; // Added Sparkles, ListChecks
+import type { CustomTopicMeta } from '@/services/indexedDBService'; // Import CustomTopicMeta
 
-const getIcon = (iconName: string): LucideIcon => {
+const getIcon = (iconName: string | undefined): LucideIcon => {
+  if (!iconName) return LucideIcons.HelpCircle; // Default if no iconName
   const IconComponent = (LucideIcons as any)[iconName];
   return IconComponent || LucideIcons.HelpCircle; 
 };
@@ -24,11 +26,13 @@ interface CategorySelectorProps {
   customTopicInput: string;
   onCustomTopicChange: (value: string) => void;
   onSelectCategory: (category: CategoryDefinition) => void;
-  onCustomTopicSubmit: (topic: string) => void; // New prop
+  onCustomTopicSubmit: (topic: string) => void;
   onPlayParentCategory?: () => void;
   onGoBack?: () => void;
   currentLocale: AppLocale;
-  isCustomTopicValidating: boolean; // New prop
+  isCustomTopicValidating: boolean;
+  userGeneratedCustomTopics: CustomTopicMeta[]; // New prop
+  onSelectUserGeneratedCustomTopic: (topicMeta: CustomTopicMeta) => void; // New prop
 }
 
 export function CategorySelector({
@@ -42,6 +46,8 @@ export function CategorySelector({
   onGoBack,
   currentLocale,
   isCustomTopicValidating,
+  userGeneratedCustomTopics,
+  onSelectUserGeneratedCustomTopic,
 }: CategorySelectorProps) {
   const t = useTranslations();
 
@@ -92,6 +98,7 @@ export function CategorySelector({
             className="w-full h-16 text-lg bg-primary hover:bg-primary/90 text-primary-foreground mb-4"
             onClick={onPlayParentCategory}
           >
+             <ListChecks className="mr-2 h-5 w-5" />
             {t('playAllFromParentButton', { parentName: currentParent.name[currentLocale] })}
           </Button>
         )}
@@ -108,6 +115,29 @@ export function CategorySelector({
             </Button>
           ))}
         </div>
+
+        {!currentParent && userGeneratedCustomTopics && userGeneratedCustomTopics.length > 0 && (
+          <div className="pt-4 border-t">
+            <h3 className="font-semibold mb-3 text-lg text-center">{t('savedCustomTopicsTitle')}</h3>
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+              {userGeneratedCustomTopics.map((topicMeta) => {
+                const IconComponent = getIcon(topicMeta.icon || 'Sparkles');
+                return (
+                  <Button
+                    key={topicMeta.customTopicValue}
+                    variant="outline"
+                    className="flex flex-col items-center justify-center h-28 p-4 hover:bg-accent hover:text-accent-foreground transition-all duration-200 group [&_svg]:h-8 [&_svg]:w-8"
+                    onClick={() => onSelectUserGeneratedCustomTopic(topicMeta)}
+                  >
+                    <IconComponent className="mb-2 text-primary group-hover:text-accent-foreground transition-colors h-8 w-8" />
+                    <span className="text-sm font-medium text-center">{topicMeta.name[currentLocale]}</span>
+                  </Button>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
         {!currentParent && ( 
           <form onSubmit={handleFormSubmit} className="space-y-4 pt-4 border-t">
             <div>
@@ -127,6 +157,7 @@ export function CategorySelector({
             </div>
             <Button type="submit" className="w-full bg-primary hover:bg-primary/90 text-primary-foreground" disabled={!customTopicInput.trim() || isCustomTopicValidating}>
               {isCustomTopicValidating && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              <Sparkles className="mr-2 h-4 w-4" />
               {t('customTopicButton')}
             </Button>
           </form>
