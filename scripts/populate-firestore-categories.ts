@@ -72,20 +72,20 @@ async function populateCategories() {
         !categoryData.topicValue || typeof categoryData.topicValue !== 'string' ||
         !categoryData.name || typeof categoryData.name.en !== 'string' || typeof categoryData.name.es !== 'string' ||
         !categoryData.icon || typeof categoryData.icon !== 'string' ||
-        !categoryData.detailedPromptInstructions || typeof categoryData.detailedPromptInstructions !== 'string' ||
-        (categoryData.hasOwnProperty('isPredefined') && typeof categoryData.isPredefined !== 'boolean') // Validate isPredefined
+        !categoryData.detailedPromptInstructions || typeof categoryData.detailedPromptInstructions !== 'string'
+        // Removed isPredefined validation
       ) {
-        console.warn(`Skipping category due to missing/invalid required fields (topicValue, name, icon, detailedPromptInstructions as string, isPredefined as boolean): ${JSON.stringify(categoryData)}`);
+        console.warn(`Skipping category due to missing/invalid required fields (topicValue, name, icon, detailedPromptInstructions as string): ${JSON.stringify(categoryData)}`);
         continue;
       }
 
-      const categoryToSave: CategoryDefinition = {
-        id: categoryData.topicValue, // Use topicValue as id
+      const categoryToSave: Omit<CategoryDefinition, 'id'> = { // Use Omit as ID is doc ID
         topicValue: categoryData.topicValue,
         name: categoryData.name,
         icon: categoryData.icon,
         detailedPromptInstructions: categoryData.detailedPromptInstructions,
-        isPredefined: categoryData.isPredefined === undefined ? true : categoryData.isPredefined, // Default to true if not specified
+        parentTopicValue: categoryData.parentTopicValue || undefined,
+        // isPredefined removed
       };
       
       if (categoryData.difficultySpecificGuidelines) {

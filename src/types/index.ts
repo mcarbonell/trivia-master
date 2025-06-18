@@ -18,13 +18,13 @@ export interface CategoryDefinition {
   name: BilingualText; 
   icon: string; 
   detailedPromptInstructions: string; 
-  parentTopicValue?: string; // Added for hierarchy
+  parentTopicValue?: string; 
   difficultySpecificGuidelines?: { 
     "easy"?: CategoryDifficultyGuideline;
     "medium"?: CategoryDifficultyGuideline;
     "hard"?: CategoryDifficultyGuideline;
   };
-  isPredefined?: boolean; // Controls visibility in the main game category selection UI
+  // isPredefined?: boolean; // Removed: Visibility is handled by hierarchy, predefinition by existence of questions
 }
 
 export type DifficultyMode = "adaptive" | DifficultyLevel;

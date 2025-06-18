@@ -1,3 +1,4 @@
+
 // src/app/admin/categories/page.tsx
 'use client';
 
@@ -15,7 +16,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { Switch } from '@/components/ui/switch';
+// Switch removed as isPredefined is removed
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Loader2, PlusCircle, Edit, Trash2, AlertTriangle, RefreshCw, Indent, Pilcrow } from 'lucide-react';
 import { useTranslations, useLocale } from 'next-intl';
@@ -31,7 +32,7 @@ const categoryFormSchema = z.object({
   icon: z.string().min(1, { message: "Icon name is required." }).max(50, { message: "Icon name must be 50 characters or less." }),
   detailedPromptInstructions: z.string().min(1, { message: "Detailed prompt instructions are required." }),
   parentTopicValue: z.string().optional(),
-  isPredefined: z.boolean().default(true),
+  // isPredefined: z.boolean().default(true), // Removed
   difficultyEasy: z.string().optional(),
   difficultyMedium: z.string().optional(),
   difficultyHard: z.string().optional(),
@@ -50,7 +51,7 @@ interface CategoryWithCounts extends CategoryDefinition {
 }
 
 const DIFFICULTIES: DifficultyLevel[] = ['easy', 'medium', 'hard'];
-const NO_PARENT_SELECT_VALUE = "__NO_PARENT_VALUE__"; // Special value for "No Parent" option
+const NO_PARENT_SELECT_VALUE = "__NO_PARENT_VALUE__"; 
 
 export default function AdminCategoriesPage() {
   const t = useTranslations('AdminCategoriesPage');
@@ -75,8 +76,8 @@ export default function AdminCategoriesPage() {
       nameEs: '',
       icon: '',
       detailedPromptInstructions: '',
-      parentTopicValue: '', // Will be '' if no parent initially, placeholder will show
-      isPredefined: true,
+      parentTopicValue: '', 
+      // isPredefined: true, // Removed
       difficultyEasy: '',
       difficultyMedium: '',
       difficultyHard: '',
@@ -136,8 +137,8 @@ export default function AdminCategoriesPage() {
       nameEs: category.name.es,
       icon: category.icon,
       detailedPromptInstructions: category.detailedPromptInstructions,
-      parentTopicValue: category.parentTopicValue || '', // Set to '' if undefined/null for placeholder
-      isPredefined: category.isPredefined === undefined ? true : category.isPredefined,
+      parentTopicValue: category.parentTopicValue || '', 
+      // isPredefined: category.isPredefined === undefined ? true : category.isPredefined, // Removed
       difficultyEasy: category.difficultySpecificGuidelines?.easy || '',
       difficultyMedium: category.difficultySpecificGuidelines?.medium || '',
       difficultyHard: category.difficultySpecificGuidelines?.hard || '',
@@ -147,8 +148,8 @@ export default function AdminCategoriesPage() {
       nameEs: '',
       icon: '',
       detailedPromptInstructions: '',
-      parentTopicValue: '', // Default to '' for new category
-      isPredefined: true,
+      parentTopicValue: '', 
+      // isPredefined: true, // Removed
       difficultyEasy: '',
       difficultyMedium: '',
       difficultyHard: '',
@@ -163,9 +164,8 @@ export default function AdminCategoriesPage() {
       name: { en: data.nameEn, es: data.nameEs },
       icon: data.icon,
       detailedPromptInstructions: data.detailedPromptInstructions,
-      // Convert special value or empty string for parentTopicValue to undefined
       parentTopicValue: (data.parentTopicValue === NO_PARENT_SELECT_VALUE || data.parentTopicValue === '') ? undefined : data.parentTopicValue,
-      isPredefined: data.isPredefined,
+      // isPredefined: data.isPredefined, // Removed
       difficultySpecificGuidelines: {
         ...(data.difficultyEasy && { easy: data.difficultyEasy }),
         ...(data.difficultyMedium && { medium: data.difficultyMedium }),
@@ -262,7 +262,7 @@ export default function AdminCategoriesPage() {
                   <TableHead className="hidden sm:table-cell">{t('tableParentCategory')}</TableHead>
                   <TableHead>{t('tableTopicValue')}</TableHead>
                   <TableHead className="hidden md:table-cell">{t('tableIcon')}</TableHead>
-                  <TableHead className="text-center hidden sm:table-cell">{t('tableIsPredefined')}</TableHead>
+                  {/* isPredefined column removed */}
                   <TableHead className="hidden lg:table-cell">{t('tableQuestionCounts')}</TableHead>
                   <TableHead className="text-right">{t('tableActions')}</TableHead>
                 </TableRow>
@@ -281,7 +281,7 @@ export default function AdminCategoriesPage() {
                       </TableCell>
                       <TableCell>{category.topicValue}</TableCell>
                       <TableCell className="hidden md:table-cell">{category.icon}</TableCell>
-                      <TableCell className="text-center hidden sm:table-cell">{category.isPredefined ? t('yes') : t('no')}</TableCell>
+                      {/* isPredefined cell removed */}
                       <TableCell className="hidden lg:table-cell text-xs">
                         {category.isLoadingCounts ? (
                           <Loader2 className="h-4 w-4 animate-spin" />
@@ -391,7 +391,7 @@ export default function AdminCategoriesPage() {
                     <FormLabel>{t('formParentCategoryLabel')}</FormLabel>
                     <Select 
                       onValueChange={field.onChange} 
-                      value={field.value || ''} // Ensures placeholder shows if value is ''
+                      value={field.value || ''} 
                     >
                       <FormControl>
                         <SelectTrigger>
@@ -399,7 +399,6 @@ export default function AdminCategoriesPage() {
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        {/* Use a special non-empty value for "No Parent" option */}
                         <SelectItem value={NO_PARENT_SELECT_VALUE}>{t('noParent')}</SelectItem>
                         {categories
                           .filter(cat => !currentCategory || cat.topicValue !== currentCategory.topicValue) 
@@ -440,26 +439,7 @@ export default function AdminCategoriesPage() {
                   </FormItem>
                 )}
               />
-              <FormField
-                control={form.control}
-                name="isPredefined"
-                render={({ field }) => (
-                  <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
-                    <div className="space-y-0.5">
-                        <FormLabel>{t('formIsPredefined')}</FormLabel>
-                        <p className="text-xs text-muted-foreground">
-                           {t('formIsPredefinedHint')}
-                        </p>
-                    </div>
-                    <FormControl>
-                      <Switch
-                        checked={field.value}
-                        onCheckedChange={field.onChange}
-                      />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
+              {/* isPredefined FormField removed */}
               
               <Card>
                 <CardHeader>
@@ -525,3 +505,4 @@ export default function AdminCategoriesPage() {
     </div>
   );
 }
+

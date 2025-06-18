@@ -32,7 +32,7 @@ export async function getAppCategories(): Promise<CategoryDefinition[]> {
           icon: data.icon,
           detailedPromptInstructions: data.detailedPromptInstructions,
           parentTopicValue: data.parentTopicValue || undefined,
-          isPredefined: data.isPredefined === undefined ? true : (typeof data.isPredefined === 'boolean' ? data.isPredefined : true),
+          // isPredefined removed
         };
 
         if (data.difficultySpecificGuidelines) {
@@ -79,8 +79,9 @@ export async function addCategory(categoryData: Omit<CategoryDefinition, 'id'>):
   const dataForFirestore: { [key: string]: any } = { ...categoryData };
 
   if (dataForFirestore.parentTopicValue === undefined) {
-    delete dataForFirestore.parentTopicValue; // Omit field if undefined
+    delete dataForFirestore.parentTopicValue; 
   }
+  // isPredefined logic removed
   
   await setDoc(categoryRef, dataForFirestore); 
 }
@@ -96,15 +97,15 @@ export async function updateCategory(categoryId: string, categoryData: Partial<O
   const dataForFirestore: { [key: string]: any } = { ...categoryData };
   
   if (dataForFirestore.hasOwnProperty('topicValue') && dataForFirestore.topicValue !== categoryId) {
-    // Prevent changing topicValue (document ID) through update. This should be handled by delete + add if necessary.
     delete dataForFirestore.topicValue; 
   }
 
   if (dataForFirestore.hasOwnProperty('parentTopicValue')) {
     if (dataForFirestore.parentTopicValue === undefined) {
-      dataForFirestore.parentTopicValue = deleteField(); // Use deleteField() to remove the field
+      dataForFirestore.parentTopicValue = deleteField(); 
     }
   }
+  // isPredefined logic removed
 
   const categoryRef = doc(db, CATEGORIES_COLLECTION, categoryId);
   await updateDoc(categoryRef, dataForFirestore);
@@ -119,3 +120,4 @@ export async function deleteCategory(categoryId: string): Promise<void> {
   const categoryRef = doc(db, CATEGORIES_COLLECTION, categoryId);
   await deleteDoc(categoryRef);
 }
+

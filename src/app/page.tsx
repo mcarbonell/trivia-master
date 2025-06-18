@@ -1,4 +1,5 @@
 
+
 "use client";
 
 import { useState, useEffect, useCallback, useRef } from "react";
@@ -109,7 +110,6 @@ export default function TriviaPage() {
     }
   }, []);
 
-  // Carga inicial de categorías y chequeo de versión de contenido
   useEffect(() => {
     setCurrentYear(new Date().getFullYear());
     console.log("[DEBUG] Initial setup starting...");
@@ -192,15 +192,13 @@ export default function TriviaPage() {
 
 
   const downloadQuestionsForTopic = async (categoryToDownload: CategoryDefinition): Promise<boolean> => {
-    console.log(`[DEBUG] downloadQuestionsForTopic: Called for category: ${categoryToDownload.topicValue}, isPredefined: ${categoryToDownload.isPredefined}`);
+    console.log(`[DEBUG] downloadQuestionsForTopic: Called for category: ${categoryToDownload.topicValue}`);
+    // No longer check isPredefined here. If questions exist in Firestore for topicValue, they will be downloaded.
+    // If not, getAllQuestionsForTopic will return empty, and nothing bad happens.
+    
     if (downloadedTopicValues.has(categoryToDownload.topicValue) && localStorage.getItem(CONTENT_VERSION_STORAGE_KEY) === CURRENT_CONTENT_VERSION) {
       console.log(`[DEBUG] downloadQuestionsForTopic: Topic ${categoryToDownload.topicValue} already downloaded and version matches. Skipping download.`);
       return true; 
-    }
-
-    if (categoryToDownload.isPredefined === false) { 
-        console.log(`[DEBUG] downloadQuestionsForTopic: Topic ${categoryToDownload.topicValue} is not predefined. Skipping download.`);
-        return true; 
     }
     
     setGameState('downloading_category_questions');
@@ -218,20 +216,22 @@ export default function TriviaPage() {
       const newDownloadedTopics = new Set(downloadedTopicValues).add(categoryToDownload.topicValue);
       setDownloadedTopicValues(newDownloadedTopics);
       localStorage.setItem(DOWNLOADED_TOPICS_STORAGE_KEY, JSON.stringify(Array.from(newDownloadedTopics)));
-      // localStorage.setItem(CONTENT_VERSION_STORAGE_KEY, CURRENT_CONTENT_VERSION); // This should ideally be set only after ALL necessary downloads are complete if version changed. For per-category, this is fine.
       
-      toast({ title: t('toastSuccessTitle') as string, description: t('categoryDownloadComplete', { categoryName: categoryToDownload.name[locale] }) });
-      console.log(`[DEBUG] downloadQuestionsForTopic: Successfully downloaded and saved questions for ${categoryToDownload.topicValue}.`);
+      if (questions.length > 0) {
+        toast({ title: t('toastSuccessTitle') as string, description: t('categoryDownloadComplete', { categoryName: categoryToDownload.name[locale] }) });
+      } else {
+        // It's not an error if a category just doesn't have predefined questions (e.g. very new or niche)
+        console.log(`[DEBUG] downloadQuestionsForTopic: No predefined questions found in Firestore for ${categoryToDownload.topicValue}. It will rely on AI generation.`);
+      }
+      console.log(`[DEBUG] downloadQuestionsForTopic: Successfully processed (downloaded or confirmed no questions) for ${categoryToDownload.topicValue}.`);
       return true;
     } catch (error) {
-      console.error(`[DEBUG] downloadQuestionsForTopic: Error downloading questions for topic ${categoryToDownload.topicValue}:`, error);
+      console.error(`[DEBUG] downloadQuestionsForTopic: Error processing questions for topic ${categoryToDownload.topicValue}:`, error);
       toast({ variant: "destructive", title: t('toastErrorTitle') as string, description: t('categoryDownloadError', { categoryName: categoryToDownload.name[locale] }) });
       setFeedback({ message: t('errorLoadingQuestion'), detailedMessage: t('categoryDownloadError', { categoryName: categoryToDownload.name[locale] }), isCorrect: false });
-      // Do not change gameState here, let the caller handle it.
       return false;
     } finally {
       setLoadingMessage(''); 
-      // GameState will be changed by the calling function based on success/failure
     }
   };
 
@@ -268,7 +268,8 @@ export default function TriviaPage() {
 
     setAskedQuestionTextsForAI(prev => [...new Set([...prev, questionTextInLocale])]);
 
-    if (qData.id && !isCustomTopicGameActive && currentCategoryDetails?.isPredefined !== false) { 
+    // Only add to askedFirestoreIds if it's a predefined question (has an ID) and not a custom topic game
+    if (qData.id && !isCustomTopicGameActive) { 
       console.log(`[DEBUG] prepareAndSetQuestion: Adding Firestore ID ${qData.id} to askedFirestoreIds.`);
       setAskedFirestoreIds(prev => [...new Set([...prev, qData.id!])]);
     }
@@ -286,7 +287,8 @@ export default function TriviaPage() {
     
     let fetchedQuestionData: CurrentQuestionData | null = null;
 
-    if (categoryDetailsForSelectedTopic && categoryDetailsForSelectedTopic.isPredefined !== false) {
+    // Try IndexedDB first if it's not a custom topic game and details are available
+    if (!isCustomTopicGameActive && categoryDetailsForSelectedTopic) {
       console.log(`[DEBUG] fetchPredefinedOrSingleAIQuestion: Attempting to get question from IndexedDB for topic ${topic}, difficulty ${difficulty}. Asked IDs:`, askedFirestoreIds);
       try {
         fetchedQuestionData = await getQuestionFromDB(topic, difficulty, askedFirestoreIds);
@@ -298,26 +300,33 @@ export default function TriviaPage() {
       } catch (indexedDbError) {
         console.warn(`[DEBUG] fetchPredefinedOrSingleAIQuestion: Error fetching from IndexedDB for topic "${topic}", will fall back to Firestore/Genkit:`, indexedDbError);
       }
+    } else if (isCustomTopicGameActive) {
+       console.log(`[DEBUG] fetchPredefinedOrSingleAIQuestion: Custom topic game for ${topic}. Skipping IndexedDB check.`);
     } else {
-      console.log(`[DEBUG] fetchPredefinedOrSingleAIQuestion: Category ${topic} is not predefined or no details available. Skipping IndexedDB check.`);
+      console.log(`[DEBUG] fetchPredefinedOrSingleAIQuestion: No categoryDetailsForSelectedTopic for ${topic}. Skipping IndexedDB check.`);
     }
     
-    if (!fetchedQuestionData && categoryDetailsForSelectedTopic && categoryDetailsForSelectedTopic.isPredefined !== false) {
+    // Try Firestore if not found in IndexedDB and it's not a custom topic game and details are available
+    if (!fetchedQuestionData && !isCustomTopicGameActive && categoryDetailsForSelectedTopic) {
         console.log(`[DEBUG] fetchPredefinedOrSingleAIQuestion: Attempting to get question from Firestore for topic ${topic}, difficulty ${difficulty}.`);
         try {
           fetchedQuestionData = await getPredefinedQuestionFromFirestore(topic, askedFirestoreIds, difficulty);
            if (fetchedQuestionData) {
             console.log(`[DEBUG] fetchPredefinedOrSingleAIQuestion: Found question in Firestore (ID: ${fetchedQuestionData.id})`);
           } else {
-            console.log(`[DEBUG] fetchPredefinedOrSingleAIQuestion: No unasked question found in Firestore for ${topic} - ${difficulty}. Falling back to AI if category is predefined.`);
+            console.log(`[DEBUG] fetchPredefinedOrSingleAIQuestion: No unasked question found in Firestore for ${topic} - ${difficulty}. Falling back to AI.`);
           }
         } catch (firestoreError) {
           console.warn(`[DEBUG] fetchPredefinedOrSingleAIQuestion: Error fetching from Firestore for topic "${topic}", will fall back to Genkit:`, firestoreError);
         }
     }
 
-    if (!fetchedQuestionData && categoryDetailsForSelectedTopic) { // AI fallback if category details exist (even if isPredefined is false, could imply AI only)
-      console.log(`[DEBUG] fetchPredefinedOrSingleAIQuestion: Falling back to Genkit AI for topic ${topic}, difficulty ${difficulty}. Category instructions: ${categoryDetailsForSelectedTopic.detailedPromptInstructions ? 'Yes' : 'No'}`);
+    // Fallback to AI if still no question (and category details exist, OR it's a custom topic)
+    if (!fetchedQuestionData && (categoryDetailsForSelectedTopic || isCustomTopicGameActive)) {
+      const instructions = categoryDetailsForSelectedTopic?.detailedPromptInstructions;
+      const diffInstruction = categoryDetailsForSelectedTopic?.difficultySpecificGuidelines?.[difficulty];
+      console.log(`[DEBUG] fetchPredefinedOrSingleAIQuestion: Falling back to Genkit AI for topic ${topic}, difficulty ${difficulty}. Category instructions: ${instructions ? 'Yes' : 'No'}`);
+      
       const inputForAI: GenerateTriviaQuestionsInput = {
         topic,
         previousQuestions: askedQuestionTextsForAI,
@@ -325,10 +334,10 @@ export default function TriviaPage() {
         targetDifficulty: difficulty,
         count: 1,
         modelName: DEFAULT_MODEL_FOR_GAME,
-        categoryInstructions: categoryDetailsForSelectedTopic.detailedPromptInstructions,
+        categoryInstructions: instructions,
       };
-      if (categoryDetailsForSelectedTopic.difficultySpecificGuidelines && categoryDetailsForSelectedTopic.difficultySpecificGuidelines[difficulty]) {
-        inputForAI.difficultySpecificInstruction = categoryDetailsForSelectedTopic.difficultySpecificGuidelines[difficulty];
+      if (diffInstruction) {
+        inputForAI.difficultySpecificInstruction = diffInstruction;
       }
 
       try {
@@ -353,7 +362,7 @@ export default function TriviaPage() {
       setCurrentQuestionNumberInGame(prev => Math.max(0, prev - 1)); 
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [locale, askedFirestoreIds, askedQuestionTextsForAI, askedCorrectAnswerTexts, t, logAnalyticsEvent]);
+  }, [locale, askedFirestoreIds, askedQuestionTextsForAI, askedCorrectAnswerTexts, t, logAnalyticsEvent, isCustomTopicGameActive]);
 
 
   const handleTimeout = useCallback(() => {
@@ -422,11 +431,12 @@ export default function TriviaPage() {
   }, [isHintVisible, questionData, gameState, currentTopic, currentCategoryDetails, locale, logAnalyticsEvent]);
 
   
-  // --- Category Navigation Logic ---
   const handleCategoryClick = async (category: CategoryDefinition) => {
-    console.log(`[DEBUG] handleCategoryClick: Clicked category: ${category.topicValue} (${category.name[locale]}), isPredefined: ${category.isPredefined}, Parent: ${category.parentTopicValue}`);
+    console.log(`[DEBUG] handleCategoryClick: Clicked category: ${category.topicValue} (${category.name[locale]}), Parent: ${category.parentTopicValue}`);
     const children = allAppCategories.filter(cat => cat.parentTopicValue === category.topicValue);
-    const isCustom = !allAppCategories.some(appCat => appCat.topicValue === category.topicValue); 
+    // A category is "custom" if it's not in our predefined list (i.e. if the user typed it)
+    // For this function, `category` always comes from `allAppCategories` or a constructed one for custom input.
+    const isCustomInputTopic = !allAppCategories.some(appCat => appCat.topicValue === category.topicValue); 
 
     setScore({ correct: 0, incorrect: 0 });
     setAskedFirestoreIds([]);
@@ -437,11 +447,11 @@ export default function TriviaPage() {
     setCustomTopicQuestionsCache([]);
     setCurrentBatchQuestionIndex(0);
 
-    if (isCustom) { 
+    if (isCustomInputTopic) { 
         setCurrentTopic(category.topicValue); 
-        setCurrentCategoryDetails(null); 
+        setCurrentCategoryDetails(null); // No details for custom typed topics
         setIsCustomTopicGameActive(true);
-        console.log(`[DEBUG] handleCategoryClick: Custom topic selected: ${category.topicValue}. GameState to difficulty_selection.`);
+        console.log(`[DEBUG] handleCategoryClick: Custom input topic selected: ${category.topicValue}. GameState to difficulty_selection.`);
         setGameState('difficulty_selection');
          logAnalyticsEvent('select_category', {
             category_topic_value: category.topicValue,
@@ -454,18 +464,20 @@ export default function TriviaPage() {
         setGameState('category_selection'); 
         console.log(`[DEBUG] handleCategoryClick: Category ${category.topicValue} has ${children.length} children. Navigating to subcategory view.`);
     } else { 
+        // This is a leaf category (or a category without *visible* children in the current view, but could be played directly)
         const categoryToPlay = category;
-        console.log(`[DEBUG] handleCategoryClick: Leaf category selected: ${categoryToPlay.topicValue}. isPredefined: ${categoryToPlay.isPredefined}, downloaded: ${downloadedTopicValues.has(categoryToPlay.topicValue)}`);
+        console.log(`[DEBUG] handleCategoryClick: Leaf category selected: ${categoryToPlay.topicValue}. Downloaded: ${downloadedTopicValues.has(categoryToPlay.topicValue)}`);
         
-        if (categoryToPlay.isPredefined !== false && !downloadedTopicValues.has(categoryToPlay.topicValue)) {
-            console.log(`[DEBUG] handleCategoryClick: Category ${categoryToPlay.topicValue} needs download.`);
+        // Attempt download if not already downloaded (getAllQuestionsForTopic will return [] if no predefined)
+        if (!downloadedTopicValues.has(categoryToPlay.topicValue)) {
+            console.log(`[DEBUG] handleCategoryClick: Category ${categoryToPlay.topicValue} needs download check.`);
             const downloadSuccess = await downloadQuestionsForTopic(categoryToPlay);
             if (!downloadSuccess) {
-                console.warn(`[DEBUG] handleCategoryClick: Download failed for ${categoryToPlay.topicValue}. Returning to category_selection.`);
+                console.warn(`[DEBUG] handleCategoryClick: Download process failed for ${categoryToPlay.topicValue}. Returning to category_selection.`);
                 setGameState('category_selection'); 
                 return;
             }
-            console.log(`[DEBUG] handleCategoryClick: Download successful for ${categoryToPlay.topicValue}.`);
+            console.log(`[DEBUG] handleCategoryClick: Download process completed for ${categoryToPlay.topicValue}.`);
         }
         
         setCurrentTopic(categoryToPlay.topicValue);
@@ -491,7 +503,7 @@ export default function TriviaPage() {
   const handlePlayParentCategory = async () => {
     const parentCategory = currentBreadcrumb.at(-1);
     if (parentCategory) {
-        console.log(`[DEBUG] handlePlayParentCategory: Playing parent category: ${parentCategory.topicValue}, isPredefined: ${parentCategory.isPredefined}, downloaded: ${downloadedTopicValues.has(parentCategory.topicValue)}`);
+        console.log(`[DEBUG] handlePlayParentCategory: Playing parent category: ${parentCategory.topicValue}, downloaded: ${downloadedTopicValues.has(parentCategory.topicValue)}`);
         setScore({ correct: 0, incorrect: 0 });
         setAskedFirestoreIds([]);
         setAskedQuestionTextsForAI([]);
@@ -501,15 +513,15 @@ export default function TriviaPage() {
         setCustomTopicQuestionsCache([]);
         setCurrentBatchQuestionIndex(0);
 
-        if (parentCategory.isPredefined !== false && !downloadedTopicValues.has(parentCategory.topicValue)) {
-            console.log(`[DEBUG] handlePlayParentCategory: Parent category ${parentCategory.topicValue} needs download.`);
+        if (!downloadedTopicValues.has(parentCategory.topicValue)) {
+            console.log(`[DEBUG] handlePlayParentCategory: Parent category ${parentCategory.topicValue} needs download check.`);
             const downloadSuccess = await downloadQuestionsForTopic(parentCategory);
             if (!downloadSuccess) {
-                console.warn(`[DEBUG] handlePlayParentCategory: Download failed for parent ${parentCategory.topicValue}. Returning to category_selection.`);
+                console.warn(`[DEBUG] handlePlayParentCategory: Download process failed for parent ${parentCategory.topicValue}. Returning to category_selection.`);
                 setGameState('category_selection'); 
                 return;
             }
-             console.log(`[DEBUG] handlePlayParentCategory: Download successful for parent ${parentCategory.topicValue}.`);
+             console.log(`[DEBUG] handlePlayParentCategory: Download process completed for parent ${parentCategory.topicValue}.`);
         }
         
         setCurrentTopic(parentCategory.topicValue);
@@ -547,7 +559,6 @@ export default function TriviaPage() {
       }
     }
   };
-  // --- End Category Navigation Logic ---
 
 
   const handleDifficultySelect = async (mode: DifficultyMode) => {
@@ -581,11 +592,8 @@ export default function TriviaPage() {
         count: QUESTIONS_PER_GAME,
         modelName: DEFAULT_MODEL_FOR_GAME,
       };
-      if (currentCategoryDetails && currentCategoryDetails.difficultySpecificGuidelines && currentCategoryDetails.difficultySpecificGuidelines[initialDifficulty]) {
-         inputForAI.difficultySpecificInstruction = currentCategoryDetails.difficultySpecificGuidelines[initialDifficulty];
-      }
-
-
+      // For custom topics, currentCategoryDetails will be null, so no specific instructions
+      
       try {
         const newQuestionsArray = await generateTriviaQuestions(inputForAI);
         if (newQuestionsArray && newQuestionsArray.length > 0) {
@@ -695,12 +703,12 @@ export default function TriviaPage() {
   const handlePlayAgainSameSettings = async () => {
     console.log("[DEBUG] handlePlayAgainSameSettings: Starting new game with same settings.");
     if (!isCustomTopicGameActive && currentCategoryDetails) {
-        if (currentCategoryDetails.isPredefined !== false && !downloadedTopicValues.has(currentCategoryDetails.topicValue)) {
-            console.log(`[DEBUG] handlePlayAgainSameSettings: Category ${currentCategoryDetails.topicValue} needs download before playing again.`);
+        if (!downloadedTopicValues.has(currentCategoryDetails.topicValue)) {
+            console.log(`[DEBUG] handlePlayAgainSameSettings: Category ${currentCategoryDetails.topicValue} needs download check before playing again.`);
             const downloadSuccess = await downloadQuestionsForTopic(currentCategoryDetails);
             if (!downloadSuccess) {
-              console.warn(`[DEBUG] handlePlayAgainSameSettings: Download failed for ${currentCategoryDetails.topicValue}. Cannot play again.`);
-              setGameState('category_selection'); // Or error
+              console.warn(`[DEBUG] handlePlayAgainSameSettings: Download process failed for ${currentCategoryDetails.topicValue}. Cannot play again.`);
+              setGameState('category_selection'); 
               return;
             }
         }
@@ -891,24 +899,24 @@ export default function TriviaPage() {
               <Button variant="link" onClick={() => {
                  console.log("[DEBUG] Back to category selection clicked from difficulty screen.");
                 setGameState('category_selection');
-                if (currentBreadcrumb.length > 1) { // Was in a subcategory view before difficulty
-                   const parentOfCurrentPlayable = currentBreadcrumb.at(-2); // Parent of the one we were about to play
+                if (currentBreadcrumb.length > 1) { 
+                   const parentOfCurrentPlayable = currentBreadcrumb.at(-2); 
                    if (parentOfCurrentPlayable) {
                        setCategoriesForCurrentView(allAppCategories.filter(c => c.parentTopicValue === parentOfCurrentPlayable.topicValue));
-                       setCurrentBreadcrumb(currentBreadcrumb.slice(0, -1)); // Go back one level in breadcrumb
+                       setCurrentBreadcrumb(currentBreadcrumb.slice(0, -1)); 
                        console.log(`[DEBUG] Restored view to subcategories of ${parentOfCurrentPlayable.topicValue}`);
-                   } else { // Should not happen if breadcrumb.length > 1, but safety
+                   } else { 
                        setCategoriesForCurrentView(topLevelCategories);
                        setCurrentBreadcrumb([]);
                        console.log("[DEBUG] Restored view to top level (safety from difficulty back).");
                    }
-                } else { // Came from top level category to difficulty
+                } else { 
                    setCategoriesForCurrentView(topLevelCategories);
                    setCurrentBreadcrumb([]);
                    console.log("[DEBUG] Restored view to top level categories from difficulty screen.");
                 }
               }} className="mx-auto text-sm">
-                {t('backToCategorySelection')}
+                <ArrowLeft className="mr-2 h-4 w-4" /> {t('backToCategorySelection')}
               </Button>
             </CardFooter>
           </Card>
