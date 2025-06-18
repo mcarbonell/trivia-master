@@ -3,15 +3,13 @@
 'use server';
 
 import { db } from '@/lib/firebase';
-import { collection, getDocs, doc, setDoc, updateDoc, deleteDoc, getDoc, type DocumentData } from 'firebase/firestore';
+import { collection, getDocs, doc, setDoc, updateDoc, deleteDoc, getDoc, type DocumentData, deleteField } from 'firebase/firestore';
 import type { CategoryDefinition, BilingualText, DifficultyLevel } from '@/types'; 
 
 const CATEGORIES_COLLECTION = 'triviaCategories';
 
 /**
  * Fetches ALL category definitions from Firestore.
- * The responsibility to filter them (e.g., by isPredefined) is left to the caller.
- * @returns A promise that resolves to an array of CategoryDefinition.
  */
 export async function getAppCategories(): Promise<CategoryDefinition[]> {
   try {
@@ -21,7 +19,6 @@ export async function getAppCategories(): Promise<CategoryDefinition[]> {
     const categories: CategoryDefinition[] = [];
     querySnapshot.forEach((doc) => {
       const data = doc.data() as DocumentData;
-      // Basic validation for core fields
       if (data.topicValue && typeof data.topicValue === 'string' &&
           data.name && typeof data.name.en === 'string' && typeof data.name.es === 'string' &&
           data.icon && typeof data.icon === 'string' &&
@@ -34,7 +31,7 @@ export async function getAppCategories(): Promise<CategoryDefinition[]> {
           name: data.name as BilingualText,
           icon: data.icon,
           detailedPromptInstructions: data.detailedPromptInstructions,
-          parentTopicValue: data.parentTopicValue || undefined, // Add parentTopicValue
+          parentTopicValue: data.parentTopicValue || undefined,
           isPredefined: data.isPredefined === undefined ? true : (typeof data.isPredefined === 'boolean' ? data.isPredefined : true),
         };
 
@@ -78,12 +75,14 @@ export async function addCategory(categoryData: Omit<CategoryDefinition, 'id'>):
   if (docSnap.exists()) {
     throw new Error(`Category with Topic Value "${categoryData.topicValue}" already exists.`);
   }
-  // Ensure parentTopicValue is undefined if empty or null, so it's not stored as an empty string
-  const dataToSave = {
-    ...categoryData,
-    parentTopicValue: categoryData.parentTopicValue || undefined,
-  };
-  await setDoc(categoryRef, dataToSave); 
+
+  const dataForFirestore: { [key: string]: any } = { ...categoryData };
+
+  if (dataForFirestore.parentTopicValue === undefined) {
+    delete dataForFirestore.parentTopicValue; // Omit field if undefined
+  }
+  
+  await setDoc(categoryRef, dataForFirestore); 
 }
 
 
@@ -94,18 +93,21 @@ export async function addCategory(categoryData: Omit<CategoryDefinition, 'id'>):
  * @returns A promise that resolves when the category is updated.
  */
 export async function updateCategory(categoryId: string, categoryData: Partial<Omit<CategoryDefinition, 'id'>>): Promise<void> {
-  const dataToUpdate = { ...categoryData };
-  if ('topicValue' in dataToUpdate && dataToUpdate.topicValue !== categoryId) {
-    delete dataToUpdate.topicValue;
-  }
-  // Ensure parentTopicValue is undefined if empty or null
-  if (dataToUpdate.parentTopicValue === '' || dataToUpdate.parentTopicValue === null) {
-    dataToUpdate.parentTopicValue = undefined;
+  const dataForFirestore: { [key: string]: any } = { ...categoryData };
+  
+  if (dataForFirestore.hasOwnProperty('topicValue') && dataForFirestore.topicValue !== categoryId) {
+    // Prevent changing topicValue (document ID) through update. This should be handled by delete + add if necessary.
+    delete dataForFirestore.topicValue; 
   }
 
+  if (dataForFirestore.hasOwnProperty('parentTopicValue')) {
+    if (dataForFirestore.parentTopicValue === undefined) {
+      dataForFirestore.parentTopicValue = deleteField(); // Use deleteField() to remove the field
+    }
+  }
 
   const categoryRef = doc(db, CATEGORIES_COLLECTION, categoryId);
-  await updateDoc(categoryRef, dataToUpdate);
+  await updateDoc(categoryRef, dataForFirestore);
 }
 
 /**
@@ -117,4 +119,3 @@ export async function deleteCategory(categoryId: string): Promise<void> {
   const categoryRef = doc(db, CATEGORIES_COLLECTION, categoryId);
   await deleteDoc(categoryRef);
 }
-
