@@ -34,7 +34,7 @@ export async function getAppCategories(): Promise<CategoryDefinition[]> {
           name: data.name as BilingualText,
           icon: data.icon,
           detailedPromptInstructions: data.detailedPromptInstructions,
-          // isPredefined defaults to true if not present, otherwise uses the Firestore value
+          parentTopicValue: data.parentTopicValue || undefined, // Add parentTopicValue
           isPredefined: data.isPredefined === undefined ? true : (typeof data.isPredefined === 'boolean' ? data.isPredefined : true),
         };
 
@@ -78,7 +78,12 @@ export async function addCategory(categoryData: Omit<CategoryDefinition, 'id'>):
   if (docSnap.exists()) {
     throw new Error(`Category with Topic Value "${categoryData.topicValue}" already exists.`);
   }
-  await setDoc(categoryRef, categoryData); 
+  // Ensure parentTopicValue is undefined if empty or null, so it's not stored as an empty string
+  const dataToSave = {
+    ...categoryData,
+    parentTopicValue: categoryData.parentTopicValue || undefined,
+  };
+  await setDoc(categoryRef, dataToSave); 
 }
 
 
@@ -93,6 +98,11 @@ export async function updateCategory(categoryId: string, categoryData: Partial<O
   if ('topicValue' in dataToUpdate && dataToUpdate.topicValue !== categoryId) {
     delete dataToUpdate.topicValue;
   }
+  // Ensure parentTopicValue is undefined if empty or null
+  if (dataToUpdate.parentTopicValue === '' || dataToUpdate.parentTopicValue === null) {
+    dataToUpdate.parentTopicValue = undefined;
+  }
+
 
   const categoryRef = doc(db, CATEGORIES_COLLECTION, categoryId);
   await updateDoc(categoryRef, dataToUpdate);

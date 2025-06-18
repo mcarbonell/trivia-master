@@ -1,3 +1,4 @@
+
 // src/types/index.ts
 import type { FieldValue } from 'firebase/firestore'; // Keep for write operations if needed elsewhere
 import type { AppLocale } from '@/lib/i18n-config';
@@ -17,6 +18,7 @@ export interface CategoryDefinition {
   name: BilingualText; 
   icon: string; 
   detailedPromptInstructions: string; 
+  parentTopicValue?: string; // Added for hierarchy
   difficultySpecificGuidelines?: { 
     "easy"?: CategoryDifficultyGuideline;
     "medium"?: CategoryDifficultyGuideline;

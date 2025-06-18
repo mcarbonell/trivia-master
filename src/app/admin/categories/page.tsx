@@ -1,3 +1,4 @@
+
 // src/app/admin/categories/page.tsx
 'use client';
 
@@ -16,7 +17,8 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
-import { Loader2, PlusCircle, Edit, Trash2, AlertTriangle, RefreshCw } from 'lucide-react'; // Added RefreshCw
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Loader2, PlusCircle, Edit, Trash2, AlertTriangle, RefreshCw, Indent, Pilcrow } from 'lucide-react'; // Added RefreshCw
 import { useTranslations, useLocale } from 'next-intl';
 import type { AppLocale } from '@/lib/i18n-config';
 import { useToast } from '@/hooks/use-toast';
@@ -29,6 +31,7 @@ const categoryFormSchema = z.object({
   nameEs: z.string().min(1, { message: "Spanish name is required." }),
   icon: z.string().min(1, { message: "Icon name is required." }).max(50, { message: "Icon name must be 50 characters or less." }),
   detailedPromptInstructions: z.string().min(1, { message: "Detailed prompt instructions are required." }),
+  parentTopicValue: z.string().optional(),
   isPredefined: z.boolean().default(true),
   difficultyEasy: z.string().optional(),
   difficultyMedium: z.string().optional(),
@@ -72,6 +75,7 @@ export default function AdminCategoriesPage() {
       nameEs: '',
       icon: '',
       detailedPromptInstructions: '',
+      parentTopicValue: '',
       isPredefined: true,
       difficultyEasy: '',
       difficultyMedium: '',
@@ -84,16 +88,13 @@ export default function AdminCategoriesPage() {
     setError(null);
     try {
       const fetchedCategories = await getAppCategories();
-      // Initialize categories with isLoadingCounts true for all categories
-      // as question counts are relevant for any category defined in Firestore
       const categoriesWithLoadingState: CategoryWithCounts[] = fetchedCategories.map(cat => ({
         ...cat,
         isLoadingCounts: true, 
       }));
       setCategories(categoriesWithLoadingState);
-      setLoading(false); // Base categories loaded
+      setLoading(false);
 
-      // Now fetch counts for ALL categories
       const countPromises = fetchedCategories.map(async (category) => {
         try {
           const counts: Partial<QuestionCounts> = {};
@@ -135,6 +136,7 @@ export default function AdminCategoriesPage() {
       nameEs: category.name.es,
       icon: category.icon,
       detailedPromptInstructions: category.detailedPromptInstructions,
+      parentTopicValue: category.parentTopicValue || '',
       isPredefined: category.isPredefined === undefined ? true : category.isPredefined,
       difficultyEasy: category.difficultySpecificGuidelines?.easy || '',
       difficultyMedium: category.difficultySpecificGuidelines?.medium || '',
@@ -145,6 +147,7 @@ export default function AdminCategoriesPage() {
       nameEs: '',
       icon: '',
       detailedPromptInstructions: '',
+      parentTopicValue: '',
       isPredefined: true,
       difficultyEasy: '',
       difficultyMedium: '',
@@ -160,6 +163,7 @@ export default function AdminCategoriesPage() {
       name: { en: data.nameEn, es: data.nameEs },
       icon: data.icon,
       detailedPromptInstructions: data.detailedPromptInstructions,
+      parentTopicValue: data.parentTopicValue || undefined, // Save as undefined if empty
       isPredefined: data.isPredefined,
       difficultySpecificGuidelines: {
         ...(data.difficultyEasy && { easy: data.difficultyEasy }),
@@ -201,7 +205,7 @@ export default function AdminCategoriesPage() {
     }
   };
   
-  if (loading) { // Initial loading for categories
+  if (loading) { 
     return (
       <div className="flex items-center justify-center py-10">
         <Loader2 className="h-12 w-12 animate-spin text-primary" />
@@ -254,6 +258,7 @@ export default function AdminCategoriesPage() {
               <TableHeader>
                 <TableRow>
                   <TableHead>{t('tableName')}</TableHead>
+                  <TableHead className="hidden sm:table-cell">{t('tableParentCategory')}</TableHead>
                   <TableHead>{t('tableTopicValue')}</TableHead>
                   <TableHead className="hidden md:table-cell">{t('tableIcon')}</TableHead>
                   <TableHead className="text-center hidden sm:table-cell">{t('tableIsPredefined')}</TableHead>
@@ -262,55 +267,64 @@ export default function AdminCategoriesPage() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {categories.map((category) => (
-                  <TableRow key={category.id}>
-                    <TableCell className="font-medium">{category.name[locale]}</TableCell>
-                    <TableCell>{category.topicValue}</TableCell>
-                    <TableCell className="hidden md:table-cell">{category.icon}</TableCell>
-                    <TableCell className="text-center hidden sm:table-cell">{category.isPredefined ? t('yes') : t('no')}</TableCell>
-                    <TableCell className="hidden lg:table-cell text-xs">
-                      {category.isLoadingCounts ? (
-                        <Loader2 className="h-4 w-4 animate-spin" />
-                      ) : category.questionCounts ? (
-                        <div className="flex flex-col">
-                          <span>{t('difficultyShort.easy')}: {category.questionCounts.easy}</span>
-                          <span>{t('difficultyShort.medium')}: {category.questionCounts.medium}</span>
-                          <span>{t('difficultyShort.hard')}: {category.questionCounts.hard}</span>
-                        </div>
-                      ) : (
-                        t('noCounts')
-                      )}
-                    </TableCell>
-                    <TableCell className="text-right space-x-2">
-                      <Button variant="outline" size="icon" onClick={() => handleOpenDialog('edit', category)} className="h-8 w-8">
-                        <Edit className="h-4 w-4" />
-                        <span className="sr-only">{t('editButton')}</span>
-                      </Button>
-                      <AlertDialog>
-                        <AlertDialogTrigger asChild>
-                          <Button variant="destructive" size="icon" className="h-8 w-8">
-                            <Trash2 className="h-4 w-4" />
-                            <span className="sr-only">{t('deleteButton')}</span>
-                          </Button>
-                        </AlertDialogTrigger>
-                        <AlertDialogContent>
-                          <AlertDialogHeader>
-                            <AlertDialogTitle>{t('deleteConfirmTitle')}</AlertDialogTitle>
-                            <AlertDialogDescription>
-                              {t('deleteConfirmDescription', { name: category.name[locale] })}
-                            </AlertDialogDescription>
-                          </AlertDialogHeader>
-                          <AlertDialogFooter>
-                            <AlertDialogCancel>{tCommon('cancel')}</AlertDialogCancel>
-                            <AlertDialogAction onClick={() => handleDeleteCategory(category.id, category.name[locale])} className="bg-destructive hover:bg-destructive/90">
-                              {t('deleteButton')}
-                            </AlertDialogAction>
-                          </AlertDialogFooter>
-                        </AlertDialogContent>
-                      </AlertDialog>
-                    </TableCell>
-                  </TableRow>
-                ))}
+                {categories.map((category) => {
+                  const parentCategory = category.parentTopicValue ? categories.find(c => c.topicValue === category.parentTopicValue) : null;
+                  return (
+                    <TableRow key={category.id}>
+                      <TableCell className="font-medium">
+                        {parentCategory ? <Indent className="inline-block mr-2 h-4 w-4 text-muted-foreground" /> : <Pilcrow className="inline-block mr-2 h-4 w-4 text-muted-foreground/50" />}
+                        {category.name[locale]}
+                      </TableCell>
+                      <TableCell className="hidden sm:table-cell text-xs">
+                        {parentCategory ? parentCategory.name[locale] : <span className="text-muted-foreground italic">{t('noParent')}</span>}
+                      </TableCell>
+                      <TableCell>{category.topicValue}</TableCell>
+                      <TableCell className="hidden md:table-cell">{category.icon}</TableCell>
+                      <TableCell className="text-center hidden sm:table-cell">{category.isPredefined ? t('yes') : t('no')}</TableCell>
+                      <TableCell className="hidden lg:table-cell text-xs">
+                        {category.isLoadingCounts ? (
+                          <Loader2 className="h-4 w-4 animate-spin" />
+                        ) : category.questionCounts ? (
+                          <div className="flex flex-col">
+                            <span>{t('difficultyShort.easy')}: {category.questionCounts.easy}</span>
+                            <span>{t('difficultyShort.medium')}: {category.questionCounts.medium}</span>
+                            <span>{t('difficultyShort.hard')}: {category.questionCounts.hard}</span>
+                          </div>
+                        ) : (
+                          t('noCounts')
+                        )}
+                      </TableCell>
+                      <TableCell className="text-right space-x-2">
+                        <Button variant="outline" size="icon" onClick={() => handleOpenDialog('edit', category)} className="h-8 w-8">
+                          <Edit className="h-4 w-4" />
+                          <span className="sr-only">{t('editButton')}</span>
+                        </Button>
+                        <AlertDialog>
+                          <AlertDialogTrigger asChild>
+                            <Button variant="destructive" size="icon" className="h-8 w-8">
+                              <Trash2 className="h-4 w-4" />
+                              <span className="sr-only">{t('deleteButton')}</span>
+                            </Button>
+                          </AlertDialogTrigger>
+                          <AlertDialogContent>
+                            <AlertDialogHeader>
+                              <AlertDialogTitle>{t('deleteConfirmTitle')}</AlertDialogTitle>
+                              <AlertDialogDescription>
+                                {t('deleteConfirmDescription', { name: category.name[locale] })}
+                              </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                              <AlertDialogCancel>{tCommon('cancel')}</AlertDialogCancel>
+                              <AlertDialogAction onClick={() => handleDeleteCategory(category.id, category.name[locale])} className="bg-destructive hover:bg-destructive/90">
+                                {t('deleteButton')}
+                              </AlertDialogAction>
+                            </AlertDialogFooter>
+                          </AlertDialogContent>
+                        </AlertDialog>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
               </TableBody>
             </Table>
           )}
@@ -368,6 +382,33 @@ export default function AdminCategoriesPage() {
                   )}
                 />
               </div>
+              <FormField
+                control={form.control}
+                name="parentTopicValue"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{t('formParentCategoryLabel')}</FormLabel>
+                    <Select onValueChange={field.onChange} value={field.value || ''}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder={t('formParentCategoryPlaceholder')} />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="">{t('noParent')}</SelectItem>
+                        {categories
+                          .filter(cat => !currentCategory || cat.topicValue !== currentCategory.topicValue) // Prevent self-parenting
+                          .map(cat => (
+                            <SelectItem key={cat.topicValue} value={cat.topicValue}>
+                              {cat.name[locale]} ({cat.topicValue})
+                            </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
               <FormField
                 control={form.control}
                 name="icon"
