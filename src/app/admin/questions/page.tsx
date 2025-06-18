@@ -34,7 +34,7 @@ interface DisplayQuestion extends PredefinedQuestion {
 
 const ALL_DIFFICULTY_LEVELS: DifficultyLevel[] = ["easy", "medium", "hard"];
 
-const questionFormSchema = z.object({
+export const questionFormSchema = z.object({
   questionEn: z.string().min(1, { message: "English question is required." }),
   questionEs: z.string().min(1, { message: "Spanish question is required." }),
   answer1En: z.string().min(1, { message: "Answer A (English) is required." }),
