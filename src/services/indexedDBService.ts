@@ -140,16 +140,63 @@ export async function clearAllQuestionsFromDB(): Promise<void> {
         console.error('[IndexedDB] Error clearing questions:', (event.target as IDBTransaction).error);
         reject((event.target as IDBTransaction).error);
       };
-      // Note: request.onsuccess is for the clear operation itself, 
-      // but transaction.oncomplete signals the whole transaction is done.
-      // request.onsuccess = () => resolve(); 
-      // request.onerror = () => reject(request.error); // Already handled by transaction.onerror
     });
   } catch (error) {
     console.error('[IndexedDB] Error opening DB or initiating transaction for clearing questions:', error);
     throw error;
   }
 }
+
+export async function countQuestionsByCriteriaInDB(criteria: { topicValue?: string; difficulty?: DifficultyLevel }): Promise<number> {
+  if (!criteria.topicValue && !criteria.difficulty) {
+    console.error('[IndexedDB] countQuestionsByCriteriaInDB: Please provide at least one criterion (topicValue or difficulty).');
+    return 0;
+  }
+
+  try {
+    const db = await openDB();
+    const transaction = db.transaction(QUESTIONS_STORE_NAME, 'readonly');
+    const store = transaction.objectStore(QUESTIONS_STORE_NAME);
+
+    if (criteria.topicValue && criteria.difficulty) {
+      const index = store.index('topicValue_difficulty');
+      const keyRange = IDBKeyRange.only([criteria.topicValue, criteria.difficulty]);
+      const request = index.count(keyRange);
+      return promisifyRequest(request);
+    } else if (criteria.topicValue) {
+      const index = store.index('topicValue');
+      const keyRange = IDBKeyRange.only(criteria.topicValue);
+      const request = index.count(keyRange);
+      return promisifyRequest(request);
+    } else if (criteria.difficulty) {
+      // No direct index for difficulty only, so we iterate with a cursor
+      let count = 0;
+      return new Promise((resolve, reject) => {
+        const cursorRequest = store.openCursor();
+        cursorRequest.onsuccess = (event) => {
+          const cursor = (event.target as IDBRequest<IDBCursorWithValue | null>).result;
+          if (cursor) {
+            if (cursor.value.difficulty === criteria.difficulty) {
+              count++;
+            }
+            cursor.continue();
+          } else {
+            resolve(count);
+          }
+        };
+        cursorRequest.onerror = (event) => {
+          console.error('[IndexedDB] Error iterating with cursor for difficulty count:', (event.target as IDBRequest).error);
+          reject((event.target as IDBRequest).error);
+        };
+      });
+    }
+    return 0; // Should not reach here if criteria are validated
+  } catch (error) {
+    console.error('[IndexedDB] Error counting questions by criteria:', error);
+    return 0;
+  }
+}
+
 
 // Helper for console debugging during development
 if (typeof window !== 'undefined') {
@@ -167,11 +214,32 @@ if (typeof window !== 'undefined') {
   (window as any).countTriviaDB = async () => {
     try {
       const count = await countAllQuestionsInDB();
-      console.log(`AI Trivia Master IndexedDB question count: ${count}`);
-      alert(`AI Trivia Master IndexedDB question count: ${count}`);
+      const message = `AI Trivia Master IndexedDB total question count: ${count}`;
+      console.log(message);
+      alert(message);
     } catch (e) {
       console.error('Error counting Trivia DB:', e);
       alert('Error counting Trivia DB. Check console.');
+    }
+  };
+  (window as any).countTriviaDBByCriteria = async (criteria: { topicValue?: string; difficulty?: DifficultyLevel }) => {
+    if (!criteria || (typeof criteria.topicValue === 'undefined' && typeof criteria.difficulty === 'undefined')) {
+        const message = 'Usage: window.countTriviaDBByCriteria({ topicValue: "YourTopic", difficulty: "easy" })\nPlease provide topicValue, difficulty, or both.';
+        console.warn(message);
+        alert(message);
+        return;
+    }
+    try {
+      const count = await countQuestionsByCriteriaInDB(criteria);
+      let criteriaString = [];
+      if (criteria.topicValue) criteriaString.push(`topicValue: "${criteria.topicValue}"`);
+      if (criteria.difficulty) criteriaString.push(`difficulty: "${criteria.difficulty}"`);
+      const message = `AI Trivia Master IndexedDB question count for {${criteriaString.join(', ')}}: ${count}`;
+      console.log(message);
+      alert(message);
+    } catch (e) {
+      console.error('Error counting Trivia DB by criteria:', e);
+      alert('Error counting Trivia DB by criteria. Check console.');
     }
   };
 }
