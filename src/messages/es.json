@@ -83,6 +83,8 @@
   "initialDownloadNoCategories": "No se encontraron categorías predefinidas para descargar para juego offline.",
   "initialLoadDone": "Preguntas offline listas.",
   "initialLoadSkipped": "Preguntas offline no disponibles (problema IndexedDB o primera vez).",
+  "updatingOfflineQuestions": "Actualizando base de datos de preguntas offline...",
+  "offlineQuestionsUpdated": "¡Preguntas offline actualizadas correctamente!",
 
   "AboutPage": {
     "title": "Acerca de y Contacto",
