@@ -33,7 +33,7 @@ import {
 import { logEvent as logEventFromLib, analytics } from "@/lib/firebase";
 
 type GameState = 
-  'initial_loading' | // Covers both IndexedDB download and category fetching
+  'initial_loading' | 
   'category_selection' | 
   'difficulty_selection' | 
   'loading_question' | 
@@ -43,7 +43,7 @@ type GameState =
   'game_over' | 
   'error';
 
-type CurrentQuestionData = GenerateTriviaQuestionOutput & { id?: string }; // id is from Firestore/IndexedDB
+type CurrentQuestionData = GenerateTriviaQuestionOutput & { id?: string }; 
 
 const DIFFICULTY_LEVELS_ORDER: DifficultyLevel[] = ["easy", "medium", "hard"];
 const QUESTION_TIME_LIMIT_SECONDS = 30;
@@ -103,34 +103,32 @@ export default function TriviaPage() {
       setGameState('initial_loading');
       setInitialLoadMessage(t('initialLoadCheck'));
       
-      let alreadyDownloaded = false;
+      let alreadyDownloadedOrFlagged = false;
+      let downloadErrorOccurred = false;
+
       try {
         if (typeof window !== 'undefined' && window.indexedDB) {
           const flag = localStorage.getItem(LOCALSTORAGE_DOWNLOAD_FLAG);
           if (flag === 'true') {
             const dbCount = await countAllQuestionsInDB();
-            if (dbCount > 0) { // Basic check if DB has content
-              alreadyDownloaded = true;
-              // console.log('[TriviaPage] Initial questions already downloaded and DB has content.');
+            if (dbCount > 0) {
+              alreadyDownloadedOrFlagged = true;
             } else {
-              // console.log('[TriviaPage] Flag set, but DB empty. Forcing re-download.');
-              localStorage.removeItem(LOCALSTORAGE_DOWNLOAD_FLAG); // Clear flag to force re-download
+              localStorage.removeItem(LOCALSTORAGE_DOWNLOAD_FLAG); // Clear flag if DB empty
             }
           }
         } else {
-          // console.log('[TriviaPage] IndexedDB not available. Skipping offline download.');
-           alreadyDownloaded = true; // Skip download if no IndexedDB
+           alreadyDownloadedOrFlagged = true; 
         }
       } catch (e) {
         console.error("[TriviaPage] Error checking IndexedDB/localStorage:", e);
-        // Proceed as if not downloaded to be safe, or handle error more gracefully
       }
 
-      if (!alreadyDownloaded && typeof window !== 'undefined' && window.indexedDB) {
+      if (!alreadyDownloadedOrFlagged && typeof window !== 'undefined' && window.indexedDB) {
         setInitialLoadMessage(t('initialDownloadStart'));
         try {
-          const predefinedGameCategories = await getAppCategories(); // Fetches all, including those not for UI if any
-          const categoriesToDownload = predefinedGameCategories.filter(cat => cat.isPredefined !== false);
+          const allGameCategoriesFromFirestore = await getAppCategories(); 
+          const categoriesToDownload = allGameCategoriesFromFirestore.filter(cat => cat.isPredefined !== false);
 
           if (categoriesToDownload.length > 0) {
             for (const category of categoriesToDownload) {
@@ -138,35 +136,35 @@ export default function TriviaPage() {
               const questionsForCategory = await getAllQuestionsForTopic(category.topicValue);
               await saveQuestionsToDB(questionsForCategory);
             }
-            localStorage.setItem(LOCALSTORAGE_DOWNLOAD_FLAG, 'true');
-            toast({ title: tCommon('toastSuccessTitle') as string, description: t('initialDownloadComplete') });
             setInitialLoadMessage(t('initialDownloadComplete'));
+            toast({ title: t('toastSuccessTitle') as string, description: t('initialDownloadComplete') });
           } else {
             setInitialLoadMessage(t('initialDownloadNoCategories'));
-            localStorage.setItem(LOCALSTORAGE_DOWNLOAD_FLAG, 'true'); // Mark as "done" even if no categories
           }
         } catch (error) {
           console.error("[TriviaPage] Error during initial data download:", error);
           setInitialLoadMessage(t('initialDownloadError'));
-          toast({ variant: "destructive", title: tCommon('toastErrorTitle') as string, description: t('initialDownloadError')});
+          toast({ variant: "destructive", title: t('toastErrorTitle') as string, description: t('initialDownloadError')});
+          downloadErrorOccurred = true;
+        } finally {
+            localStorage.setItem(LOCALSTORAGE_DOWNLOAD_FLAG, 'true'); // Mark as attempted
         }
-      } else if (alreadyDownloaded) {
+      } else if (alreadyDownloadedOrFlagged) {
          setInitialLoadMessage(t('initialLoadDone'));
       } else {
-         setInitialLoadMessage(t('initialLoadSkipped')); // IndexedDB not available
+         setInitialLoadMessage(t('initialLoadSkipped')); 
       }
       
-      // Short delay for the user to read the final download message
-      await new Promise(resolve => setTimeout(resolve, initialLoadMessage ? 1500 : 0));
+      await new Promise(resolve => setTimeout(resolve, initialLoadMessage && !downloadErrorOccurred ? 1500 : 0));
       
-      // Now, fetch categories for the UI
       try {
-        const allAppUICategories = await getAppCategories(); // This filters for isPredefined by default now
-        setAppCategories(allAppUICategories);
-        if (allAppUICategories.length > 0) {
+        const allFirestoreCategories = await getAppCategories();
+        const uiCategories = allFirestoreCategories.filter(cat => cat.isPredefined !== false);
+        setAppCategories(uiCategories);
+        if (uiCategories.length > 0 || allFirestoreCategories.length > 0) { // Allow custom topics even if no UI categories
           setGameState('category_selection');
         } else {
-          setFeedback({ message: t('errorLoadingCategories'), detailedMessage: t('errorNoUICategories'), isCorrect: false });
+          setFeedback({ message: t('errorLoadingCategories'), detailedMessage: t('errorNoCategoriesDefined'), isCorrect: false });
           setGameState('error'); 
         }
       } catch (error) {
@@ -178,7 +176,7 @@ export default function TriviaPage() {
 
     performInitialSetup();
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [locale]); // Only re-run if locale changes (for translations in messages) - t, toast, tCommon added to satisfy lint but their instances are stable from useTranslations
+  }, [locale]); 
 
   const clearTimer = useCallback(() => {
     if (timerIntervalRef.current) {
@@ -221,41 +219,28 @@ export default function TriviaPage() {
     setGameState('playing');
   };
 
-  const fetchPredefinedQuestion = useCallback(async (topic: string, difficulty: DifficultyLevel, categoryDetailsForSelectedTopic: CategoryDefinition | null) => {
+  const fetchPredefinedOrSingleAIQuestion = useCallback(async (topic: string, difficulty: DifficultyLevel, categoryDetailsForSelectedTopic: CategoryDefinition | null) => {
     setGameState('loading_question');
-    setCurrentQuestionNumberInGame(prev => prev + 1);
     
     let fetchedQuestionData: CurrentQuestionData | null = null;
 
     if (categoryDetailsForSelectedTopic && categoryDetailsForSelectedTopic.isPredefined !== false) {
       try {
         fetchedQuestionData = await getQuestionFromDB(topic, difficulty, askedFirestoreIds);
-        if (fetchedQuestionData) {
-          // console.log(`[TriviaPage] Fetched question from IndexedDB for topic: "${topic}", ID: ${fetchedQuestionData.id}`);
-        }
       } catch (indexedDbError) {
         console.warn(`[TriviaPage] Error fetching from IndexedDB for topic "${topic}", will fall back to Firestore/Genkit:`, indexedDbError);
       }
     }
     
-    // Fallback to Firestore if not found in IndexedDB (or if not a predefined category meant for IndexedDB)
-    if (!fetchedQuestionData && categoryDetailsForSelectedTopic) {
+    if (!fetchedQuestionData && categoryDetailsForSelectedTopic && categoryDetailsForSelectedTopic.isPredefined !== false) {
         try {
-          // console.log(`[TriviaPage] Attempting Firestore fallback for predefined category "${topic}"`);
           fetchedQuestionData = await getPredefinedQuestionFromFirestore(topic, askedFirestoreIds, difficulty);
-           if (fetchedQuestionData) {
-            // console.log(`[TriviaPage] Fetched question from Firestore for topic: "${topic}", ID: ${fetchedQuestionData.id}`);
-          }
         } catch (firestoreError) {
           console.warn(`[TriviaPage] Error fetching from Firestore for topic "${topic}", will fall back to Genkit:`, firestoreError);
         }
     }
 
-
-    // Fallback to Genkit AI if still no question (e.g. IndexedDB empty for topic/difficulty, or Firestore fetch failed)
-    // OR if it was never a predefined category from the start (though current logic filters this out earlier)
     if (!fetchedQuestionData && categoryDetailsForSelectedTopic) {
-      // console.log(`[TriviaPage] No question from cache/Firestore for predefined category "${topic}". Falling back to Genkit AI.`);
       const inputForAI: GenerateTriviaQuestionsInput = {
         topic,
         previousQuestions: askedQuestionTextsForAI,
@@ -273,14 +258,11 @@ export default function TriviaPage() {
         const newQuestionArray = await generateTriviaQuestions(inputForAI);
         if (newQuestionArray && newQuestionArray.length > 0) {
           fetchedQuestionData = newQuestionArray[0]!;
-          // console.log(`[TriviaPage] Generated question with Genkit (fallback for predefined) for topic: ${topic}`);
         }
       } catch (genkitError) {
         console.error(`[TriviaPage] Genkit fallback failed for predefined topic "${topic}":`, genkitError);
-        // Error handling if Genkit also fails is below
       }
     }
-
 
     if (fetchedQuestionData) {
       prepareAndSetQuestion(fetchedQuestionData);
@@ -380,7 +362,6 @@ export default function TriviaPage() {
 
     setScore({ correct: 0, incorrect: 0 });
     setAskedFirestoreIds([]);
-    // Keep askedQuestionTextsForAI & askedCorrectAnswerTexts to provide context across games
     setQuestionsAnsweredThisGame(0);
     setCurrentQuestionNumberInGame(0);
     setGameState('difficulty_selection');
@@ -396,7 +377,7 @@ export default function TriviaPage() {
     }
     setCurrentDifficultyLevel(initialDifficulty);
     setQuestionsAnsweredThisGame(0);
-    setCurrentQuestionNumberInGame(0);
+    setCurrentQuestionNumberInGame(1); 
 
     logAnalyticsEvent('start_game_with_difficulty', {
       category_topic_value: currentTopic,
@@ -407,8 +388,6 @@ export default function TriviaPage() {
 
     if (isCustomTopicGameActive) {
       setGameState('loading_custom_batch');
-      setCurrentQuestionNumberInGame(1); 
-
       const inputForAI: GenerateTriviaQuestionsInput = {
         topic: currentTopic,
         previousQuestions: askedQuestionTextsForAI, 
@@ -436,7 +415,7 @@ export default function TriviaPage() {
         setCurrentQuestionNumberInGame(0);
       }
     } else {
-      fetchPredefinedQuestion(currentTopic, initialDifficulty, currentCategoryDetails);
+      fetchPredefinedOrSingleAIQuestion(currentTopic, initialDifficulty, currentCategoryDetails);
     }
   };
 
@@ -458,7 +437,7 @@ export default function TriviaPage() {
       question_id: questionData.id
     });
     
-    setQuestionsAnsweredThisGame(prev => prev + 1); // Increment after answering
+    setQuestionsAnsweredThisGame(prev => prev + 1); 
 
     if (isCorrect) {
       setScore(prev => ({ ...prev, correct: prev.correct + 1 }));
@@ -499,11 +478,11 @@ export default function TriviaPage() {
         final_difficulty_level: currentDifficultyLevel,
       });
     } else {
+      setCurrentQuestionNumberInGame(prev => prev + 1);
       if (isCustomTopicGameActive) {
         const nextIndex = currentBatchQuestionIndex + 1;
         if (nextIndex < customTopicQuestionsCache.length) {
           setCurrentBatchQuestionIndex(nextIndex);
-          setCurrentQuestionNumberInGame(prev => prev + 1);
           prepareAndSetQuestion(customTopicQuestionsCache[nextIndex]!);
         } else {
           console.error("Custom topic cache exhausted unexpectedly.");
@@ -511,7 +490,7 @@ export default function TriviaPage() {
           setGameState('error');
         }
       } else {
-        fetchPredefinedQuestion(currentTopic, currentDifficultyLevel, currentCategoryDetails);
+        fetchPredefinedOrSingleAIQuestion(currentTopic, currentDifficultyLevel, currentCategoryDetails);
       }
     }
   };
@@ -519,24 +498,24 @@ export default function TriviaPage() {
   const handlePlayAgain = () => {
     setScore({ correct: 0, incorrect: 0 });
     setQuestionsAnsweredThisGame(0);
-    setCurrentQuestionNumberInGame(0); 
+    setCurrentQuestionNumberInGame(1); 
     setAskedFirestoreIds([]); 
     
     if (isCustomTopicGameActive) {
       setCurrentBatchQuestionIndex(0); 
       if (customTopicQuestionsCache.length > 0) {
-        setCurrentQuestionNumberInGame(1);
         prepareAndSetQuestion(customTopicQuestionsCache[0]!);
       } else {
+        // This case might happen if cache was empty, re-trigger batch load
         handleDifficultySelect(selectedDifficultyMode!); 
       }
     } else {
-      fetchPredefinedQuestion(currentTopic, currentDifficultyLevel, currentCategoryDetails);
+      fetchPredefinedOrSingleAIQuestion(currentTopic, currentDifficultyLevel, currentCategoryDetails);
     }
   };
 
   const handleNewGame = () => {
-    setGameState('category_selection'); // Will re-trigger category load if needed, but appCategories should be populated
+    setGameState('category_selection'); 
     setScore({ correct: 0, incorrect: 0 });
     setQuestionData(null);
     setSelectedAnswerIndex(null);
@@ -545,9 +524,6 @@ export default function TriviaPage() {
     setCustomTopicInput('');
     setCurrentCategoryDetails(null);
     setAskedFirestoreIds([]);
-    // Optionally reset askedQuestionTextsForAI and askedCorrectAnswerTexts if truly new context desired
-    // setAskedQuestionTextsForAI([]); 
-    // setAskedCorrectAnswerTexts([]);
     setCurrentDifficultyLevel("medium"); 
     setSelectedDifficultyMode(null);
     setTimeLeft(null);
@@ -770,7 +746,7 @@ export default function TriviaPage() {
                     if (isCustomTopicGameActive) {
                        handleDifficultySelect(selectedDifficultyMode!);
                     } else {
-                      fetchPredefinedQuestion(currentTopic, currentDifficultyLevel, currentCategoryDetails);
+                      fetchPredefinedOrSingleAIQuestion(currentTopic, currentDifficultyLevel, currentCategoryDetails);
                     }
                   }}
                   variant="outline"
@@ -792,3 +768,4 @@ export default function TriviaPage() {
     </div>
   );
 }
+
