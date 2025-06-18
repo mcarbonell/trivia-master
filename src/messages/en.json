@@ -10,6 +10,7 @@
   "loadingQuestion": "Generating your question on \"{topic}\"...",
   "loadingQuestionWithDifficulty": "Generating your \"{difficulty}\" question on \"{topic}\"...",
   "loadingQuestionWithMode": "Generating your \"{difficulty}\" question on \"{topic}\"...",
+  "loadingCustomBatch": "Generating your custom trivia game ({count} questions) for \"{topic}\" ({difficulty}). This may take a moment...",
   "loadingCategories": "Loading categories...",
   "correct": "Correct!",
   "incorrect": "Incorrect!",
@@ -27,10 +28,12 @@
   "errorNoUICategories": "No categories are currently set to display. You can still try a custom topic.",
   "errorNoCategoriesDefined": "No categories are defined in the system. Please contact an administrator or try a custom topic.",
   "errorNoQuestionForDifficulty": "Could not fetch a new question for the \"{difficulty}\" level. Please try again or a different topic.",
+  "errorNoQuestionsForCustomTopic": "Could not generate any questions for your custom topic. Please try a different topic or wording.",
   "errorTryAgainTopic": "Try Again Topic: \"{topic}\"",
   "errorTryAgainTopicWithMode": "Try Again \"{difficulty}\" on \"{topic}\"",
   "errorChooseNewTopic": "Choose New Topic",
   "errorChooseNewTopicOrRefresh": "Choose New Topic / Refresh",
+  "errorGeneric": "An unexpected error occurred. Please try again.",
   "footerText": "© {year} AI Trivia Master. Powered by GenAI.",
   "languageSwitcherDescription": "Switch application language.",
   "english": "English",
@@ -333,3 +336,4 @@
     }
   }
 }
+

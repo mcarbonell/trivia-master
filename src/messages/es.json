@@ -10,6 +10,7 @@
   "loadingQuestion": "Generando tu pregunta sobre \"{topic}\"...",
   "loadingQuestionWithDifficulty": "Generando tu pregunta de nivel \"{difficulty}\" sobre \"{topic}\"...",
   "loadingQuestionWithMode": "Generando tu pregunta de nivel \"{difficulty}\" sobre \"{topic}\"...",
+  "loadingCustomBatch": "Generando tu juego de trivia personalizado ({count} preguntas) para \"{topic}\" ({difficulty}). Esto puede tardar un momento...",
   "loadingCategories": "Cargando categorías...",
   "correct": "¡Correcto!",
   "incorrect": "¡Incorrecto!",
@@ -27,10 +28,12 @@
   "errorNoUICategories": "No hay categorías configuradas para mostrar. Aún puedes intentar con un tema personalizado.",
   "errorNoCategoriesDefined": "No hay categorías definidas en el sistema. Por favor, contacta a un administrador o prueba un tema personalizado.",
   "errorNoQuestionForDifficulty": "No se pudo obtener una nueva pregunta para el nivel \"{difficulty}\". Por favor, intenta de nuevo o con un tema diferente.",
+  "errorNoQuestionsForCustomTopic": "No se pudo generar ninguna pregunta para tu tema personalizado. Por favor, prueba con un tema o redacción diferente.",
   "errorTryAgainTopic": "Reintentar Tema: \"{topic}\"",
   "errorTryAgainTopicWithMode": "Reintentar \"{difficulty}\" en \"{topic}\"",
   "errorChooseNewTopic": "Elegir Nuevo Tema",
   "errorChooseNewTopicOrRefresh": "Elegir Nuevo Tema / Refrescar",
+  "errorGeneric": "Ocurrió un error inesperado. Por favor, inténtalo de nuevo.",
   "footerText": "© {year} Maestro de Trivia IA. Potenciado por GenAI.",
   "languageSwitcherDescription": "Cambiar idioma de la aplicación.",
   "english": "Inglés",
@@ -333,3 +336,4 @@
     }
   }
 }
+
