@@ -6,8 +6,8 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import { generateTriviaQuestions, type GenerateTriviaQuestionOutput, type GenerateTriviaQuestionsInput, type DifficultyLevel } from "@/ai/flows/generate-trivia-question";
 import { getPredefinedQuestionFromFirestore, getAllQuestionsForTopic, type PredefinedQuestion } from "@/services/triviaService";
 import { getAppCategories } from "@/services/categoryService";
-import { saveQuestionsToDB, getQuestionFromDB, countAllQuestionsInDB, clearAllQuestionsFromDB, countQuestionsByCriteriaInDB } from "@/services/indexedDBService"; 
-import type { CategoryDefinition, DifficultyMode, BilingualText } from "@/types";
+import { saveQuestionsToDB, getQuestionFromDB, clearAllQuestionsFromDB, saveCategoriesToCache, getCategoriesFromCache, clearCategoriesCache } from "@/services/indexedDBService"; 
+import type { CategoryDefinition, DifficultyMode } from "@/types";
 import { CategorySelector } from "@/components/game/CategorySelector";
 import { QuestionCard } from "@/components/game/QuestionCard";
 import { ScoreDisplay } from "@/components/game/ScoreDisplay";
@@ -53,7 +53,7 @@ const QUESTION_TIME_LIMIT_SECONDS = 30;
 const QUESTIONS_PER_GAME = 10;
 const DEFAULT_MODEL_FOR_GAME = 'googleai/gemini-2.5-flash';
 
-const CURRENT_CONTENT_VERSION = "v1.0.1"; 
+const CURRENT_CONTENT_VERSION = "v1.0.2"; // Increment if category structure/content in JSONs change significantly
 const CONTENT_VERSION_STORAGE_KEY = 'downloadedContentVersion';
 const DOWNLOADED_TOPICS_STORAGE_KEY = 'downloadedTopicValues_v1';
 
@@ -63,7 +63,6 @@ export default function TriviaPage() {
   const locale = useLocale() as AppLocale;
   const { toast } = useToast();
 
-  // Categorías y Navegación
   const [allAppCategories, setAllAppCategories] = useState<CategoryDefinition[]>([]);
   const [topLevelCategories, setTopLevelCategories] = useState<CategoryDefinition[]>([]);
   const [categoriesForCurrentView, setCategoriesForCurrentView] = useState<CategoryDefinition[]>([]);
@@ -115,10 +114,10 @@ export default function TriviaPage() {
 
     const performInitialSetup = async () => {
       setGameState('initial_loading');
-      console.log("[DEBUG] performInitialSetup: GameState set to initial_loading");
+      console.log("[DEBUG] performInitialSetup: GameState set to initial_loading. Current content version const: ", CURRENT_CONTENT_VERSION);
 
-      let storedContentVersion: string | null = null;
       let localDownloadedTopics: Set<string> = new Set();
+      let storedContentVersion: string | null = null;
 
       if (typeof window !== 'undefined') {
         storedContentVersion = localStorage.getItem(CONTENT_VERSION_STORAGE_KEY);
@@ -126,22 +125,18 @@ export default function TriviaPage() {
         if (storedTopicsString) {
           try {
             localDownloadedTopics = new Set(JSON.parse(storedTopicsString));
-            console.log("[DEBUG] performInitialSetup: Loaded downloaded topics from localStorage:", localDownloadedTopics);
-          } catch (e) {
-            console.error("[DEBUG] performInitialSetup: Error parsing downloaded topics from localStorage", e);
-            localStorage.removeItem(DOWNLOADED_TOPICS_STORAGE_KEY); 
-          }
-        } else {
-          console.log("[DEBUG] performInitialSetup: No downloaded topics found in localStorage.");
+          } catch (e) { console.error("Error parsing downloaded topics", e); localStorage.removeItem(DOWNLOADED_TOPICS_STORAGE_KEY); }
         }
       }
+      console.log(`[DEBUG] performInitialSetup: Stored content version from localStorage: ${storedContentVersion}`);
 
       if (storedContentVersion !== CURRENT_CONTENT_VERSION) {
-        console.log(`[DEBUG] performInitialSetup: Content version mismatch. Stored: ${storedContentVersion}, Current: ${CURRENT_CONTENT_VERSION}. Clearing IndexedDB and downloaded topics list.`);
+        console.log(`[DEBUG] performInitialSetup: Content version mismatch. Stored: ${storedContentVersion}, Current: ${CURRENT_CONTENT_VERSION}. Clearing caches.`);
         if (typeof window !== 'undefined' && window.indexedDB) {
           try {
-            await clearAllQuestionsFromDB(); 
-            console.log("[DEBUG] performInitialSetup: IndexedDB cleared due to version mismatch.");
+            await clearAllQuestionsFromDB();
+            await clearCategoriesCache();
+            console.log("[DEBUG] performInitialSetup: IndexedDB (questions & categories) cleared due to version mismatch.");
             localStorage.setItem(CONTENT_VERSION_STORAGE_KEY, CURRENT_CONTENT_VERSION); 
             localStorage.removeItem(DOWNLOADED_TOPICS_STORAGE_KEY); 
             localDownloadedTopics = new Set(); 
@@ -151,29 +146,39 @@ export default function TriviaPage() {
             toast({ variant: "destructive", title: t('toastErrorTitle') as string, description: t('offlineContentUpdateError') });
           }
         }
-      } else {
-        console.log("[DEBUG] performInitialSetup: Content version matches. Using existing downloaded topics list.");
       }
       setDownloadedTopicValues(localDownloadedTopics);
       
+      let categoriesToUse: CategoryDefinition[] | null = null;
       try {
-        const allCats = await getAppCategories();
-        setAllAppCategories(allCats);
-        const topLevels = allCats.filter(cat => !cat.parentTopicValue);
-        setTopLevelCategories(topLevels);
-        setCategoriesForCurrentView(topLevels);
-        console.log("[DEBUG] performInitialSetup: Categories fetched and processed. Top level categories:", topLevels.length);
-        
-        if (allCats.length > 0) {
+        const cachedCategoriesData = await getCategoriesFromCache();
+        if (cachedCategoriesData && storedContentVersion === CURRENT_CONTENT_VERSION) {
+          console.log("[DEBUG] performInitialSetup: Using categories from IndexedDB cache.");
+          categoriesToUse = cachedCategoriesData.categories;
+        } else {
+          console.log("[DEBUG] performInitialSetup: Fetching categories from Firestore.");
+          categoriesToUse = await getAppCategories();
+          if (categoriesToUse && categoriesToUse.length > 0) {
+            await saveCategoriesToCache(categoriesToUse);
+            console.log("[DEBUG] performInitialSetup: Categories fetched from Firestore and saved to cache.");
+          }
+        }
+
+        if (categoriesToUse && categoriesToUse.length > 0) {
+          setAllAppCategories(categoriesToUse);
+          const topLevels = categoriesToUse.filter(cat => !cat.parentTopicValue);
+          setTopLevelCategories(topLevels);
+          setCategoriesForCurrentView(topLevels);
+          console.log("[DEBUG] performInitialSetup: Categories processed. Top level categories:", topLevels.length);
           setGameState('category_selection');
           console.log("[DEBUG] performInitialSetup: GameState set to category_selection");
         } else {
           setFeedback({ message: t('errorLoadingCategories'), detailedMessage: t('errorNoCategoriesDefined'), isCorrect: false });
           setGameState('error'); 
-          console.warn("[DEBUG] performInitialSetup: No categories defined. GameState set to error.");
+          console.warn("[DEBUG] performInitialSetup: No categories found/defined. GameState set to error.");
         }
       } catch (error) {
-        console.error("[DEBUG] performInitialSetup: Error fetching categories for UI:", error);
+        console.error("[DEBUG] performInitialSetup: Error during category loading/processing:", error);
         setFeedback({ message: t('errorLoadingCategories'), detailedMessage: t('errorLoadingCategoriesDetail'), isCorrect: false });
         setGameState('error');
       }
@@ -208,7 +213,9 @@ export default function TriviaPage() {
       }
       const newDownloadedTopics = new Set(downloadedTopicValues).add(categoryToDownload.topicValue);
       setDownloadedTopicValues(newDownloadedTopics);
-      localStorage.setItem(DOWNLOADED_TOPICS_STORAGE_KEY, JSON.stringify(Array.from(newDownloadedTopics)));
+      if(typeof window !== 'undefined') {
+        localStorage.setItem(DOWNLOADED_TOPICS_STORAGE_KEY, JSON.stringify(Array.from(newDownloadedTopics)));
+      }
       
       if (questions.length > 0) {
         toast({ title: t('toastSuccessTitle') as string, description: t('categoryDownloadComplete', { categoryName: categoryToDownload.name[locale] }) });
@@ -219,7 +226,6 @@ export default function TriviaPage() {
       console.error(`[DEBUG] downloadQuestionsForTopic: Error processing questions for topic ${categoryToDownload.topicValue}:`, error);
       toast({ variant: "destructive", title: t('toastErrorTitle') as string, description: t('categoryDownloadError', { categoryName: categoryToDownload.name[locale] }) });
       setFeedback({ message: t('errorLoadingQuestion'), detailedMessage: t('categoryDownloadError', { categoryName: categoryToDownload.name[locale] }), isCorrect: false });
-      // Do not change gameState here, let the caller handle it based on the return value.
       return false;
     } finally {
       setLoadingMessage(''); 
@@ -292,7 +298,7 @@ export default function TriviaPage() {
     } else if (isCustomTopicGameActive) {
        console.log(`[DEBUG] fetchPredefinedOrSingleAIQuestion: Custom topic game for ${topic}. Skipping IndexedDB check.`);
     } else {
-      console.log(`[DEBUG] fetchPredefinedOrSingleAIQuestion: No categoryDetailsForSelectedTopic for ${topic}. Skipping IndexedDB check.`);
+      console.log(`[DEBUG] fetchPredefinedOrSingleAIQuestion: No categoryDetailsForSelectedTopic for ${topic}. Skipping IndexedDB check because categoryDetails is null.`);
     }
     
     if (!fetchedQuestionData && !isCustomTopicGameActive && categoryDetailsForSelectedTopic) {
@@ -453,7 +459,7 @@ export default function TriviaPage() {
         console.log(`[DEBUG] handleCategoryClick: Leaf category selected: ${categoryToPlay.topicValue}, downloaded: ${downloadedTopicValues.has(categoryToPlay.topicValue)}`);
         
         if (!downloadedTopicValues.has(categoryToPlay.topicValue)) {
-            console.log(`[DEBUG] handleCategoryClick: Category ${categoryToPlay.topicValue} needs download check.`);
+            console.log(`[DEBUG] handleCategoryClick: Category ${categoryToPlay.topicValue} needs download.`);
             const downloadSuccess = await downloadQuestionsForTopic(categoryToPlay);
             if (!downloadSuccess) {
                 console.warn(`[DEBUG] handleCategoryClick: Download process failed for ${categoryToPlay.topicValue}. Returning to category_selection.`);
@@ -497,7 +503,7 @@ export default function TriviaPage() {
         setCurrentBatchQuestionIndex(0);
 
         if (!downloadedTopicValues.has(parentCategory.topicValue)) {
-            console.log(`[DEBUG] handlePlayParentCategory: Parent category ${parentCategory.topicValue} needs download check.`);
+            console.log(`[DEBUG] handlePlayParentCategory: Parent category ${parentCategory.topicValue} needs download.`);
             const downloadSuccess = await downloadQuestionsForTopic(parentCategory);
             if (!downloadSuccess) {
                 console.warn(`[DEBUG] handlePlayParentCategory: Download process failed for parent ${parentCategory.topicValue}. Returning to category_selection.`);
@@ -873,21 +879,28 @@ export default function TriviaPage() {
               <Button variant="link" onClick={() => {
                  console.log("[DEBUG] Back to category selection clicked from difficulty screen.");
                 setGameState('category_selection');
-                if (currentBreadcrumb.length > 1) { 
-                   const parentOfCurrentPlayable = currentBreadcrumb.at(-2); 
-                   if (parentOfCurrentPlayable) {
-                       setCategoriesForCurrentView(allAppCategories.filter(c => c.parentTopicValue === parentOfCurrentPlayable.topicValue));
-                       setCurrentBreadcrumb(currentBreadcrumb.slice(0, -1)); 
-                       console.log(`[DEBUG] Restored view to subcategories of ${parentOfCurrentPlayable.topicValue}`);
-                   } else { 
-                       setCategoriesForCurrentView(topLevelCategories);
-                       setCurrentBreadcrumb([]);
-                       console.log("[DEBUG] Restored view to top level (safety from difficulty back).");
+                if (currentBreadcrumb.length > 1 && currentCategoryDetails?.parentTopicValue) { 
+                   // If we were playing a subcategory, go back to its parent's subcategory list
+                   const parentOfCurrent = allAppCategories.find(c => c.topicValue === currentCategoryDetails.parentTopicValue);
+                   if(parentOfCurrent){
+                     setCurrentBreadcrumb(prev => prev.slice(0, -1));
+                     setCategoriesForCurrentView(allAppCategories.filter(c => c.parentTopicValue === parentOfCurrent.topicValue));
+                     console.log(`[DEBUG] Restored view to subcategories of ${parentOfCurrent.topicValue}`);
+                   } else { // Fallback if parent lookup fails
+                     setCategoriesForCurrentView(topLevelCategories);
+                     setCurrentBreadcrumb([]);
+                     console.log("[DEBUG] Restored view to top level (parent lookup failed).");
                    }
-                } else { 
+                } else if (currentBreadcrumb.length > 0 && !currentCategoryDetails?.parentTopicValue) {
+                    // If we were playing a top-level category directly (no subcategory navigation involved before)
+                    setCategoriesForCurrentView(topLevelCategories);
+                    setCurrentBreadcrumb([]);
+                    console.log("[DEBUG] Restored view to top level (was playing a top-level category).");
+                }
+                 else { // Default fallback: go to absolute top level
                    setCategoriesForCurrentView(topLevelCategories);
                    setCurrentBreadcrumb([]);
-                   console.log("[DEBUG] Restored view to top level categories from difficulty screen.");
+                   console.log("[DEBUG] Restored view to top level categories from difficulty screen (default fallback).");
                 }
               }} className="mx-auto text-sm">
                 <ArrowLeft className="mr-2 h-4 w-4" /> {t('backToCategorySelection')}

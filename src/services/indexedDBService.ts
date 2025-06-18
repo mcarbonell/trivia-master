@@ -1,13 +1,14 @@
-
 // src/services/indexedDBService.ts
 'use client';
 
-import type { PredefinedQuestion } from './triviaService'; // Assuming PredefinedQuestion is exported
-import type { DifficultyLevel } from '@/types';
+import type { PredefinedQuestion } from './triviaService';
+import type { DifficultyLevel, CategoryDefinition } from '@/types';
 
 const DB_NAME = 'AITriviaMasterDB';
-const DB_VERSION = 1;
+const DB_VERSION = 2; // Incremented DB_VERSION
 const QUESTIONS_STORE_NAME = 'predefinedQuestions';
+const APP_DATA_STORE_NAME = 'appDataStore'; // New store for categories and other app data
+const CATEGORIES_CACHE_ID = 'categoriesCache';
 
 // Utility to promisify IDBRequest
 function promisifyRequest<T>(request: IDBRequest<T>): Promise<T> {
@@ -29,10 +30,11 @@ export async function openDB(): Promise<IDBDatabase> {
       const db = (event.target as IDBOpenDBRequest).result;
       if (!db.objectStoreNames.contains(QUESTIONS_STORE_NAME)) {
         const store = db.createObjectStore(QUESTIONS_STORE_NAME, { keyPath: 'id' });
-        // Index for fetching questions by topic and difficulty
         store.createIndex('topicValue_difficulty', ['topicValue', 'difficulty'], { unique: false });
-        // Optional: Index for just topicValue if needed for other queries
         store.createIndex('topicValue', 'topicValue', { unique: false });
+      }
+      if (!db.objectStoreNames.contains(APP_DATA_STORE_NAME)) {
+        db.createObjectStore(APP_DATA_STORE_NAME, { keyPath: 'id' });
       }
     };
 
@@ -53,7 +55,7 @@ export async function saveQuestionsToDB(questions: PredefinedQuestion[]): Promis
         console.warn('[DEBUG] [IndexedDB] Attempted to save question without ID to IndexedDB:', question);
         continue;
       }
-      store.put(question); // put will add or update
+      store.put(question);
     }
 
     return new Promise((resolve, reject) => {
@@ -131,20 +133,20 @@ export async function clearAllQuestionsFromDB(): Promise<void> {
     const db = await openDB();
     const transaction = db.transaction(QUESTIONS_STORE_NAME, 'readwrite');
     const store = transaction.objectStore(QUESTIONS_STORE_NAME);
-    const request = store.clear();
+    store.clear(); // Clears all objects from the store
     
     return new Promise<void>((resolve, reject) => {
       transaction.oncomplete = () => {
-        console.log('[DEBUG] [IndexedDB] All questions cleared.');
+        console.log('[DEBUG] [IndexedDB] All questions cleared from questions store.');
         resolve();
       };
       transaction.onerror = (event) => {
-        console.error('[DEBUG] [IndexedDB] Error clearing questions:', (event.target as IDBTransaction).error);
+        console.error('[DEBUG] [IndexedDB] Error clearing questions store:', (event.target as IDBTransaction).error);
         reject((event.target as IDBTransaction).error);
       };
     });
   } catch (error) {
-    console.error('[DEBUG] [IndexedDB] Error opening DB or initiating transaction for clearing questions:', error);
+    console.error('[DEBUG] [IndexedDB] Error opening DB or initiating transaction for clearing questions store:', error);
     throw error;
   }
 }
@@ -171,7 +173,6 @@ export async function countQuestionsByCriteriaInDB(criteria: { topicValue?: stri
       const request = index.count(keyRange);
       return promisifyRequest(request);
     } else if (criteria.difficulty) {
-      // No direct index for difficulty only, so we iterate with a cursor
       let count = 0;
       return new Promise((resolve, reject) => {
         const cursorRequest = store.openCursor();
@@ -192,57 +193,124 @@ export async function countQuestionsByCriteriaInDB(criteria: { topicValue?: stri
         };
       });
     }
-    return 0; // Should not reach here if criteria are validated
+    return 0;
   } catch (error) {
     console.error('[IndexedDB] Error counting questions by criteria:', error);
     return 0;
   }
 }
 
+// --- Category Cache Functions ---
+
+export async function saveCategoriesToCache(categories: CategoryDefinition[]): Promise<void> {
+  try {
+    const db = await openDB();
+    const transaction = db.transaction(APP_DATA_STORE_NAME, 'readwrite');
+    const store = transaction.objectStore(APP_DATA_STORE_NAME);
+    const cacheEntry = {
+      id: CATEGORIES_CACHE_ID,
+      categories: categories,
+      lastUpdated: Date.now(),
+    };
+    store.put(cacheEntry);
+
+    return new Promise<void>((resolve, reject) => {
+      transaction.oncomplete = () => {
+        console.log(`[DEBUG] [IndexedDB] Categories saved to cache. Count: ${categories.length}`);
+        resolve();
+      };
+      transaction.onerror = (event) => {
+        console.error('[DEBUG] [IndexedDB] Transaction error saving categories to cache:', (event.target as IDBTransaction).error);
+        reject((event.target as IDBTransaction).error);
+      };
+    });
+  } catch (error) {
+    console.error('[DEBUG] [IndexedDB] Error opening DB or saving categories to cache:', error);
+    throw error;
+  }
+}
+
+export async function getCategoriesFromCache(): Promise<{ categories: CategoryDefinition[], lastUpdated: number } | null> {
+  try {
+    const db = await openDB();
+    const transaction = db.transaction(APP_DATA_STORE_NAME, 'readonly');
+    const store = transaction.objectStore(APP_DATA_STORE_NAME);
+    const request = store.get(CATEGORIES_CACHE_ID);
+    
+    return promisifyRequest(request).then(result => {
+      if (result && result.categories && result.lastUpdated) {
+        console.log(`[DEBUG] [IndexedDB] Categories fetched from cache. Count: ${result.categories.length}, LastUpdated: ${new Date(result.lastUpdated).toISOString()}`);
+        return result as { categories: CategoryDefinition[], lastUpdated: number };
+      }
+      console.log('[DEBUG] [IndexedDB] No categories found in cache or cache entry malformed.');
+      return null;
+    });
+  } catch (error) {
+    console.error('[DEBUG] [IndexedDB] Error fetching categories from cache:', error);
+    return null;
+  }
+}
+
+export async function clearCategoriesCache(): Promise<void> {
+  try {
+    const db = await openDB();
+    const transaction = db.transaction(APP_DATA_STORE_NAME, 'readwrite');
+    const store = transaction.objectStore(APP_DATA_STORE_NAME);
+    store.delete(CATEGORIES_CACHE_ID);
+
+    return new Promise<void>((resolve, reject) => {
+      transaction.oncomplete = () => {
+        console.log('[DEBUG] [IndexedDB] Categories cache cleared.');
+        resolve();
+      };
+      transaction.onerror = (event) => {
+        console.error('[DEBUG] [IndexedDB] Transaction error clearing categories cache:', (event.target as IDBTransaction).error);
+        reject((event.target as IDBTransaction).error);
+      };
+    });
+  } catch (error) {
+    console.error('[DEBUG] [IndexedDB] Error opening DB or clearing categories cache:', error);
+    throw error;
+  }
+}
+
 
 // Helper for console debugging during development
 if (typeof window !== 'undefined') {
-  (window as any).clearTriviaDB = async () => {
+  (window as any).clearAITriviaDB = async () => {
     try {
       await clearAllQuestionsFromDB();
-      localStorage.removeItem('initialQuestionsDownloaded_v1');
-      console.log('AI Trivia Master IndexedDB cleared and download flag removed. Please reload.');
-      alert('AI Trivia Master IndexedDB cleared and download flag removed. Please reload the page.');
+      await clearCategoriesCache();
+      localStorage.removeItem(CONTENT_VERSION_STORAGE_KEY); // This is now in page.tsx
+      localStorage.removeItem(DOWNLOADED_TOPICS_STORAGE_KEY); // This is now in page.tsx
+      console.log('AI Trivia Master IndexedDB (questions & categories) cleared. LocalStorage flags also cleared. Please reload.');
+      alert('AI Trivia Master IndexedDB (questions & categories) cleared. LocalStorage flags also cleared. Please reload the page.');
     } catch (e) {
-      console.error('Error clearing Trivia DB:', e);
-      alert('Error clearing Trivia DB. Check console.');
+      console.error('Error clearing AI Trivia DB:', e);
+      alert('Error clearing AI Trivia DB. Check console.');
     }
   };
-  (window as any).countTriviaDB = async () => {
+  (window as any).inspectAITriviaCache = async () => {
     try {
-      const count = await countAllQuestionsInDB();
-      const message = `AI Trivia Master IndexedDB total question count: ${count}`;
-      console.log(message);
-      alert(message);
+      const questionsCount = await countAllQuestionsInDB();
+      const categoriesCache = await getCategoriesFromCache();
+      const version = localStorage.getItem('downloadedContentVersion');
+      const topics = localStorage.getItem('downloadedTopicValues_v1');
+      
+      console.log("--- AI Trivia Master Cache Inspection ---");
+      console.log("Content Version (localStorage):", version);
+      console.log("Downloaded Topics (localStorage):", topics ? JSON.parse(topics) : 'Not set');
+      console.log("Questions in IndexedDB:", questionsCount);
+      if (categoriesCache) {
+        console.log("Categories in IndexedDB Cache:", categoriesCache.categories.length, "items");
+        console.log("Categories Last Updated (IndexedDB):", new Date(categoriesCache.lastUpdated).toLocaleString());
+      } else {
+        console.log("Categories in IndexedDB Cache: Not found");
+      }
+      alert(`Cache inspection details logged to console. Questions: ${questionsCount}, Categories: ${categoriesCache ? categoriesCache.categories.length : 'N/A'}`);
     } catch (e) {
-      console.error('Error counting Trivia DB:', e);
-      alert('Error counting Trivia DB. Check console.');
-    }
-  };
-  (window as any).countTriviaDBByCriteria = async (criteria: { topicValue?: string; difficulty?: DifficultyLevel }) => {
-    if (!criteria || (typeof criteria.topicValue === 'undefined' && typeof criteria.difficulty === 'undefined')) {
-        const message = 'Usage: window.countTriviaDBByCriteria({ topicValue: "YourTopic", difficulty: "easy" })\nPlease provide topicValue, difficulty, or both.';
-        console.warn(message);
-        alert(message);
-        return;
-    }
-    try {
-      const count = await countQuestionsByCriteriaInDB(criteria);
-      let criteriaString = [];
-      if (criteria.topicValue) criteriaString.push(`topicValue: "${criteria.topicValue}"`);
-      if (criteria.difficulty) criteriaString.push(`difficulty: "${criteria.difficulty}"`);
-      const message = `AI Trivia Master IndexedDB question count for {${criteriaString.join(', ')}}: ${count}`;
-      console.log(message);
-      alert(message);
-    } catch (e) {
-      console.error('Error counting Trivia DB by criteria:', e);
-      alert('Error counting Trivia DB by criteria. Check console.');
+      console.error("Error inspecting cache:", e);
+      alert("Error inspecting cache. Check console.");
     }
   };
 }
-
