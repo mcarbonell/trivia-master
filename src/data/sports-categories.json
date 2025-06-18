@@ -2,7 +2,7 @@
   {
     "topicValue": "Sport_Football_Soccer",
     "name": { "en": "Football (Soccer)", "es": "Fútbol (Soccer)" },
-    "icon": "Goal",
+    "icon": "Volleyball",
     "detailedPromptInstructions": "Generate diverse trivia questions about Football (Soccer). Topics should include: major international tournaments (FIFA World Cup, UEFA European Championship, Copa América), prominent club competitions (UEFA Champions League, Premier League, La Liga, Serie A, Bundesliga, etc.), famous players (past and present, e.g., Pelé, Maradona, Messi, Ronaldo), iconic teams, rules of the game (e.g., offside, fouls, penalties), historical moments, and significant records. Questions should be verifiable and broadly interesting to football fans.",
     "difficultySpecificGuidelines": {
       "easy": "Focus on widely known players, major tournaments, or basic rules. Ex: 'Which country has won the most FIFA World Cups?' or 'How many players are on a standard football team?'",
@@ -13,7 +13,7 @@
   {
     "topicValue": "Sport_Basketball",
     "name": { "en": "Basketball", "es": "Baloncesto" },
-    "icon": "Trophy",
+    "icon": "Dribbble",
     "detailedPromptInstructions": "Generate trivia questions about basketball. Include NBA history, famous players (e.g., Michael Jordan, LeBron James, Kareem Abdul-Jabbar), teams, championships, rules (e.g., types of fouls, shot clock), international basketball (FIBA World Cup, Olympics), and significant moments in the sport.",
     "difficultySpecificGuidelines": {
       "easy": "Widely known players, basic rules, or famous NBA teams. Ex: 'Which NBA team did Michael Jordan play for during most of his career?' or 'How many points is a free throw worth?'",
@@ -35,7 +35,7 @@
   {
     "topicValue": "Sport_Athletics_TrackAndField",
     "name": { "en": "Athletics (Track & Field)", "es": "Atletismo" },
-    "icon": "Run",
+    "icon": "PersonStanding",
     "detailedPromptInstructions": "Generate questions about track and field athletics. Include Olympic events (running, jumping, throwing), world records, famous athletes (e.g., Usain Bolt, Carl Lewis, Jesse Owens), techniques, and the history of athletics.",
     "difficultySpecificGuidelines": {
       "easy": "Famous Olympic events or very well-known athletes. Ex: 'What is the 100-meter dash?' or 'Who is known as the fastest man in the world for his sprinting records?'",
@@ -79,7 +79,7 @@
   {
     "topicValue": "Sport_Baseball",
     "name": { "en": "Baseball", "es": "Béisbol" },
-    "icon": "Baseball",
+    "icon": "UserPen",
     "detailedPromptInstructions": "Generate questions about Major League Baseball (MLB). Include teams, World Series history, famous players (e.g., Babe Ruth, Jackie Robinson, Hank Aaron), positions, rules (e.g., strikes, balls, outs), and baseball terminology.",
     "difficultySpecificGuidelines": {
       "easy": "Basic baseball terms, famous MLB teams, or legendary players. Ex: 'How many strikes does a batter get before they are out?' or 'Which MLB team is nicknamed the 'Bronx Bombers'?'",
@@ -101,7 +101,7 @@
   {
     "topicValue": "Sport_Boxing",
     "name": { "en": "Boxing", "es": "Boxeo" },
-    "icon": "HandMetal",
+    "icon": "Hand",
     "detailedPromptInstructions": "Generate questions about professional boxing. Include weight classes, famous boxers (e.g., Muhammad Ali, Mike Tyson, Floyd Mayweather), championship belts, scoring, types of punches, and historic fights.",
     "difficultySpecificGuidelines": {
       "easy": "Very famous boxers or basic boxing actions. Ex: 'Who is known as 'The Greatest' in boxing history?' or 'What is a knockout in boxing?'",
@@ -123,7 +123,7 @@
   {
     "topicValue": "Sport_Chess",
     "name": { "en": "Chess", "es": "Ajedrez" },
-    "icon": "PuzzlePiece",
+    "icon": "Crown",
     "detailedPromptInstructions": "Generate trivia questions about chess. Topics should include: names of chess pieces and how they move, basic chess rules (check, checkmate, stalemate, castling, en passant), famous world champions (e.g., Bobby Fischer, Garry Kasparov, Magnus Carlsen), common opening names (e.g., Sicilian Defense, Ruy Lopez), basic tactics (fork, pin, skewer), and historical aspects of the game.",
     "difficultySpecificGuidelines": {
       "easy": "Names of pieces or very basic rules. Ex: 'Which chess piece can only move diagonally?' or 'What is the goal of chess?'",
@@ -145,7 +145,7 @@
   {
     "topicValue": "Sport_IceHockey",
     "name": { "en": "Ice Hockey", "es": "Hockey sobre Hielo" },
-    "icon": "Hockey",
+    "icon": "CandyCane",
     "detailedPromptInstructions": "Generate trivia questions about ice hockey, focusing on the NHL and international competitions. Topics should include famous teams (e.g., Montreal Canadiens, Toronto Maple Leafs), the Stanley Cup, legendary players (e.g., Wayne Gretzky, Mario Lemieux, Bobby Orr), player positions, rules (e.g., icing, offside, penalties like tripping or hooking), and major tournaments like the Winter Olympics or IIHF World Championships.",
     "difficultySpecificGuidelines": {
       "easy": "Very famous players, common penalties, or the name of the NHL championship trophy. Ex: 'Who is nicknamed 'The Great One' in ice hockey?' or 'What is the championship trophy of the NHL called?'",
@@ -156,7 +156,7 @@
   {
     "topicValue": "Sport_Rugby",
     "name": { "en": "Rugby", "es": "Rugby" },
-    "icon": "Shield",
+    "icon": "BicepsFlexed",
     "detailedPromptInstructions": "Generate trivia questions about Rugby Union and Rugby League. Topics should include basic rules (e.g., how a try is scored, conversions, knock-ons), player positions, major international tournaments (Rugby World Cup, Six Nations Championship, The Rugby Championship), famous national teams (e.g., New Zealand All Blacks, South Africa Springboks, England), and key concepts like scrums and line-outs.",
     "difficultySpecificGuidelines": {
       "easy": "Basic scoring, famous national teams, or the shape of a rugby ball. Ex: 'How many points is a try worth in Rugby Union?' or 'Which national team is known for performing the 'Haka' before matches?'",

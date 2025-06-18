@@ -70,7 +70,6 @@ export default function TriviaPage() {
   const [currentBreadcrumb, setCurrentBreadcrumb] = useState<CategoryDefinition[]>([]);
   
   const [gameState, setGameState] = useState<GameState>('initial_loading');
-  const [initialLoadMessage, setInitialLoadMessage] = useState<string>('');
   const [loadingMessage, setLoadingMessage] = useState<string>(''); 
 
   const [currentTopic, setCurrentTopic] = useState<string>('');
@@ -116,7 +115,6 @@ export default function TriviaPage() {
 
     const performInitialSetup = async () => {
       setGameState('initial_loading');
-      setInitialLoadMessage(t('initialLoadCheck'));
       console.log("[DEBUG] performInitialSetup: GameState set to initial_loading");
 
       let storedContentVersion: string | null = null;
@@ -139,7 +137,6 @@ export default function TriviaPage() {
       }
 
       if (storedContentVersion !== CURRENT_CONTENT_VERSION) {
-        setInitialLoadMessage(t('updatingOfflineContentVersion'));
         console.log(`[DEBUG] performInitialSetup: Content version mismatch. Stored: ${storedContentVersion}, Current: ${CURRENT_CONTENT_VERSION}. Clearing IndexedDB and downloaded topics list.`);
         if (typeof window !== 'undefined' && window.indexedDB) {
           try {
@@ -154,14 +151,10 @@ export default function TriviaPage() {
             toast({ variant: "destructive", title: t('toastErrorTitle') as string, description: t('offlineContentUpdateError') });
           }
         }
-        setInitialLoadMessage(t('offlineContentVersionUpdatedMessage'));
       } else {
-        setInitialLoadMessage(t('initialLoadDone'));
         console.log("[DEBUG] performInitialSetup: Content version matches. Using existing downloaded topics list.");
       }
       setDownloadedTopicValues(localDownloadedTopics);
-
-      await new Promise(resolve => setTimeout(resolve, 500)); 
       
       try {
         const allCats = await getAppCategories();
@@ -193,8 +186,6 @@ export default function TriviaPage() {
 
   const downloadQuestionsForTopic = async (categoryToDownload: CategoryDefinition): Promise<boolean> => {
     console.log(`[DEBUG] downloadQuestionsForTopic: Called for category: ${categoryToDownload.topicValue}`);
-    // No longer check isPredefined here. If questions exist in Firestore for topicValue, they will be downloaded.
-    // If not, getAllQuestionsForTopic will return empty, and nothing bad happens.
     
     if (downloadedTopicValues.has(categoryToDownload.topicValue) && localStorage.getItem(CONTENT_VERSION_STORAGE_KEY) === CURRENT_CONTENT_VERSION) {
       console.log(`[DEBUG] downloadQuestionsForTopic: Topic ${categoryToDownload.topicValue} already downloaded and version matches. Skipping download.`);
@@ -212,6 +203,8 @@ export default function TriviaPage() {
       if (questions.length > 0) {
         await saveQuestionsToDB(questions);
         console.log(`[DEBUG] downloadQuestionsForTopic: Saved ${questions.length} questions to IndexedDB for ${categoryToDownload.topicValue}.`);
+      } else {
+         console.log(`[DEBUG] downloadQuestionsForTopic: No predefined questions found in Firestore for ${categoryToDownload.topicValue}. It will rely on AI generation if played directly or has no subcategories.`);
       }
       const newDownloadedTopics = new Set(downloadedTopicValues).add(categoryToDownload.topicValue);
       setDownloadedTopicValues(newDownloadedTopics);
@@ -219,9 +212,6 @@ export default function TriviaPage() {
       
       if (questions.length > 0) {
         toast({ title: t('toastSuccessTitle') as string, description: t('categoryDownloadComplete', { categoryName: categoryToDownload.name[locale] }) });
-      } else {
-        // It's not an error if a category just doesn't have predefined questions (e.g. very new or niche)
-        console.log(`[DEBUG] downloadQuestionsForTopic: No predefined questions found in Firestore for ${categoryToDownload.topicValue}. It will rely on AI generation.`);
       }
       console.log(`[DEBUG] downloadQuestionsForTopic: Successfully processed (downloaded or confirmed no questions) for ${categoryToDownload.topicValue}.`);
       return true;
@@ -229,6 +219,7 @@ export default function TriviaPage() {
       console.error(`[DEBUG] downloadQuestionsForTopic: Error processing questions for topic ${categoryToDownload.topicValue}:`, error);
       toast({ variant: "destructive", title: t('toastErrorTitle') as string, description: t('categoryDownloadError', { categoryName: categoryToDownload.name[locale] }) });
       setFeedback({ message: t('errorLoadingQuestion'), detailedMessage: t('categoryDownloadError', { categoryName: categoryToDownload.name[locale] }), isCorrect: false });
+      // Do not change gameState here, let the caller handle it based on the return value.
       return false;
     } finally {
       setLoadingMessage(''); 
@@ -268,7 +259,6 @@ export default function TriviaPage() {
 
     setAskedQuestionTextsForAI(prev => [...new Set([...prev, questionTextInLocale])]);
 
-    // Only add to askedFirestoreIds if it's a predefined question (has an ID) and not a custom topic game
     if (qData.id && !isCustomTopicGameActive) { 
       console.log(`[DEBUG] prepareAndSetQuestion: Adding Firestore ID ${qData.id} to askedFirestoreIds.`);
       setAskedFirestoreIds(prev => [...new Set([...prev, qData.id!])]);
@@ -287,7 +277,6 @@ export default function TriviaPage() {
     
     let fetchedQuestionData: CurrentQuestionData | null = null;
 
-    // Try IndexedDB first if it's not a custom topic game and details are available
     if (!isCustomTopicGameActive && categoryDetailsForSelectedTopic) {
       console.log(`[DEBUG] fetchPredefinedOrSingleAIQuestion: Attempting to get question from IndexedDB for topic ${topic}, difficulty ${difficulty}. Asked IDs:`, askedFirestoreIds);
       try {
@@ -306,7 +295,6 @@ export default function TriviaPage() {
       console.log(`[DEBUG] fetchPredefinedOrSingleAIQuestion: No categoryDetailsForSelectedTopic for ${topic}. Skipping IndexedDB check.`);
     }
     
-    // Try Firestore if not found in IndexedDB and it's not a custom topic game and details are available
     if (!fetchedQuestionData && !isCustomTopicGameActive && categoryDetailsForSelectedTopic) {
         console.log(`[DEBUG] fetchPredefinedOrSingleAIQuestion: Attempting to get question from Firestore for topic ${topic}, difficulty ${difficulty}.`);
         try {
@@ -321,7 +309,6 @@ export default function TriviaPage() {
         }
     }
 
-    // Fallback to AI if still no question (and category details exist, OR it's a custom topic)
     if (!fetchedQuestionData && (categoryDetailsForSelectedTopic || isCustomTopicGameActive)) {
       const instructions = categoryDetailsForSelectedTopic?.detailedPromptInstructions;
       const diffInstruction = categoryDetailsForSelectedTopic?.difficultySpecificGuidelines?.[difficulty];
@@ -434,8 +421,6 @@ export default function TriviaPage() {
   const handleCategoryClick = async (category: CategoryDefinition) => {
     console.log(`[DEBUG] handleCategoryClick: Clicked category: ${category.topicValue} (${category.name[locale]}), Parent: ${category.parentTopicValue}`);
     const children = allAppCategories.filter(cat => cat.parentTopicValue === category.topicValue);
-    // A category is "custom" if it's not in our predefined list (i.e. if the user typed it)
-    // For this function, `category` always comes from `allAppCategories` or a constructed one for custom input.
     const isCustomInputTopic = !allAppCategories.some(appCat => appCat.topicValue === category.topicValue); 
 
     setScore({ correct: 0, incorrect: 0 });
@@ -449,7 +434,7 @@ export default function TriviaPage() {
 
     if (isCustomInputTopic) { 
         setCurrentTopic(category.topicValue); 
-        setCurrentCategoryDetails(null); // No details for custom typed topics
+        setCurrentCategoryDetails(null); 
         setIsCustomTopicGameActive(true);
         console.log(`[DEBUG] handleCategoryClick: Custom input topic selected: ${category.topicValue}. GameState to difficulty_selection.`);
         setGameState('difficulty_selection');
@@ -464,11 +449,9 @@ export default function TriviaPage() {
         setGameState('category_selection'); 
         console.log(`[DEBUG] handleCategoryClick: Category ${category.topicValue} has ${children.length} children. Navigating to subcategory view.`);
     } else { 
-        // This is a leaf category (or a category without *visible* children in the current view, but could be played directly)
         const categoryToPlay = category;
-        console.log(`[DEBUG] handleCategoryClick: Leaf category selected: ${categoryToPlay.topicValue}. Downloaded: ${downloadedTopicValues.has(categoryToPlay.topicValue)}`);
+        console.log(`[DEBUG] handleCategoryClick: Leaf category selected: ${categoryToPlay.topicValue}, downloaded: ${downloadedTopicValues.has(categoryToPlay.topicValue)}`);
         
-        // Attempt download if not already downloaded (getAllQuestionsForTopic will return [] if no predefined)
         if (!downloadedTopicValues.has(categoryToPlay.topicValue)) {
             console.log(`[DEBUG] handleCategoryClick: Category ${categoryToPlay.topicValue} needs download check.`);
             const downloadSuccess = await downloadQuestionsForTopic(categoryToPlay);
@@ -592,7 +575,6 @@ export default function TriviaPage() {
         count: QUESTIONS_PER_GAME,
         modelName: DEFAULT_MODEL_FOR_GAME,
       };
-      // For custom topics, currentCategoryDetails will be null, so no specific instructions
       
       try {
         const newQuestionsArray = await generateTriviaQuestions(inputForAI);
@@ -794,15 +776,7 @@ export default function TriviaPage() {
   if (gameState === 'initial_loading') {
     return (
       <div className="container mx-auto p-4 flex flex-col items-center justify-center min-h-screen text-foreground">
-        <Card className="p-8 text-center shadow-xl max-w-md w-full">
-          <CardContent className="flex flex-col items-center justify-center">
-            <DownloadCloud className="h-16 w-16 text-primary mx-auto mb-4" />
-            <p className="mt-4 text-xl font-semibold text-muted-foreground animate-pulse">
-              {initialLoadMessage || t('initialLoadCheck')}
-            </p>
-            <Loader2 className="h-8 w-8 animate-spin text-primary mx-auto mt-6" />
-          </CardContent>
-        </Card>
+        <Loader2 className="h-16 w-16 animate-spin text-primary" />
       </div>
     );
   }

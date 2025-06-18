@@ -3,7 +3,7 @@
   {
     "topicValue": "Science",
     "name": { "en": "Science", "es": "Ciencia" },
-    "icon": "FlaskConical",
+    "icon": "Microscope",
     "detailedPromptInstructions": "Generate questions covering various branches of science including physics, chemistry, biology, astronomy, and earth sciences. Questions should test knowledge of fundamental concepts, historical discoveries, important figures, and recent advancements. Examples: 'What is the process by which plants convert light energy into chemical energy?' or 'Who developed the theory of general relativity?'",
     "difficultySpecificGuidelines": {
       "easy": "Target general science knowledge typically covered in late primary or early secondary school. Example: 'What is the chemical symbol for water?' or 'What force pulls objects towards the Earth?'",
@@ -192,7 +192,7 @@
     "topicValue": "HumanitiesSocialSciencesGeneral",
     "name": {
       "en": "Humanities & Social Sciences",
-      "es": "Humanidades y Ciencias Sociales"
+      "es": "Humanidades y C. Sociales"
     },
     "icon": "Users2",
     "detailedPromptInstructions": "Generate diverse trivia questions covering a broad range of Humanities and Social Sciences. This includes: Philosophy (major thinkers, concepts, ethics, logic), Psychology (theories, famous psychologists, human behavior), Sociology (social structures, culture, social issues), Political Science (government types, ideologies, international relations), Economics (basic principles, micro/macro concepts, economic history), Linguistics (language structure, history, families), Anthropology (human cultures, evolution, archaeology), and significant works or figures within these fields. Questions should encourage critical thinking and awareness of human society and thought.",
