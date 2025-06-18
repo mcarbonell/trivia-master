@@ -11,7 +11,7 @@ import { Label } from "@/components/ui/label";
 import { useTranslations } from "next-intl";
 import type { CategoryDefinition } from "@/types";
 import type { AppLocale } from '@/lib/i18n-config';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Loader2 } from 'lucide-react';
 
 const getIcon = (iconName: string): LucideIcon => {
   const IconComponent = (LucideIcons as any)[iconName];
@@ -24,9 +24,11 @@ interface CategorySelectorProps {
   customTopicInput: string;
   onCustomTopicChange: (value: string) => void;
   onSelectCategory: (category: CategoryDefinition) => void;
+  onCustomTopicSubmit: (topic: string) => void; // New prop
   onPlayParentCategory?: () => void;
   onGoBack?: () => void;
   currentLocale: AppLocale;
+  isCustomTopicValidating: boolean; // New prop
 }
 
 export function CategorySelector({
@@ -35,22 +37,18 @@ export function CategorySelector({
   customTopicInput,
   onCustomTopicChange,
   onSelectCategory,
+  onCustomTopicSubmit,
   onPlayParentCategory,
   onGoBack,
   currentLocale,
+  isCustomTopicValidating,
 }: CategorySelectorProps) {
   const t = useTranslations();
 
-  const handleCustomTopicSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (customTopicInput.trim()) {
-      onSelectCategory({
-        id: customTopicInput.trim(), 
-        topicValue: customTopicInput.trim(),
-        name: { en: customTopicInput.trim(), es: customTopicInput.trim() },
-        icon: 'Lightbulb', 
-        detailedPromptInstructions: 'User-defined custom topic.',
-      });
+      onCustomTopicSubmit(customTopicInput.trim());
     }
   };
 
@@ -111,7 +109,7 @@ export function CategorySelector({
           ))}
         </div>
         {!currentParent && ( 
-          <form onSubmit={handleCustomTopicSubmit} className="space-y-4 pt-4 border-t">
+          <form onSubmit={handleFormSubmit} className="space-y-4 pt-4 border-t">
             <div>
               <Label htmlFor="custom-topic" className="font-semibold mb-1 block">{t('customTopicLabel')}</Label>
                <p className="text-xs text-muted-foreground mb-2">
@@ -124,9 +122,11 @@ export function CategorySelector({
                 value={customTopicInput}
                 onChange={(e) => onCustomTopicChange(e.target.value)}
                 className="bg-input"
+                disabled={isCustomTopicValidating}
               />
             </div>
-            <Button type="submit" className="w-full bg-primary hover:bg-primary/90 text-primary-foreground" disabled={!customTopicInput.trim()}>
+            <Button type="submit" className="w-full bg-primary hover:bg-primary/90 text-primary-foreground" disabled={!customTopicInput.trim() || isCustomTopicValidating}>
+              {isCustomTopicValidating && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               {t('customTopicButton')}
             </Button>
           </form>

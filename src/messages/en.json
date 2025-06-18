@@ -98,7 +98,16 @@
   "subcategoryPageDescription": "Choose a more specific topic or play all questions from {parentName}.",
   "playAllFromParentButton": "Play all from {parentName}",
   "backButton": "Back",
-
+  "validatingCustomTopic": "Validating your custom topic with AI...",
+  "confirmCustomTopicTitle": "Confirm Your Custom Topic",
+  "confirmCustomTopicDescription": "Our AI has processed your topic: \"{topicName}\". Please review and confirm to proceed.",
+  "customTopicRefinedNameLabel": "AI Refined Topic Name",
+  "customTopicInstructionsLabel": "AI Generated Instructions for Question Creation",
+  "customTopicConfirmButton": "Proceed with this Topic",
+  "customTopicCancelButton": "Try a Different Topic",
+  "customTopicRejectedTitle": "Custom Topic Issue",
+  "customTopicRejectedDefaultReason": "The AI could not process this topic. Please try a different or more specific topic.",
+  "customTopicValidationError": "An error occurred while validating your custom topic. Please try again.",
 
   "AboutPage": {
     "title": "About & Contact",

@@ -98,6 +98,16 @@
   "subcategoryPageDescription": "Elige un tema más específico o juega todas las preguntas de {parentName}.",
   "playAllFromParentButton": "Jugar todo de {parentName}",
   "backButton": "Volver",
+  "validatingCustomTopic": "Validando tu tema personalizado con IA...",
+  "confirmCustomTopicTitle": "Confirma Tu Tema Personalizado",
+  "confirmCustomTopicDescription": "Nuestra IA ha procesado tu tema: \"{topicName}\". Por favor, revisa y confirma para continuar.",
+  "customTopicRefinedNameLabel": "Nombre del Tema Refinado por IA",
+  "customTopicInstructionsLabel": "Instrucciones Generadas por IA para Crear Preguntas",
+  "customTopicConfirmButton": "Continuar con este Tema",
+  "customTopicCancelButton": "Probar un Tema Diferente",
+  "customTopicRejectedTitle": "Problema con el Tema Personalizado",
+  "customTopicRejectedDefaultReason": "La IA no pudo procesar este tema. Por favor, intenta con un tema diferente o más específico.",
+  "customTopicValidationError": "Ocurrió un error al validar tu tema personalizado. Por favor, inténtalo de nuevo.",
 
   "AboutPage": {
     "title": "Acerca de y Contacto",
