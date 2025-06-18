@@ -1,8 +1,8 @@
-import type {Metadata, Viewport} from 'next';
+import type { Metadata, Viewport } from 'next';
 import './globals.css';
 import { Toaster } from "@/components/ui/toaster";
-import {NextIntlClientProvider} from 'next-intl';
-import {getLocale, getMessages} from 'next-intl/server';
+import { NextIntlClientProvider } from 'next-intl';
+import { getLocale, getMessages } from 'next-intl/server';
 import { ClientLocaleInitializer } from '@/components/ClientLocaleInitializer';
 import { AuthProvider } from '@/contexts/AuthContext';
 import Link from 'next/link'; // Added Link import
@@ -15,10 +15,10 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     title: pageTitle,
     description: 'Test your knowledge with AI-generated trivia questions!',
-    manifest: '/manifest.json', 
+    manifest: '/manifest.json',
     appleWebApp: {
       capable: true,
-      statusBarStyle: 'default', 
+      statusBarStyle: 'default',
       title: pageTitle,
     },
   };
@@ -26,8 +26,8 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export const viewport: Viewport = {
   themeColor: [
-    { media: '(prefers-color-scheme: light)', color: '#F0F2F5' }, 
-    { media: '(prefers-color-scheme: dark)', color: '#1C1E24' },   
+    { media: '(prefers-color-scheme: light)', color: '#F0F2F5' },
+    { media: '(prefers-color-scheme: dark)', color: '#1C1E24' },
   ],
 }
 
