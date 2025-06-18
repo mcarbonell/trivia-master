@@ -85,6 +85,18 @@
   "initialLoadSkipped": "Preguntas offline no disponibles (problema IndexedDB o primera vez).",
   "updatingOfflineQuestions": "Actualizando base de datos de preguntas offline...",
   "offlineQuestionsUpdated": "¡Preguntas offline actualizadas correctamente!",
+  "updatingOfflineContentVersion": "El contenido de la app ha sido actualizado. Refrescando datos locales...",
+  "offlineContentVersionUpdated": "¡Base de datos de contenido local actualizada correctamente!",
+  "offlineContentVersionUpdatedMessage": "Contenido local actualizado. ¡Listo para jugar!",
+  "offlineContentUpdateError": "Error al actualizar el contenido local. Algunas funciones podrían estar limitadas.",
+  "downloadingCategoryQuestions": "Descargando preguntas para {categoryName}...",
+  "downloadingDefaultMessage": "Descargando preguntas...",
+  "categoryDownloadComplete": "¡Preguntas para {categoryName} descargadas y listas para jugar offline!",
+  "categoryDownloadError": "Error al descargar preguntas para {categoryName}. Por favor, inténtalo de nuevo.",
+  "subcategoryPageTitle": "Subcategorías de {parentName}",
+  "subcategoryPageDescription": "Elige un tema más específico o juega todas las preguntas de {parentName}.",
+  "playAllFromParentButton": "Jugar todo de {parentName}",
+  "backButton": "Volver",
 
   "AboutPage": {
     "title": "Acerca de y Contacto",

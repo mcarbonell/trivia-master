@@ -85,6 +85,19 @@
   "initialLoadSkipped": "Offline questions not available (IndexedDB issue or first time).",
   "updatingOfflineQuestions": "Updating offline question database...",
   "offlineQuestionsUpdated": "Offline questions updated successfully!",
+  "updatingOfflineContentVersion": "App content has been updated. Refreshing local data...",
+  "offlineContentVersionUpdated": "Local content database updated successfully!",
+  "offlineContentVersionUpdatedMessage": "Local content updated. Ready to play!",
+  "offlineContentUpdateError": "Error updating local content. Some features might be limited.",
+  "downloadingCategoryQuestions": "Downloading questions for {categoryName}...",
+  "downloadingDefaultMessage": "Downloading questions...",
+  "categoryDownloadComplete": "Questions for {categoryName} downloaded and ready for offline play!",
+  "categoryDownloadError": "Error downloading questions for {categoryName}. Please try again.",
+  "subcategoryPageTitle": "Subcategories of {parentName}",
+  "subcategoryPageDescription": "Choose a more specific topic or play all questions from {parentName}.",
+  "playAllFromParentButton": "Play all from {parentName}",
+  "backButton": "Back",
+
 
   "AboutPage": {
     "title": "About & Contact",
