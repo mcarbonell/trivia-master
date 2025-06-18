@@ -26,7 +26,8 @@ const CATEGORIES_COLLECTION = 'triviaCategories';
 
 const ALL_DIFFICULTY_LEVELS_CONST: DifficultyLevel[] = ["easy", "medium", "hard"];
 const GENKIT_API_CALL_DELAY_MS = 1000; // Delay between Genkit API calls
-const DEFAULT_MODEL_NAME = 'googleai/gemini-2.5-flash'; // Default model if not specified
+// const DEFAULT_MODEL_NAME = 'googleai/gemini-2.5-flash'; // Default model if not specified
+const DEFAULT_MODEL_NAME = 'googleai/gemini-2.5-flash-lite-preview-06-17'; // Default model if not specified
 
 // --- Argument Parsing with yargs ---
 const argv = yargs(hideBin(process.argv))

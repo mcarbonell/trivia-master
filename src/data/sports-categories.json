@@ -24,7 +24,7 @@
   {
     "topicValue": "Sport_Tennis",
     "name": { "en": "Tennis", "es": "Tenis" },
-    "icon": "Medal",
+    "icon": "Eclipse",
     "detailedPromptInstructions": "Generate questions about professional tennis. Topics should cover Grand Slam tournaments (Australian Open, French Open, Wimbledon, US Open), famous players (e.g., Roger Federer, Serena Williams, Rafael Nadal, Novak Djokovic), ranking systems, types of shots, rules, and historical moments.",
     "difficultySpecificGuidelines": {
       "easy": "Well-known Grand Slam tournaments or famous contemporary players. Ex: 'Which Grand Slam tournament is played on grass?' or 'Name one of the Williams sisters famous in tennis.'",

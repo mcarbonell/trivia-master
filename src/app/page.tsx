@@ -15,7 +15,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { useTranslations, useLocale } from "next-intl";
-import type { AppLocale } from "@/lib/i18n-config";
+import type { AppLocale } from '@/lib/i18n-config';
 import { useToast } from "@/hooks/use-toast";
 import {
   Loader2,
@@ -51,9 +51,9 @@ type CurrentQuestionData = GenerateTriviaQuestionOutput & { id?: string };
 const DIFFICULTY_LEVELS_ORDER: DifficultyLevel[] = ["easy", "medium", "hard"];
 const QUESTION_TIME_LIMIT_SECONDS = 30;
 const QUESTIONS_PER_GAME = 10;
-const DEFAULT_MODEL_FOR_GAME = 'googleai/gemini-2.5-flash';
+const DEFAULT_MODEL_FOR_GAME = 'googleai/gemini-2.5-flash-lite-preview-06-17';
 
-const CURRENT_CONTENT_VERSION = "v1.0.2"; // Increment if category structure/content in JSONs change significantly
+const CURRENT_CONTENT_VERSION = "v1.0.2"; 
 const CONTENT_VERSION_STORAGE_KEY = 'downloadedContentVersion';
 const DOWNLOADED_TOPICS_STORAGE_KEY = 'downloadedTopicValues_v1';
 
@@ -265,7 +265,7 @@ export default function TriviaPage() {
 
     setAskedQuestionTextsForAI(prev => [...new Set([...prev, questionTextInLocale])]);
 
-    if (qData.id && !isCustomTopicGameActive) { 
+    if (qData.id && !isCustomTopicGameActive ) { 
       console.log(`[DEBUG] prepareAndSetQuestion: Adding Firestore ID ${qData.id} to askedFirestoreIds.`);
       setAskedFirestoreIds(prev => [...new Set([...prev, qData.id!])]);
     }
@@ -427,6 +427,7 @@ export default function TriviaPage() {
   const handleCategoryClick = async (category: CategoryDefinition) => {
     console.log(`[DEBUG] handleCategoryClick: Clicked category: ${category.topicValue} (${category.name[locale]}), Parent: ${category.parentTopicValue}`);
     const children = allAppCategories.filter(cat => cat.parentTopicValue === category.topicValue);
+    // Check if it's a custom input topic by seeing if it exists in allAppCategories
     const isCustomInputTopic = !allAppCategories.some(appCat => appCat.topicValue === category.topicValue); 
 
     setScore({ correct: 0, incorrect: 0 });
@@ -440,30 +441,31 @@ export default function TriviaPage() {
 
     if (isCustomInputTopic) { 
         setCurrentTopic(category.topicValue); 
-        setCurrentCategoryDetails(null); 
+        setCurrentCategoryDetails(null); // No details for custom input topics
         setIsCustomTopicGameActive(true);
         console.log(`[DEBUG] handleCategoryClick: Custom input topic selected: ${category.topicValue}. GameState to difficulty_selection.`);
         setGameState('difficulty_selection');
          logAnalyticsEvent('select_category', {
             category_topic_value: category.topicValue,
-            category_name: category.topicValue, 
+            category_name: category.topicValue, // For custom, name is the topicValue
             is_custom_topic: true
         });
-    } else if (children.length > 0) { 
+    } else if (children.length > 0) { // It's a predefined category with children
         setCurrentBreadcrumb(prev => [...prev, category]);
         setCategoriesForCurrentView(children);
-        setGameState('category_selection'); 
+        setGameState('category_selection'); // Stay in category selection to show subcategories
         console.log(`[DEBUG] handleCategoryClick: Category ${category.topicValue} has ${children.length} children. Navigating to subcategory view.`);
-    } else { 
+    } else { // It's a predefined category with no children (a leaf node or a category to play directly)
         const categoryToPlay = category;
         console.log(`[DEBUG] handleCategoryClick: Leaf category selected: ${categoryToPlay.topicValue}, downloaded: ${downloadedTopicValues.has(categoryToPlay.topicValue)}`);
         
+        // For predefined leaf categories, attempt download if not already downloaded
         if (!downloadedTopicValues.has(categoryToPlay.topicValue)) {
             console.log(`[DEBUG] handleCategoryClick: Category ${categoryToPlay.topicValue} needs download.`);
             const downloadSuccess = await downloadQuestionsForTopic(categoryToPlay);
             if (!downloadSuccess) {
                 console.warn(`[DEBUG] handleCategoryClick: Download process failed for ${categoryToPlay.topicValue}. Returning to category_selection.`);
-                setGameState('category_selection'); 
+                setGameState('category_selection'); // Or a specific error state
                 return;
             }
             console.log(`[DEBUG] handleCategoryClick: Download process completed for ${categoryToPlay.topicValue}.`);
@@ -471,14 +473,14 @@ export default function TriviaPage() {
         
         setCurrentTopic(categoryToPlay.topicValue);
         setCurrentCategoryDetails(categoryToPlay);
-        setCurrentBreadcrumb(prev => { 
+        setCurrentBreadcrumb(prev => { // Ensure breadcrumb is updated correctly
             const newBreadcrumb = [...prev];
             if (!newBreadcrumb.find(bc => bc.topicValue === categoryToPlay.topicValue)) {
                 newBreadcrumb.push(categoryToPlay);
             }
             return newBreadcrumb;
         });
-        setIsCustomTopicGameActive(false);
+        setIsCustomTopicGameActive(false); // It's a predefined category
         console.log(`[DEBUG] handleCategoryClick: Proceeding to difficulty_selection for ${categoryToPlay.topicValue}.`);
         setGameState('difficulty_selection');
         logAnalyticsEvent('select_category', { 
@@ -502,12 +504,13 @@ export default function TriviaPage() {
         setCustomTopicQuestionsCache([]);
         setCurrentBatchQuestionIndex(0);
 
+        // Attempt download for parent category if not already downloaded
         if (!downloadedTopicValues.has(parentCategory.topicValue)) {
             console.log(`[DEBUG] handlePlayParentCategory: Parent category ${parentCategory.topicValue} needs download.`);
             const downloadSuccess = await downloadQuestionsForTopic(parentCategory);
             if (!downloadSuccess) {
                 console.warn(`[DEBUG] handlePlayParentCategory: Download process failed for parent ${parentCategory.topicValue}. Returning to category_selection.`);
-                setGameState('category_selection'); 
+                setGameState('category_selection'); // Or a specific error state
                 return;
             }
              console.log(`[DEBUG] handlePlayParentCategory: Download process completed for parent ${parentCategory.topicValue}.`);
@@ -515,7 +518,7 @@ export default function TriviaPage() {
         
         setCurrentTopic(parentCategory.topicValue);
         setCurrentCategoryDetails(parentCategory);
-        setIsCustomTopicGameActive(false); 
+        setIsCustomTopicGameActive(false); // It's a predefined category
         console.log(`[DEBUG] handlePlayParentCategory: Proceeding to difficulty_selection for parent ${parentCategory.topicValue}.`);
         setGameState('difficulty_selection');
         logAnalyticsEvent('select_category', { 
@@ -542,7 +545,7 @@ export default function TriviaPage() {
         const children = allAppCategories.filter(cat => cat.parentTopicValue === newParent.topicValue);
         setCategoriesForCurrentView(children);
         console.log(`[DEBUG] handleGoBackFromSubcategories: Navigated back to parent: ${newParent.topicValue}, showing ${children.length} children.`);
-      } else { 
+      } else { // Should not happen if breadcrumb had more than 1 item, but as a fallback
         setCategoriesForCurrentView(topLevelCategories);
         console.log("[DEBUG] handleGoBackFromSubcategories: Navigated to top level (newParent was null after slice).");
       }
@@ -553,15 +556,15 @@ export default function TriviaPage() {
   const handleDifficultySelect = async (mode: DifficultyMode) => {
     setSelectedDifficultyMode(mode);
     let initialDifficulty: DifficultyLevel;
-    if (mode === "adaptive") {
+    if (mode === "adaptive" && !isCustomTopicGameActive) { // Adaptive only for non-custom
       initialDifficulty = "medium";
-    } else {
-      initialDifficulty = mode;
+    } else { // For custom topics, or specific easy/medium/hard
+      initialDifficulty = isCustomTopicGameActive ? (mode as DifficultyLevel) : mode;
     }
     setCurrentDifficultyLevel(initialDifficulty);
     setQuestionsAnsweredThisGame(0); 
     setCurrentQuestionNumberInGame(1); 
-    console.log(`[DEBUG] handleDifficultySelect: Mode: ${mode}, Initial Difficulty: ${initialDifficulty} for topic: ${currentTopic}`);
+    console.log(`[DEBUG] handleDifficultySelect: Mode: ${mode}, Initial Difficulty: ${initialDifficulty} for topic: ${currentTopic}, Custom: ${isCustomTopicGameActive}`);
 
     logAnalyticsEvent('start_game_with_difficulty', {
       category_topic_value: currentTopic,
@@ -577,7 +580,7 @@ export default function TriviaPage() {
         topic: currentTopic, 
         previousQuestions: askedQuestionTextsForAI,
         previousCorrectAnswers: askedCorrectAnswerTexts, 
-        targetDifficulty: initialDifficulty,
+        targetDifficulty: initialDifficulty, // This will be easy, medium, or hard
         count: QUESTIONS_PER_GAME,
         modelName: DEFAULT_MODEL_FOR_GAME,
       };
@@ -630,7 +633,7 @@ export default function TriviaPage() {
     if (isCorrect) {
       setScore(prev => ({ ...prev, correct: prev.correct + 1 }));
       setFeedback({ message: t('correct'), isCorrect: true, explanation: explanationInLocale });
-      if (selectedDifficultyMode === "adaptive") {
+      if (selectedDifficultyMode === "adaptive" && !isCustomTopicGameActive) {
         const currentIndex = DIFFICULTY_LEVELS_ORDER.indexOf(currentDifficultyLevel);
         if (currentIndex < DIFFICULTY_LEVELS_ORDER.length - 1) { 
           setCurrentDifficultyLevel(DIFFICULTY_LEVELS_ORDER[currentIndex + 1]!);
@@ -644,7 +647,7 @@ export default function TriviaPage() {
         isCorrect: false,
         explanation: explanationInLocale
       });
-      if (selectedDifficultyMode === "adaptive") {
+      if (selectedDifficultyMode === "adaptive" && !isCustomTopicGameActive) {
         const currentIndex = DIFFICULTY_LEVELS_ORDER.indexOf(currentDifficultyLevel);
         if (currentIndex > 0) { 
           setCurrentDifficultyLevel(DIFFICULTY_LEVELS_ORDER[currentIndex - 1]!);
@@ -691,6 +694,7 @@ export default function TriviaPage() {
   const handlePlayAgainSameSettings = async () => {
     console.log("[DEBUG] handlePlayAgainSameSettings: Starting new game with same settings.");
     if (!isCustomTopicGameActive && currentCategoryDetails) {
+        // Re-check download status in case it wasn't done or version changed
         if (!downloadedTopicValues.has(currentCategoryDetails.topicValue)) {
             console.log(`[DEBUG] handlePlayAgainSameSettings: Category ${currentCategoryDetails.topicValue} needs download check before playing again.`);
             const downloadSuccess = await downloadQuestionsForTopic(currentCategoryDetails);
@@ -708,9 +712,12 @@ export default function TriviaPage() {
     
     if (isCustomTopicGameActive) {
         if (customTopicQuestionsCache.length > 0 && customTopicQuestionsCache.length >= QUESTIONS_PER_GAME) {
-            setCurrentBatchQuestionIndex(0); 
-            prepareAndSetQuestion(customTopicQuestionsCache[0]!);
-            console.log("[DEBUG] handlePlayAgainSameSettings: Custom topic. Using existing cache.");
+            // If cache is still valid and sufficient, reuse.
+            // For custom topics, we usually re-fetch to get new questions,
+            // but for "play again same settings" maybe the user wants the *exact* same batch.
+            // For now, let's re-trigger generation to ensure variety if they play "again" multiple times.
+            console.log("[DEBUG] handlePlayAgainSameSettings: Custom topic. Regenerating batch.");
+            handleDifficultySelect(selectedDifficultyMode!); // This will re-trigger batch generation
         } else { 
             console.log("[DEBUG] handlePlayAgainSameSettings: Custom topic. Cache empty or insufficient. Regenerating batch.");
             handleDifficultySelect(selectedDifficultyMode!); 
@@ -752,7 +759,7 @@ export default function TriviaPage() {
     let color = "text-muted-foreground";
     let text = t(`difficultyLevels.${currentDifficultyLevel}` as any);
 
-    if (selectedDifficultyMode === "adaptive") {
+    if (selectedDifficultyMode === "adaptive" && !isCustomTopicGameActive) {
       Icon = Zap;
       text = `${t('difficultyModeAdaptive')} (${text})`;
     } else if (selectedDifficultyMode) {
@@ -866,38 +873,38 @@ export default function TriviaPage() {
                   </Button>
                 );
               })}
-              <Button
-                variant="outline"
-                className="w-full flex items-center justify-center h-16 text-lg group hover:bg-accent hover:text-accent-foreground"
-                onClick={() => handleDifficultySelect("adaptive")}
-              >
-                <Zap className="mr-3 h-6 w-6 text-primary group-hover:text-accent-foreground" />
-                {t('difficultyModeAdaptive')}
-              </Button>
+              {!isCustomTopicGameActive && (
+                <Button
+                  variant="outline"
+                  className="w-full flex items-center justify-center h-16 text-lg group hover:bg-accent hover:text-accent-foreground"
+                  onClick={() => handleDifficultySelect("adaptive")}
+                >
+                  <Zap className="mr-3 h-6 w-6 text-primary group-hover:text-accent-foreground" />
+                  {t('difficultyModeAdaptive')}
+                </Button>
+              )}
             </CardContent>
             <CardFooter>
               <Button variant="link" onClick={() => {
                  console.log("[DEBUG] Back to category selection clicked from difficulty screen.");
                 setGameState('category_selection');
                 if (currentBreadcrumb.length > 1 && currentCategoryDetails?.parentTopicValue) { 
-                   // If we were playing a subcategory, go back to its parent's subcategory list
                    const parentOfCurrent = allAppCategories.find(c => c.topicValue === currentCategoryDetails.parentTopicValue);
                    if(parentOfCurrent){
                      setCurrentBreadcrumb(prev => prev.slice(0, -1));
                      setCategoriesForCurrentView(allAppCategories.filter(c => c.parentTopicValue === parentOfCurrent.topicValue));
                      console.log(`[DEBUG] Restored view to subcategories of ${parentOfCurrent.topicValue}`);
-                   } else { // Fallback if parent lookup fails
+                   } else { 
                      setCategoriesForCurrentView(topLevelCategories);
                      setCurrentBreadcrumb([]);
                      console.log("[DEBUG] Restored view to top level (parent lookup failed).");
                    }
-                } else if (currentBreadcrumb.length > 0 && !currentCategoryDetails?.parentTopicValue) {
-                    // If we were playing a top-level category directly (no subcategory navigation involved before)
+                } else if (currentBreadcrumb.length > 0 && !currentCategoryDetails?.parentTopicValue && !isCustomTopicGameActive) {
                     setCategoriesForCurrentView(topLevelCategories);
                     setCurrentBreadcrumb([]);
                     console.log("[DEBUG] Restored view to top level (was playing a top-level category).");
                 }
-                 else { // Default fallback: go to absolute top level
+                 else { 
                    setCategoriesForCurrentView(topLevelCategories);
                    setCurrentBreadcrumb([]);
                    console.log("[DEBUG] Restored view to top level categories from difficulty screen (default fallback).");
@@ -915,7 +922,7 @@ export default function TriviaPage() {
               <p className="mt-6 text-xl font-semibold text-muted-foreground">
                 {t('loadingQuestionWithMode', {
                   topic: currentCategoryDetails?.name[locale] || currentTopic,
-                  difficulty: selectedDifficultyMode === 'adaptive' ? t('difficultyModeAdaptive') : t(`difficultyLevels.${currentDifficultyLevel}` as any)
+                  difficulty: selectedDifficultyMode === 'adaptive' && !isCustomTopicGameActive ? t('difficultyModeAdaptive') : t(`difficultyLevels.${currentDifficultyLevel}` as any)
                 })}
               </p>
             </CardContent>
@@ -929,7 +936,7 @@ export default function TriviaPage() {
                 {t('loadingCustomBatch', {
                   count: QUESTIONS_PER_GAME,
                   topic: currentTopic,
-                  difficulty: selectedDifficultyMode === 'adaptive' ? t('difficultyModeAdaptive') : t(`difficultyLevels.${currentDifficultyLevel}` as any)
+                  difficulty: selectedDifficultyMode === 'adaptive' && !isCustomTopicGameActive ? t('difficultyModeAdaptive') : t(`difficultyLevels.${currentDifficultyLevel}` as any)
                 })}
               </p>
             </CardContent>
@@ -965,7 +972,7 @@ export default function TriviaPage() {
                 {t('gameOverScore', { correct: score.correct, incorrect: score.incorrect, total: QUESTIONS_PER_GAME })}
               </p>
               <p className="text-md text-muted-foreground">
-                {t('gameOverTopic', { topic: currentCategoryDetails?.name[locale] || currentTopic, difficulty: selectedDifficultyMode === 'adaptive' ? t('difficultyModeAdaptive') : t(`difficultyLevels.${currentDifficultyLevel}` as any) })}
+                {t('gameOverTopic', { topic: currentCategoryDetails?.name[locale] || currentTopic, difficulty: selectedDifficultyMode === 'adaptive' && !isCustomTopicGameActive ? t('difficultyModeAdaptive') : t(`difficultyLevels.${currentDifficultyLevel}` as any) })}
               </p>
             </CardContent>
             <CardFooter className="flex flex-col sm:flex-row justify-center gap-3 pt-4">
@@ -1002,7 +1009,7 @@ export default function TriviaPage() {
                   variant="outline"
                 >
                   {t('errorTryAgainTopicWithMode', {
-                    difficulty: selectedDifficultyMode === 'adaptive' ? t('difficultyModeAdaptive') : t(`difficultyLevels.${currentDifficultyLevel}` as any),
+                    difficulty: selectedDifficultyMode === 'adaptive' && !isCustomTopicGameActive ? t('difficultyModeAdaptive') : t(`difficultyLevels.${currentDifficultyLevel}` as any),
                     topic: currentCategoryDetails?.name[locale] || currentTopic,
                   })}
                 </Button>
@@ -1018,4 +1025,3 @@ export default function TriviaPage() {
     </div>
   );
 }
-

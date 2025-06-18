@@ -44,14 +44,12 @@ export function CategorySelector({
   const handleCustomTopicSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (customTopicInput.trim()) {
-      // Pass a temporary CategoryDefinition-like object for custom topics
       onSelectCategory({
-        id: customTopicInput.trim(), // Use input as ID for custom
+        id: customTopicInput.trim(), 
         topicValue: customTopicInput.trim(),
         name: { en: customTopicInput.trim(), es: customTopicInput.trim() },
-        icon: 'Lightbulb', // Default icon for custom
+        icon: 'Lightbulb', 
         detailedPromptInstructions: 'User-defined custom topic.',
-        isPredefined: false
       });
     }
   };
@@ -112,10 +110,13 @@ export function CategorySelector({
             </Button>
           ))}
         </div>
-        {!currentParent && ( // Only show custom topic input on top level
+        {!currentParent && ( 
           <form onSubmit={handleCustomTopicSubmit} className="space-y-4 pt-4 border-t">
             <div>
               <Label htmlFor="custom-topic" className="font-semibold mb-1 block">{t('customTopicLabel')}</Label>
+               <p className="text-xs text-muted-foreground mb-2">
+                {t('customTopicExplanation')}
+              </p>
               <Input
                 id="custom-topic"
                 type="text"
@@ -134,4 +135,3 @@ export function CategorySelector({
     </Card>
   );
 }
-

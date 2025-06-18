@@ -7,6 +7,7 @@
   "customTopicLabel": "Custom Topic",
   "customTopicPlaceholder": "E.g., Ancient Rome, Quantum Physics",
   "customTopicButton": "Start with Custom Topic",
+  "customTopicExplanation": "Let our AI generate unique trivia questions about your favorite topic, hobby, or anything you can imagine! Just type it in and play.",
   "loadingQuestion": "Generating your question on \"{topic}\"...",
   "loadingQuestionWithDifficulty": "Generating your \"{difficulty}\" question on \"{topic}\"...",
   "loadingQuestionWithMode": "Generating your \"{difficulty}\" question on \"{topic}\"...",
@@ -174,7 +175,6 @@
     "tableParentCategory": "Parent Category",
     "tableTopicValue": "Topic Value (ID)",
     "tableIcon": "Icon",
-    "tableIsPredefined": "Visible in App",
     "tableQuestionCounts": "Question Counts",
     "tableActions": "Actions",
     "editButton": "Edit",
@@ -205,8 +205,6 @@
     "noParent": "No Parent / Top Level",
     "formDetailedInstructions": "Detailed Prompt Instructions (English)",
     "formDetailedInstructionsPlaceholder": "Provide specific guidelines for AI question generation for this category...",
-    "formIsPredefined": "Show in App's Main Selection?",
-    "formIsPredefinedHint": "Controls if this category appears in the main selection screen of the game.",
     "formDifficultyGuidelinesTitle": "Difficulty-Specific Guidelines (Optional, English)",
     "formDifficultyGuidelinesDesc": "Provide more granular instructions for each difficulty level if needed.",
     "formDifficultyEasy": "Easy Difficulty Instructions",
@@ -363,4 +361,3 @@
     }
   }
 }
-
