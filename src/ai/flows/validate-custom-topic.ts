@@ -72,7 +72,8 @@ User's locale: "{{currentLocale}}"
 `,
   config: {
     temperature: 0.6,
-  }
+  },
+  model: 'googleai/gemini-2.5-flash'
 });
 
 const validateCustomTopicFlow = ai.defineFlow(
@@ -94,12 +95,3 @@ const validateCustomTopicFlow = ai.defineFlow(
     return output;
   }
 );
-```
-  </change>
-  <change>
-    <file>/src/ai/dev.ts</file>
-    <content><![CDATA[import { config } from 'dotenv';
-config();
-
-import '@/ai/flows/generate-trivia-question.ts'; // Keep the filename as is, but it now contains generateTriviaQuestions
-import '@/ai/flows/validate-custom-topic.ts';
