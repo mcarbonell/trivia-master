@@ -6,14 +6,14 @@ import { generateTriviaQuestions, type GenerateTriviaQuestionOutput, type Genera
 import { validateCustomTopic, type ValidateCustomTopicOutput } from "@/ai/flows/validate-custom-topic";
 import { getPredefinedQuestionFromFirestore, getAllQuestionsForTopic, type PredefinedQuestion } from "@/services/triviaService";
 import { getAppCategories } from "@/services/categoryService";
-import { 
-  saveQuestionsToDB, getQuestionFromDB, clearAllQuestionsFromDB, 
+import {
+  saveQuestionsToDB, getQuestionFromDB, clearAllQuestionsFromDB,
   saveCategoriesToCache, getCategoriesFromCache, clearCategoriesCache,
   saveCustomQuestionsToDB, getCustomQuestionFromDB, clearAllCustomQuestionsFromDB,
   saveCustomTopicMeta, getCustomTopicsMeta, clearAllCustomTopicsMeta,
   type CustomTopicMeta, type CustomQuestion,
   CONTENT_VERSION_STORAGE_KEY, DOWNLOADED_TOPICS_STORAGE_KEY, CURRENT_CONTENT_VERSION
-} from "@/services/indexedDBService"; 
+} from "@/services/indexedDBService";
 import type { CategoryDefinition, DifficultyMode, BilingualText } from "@/types";
 import { CategorySelector } from "@/components/game/CategorySelector";
 import { QuestionCard } from "@/components/game/QuestionCard";
@@ -45,39 +45,38 @@ import {
 } from "lucide-react";
 import { logEvent as logEventFromLib, analytics } from "@/lib/firebase";
 
-type GameState = 
-  'initial_loading' | 
-  'category_selection' | 
+type GameState =
+  'initial_loading' |
+  'category_selection' |
   'validating_custom_topic' |
   'confirming_custom_topic' |
-  'difficulty_selection' | 
-  'loading_question' | 
+  'difficulty_selection' |
+  'loading_question' |
   'loading_custom_batch' |
-  'downloading_category_questions' | 
-  'playing' | 
-  'showing_feedback' | 
-  'game_over' | 
+  'downloading_category_questions' |
+  'playing' |
+  'showing_feedback' |
+  'game_over' |
   'error';
 
-// Unified structure for currentCategoryDetails, can hold either predefined or custom
 interface ActiveCategoryDetails {
-  id: string; // For predefined: category.id (topicValue). For custom: customTopicMeta.customTopicValue
-  topicValue: string; // For predefined: category.topicValue. For custom: customTopicMeta.customTopicValue
+  id: string;
+  topicValue: string;
   name: BilingualText;
-  icon: string; 
+  icon: string;
   detailedPromptInstructions: string;
-  parentTopicValue?: string; // Only for predefined
+  parentTopicValue?: string;
   difficultySpecificGuidelines?: {
       [key in DifficultyLevel]?: string;
   };
-  isCustomActive: boolean; // True if this is a user-generated custom topic game
+  isCustomActive: boolean;
 }
 
 
 const DIFFICULTY_LEVELS_ORDER: DifficultyLevel[] = ["easy", "medium", "hard"];
 const QUESTION_TIME_LIMIT_SECONDS = 30;
-const QUESTIONS_PER_GAME = 10; // Questions per single game session
-const CUSTOM_TOPIC_QUESTIONS_TO_GENERATE = 30; // How many questions to generate for a new custom topic batch
+const QUESTIONS_PER_GAME = 10;
+const CUSTOM_TOPIC_QUESTIONS_TO_GENERATE = 30;
 const DEFAULT_MODEL_FOR_GAME = 'googleai/gemini-2.5-flash-lite-preview-06-17';
 
 
@@ -90,10 +89,10 @@ export default function TriviaPage() {
   const [topLevelCategories, setTopLevelCategories] = useState<CategoryDefinition[]>([]);
   const [categoriesForCurrentView, setCategoriesForCurrentView] = useState<CategoryDefinition[]>([]);
   const [currentBreadcrumb, setCurrentBreadcrumb] = useState<CategoryDefinition[]>([]);
-  
+
   const [gameState, setGameState] = useState<GameState>('initial_loading');
 
-  const [currentTopicValue, setCurrentTopicValue] = useState<string>(''); // Can be predefined topicValue or customTopicValue
+  const [currentTopicValue, setCurrentTopicValue] = useState<string>('');
   const [currentCategoryDetails, setCurrentCategoryDetails] = useState<ActiveCategoryDetails | null>(null);
 
 
@@ -103,7 +102,7 @@ export default function TriviaPage() {
   const [feedback, setFeedback] = useState<{ message: string; isCorrect: boolean; detailedMessage?: string; explanation?: string } | null>(null);
   const [customTopicInput, setCustomTopicInput] = useState('');
 
-  const [askedQuestionIdsFromDB, setAskedQuestionIdsFromDB] = useState<string[]>([]); 
+  const [askedQuestionIdsFromDB, setAskedQuestionIdsFromDB] = useState<string[]>([]);
   const [askedQuestionTextsForAI, setAskedQuestionTextsForAI] = useState<string[]>([]);
   const [askedCorrectAnswerTexts, setAskedCorrectAnswerTexts] = useState<string[]>([]);
 
@@ -128,7 +127,7 @@ export default function TriviaPage() {
     instructions: string;
     originalInput: string;
   } | null>(null);
-  
+
 
   const logAnalyticsEvent = useCallback((eventName: string, eventParams?: { [key: string]: any }) => {
     if (analytics) {
@@ -162,14 +161,14 @@ export default function TriviaPage() {
         console.log(`[DEBUG] performInitialSetup: Content version mismatch. Stored: ${storedContentVersion}, Current: ${CURRENT_CONTENT_VERSION}. Clearing caches.`);
         if (typeof window !== 'undefined' && window.indexedDB) {
           try {
-            await clearAllQuestionsFromDB(); 
+            await clearAllQuestionsFromDB();
             await clearCategoriesCache();
-            await clearAllCustomQuestionsFromDB(); 
-            await clearAllCustomTopicsMeta();   
+            await clearAllCustomQuestionsFromDB();
+            await clearAllCustomTopicsMeta();
             console.log("[DEBUG] performInitialSetup: All IndexedDB stores cleared due to version mismatch.");
-            localStorage.setItem(CONTENT_VERSION_STORAGE_KEY, CURRENT_CONTENT_VERSION); 
-            localStorage.removeItem(DOWNLOADED_TOPICS_STORAGE_KEY); 
-            localDownloadedPredefinedTopics = new Set(); 
+            localStorage.setItem(CONTENT_VERSION_STORAGE_KEY, CURRENT_CONTENT_VERSION);
+            localStorage.removeItem(DOWNLOADED_TOPICS_STORAGE_KEY);
+            localDownloadedPredefinedTopics = new Set();
             toast({ title: t('toastSuccessTitle') as string, description: t('offlineContentVersionUpdated')});
           } catch (error) {
             console.error("[DEBUG] performInitialSetup: Error clearing IndexedDB for content update:", error);
@@ -178,7 +177,7 @@ export default function TriviaPage() {
         }
       }
       setDownloadedPredefinedTopicValues(localDownloadedPredefinedTopics);
-      
+
       try {
         const customMetas = await getCustomTopicsMeta();
         setUserGeneratedCustomTopics(customMetas);
@@ -212,7 +211,7 @@ export default function TriviaPage() {
           console.log("[DEBUG] performInitialSetup: GameState set to category_selection");
         } else {
           setFeedback({ message: t('errorLoadingCategories'), detailedMessage: t('errorNoCategoriesDefined'), isCorrect: false });
-          setGameState('error'); 
+          setGameState('error');
           console.warn("[DEBUG] performInitialSetup: No predefined categories found/defined. GameState set to error.");
         }
       } catch (error) {
@@ -224,26 +223,26 @@ export default function TriviaPage() {
 
     performInitialSetup();
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); 
+  }, []);
 
 
   const downloadQuestionsForTopic = async (categoryToDownload: CategoryDefinition): Promise<boolean> => {
     console.log(`[DEBUG] downloadQuestionsForTopic: Called for category: ${categoryToDownload.topicValue}`);
-        
+
     if (downloadedPredefinedTopicValues.has(categoryToDownload.topicValue) && localStorage.getItem(CONTENT_VERSION_STORAGE_KEY) === CURRENT_CONTENT_VERSION) {
       console.log(`[DEBUG] downloadQuestionsForTopic: Topic ${categoryToDownload.topicValue} already downloaded and version matches. Skipping download.`);
-      return true; 
+      return true;
     }
-    
+
     setGameState('downloading_category_questions');
     console.log(`[DEBUG] downloadQuestionsForTopic: GameState set to downloading_category_questions for ${categoryToDownload.topicValue}`);
 
     try {
       console.log(`[DEBUG] downloadQuestionsForTopic: Calling getAllQuestionsForTopic for ${categoryToDownload.topicValue}`);
-      const questions = await getAllQuestionsForTopic(categoryToDownload.topicValue); 
+      const questions = await getAllQuestionsForTopic(categoryToDownload.topicValue);
       console.log(`[DEBUG] downloadQuestionsForTopic: Fetched ${questions.length} questions from Firestore for ${categoryToDownload.topicValue}.`);
       if (questions.length > 0) {
-        await saveQuestionsToDB(questions); 
+        await saveQuestionsToDB(questions);
         console.log(`[DEBUG] downloadQuestionsForTopic: Saved ${questions.length} questions to IndexedDB for ${categoryToDownload.topicValue}.`);
       } else {
          console.log(`[DEBUG] downloadQuestionsForTopic: No predefined questions found in Firestore for ${categoryToDownload.topicValue}. This is normal if it's a new or very specific category.`);
@@ -253,7 +252,7 @@ export default function TriviaPage() {
       if(typeof window !== 'undefined') {
         localStorage.setItem(DOWNLOADED_TOPICS_STORAGE_KEY, JSON.stringify(Array.from(newDownloadedTopics)));
       }
-      
+
       if (questions.length > 0) {
         toast({ title: t('toastSuccessTitle') as string, description: t('categoryDownloadComplete', { categoryName: categoryToDownload.name[locale] }) });
       }
@@ -296,12 +295,12 @@ export default function TriviaPage() {
     const questionTextInLocale = qData.question[locale] || `q_text_${Date.now()}`;
     if (qData.answers && typeof qData.correctAnswerIndex === 'number' && qData.answers[qData.correctAnswerIndex]) {
        const correctAnswerTextInLocale = qData.answers[qData.correctAnswerIndex]![locale];
-       setAskedCorrectAnswerTexts(prev => [...new Set([...prev, correctAnswerTextInLocale])]); 
+       setAskedCorrectAnswerTexts(prev => [...new Set([...prev, correctAnswerTextInLocale])]);
     }
 
-    setAskedQuestionTextsForAI(prev => [...new Set([...prev, questionTextInLocale])]); 
+    setAskedQuestionTextsForAI(prev => [...new Set([...prev, questionTextInLocale])]);
 
-    if (qData.id ) { 
+    if (qData.id ) {
       console.log(`[DEBUG] prepareAndSetQuestion: Adding question ID ${qData.id} to askedQuestionIdsFromDB.`);
       setAskedQuestionIdsFromDB(prev => [...new Set([...prev, qData.id!])]);
     }
@@ -317,7 +316,7 @@ export default function TriviaPage() {
     setGameState('loading_question');
     const isCustom = activeCatDetails?.isCustomActive || false;
     console.log(`[DEBUG] fetchAndSetNextQuestionForGame: TopicValue: ${topicVal}, Diff: ${difficulty}, isCustom: ${isCustom}`);
-    
+
     let fetchedQuestionData: PredefinedQuestion | CustomQuestion | null = null;
 
     if (isCustom) {
@@ -327,7 +326,7 @@ export default function TriviaPage() {
         else console.log(`[DEBUG] fetchAndSetNextQuestionForGame: No unasked custom question in IDB for ${topicVal} - ${difficulty}. This might mean the batch is exhausted for this difficulty.`);
     } else { // Predefined topic
         console.log(`[DEBUG] fetchAndSetNextQuestionForGame: Predefined topic. Attempting to get from predefinedQuestionsStore. Asked IDs:`, askedQuestionIdsFromDB);
-        fetchedQuestionData = await getQuestionFromDB(topicVal, difficulty, askedQuestionIdsFromDB); 
+        fetchedQuestionData = await getQuestionFromDB(topicVal, difficulty, askedQuestionIdsFromDB);
         if (fetchedQuestionData) console.log(`[DEBUG] fetchAndSetNextQuestionForGame: Found predefined question in IDB (ID: ${fetchedQuestionData.id})`);
         else {
             console.log(`[DEBUG] fetchAndSetNextQuestionForGame: No unasked predefined question in IDB for ${topicVal} - ${difficulty}. Trying Firestore.`);
@@ -335,18 +334,18 @@ export default function TriviaPage() {
             if (fetchedQuestionData) console.log(`[DEBUG] fetchAndSetNextQuestionForGame: Found predefined question in Firestore (ID: ${fetchedQuestionData.id})`);
         }
     }
-    
+
     if (!fetchedQuestionData && !isCustom && activeCatDetails) { // Fallback to AI only for predefined topics not found in DB
       const instructions = activeCatDetails?.detailedPromptInstructions;
       const diffInstruction = activeCatDetails?.difficultySpecificGuidelines?.[difficulty];
       console.log(`[DEBUG] fetchAndSetNextQuestionForGame: No DB question. Falling back to Genkit AI for predefined topic ${topicVal}.`);
-      
+
       const inputForAI: GenerateTriviaQuestionsInput = {
         topic: topicVal,
         previousQuestions: askedQuestionTextsForAI,
         previousCorrectAnswers: askedCorrectAnswerTexts,
         targetDifficulty: difficulty,
-        count: 1, 
+        count: 1,
         modelName: DEFAULT_MODEL_FOR_GAME,
         categoryInstructions: instructions,
       };
@@ -355,9 +354,7 @@ export default function TriviaPage() {
       try {
         const newQuestionArray = await generateTriviaQuestions(inputForAI);
         if (newQuestionArray && newQuestionArray.length > 0) {
-          // For AI-generated questions for predefined topics not found in DB, assign a temporary ID.
-          // These are NOT saved to IDB, they are one-offs.
-          fetchedQuestionData = { ...newQuestionArray[0]!, id: `ai_${crypto.randomUUID()}` }; 
+          fetchedQuestionData = { ...newQuestionArray[0]!, id: `ai_${crypto.randomUUID()}` };
           console.log(`[DEBUG] fetchAndSetNextQuestionForGame: AI generated question for predefined topic ${topicVal}.`);
         } else {
            console.log(`[DEBUG] fetchAndSetNextQuestionForGame: AI generation returned no questions for predefined topic ${topicVal}.`);
@@ -370,16 +367,19 @@ export default function TriviaPage() {
     if (fetchedQuestionData) {
       prepareAndSetQuestion(fetchedQuestionData);
     } else {
-      // If it was a custom topic and no question was found, it means the batch is exhausted for that difficulty
       const errorDetailKey = isCustom ? 'errorNoMoreQuestionsForCustomTopicDifficulty' : 'errorNoQuestionForDifficulty';
-      setFeedback({ 
-        message: t('errorLoadingQuestion'), 
-        detailedMessage: t(errorDetailKey, { difficulty: t(`difficultyLevels.${difficulty}` as any) as string, topic: activeCatDetails?.name[locale] || topicVal }), 
-        isCorrect: false 
+      setFeedback({
+        message: t('errorLoadingQuestion'),
+        detailedMessage: t(errorDetailKey, { difficulty: t(`difficultyLevels.${difficulty}` as any) as string, topic: activeCatDetails?.name[locale] || topicVal }),
+        isCorrect: false
       });
       setGameState('error');
       console.warn(`[DEBUG] fetchAndSetNextQuestionForGame: Failed to fetch or generate ANY question for ${topicVal} - ${difficulty}. GameState set to error.`);
-      setCurrentQuestionNumberInGame(prev => Math.max(0, prev - 1)); 
+      // Do not decrement currentQuestionNumberInGame here if isCustom and batch exhausted
+      // For predefined, if it failed to load, decrementing might make sense to retry the same number.
+      if (!isCustom || errorDetailKey !== 'errorNoMoreQuestionsForCustomTopicDifficulty') {
+        setCurrentQuestionNumberInGame(prev => Math.max(0, prev - 1));
+      }
     }
   }, [locale, askedQuestionIdsFromDB, askedQuestionTextsForAI, askedCorrectAnswerTexts, t, logAnalyticsEvent]);
 
@@ -388,7 +388,7 @@ export default function TriviaPage() {
     if (!questionData || gameState !== 'playing') return;
 
     clearTimer();
-    setSelectedAnswerIndex(null); 
+    setSelectedAnswerIndex(null);
     setScore(prev => ({ ...prev, incorrect: prev.incorrect + 1 }));
 
     const correctAnswerText = questionData.answers[questionData.correctAnswerIndex]?.[locale] ?? t('errorLoadingQuestionDetail');
@@ -413,7 +413,7 @@ export default function TriviaPage() {
 
     if (selectedDifficultyMode === "adaptive" && !(currentCategoryDetails?.isCustomActive)) {
       const currentIndex = DIFFICULTY_LEVELS_ORDER.indexOf(currentDifficultyLevel);
-      if (currentIndex > 0) { 
+      if (currentIndex > 0) {
         setCurrentDifficultyLevel(DIFFICULTY_LEVELS_ORDER[currentIndex - 1]!);
       }
     }
@@ -432,7 +432,7 @@ export default function TriviaPage() {
       startTimer();
     } else {
       clearTimer();
-      setTimeLeft(null); 
+      setTimeLeft(null);
     }
     return () => clearTimer();
   }, [gameState, questionData, startTimer, clearTimer]);
@@ -449,41 +449,41 @@ export default function TriviaPage() {
     }
   }, [isHintVisible, questionData, gameState, currentTopicValue, currentCategoryDetails, locale, logAnalyticsEvent]);
 
-  
+
   const handleCategoryClick = async (category: CategoryDefinition) => {
     console.log(`[DEBUG] handleCategoryClick: Clicked predefined category: ${category.topicValue} (${category.name[locale]}), Parent: ${category.parentTopicValue}`);
     const children = allAppCategories.filter(cat => cat.parentTopicValue === category.topicValue);
-    
+
     setScore({ correct: 0, incorrect: 0 });
-    setAskedQuestionIdsFromDB([]); 
+    setAskedQuestionIdsFromDB([]);
     setAskedQuestionTextsForAI([]);
     setAskedCorrectAnswerTexts([]);
     setQuestionsAnsweredThisGame(0);
     setCurrentQuestionNumberInGame(0);
 
-    if (children.length > 0) { 
+    if (children.length > 0) {
         setCurrentBreadcrumb(prev => [...prev, category]);
         setCategoriesForCurrentView(children);
-        setGameState('category_selection'); 
+        setGameState('category_selection');
         console.log(`[DEBUG] handleCategoryClick: Category ${category.topicValue} has ${children.length} children. Navigating to subcategory view.`);
-    } else { 
+    } else {
         const categoryToPlay = category;
         console.log(`[DEBUG] handleCategoryClick: Leaf category selected: ${categoryToPlay.topicValue}, downloaded: ${downloadedPredefinedTopicValues.has(categoryToPlay.topicValue)}`);
-        
+
         if (!downloadedPredefinedTopicValues.has(categoryToPlay.topicValue)) {
             console.log(`[DEBUG] handleCategoryClick: Category ${categoryToPlay.topicValue} needs download.`);
             const downloadSuccess = await downloadQuestionsForTopic(categoryToPlay);
             if (!downloadSuccess) {
                 console.warn(`[DEBUG] handleCategoryClick: Download process failed for ${categoryToPlay.topicValue}. Returning to category_selection.`);
-                setGameState('category_selection'); 
+                setGameState('category_selection');
                 return;
             }
             console.log(`[DEBUG] handleCategoryClick: Download process completed for ${categoryToPlay.topicValue}.`);
         }
-        
+
         setCurrentTopicValue(categoryToPlay.topicValue);
         setCurrentCategoryDetails({...categoryToPlay, isCustomActive: false });
-        setCurrentBreadcrumb(prev => { 
+        setCurrentBreadcrumb(prev => {
             const newBreadcrumb = [...prev];
             if (!newBreadcrumb.find(bc => bc.topicValue === categoryToPlay.topicValue)) {
                 newBreadcrumb.push(categoryToPlay);
@@ -492,7 +492,7 @@ export default function TriviaPage() {
         });
         console.log(`[DEBUG] handleCategoryClick: Proceeding to difficulty_selection for ${categoryToPlay.topicValue}.`);
         setGameState('difficulty_selection');
-        logAnalyticsEvent('select_category', { 
+        logAnalyticsEvent('select_category', {
             category_topic_value: categoryToPlay.topicValue,
             category_name: categoryToPlay.name[locale],
             is_custom_topic: false,
@@ -503,7 +503,7 @@ export default function TriviaPage() {
   const handleUserGeneratedCustomTopicSelect = async (customTopicMeta: CustomTopicMeta) => {
     console.log(`[DEBUG] handleUserGeneratedCustomTopicSelect: Selected custom topic: ${customTopicMeta.customTopicValue}`);
     setScore({ correct: 0, incorrect: 0 });
-    setAskedQuestionIdsFromDB([]); 
+    setAskedQuestionIdsFromDB([]);
     setAskedQuestionTextsForAI([]);
     setAskedCorrectAnswerTexts([]);
     setQuestionsAnsweredThisGame(0);
@@ -511,17 +511,17 @@ export default function TriviaPage() {
 
     setCurrentTopicValue(customTopicMeta.customTopicValue);
     const activeDetails: ActiveCategoryDetails = {
-        id: customTopicMeta.customTopicValue, // Use customTopicValue as id
+        id: customTopicMeta.customTopicValue,
         topicValue: customTopicMeta.customTopicValue,
         name: customTopicMeta.name,
-        icon: customTopicMeta.icon || 'Sparkles', // Use stored icon or default
+        icon: customTopicMeta.icon || 'Sparkles',
         detailedPromptInstructions: customTopicMeta.detailedPromptInstructions,
         isCustomActive: true,
     };
     setCurrentCategoryDetails(activeDetails);
-    setCurrentBreadcrumb([]); 
+    setCurrentBreadcrumb([]);
     setGameState('difficulty_selection');
-    logAnalyticsEvent('select_category', { 
+    logAnalyticsEvent('select_category', {
         category_topic_value: customTopicMeta.customTopicValue,
         category_name: customTopicMeta.name[locale],
         is_custom_topic: true,
@@ -538,7 +538,7 @@ export default function TriviaPage() {
     try {
       const validationResult = await validateCustomTopic({ rawTopic, currentLocale: locale });
       console.log("[DEBUG] handleCustomTopicFormSubmit: Validation result:", validationResult);
-      
+
       if (validationResult.isValid && validationResult.refinedTopicName && validationResult.detailedPromptInstructions) {
         setCustomTopicToConfirm({
           name: validationResult.refinedTopicName,
@@ -568,23 +568,23 @@ export default function TriviaPage() {
       setIsCustomTopicValidating(false);
     }
   };
-  
+
   const handleConfirmCustomTopic = async () => {
     if (!customTopicToConfirm) return;
     console.log(`[DEBUG] handleConfirmCustomTopic: Confirming topic: "${customTopicToConfirm.name[locale]}"`);
-    
+
     const generatedCustomTopicValue = customTopicToConfirm.name.en.toLowerCase().replace(/[^a-z0-9_]+/g, '_').replace(/^_|_$/g, '') + '_' + Date.now();
     const newMeta: CustomTopicMeta = {
         customTopicValue: generatedCustomTopicValue,
         name: customTopicToConfirm.name,
         detailedPromptInstructions: customTopicToConfirm.instructions,
         createdAt: Date.now(),
-        icon: 'Sparkles', // Default icon for new custom topics
+        icon: 'Sparkles',
     };
 
     try {
         await saveCustomTopicMeta(newMeta);
-        setUserGeneratedCustomTopics(prev => [newMeta, ...prev.sort((a,b) => b.createdAt - a.createdAt)]); 
+        setUserGeneratedCustomTopics(prev => [newMeta, ...prev.sort((a,b) => b.createdAt - a.createdAt)]);
         console.log(`[DEBUG] handleConfirmCustomTopic: Saved new custom topic meta to IDB: ${generatedCustomTopicValue}`);
     } catch (error) {
         console.error(`[DEBUG] handleConfirmCustomTopic: Failed to save custom topic meta to IDB:`, error);
@@ -592,32 +592,32 @@ export default function TriviaPage() {
         setGameState('category_selection');
         return;
     }
-    
+
     setScore({ correct: 0, incorrect: 0 });
-    setAskedQuestionIdsFromDB([]); 
+    setAskedQuestionIdsFromDB([]);
     setAskedQuestionTextsForAI([]);
     setAskedCorrectAnswerTexts([]);
     setQuestionsAnsweredThisGame(0);
     setCurrentQuestionNumberInGame(0);
-    
-    setCurrentTopicValue(newMeta.customTopicValue); 
+
+    setCurrentTopicValue(newMeta.customTopicValue);
     const activeDetails: ActiveCategoryDetails = {
         id: newMeta.customTopicValue,
         topicValue: newMeta.customTopicValue,
         name: newMeta.name,
-        icon: newMeta.icon || 'Sparkles', 
+        icon: newMeta.icon || 'Sparkles',
         detailedPromptInstructions: newMeta.detailedPromptInstructions,
         isCustomActive: true,
     };
     setCurrentCategoryDetails(activeDetails);
-    setCurrentBreadcrumb([]); 
+    setCurrentBreadcrumb([]);
     setGameState('difficulty_selection');
     setCustomTopicToConfirm(null);
-    setCustomTopicInput(''); 
+    setCustomTopicInput('');
 
-    logAnalyticsEvent('select_category', { 
+    logAnalyticsEvent('select_category', {
         category_topic_value: newMeta.customTopicValue,
-        category_name: newMeta.name[locale],      
+        category_name: newMeta.name[locale],
         is_custom_topic: true,
         is_newly_created_custom_topic: true,
         original_user_input: customTopicToConfirm.originalInput
@@ -648,17 +648,17 @@ export default function TriviaPage() {
             const downloadSuccess = await downloadQuestionsForTopic(parentCategory);
             if (!downloadSuccess) {
                 console.warn(`[DEBUG] handlePlayParentCategory: Download process failed for parent ${parentCategory.topicValue}. Returning to category_selection.`);
-                setGameState('category_selection'); 
+                setGameState('category_selection');
                 return;
             }
              console.log(`[DEBUG] handlePlayParentCategory: Download process completed for parent ${parentCategory.topicValue}.`);
         }
-        
+
         setCurrentTopicValue(parentCategory.topicValue);
         setCurrentCategoryDetails({...parentCategory, isCustomActive: false });
         console.log(`[DEBUG] handlePlayParentCategory: Proceeding to difficulty_selection for parent ${parentCategory.topicValue}.`);
         setGameState('difficulty_selection');
-        logAnalyticsEvent('select_category', { 
+        logAnalyticsEvent('select_category', {
             category_topic_value: parentCategory.topicValue,
             category_name: parentCategory.name[locale],
             is_custom_topic: false,
@@ -682,7 +682,7 @@ export default function TriviaPage() {
         const children = allAppCategories.filter(cat => cat.parentTopicValue === newParent.topicValue);
         setCategoriesForCurrentView(children);
         console.log(`[DEBUG] handleGoBackFromSubcategories: Navigated back to parent: ${newParent.topicValue}, showing ${children.length} children.`);
-      } else { 
+      } else {
         setCategoriesForCurrentView(topLevelCategories);
         console.log("[DEBUG] handleGoBackFromSubcategories: Navigated to top level (newParent was null after slice).");
       }
@@ -695,10 +695,10 @@ export default function TriviaPage() {
     const isCustom = currentCategoryDetails?.isCustomActive || false;
     const initialDifficulty: DifficultyLevel = isCustom ? (mode as DifficultyLevel) : (mode === "adaptive" ? "medium" : mode);
     setCurrentDifficultyLevel(initialDifficulty);
-    
-    setAskedQuestionIdsFromDB([]); 
-    setQuestionsAnsweredThisGame(0); 
-    setCurrentQuestionNumberInGame(1); 
+
+    setAskedQuestionIdsFromDB([]);
+    setQuestionsAnsweredThisGame(0);
+    setCurrentQuestionNumberInGame(1);
     console.log(`[DEBUG] handleDifficultySelect: Mode: ${mode}, Initial Difficulty: ${initialDifficulty} for topicValue: ${currentTopicValue}, Custom: ${isCustom}`);
 
     logAnalyticsEvent('start_game_with_difficulty', {
@@ -709,7 +709,7 @@ export default function TriviaPage() {
       is_custom_topic: isCustom,
     });
 
-    if (isCustom && currentCategoryDetails) { 
+    if (isCustom && currentCategoryDetails) {
       const existingQuestionsForDifficulty = await getCustomQuestionFromDB(currentTopicValue, initialDifficulty, []);
       if (existingQuestionsForDifficulty) {
         console.log(`[DEBUG] handleDifficultySelect: Custom topic ${currentTopicValue} - ${initialDifficulty} questions already in IDB for this session. Will use them.`);
@@ -720,24 +720,24 @@ export default function TriviaPage() {
       setGameState('loading_custom_batch');
       console.log(`[DEBUG] handleDifficultySelect: Custom topic game. GameState to loading_custom_batch for ${currentCategoryDetails.topicValue}.`);
       const inputForAI: GenerateTriviaQuestionsInput = {
-        topic: currentCategoryDetails.name.en, 
-        previousQuestions: [], 
-        previousCorrectAnswers: [], 
+        topic: currentCategoryDetails.name.en,
+        previousQuestions: [],
+        previousCorrectAnswers: [],
         targetDifficulty: initialDifficulty,
         count: CUSTOM_TOPIC_QUESTIONS_TO_GENERATE,
         modelName: DEFAULT_MODEL_FOR_GAME,
-        categoryInstructions: currentCategoryDetails.detailedPromptInstructions, 
+        categoryInstructions: currentCategoryDetails.detailedPromptInstructions,
       };
-      
+
       try {
         const newQuestionsArray = await generateTriviaQuestions(inputForAI);
         if (newQuestionsArray && newQuestionsArray.length > 0) {
           const questionsToSave: CustomQuestion[] = newQuestionsArray.map(q => ({
             ...q,
-            id: crypto.randomUUID(), 
-            customTopicValue: currentTopicValue, 
+            id: crypto.randomUUID(),
+            customTopicValue: currentTopicValue,
           }));
-          
+
           await saveCustomQuestionsToDB(questionsToSave);
           console.log(`[DEBUG] handleDifficultySelect: Saved ${questionsToSave.length} custom questions to IDB for ${currentTopicValue} - ${initialDifficulty}.`);
           fetchAndSetNextQuestionForGame(currentTopicValue, initialDifficulty, currentCategoryDetails);
@@ -753,7 +753,7 @@ export default function TriviaPage() {
         setGameState('error');
         setCurrentQuestionNumberInGame(0);
       }
-    } else { 
+    } else {
       console.log(`[DEBUG] handleDifficultySelect: Predefined topic game. Calling fetchAndSetNextQuestionForGame for ${currentTopicValue}.`);
       fetchAndSetNextQuestionForGame(currentTopicValue, initialDifficulty, currentCategoryDetails);
     }
@@ -777,15 +777,15 @@ export default function TriviaPage() {
       question_id: questionData.id,
       is_custom_topic: currentCategoryDetails?.isCustomActive || false,
     });
-    
-    setQuestionsAnsweredThisGame(prev => prev + 1); 
+
+    setQuestionsAnsweredThisGame(prev => prev + 1);
 
     if (isCorrect) {
       setScore(prev => ({ ...prev, correct: prev.correct + 1 }));
       setFeedback({ message: t('correct'), isCorrect: true, explanation: explanationInLocale });
       if (selectedDifficultyMode === "adaptive" && !(currentCategoryDetails?.isCustomActive)) {
         const currentIndex = DIFFICULTY_LEVELS_ORDER.indexOf(currentDifficultyLevel);
-        if (currentIndex < DIFFICULTY_LEVELS_ORDER.length - 1) { 
+        if (currentIndex < DIFFICULTY_LEVELS_ORDER.length - 1) {
           setCurrentDifficultyLevel(DIFFICULTY_LEVELS_ORDER[currentIndex + 1]!);
         }
       }
@@ -799,7 +799,7 @@ export default function TriviaPage() {
       });
       if (selectedDifficultyMode === "adaptive" && !(currentCategoryDetails?.isCustomActive)) {
         const currentIndex = DIFFICULTY_LEVELS_ORDER.indexOf(currentDifficultyLevel);
-        if (currentIndex > 0) { 
+        if (currentIndex > 0) {
           setCurrentDifficultyLevel(DIFFICULTY_LEVELS_ORDER[currentIndex - 1]!);
         }
       }
@@ -819,7 +819,7 @@ export default function TriviaPage() {
         final_score_correct: score.correct,
         final_score_incorrect: score.incorrect,
         difficulty_mode: selectedDifficultyMode,
-        final_difficulty_level: currentDifficultyLevel, 
+        final_difficulty_level: currentDifficultyLevel,
         is_custom_topic: currentCategoryDetails?.isCustomActive || false,
       });
     } else {
@@ -830,31 +830,30 @@ export default function TriviaPage() {
 
   const handlePlayAgainSameSettings = async () => {
     console.log("[DEBUG] handlePlayAgainSameSettings: Starting new game with same settings.");
-    
+
     setScore({ correct: 0, incorrect: 0 });
     setQuestionsAnsweredThisGame(0);
-    setCurrentQuestionNumberInGame(1); 
-    // askedQuestionIdsFromDB is NOT reset to allow fetching different questions from the same batch/pool.
-    
+    setCurrentQuestionNumberInGame(1);
+
     if (!(currentCategoryDetails?.isCustomActive) && currentCategoryDetails && 'topicValue' in currentCategoryDetails && !downloadedPredefinedTopicValues.has(currentCategoryDetails.topicValue)) {
         console.log(`[DEBUG] handlePlayAgainSameSettings: Predefined category ${currentCategoryDetails.topicValue} needs download check.`);
         const downloadSuccess = await downloadQuestionsForTopic(currentCategoryDetails as CategoryDefinition);
         if (!downloadSuccess) {
           console.warn(`[DEBUG] handlePlayAgainSameSettings: Download process failed. Cannot play again.`);
-          setGameState('category_selection'); 
+          setGameState('category_selection');
           return;
         }
     }
-    
+
     console.log(`[DEBUG] handlePlayAgainSameSettings: Fetching new question for ${currentTopicValue}, diff ${currentDifficultyLevel}.`);
     fetchAndSetNextQuestionForGame(currentTopicValue, currentDifficultyLevel, currentCategoryDetails);
   };
 
   const handleNewGameFullReset = () => {
     console.log("[DEBUG] handleNewGameFullReset: Resetting game state completely.");
-    setGameState('category_selection'); 
-    setCategoriesForCurrentView(topLevelCategories); 
-    setCurrentBreadcrumb([]); 
+    setGameState('category_selection');
+    setCategoriesForCurrentView(topLevelCategories);
+    setCurrentBreadcrumb([]);
     setScore({ correct: 0, incorrect: 0 });
     setQuestionData(null);
     setSelectedAnswerIndex(null);
@@ -862,10 +861,10 @@ export default function TriviaPage() {
     setCurrentTopicValue('');
     setCustomTopicInput('');
     setCurrentCategoryDetails(null);
-    setAskedQuestionIdsFromDB([]); 
+    setAskedQuestionIdsFromDB([]);
     setAskedQuestionTextsForAI([]);
     setAskedCorrectAnswerTexts([]);
-    setCurrentDifficultyLevel("medium"); 
+    setCurrentDifficultyLevel("medium");
     setSelectedDifficultyMode(null);
     setTimeLeft(null);
     setIsHintVisible(false);
@@ -903,8 +902,8 @@ export default function TriviaPage() {
     answers: questionData.answers.map(ans => ans[locale]),
     correctAnswerIndex: questionData.correctAnswerIndex,
     explanation: questionData.explanation[locale],
-    difficulty: questionData.difficulty, 
-    hint: questionData.hint?.[locale], 
+    difficulty: questionData.difficulty,
+    hint: questionData.hint?.[locale],
   } : null;
 
 
@@ -915,7 +914,7 @@ export default function TriviaPage() {
       </div>
     );
   }
-  
+
   if (gameState === 'downloading_category_questions' || gameState === 'validating_custom_topic') {
     return (
       <div className="container mx-auto p-4 flex flex-col items-center justify-center min-h-screen text-foreground">
@@ -940,7 +939,7 @@ export default function TriviaPage() {
         <div className="flex justify-between items-center w-full mb-2 sm:mb-4">
           <LanguageSwitcher />
           <h1 className="text-3xl sm:text-5xl font-headline font-bold text-primary">{t('pageTitle')}</h1>
-          <div className="w-10 h-10" /> 
+          <div className="w-10 h-10" />
         </div>
         <p className="text-muted-foreground mt-1 text-sm sm:text-base">{t('pageDescription')}</p>
       </header>
@@ -1054,16 +1053,16 @@ export default function TriviaPage() {
                 setGameState('category_selection');
                 if (currentCategoryDetails?.isCustomActive) {
                     setCurrentCategoryDetails(null);
-                    setCustomTopicInput(''); 
+                    setCustomTopicInput('');
                     setCurrentTopicValue('');
                 }
-                else if (currentBreadcrumb.length > 1 && currentCategoryDetails && 'parentTopicValue' in currentCategoryDetails && (currentCategoryDetails as CategoryDefinition).parentTopicValue) { 
+                else if (currentBreadcrumb.length > 1 && currentCategoryDetails && 'parentTopicValue' in currentCategoryDetails && (currentCategoryDetails as CategoryDefinition).parentTopicValue) {
                    const parentOfCurrent = allAppCategories.find(c => c.topicValue === (currentCategoryDetails as CategoryDefinition).parentTopicValue);
                    if(parentOfCurrent){
                      setCurrentBreadcrumb(prev => prev.slice(0, -1));
                      setCategoriesForCurrentView(allAppCategories.filter(c => c.parentTopicValue === parentOfCurrent.topicValue));
                      console.log(`[DEBUG] Restored view to subcategories of ${parentOfCurrent.topicValue}`);
-                   } else { 
+                   } else {
                      setCategoriesForCurrentView(topLevelCategories);
                      setCurrentBreadcrumb([]);
                      console.log("[DEBUG] Restored view to top level (parent lookup failed).");
@@ -1073,7 +1072,7 @@ export default function TriviaPage() {
                     setCurrentBreadcrumb([]);
                     console.log("[DEBUG] Restored view to top level (was playing a top-level category).");
                 }
-                 else { 
+                 else {
                    setCategoriesForCurrentView(topLevelCategories);
                    setCurrentBreadcrumb([]);
                    console.log("[DEBUG] Restored view to top level categories from difficulty screen (default fallback).");
@@ -1122,9 +1121,9 @@ export default function TriviaPage() {
             timeLeft={timeLeft}
             questionTimeLimitSeconds={QUESTION_TIME_LIMIT_SECONDS}
             onShowHint={() => setIsHintVisible(true)}
-            questionId={questionData.id} 
+            questionId={questionData.id}
             bilingualQuestionText={questionData.question}
-            categoryTopicValue={currentTopicValue} 
+            categoryTopicValue={currentTopicValue}
             currentDifficulty={currentDifficultyLevel}
             questionsAnsweredThisGame={questionsAnsweredThisGame}
             totalQuestionsInGame={QUESTIONS_PER_GAME}
@@ -1166,7 +1165,12 @@ export default function TriviaPage() {
               <p className="text-muted-foreground">{feedback.detailedMessage || t('errorLoadingQuestionDetail')}</p>
             </CardContent>
             <CardFooter className="flex flex-col sm:flex-row justify-center gap-2">
-              {currentTopicValue && gameState === 'error' && !feedback.message.includes(t('errorLoadingCategories')) && ( 
+              {currentTopicValue &&
+              gameState === 'error' &&
+              !feedback.message.includes(t('errorLoadingCategories')) &&
+              // Only show "Try Again" button if the error is NOT "batch exhausted for custom topic"
+              feedback.detailedMessage !== t('errorNoMoreQuestionsForCustomTopicDifficulty', { difficulty: t(`difficultyLevels.${currentDifficultyLevel}` as any) as string, topic: currentCategoryDetails?.name[locale] || currentTopicValue }) &&
+              (
                 <Button
                   onClick={() => {
                     fetchAndSetNextQuestionForGame(currentTopicValue, currentDifficultyLevel, currentCategoryDetails);
@@ -1190,3 +1194,4 @@ export default function TriviaPage() {
     </div>
   );
 }
+
