@@ -1,4 +1,3 @@
-
 // src/app/admin/questions/page.tsx
 'use client';
 
@@ -24,7 +23,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Loader2, AlertTriangle, PlusCircle, Eye, Edit, Trash2, RefreshCw, Search, ArrowUpDown } from 'lucide-react';
+import { Loader2, AlertTriangle, PlusCircle, Eye, Edit, Trash2, RefreshCw, Search, ArrowUpDown, Download } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 const ITEMS_PER_PAGE = 10;
@@ -95,7 +94,7 @@ export default function AdminQuestionsPage() {
       if (fetchedCategories.length > 0 && !selectedCategory) {
         setSelectedCategory(fetchedCategories[0]!.topicValue);
       } else if (fetchedCategories.length === 0) {
-        setQuestionsForSelectedCategory([]); // Ensure questions are cleared if no categories
+        setQuestionsForSelectedCategory([]); 
       }
     } catch (err) {
       console.error("Error fetching categories:", err);
@@ -104,7 +103,7 @@ export default function AdminQuestionsPage() {
     } finally {
       setLoadingCategories(false);
     }
-  }, [t, tCommon, toast, selectedCategory]); // selectedCategory was missing here, added for completeness but initial load logic handles it
+  }, [t, tCommon, toast, selectedCategory]); 
 
   useEffect(() => {
     fetchCategories();
@@ -117,7 +116,7 @@ export default function AdminQuestionsPage() {
       return;
     }
     setIsLoadingQuestions(true);
-    setSelectedQuestionIds([]); // Clear selection when category changes
+    setSelectedQuestionIds([]); 
     setError(null);
     try {
       const fetchedQuestions = await getAllPredefinedQuestionsForAdmin(selectedCategory);
@@ -136,7 +135,7 @@ export default function AdminQuestionsPage() {
     if (selectedCategory) {
       fetchQuestionsForCurrentCategory();
     } else {
-      setQuestionsForSelectedCategory([]); // Clear questions if no category selected
+      setQuestionsForSelectedCategory([]); 
     }
   }, [selectedCategory, fetchQuestionsForCurrentCategory]);
 
@@ -153,7 +152,7 @@ export default function AdminQuestionsPage() {
       .filter(q => selectedDifficulty === 'all' || q.difficulty === selectedDifficulty)
       .filter(q => {
         if (!trimmedSearchQuery) return true;
-        if (q.id === trimmedSearchQuery) return true; // Allow searching by exact ID
+        if (q.id === trimmedSearchQuery) return true; 
         const inQuestion = q.question.en.toLowerCase().includes(lowerSearchQuery) || q.question.es.toLowerCase().includes(lowerSearchQuery);
         if (inQuestion) return true;
         const inAnswers = q.answers.some(ans =>
@@ -200,7 +199,7 @@ export default function AdminQuestionsPage() {
 
   const handleFilterChange = () => {
     setCurrentPage(1);
-    setSelectedQuestionIds([]); // Clear selection on filter change
+    setSelectedQuestionIds([]); 
   };
 
   useEffect(handleFilterChange, [selectedCategory, selectedDifficulty, searchQuery, sortCriteria, sortOrder]);
@@ -223,7 +222,7 @@ export default function AdminQuestionsPage() {
       await deletePredefinedQuestion(questionId);
       toast({ title: tCommon('toastSuccessTitle') as string, description: t('toastDeleteSuccess', { question: truncateText(questionText, 30) }) });
       if (selectedCategory) {
-        fetchQuestionsForCurrentCategory(); // This will also clear selectedQuestionIds
+        fetchQuestionsForCurrentCategory(); 
       }
     } catch (err) {
       console.error("Error deleting question:", err);
@@ -349,8 +348,33 @@ export default function AdminQuestionsPage() {
     }
     
     if (selectedCategory) {
-      fetchQuestionsForCurrentCategory(); // This will also clear selectedQuestionIds
+      fetchQuestionsForCurrentCategory(); 
     }
+  };
+
+  const handleExportQuestions = () => {
+    if (!selectedCategory || displayQuestions.length === 0) {
+      toast({ variant: 'destructive', title: tCommon('toastErrorTitle') as string, description: t('noQuestionsToExport') });
+      return;
+    }
+
+    const questionsToExport = displayQuestions.map(q => {
+      // Destructure to pick only the fields we want, excluding 'categoryName' or other client-side additions.
+      const { id, topicValue, question, answers, correctAnswerIndex, explanation, difficulty, hint, source, createdAt } = q;
+      return { id, topicValue, question, answers, correctAnswerIndex, explanation, difficulty, hint, source, createdAt };
+    });
+
+    const jsonString = JSON.stringify(questionsToExport, null, 2);
+    const blob = new Blob([jsonString], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `exported-questions-${selectedCategory}.json`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+    toast({ title: tCommon('toastSuccessTitle') as string, description: t('exportSuccess', { count: questionsToExport.length, category: categoryMap.get(selectedCategory) || selectedCategory }) });
   };
 
 
@@ -428,7 +452,11 @@ export default function AdminQuestionsPage() {
                     </AlertDialogContent>
                 </AlertDialog>
             )}
-            <Button disabled> {/* Add Question button functionality can be added later */}
+            <Button onClick={handleExportQuestions} variant="outline" disabled={!selectedCategory || displayQuestions.length === 0}>
+                <Download className="mr-2 h-4 w-4" />
+                {t('exportButton')}
+            </Button>
+            <Button disabled> 
                 <PlusCircle className="mr-2 h-5 w-5" />
                 {t('addButton')}
             </Button>
@@ -513,11 +541,7 @@ export default function AdminQuestionsPage() {
                   <TableRow>
                     <TableHead className="w-[50px] sm:w-[60px]">
                        <Checkbox
-                        checked={
-                          isAllVisibleSelected
-                            ? true
-                            : (isSomeVisibleSelected && !isAllVisibleSelected ? 'indeterminate' : false)
-                        }
+                        checked={isAllVisibleSelected ? true : (isSomeVisibleSelected && !isAllVisibleSelected ? 'indeterminate' : false)}
                         onCheckedChange={handleSelectAllVisible}
                         aria-label={t('selectAllVisible') as string}
                       />
