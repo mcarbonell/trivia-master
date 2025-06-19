@@ -6,7 +6,7 @@ import { useEffect, useState, useCallback, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import { getAllPredefinedQuestionsForAdmin, deletePredefinedQuestion, updatePredefinedQuestion, type PredefinedQuestion } from '@/services/triviaService'; 
+import { getAllPredefinedQuestionsForAdmin, deletePredefinedQuestion, updatePredefinedQuestion, type PredefinedQuestion } from '@/services/triviaService';
 import { getAppCategories } from '@/services/categoryService';
 import type { CategoryDefinition, DifficultyLevel, BilingualText } from '@/types';
 import type { GenerateTriviaQuestionOutput } from '@/ai/flows/generate-trivia-question';
@@ -15,23 +15,18 @@ import { useTranslations, useLocale } from 'next-intl';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogTrigger, DialogClose } from '@/components/ui/dialog';
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogClose } from '@/components/ui/dialog';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Loader2, AlertTriangle, PlusCircle, Eye, Edit, Trash2, RefreshCw, Search } from 'lucide-react';
+import { Loader2, AlertTriangle, PlusCircle, Eye, Edit, Trash2, RefreshCw, Search, ArrowUpDown } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 const ITEMS_PER_PAGE = 10;
-// const ALL_FILTER_VALUE = 'all'; // No longer used for category selection logic
-
-interface DisplayQuestion extends PredefinedQuestion {
-  categoryName?: string;
-}
 
 const ALL_DIFFICULTY_LEVELS: DifficultyLevel[] = ["easy", "medium", "hard"];
 
@@ -72,9 +67,12 @@ export default function AdminQuestionsPage() {
   const [error, setError] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
 
-  const [selectedCategory, setSelectedCategory] = useState<string>(''); // Initialize as empty
-  const [selectedDifficulty, setSelectedDifficulty] = useState<string>('all'); // 'all' is fine for difficulty
+  const [selectedCategory, setSelectedCategory] = useState<string>('');
+  const [selectedDifficulty, setSelectedDifficulty] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState<string>('');
+  const [sortCriteria, setSortCriteria] = useState<'question' | 'answer'>('question');
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
+
 
   const [isQuestionDialogOpen, setIsQuestionDialogOpen] = useState(false);
   const [currentQuestionToEdit, setCurrentQuestionToEdit] = useState<PredefinedQuestion | null>(null);
@@ -91,19 +89,18 @@ export default function AdminQuestionsPage() {
       const fetchedCategories = await getAppCategories();
       setCategoriesForFilter(fetchedCategories);
       if (fetchedCategories.length > 0 && !selectedCategory) {
-        // Auto-select the first category if none is selected yet
         setSelectedCategory(fetchedCategories[0]!.topicValue);
       } else if (fetchedCategories.length === 0) {
-        setQuestionsForSelectedCategory([]); // No categories, so no questions
+        setQuestionsForSelectedCategory([]);
       }
     } catch (err) {
       console.error("Error fetching categories:", err);
-      setError(t('errorLoadingCategories')); // Assuming this key exists or create it
+      setError(t('errorLoadingCategories'));
       toast({ variant: "destructive", title: tCommon('toastErrorTitle') as string, description: t('errorLoadingCategories') });
     } finally {
       setLoadingCategories(false);
     }
-  }, [t, tCommon, toast, selectedCategory]); // Add selectedCategory to dependency array
+  }, [t, tCommon, toast, selectedCategory]);
 
   useEffect(() => {
     fetchCategories();
@@ -122,7 +119,7 @@ export default function AdminQuestionsPage() {
       setQuestionsForSelectedCategory(fetchedQuestions);
     } catch (err) {
       console.error(`Error fetching questions for category ${selectedCategory}:`, err);
-      setError(t('errorLoadingQuestions')); // Assuming this key exists or create it
+      setError(t('errorLoadingQuestions'));
       toast({ variant: "destructive", title: tCommon('toastErrorTitle') as string, description: t('errorLoadingQuestions') });
       setQuestionsForSelectedCategory([]);
     } finally {
@@ -134,7 +131,7 @@ export default function AdminQuestionsPage() {
     if (selectedCategory) {
       fetchQuestionsForCurrentCategory();
     } else {
-      setQuestionsForSelectedCategory([]); // Clear questions if no category is selected
+      setQuestionsForSelectedCategory([]);
     }
   }, [selectedCategory, fetchQuestionsForCurrentCategory]);
 
@@ -147,32 +144,39 @@ export default function AdminQuestionsPage() {
     const trimmedSearchQuery = searchQuery.trim();
     const lowerSearchQuery = trimmedSearchQuery.toLowerCase();
 
-    let questions = questionsForSelectedCategory // Start with questions of the selected category
+    let questions = questionsForSelectedCategory
       .filter(q => selectedDifficulty === 'all' || q.difficulty === selectedDifficulty)
       .filter(q => {
         if (!trimmedSearchQuery) return true;
         if (q.id === trimmedSearchQuery) return true;
-        
         const inQuestion = q.question.en.toLowerCase().includes(lowerSearchQuery) || q.question.es.toLowerCase().includes(lowerSearchQuery);
         if (inQuestion) return true;
-        
-        const inAnswers = q.answers.some(ans => 
+        const inAnswers = q.answers.some(ans =>
           ans.en.toLowerCase().includes(lowerSearchQuery) || ans.es.toLowerCase().includes(lowerSearchQuery)
         );
         return inAnswers;
       });
 
-    // Order only if a category is selected (which is always true now if questions are shown)
     if (selectedCategory) {
       questions = questions.sort((a, b) => {
-        const textA = a.question[locale]?.toLowerCase() || '';
-        const textB = b.question[locale]?.toLowerCase() || '';
-        return textA.localeCompare(textB);
+        let textA = '';
+        let textB = '';
+
+        if (sortCriteria === 'question') {
+          textA = a.question[locale]?.toLowerCase() || '';
+          textB = b.question[locale]?.toLowerCase() || '';
+        } else if (sortCriteria === 'answer') {
+          textA = a.answers[a.correctAnswerIndex]?.[locale]?.toLowerCase() || '';
+          textB = b.answers[b.correctAnswerIndex]?.[locale]?.toLowerCase() || '';
+        }
+        
+        const comparison = textA.localeCompare(textB);
+        return sortOrder === 'asc' ? comparison : -comparison;
       });
     }
 
     return questions;
-  }, [questionsForSelectedCategory, selectedCategory, selectedDifficulty, searchQuery, locale]);
+  }, [questionsForSelectedCategory, selectedCategory, selectedDifficulty, searchQuery, locale, sortCriteria, sortOrder]);
 
   const displayQuestions = useMemo(() => {
     return filteredQuestions.map(q => ({
@@ -193,10 +197,7 @@ export default function AdminQuestionsPage() {
     setCurrentPage(1);
   };
 
-  // This useEffect will now be triggered when selectedCategory changes,
-  // which in turn triggers fetchQuestionsForCurrentCategory,
-  // and then the useMemo for filteredQuestions re-runs.
-  useEffect(handleFilterChange, [selectedCategory, selectedDifficulty, searchQuery]);
+  useEffect(handleFilterChange, [selectedCategory, selectedDifficulty, searchQuery, sortCriteria, sortOrder]);
 
 
   const handleNextPage = () => {
@@ -215,7 +216,7 @@ export default function AdminQuestionsPage() {
     try {
       await deletePredefinedQuestion(questionId);
       toast({ title: tCommon('toastSuccessTitle') as string, description: t('toastDeleteSuccess', { question: truncateText(questionText, 30) }) });
-      if (selectedCategory) { // Re-fetch questions for the current category
+      if (selectedCategory) {
         fetchQuestionsForCurrentCategory();
       }
     } catch (err) {
@@ -271,7 +272,7 @@ export default function AdminQuestionsPage() {
     try {
       await updatePredefinedQuestion(currentQuestionToEdit.id, updatedQuestionData);
       toast({ title: tCommon('toastSuccessTitle') as string, description: t('toastUpdateSuccess') });
-      if (selectedCategory) { // Re-fetch questions for the current category
+      if (selectedCategory) {
         fetchQuestionsForCurrentCategory();
       }
       setIsQuestionDialogOpen(false);
@@ -288,6 +289,16 @@ export default function AdminQuestionsPage() {
     return text.substring(0, maxLength) + "...";
   };
 
+  const handleSort = (criteria: 'question' | 'answer') => {
+    if (sortCriteria === criteria) {
+      setSortOrder(prevOrder => prevOrder === 'asc' ? 'desc' : 'asc');
+    } else {
+      setSortCriteria(criteria);
+      setSortOrder('asc');
+    }
+  };
+
+
   if (loadingCategories) {
     return (
       <div className="flex items-center justify-center py-10">
@@ -297,7 +308,7 @@ export default function AdminQuestionsPage() {
     );
   }
 
-  if (error) {
+  if (error && !selectedCategory) { // Show critical error if categories failed and none selected
     return (
       <Card className="shadow-lg border-destructive">
         <CardHeader>
@@ -307,7 +318,7 @@ export default function AdminQuestionsPage() {
           <p className="text-destructive">{error}</p>
         </CardContent>
          <CardFooter>
-            <Button onClick={fetchCategories} variant="outline"> 
+            <Button onClick={fetchCategories} variant="outline">
                 <RefreshCw className="mr-2 h-4 w-4" />
                 {tCommon('retryButton')}
             </Button>
@@ -315,7 +326,7 @@ export default function AdminQuestionsPage() {
       </Card>
     );
   }
-  
+
   if (categoriesForFilter.length === 0) {
     return (
       <Card className="shadow-lg">
@@ -349,7 +360,7 @@ export default function AdminQuestionsPage() {
             <div className="flex-grow">
               <CardTitle>{t('questionsListTitle')}</CardTitle>
               <CardDescription>
-                {selectedCategory 
+                {selectedCategory
                   ? t('questionsListDescriptionCategory', { category: categoryMap.get(selectedCategory) || selectedCategory, count: displayQuestions.length })
                   : t('selectCategoryPrompt')
                 }
@@ -372,8 +383,7 @@ export default function AdminQuestionsPage() {
                   <SelectValue placeholder={t('filterCategoryPlaceholder')} />
                 </SelectTrigger>
                 <SelectContent>
-                  {/* Option for 'All Categories' removed as per requirement to always have one selected */}
-                  {categoriesForFilter.map(cat => ( 
+                  {categoriesForFilter.map(cat => (
                     <SelectItem key={cat.topicValue} value={cat.topicValue}>
                       {cat.name[locale]}
                     </SelectItem>
@@ -402,6 +412,15 @@ export default function AdminQuestionsPage() {
               <Loader2 className="h-10 w-10 animate-spin text-primary" />
               <p className="ml-3">{t('loadingQuestionsForCategory', { category: categoryMap.get(selectedCategory) || selectedCategory })}</p>
             </div>
+          ) : error && selectedCategory ? ( // Error specific to loading questions for selected category
+            <div className="text-destructive text-center py-4">
+              <AlertTriangle className="inline-block mr-2 h-5 w-5" />
+              {t('errorLoadingQuestions')}
+              <Button onClick={fetchQuestionsForCurrentCategory} variant="outline" size="sm" className="ml-2">
+                <RefreshCw className="mr-2 h-4 w-4" />
+                {tCommon('retryButton')}
+              </Button>
+            </div>
           ) : !selectedCategory ? (
              <p className="text-muted-foreground text-center py-4">{t('selectCategoryPromptTable')}</p>
           ) : paginatedQuestions.length === 0 ? (
@@ -411,10 +430,20 @@ export default function AdminQuestionsPage() {
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead className="w-[40%] sm:w-[45%] md:w-[50%] max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg xl:max-w-xl">{t('tableQuestion')}</TableHead>
+                    <TableHead className="w-[40%] sm:w-[45%] md:w-[50%] max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg xl:max-w-xl">
+                      <Button variant="ghost" onClick={() => handleSort('question')} className="px-1 py-0.5 h-auto hover:bg-muted">
+                        {t('tableQuestion')}
+                        <ArrowUpDown className="ml-2 h-3 w-3" />
+                      </Button>
+                    </TableHead>
                     <TableHead className="hidden md:table-cell w-[15%] sm:w-[15%] md:w-[15%]">{t('tableCategory')}</TableHead>
                     <TableHead className="w-[15%] sm:w-[15%] md:w-[10%]">{t('tableDifficulty')}</TableHead>
-                    <TableHead className="hidden lg:table-cell w-[20%] sm:w-[15%] md:w-[15%] max-w-[150px]">{t('tableCorrectAnswer')}</TableHead>
+                    <TableHead className="hidden lg:table-cell w-[20%] sm:w-[15%] md:w-[15%] max-w-[150px]">
+                      <Button variant="ghost" onClick={() => handleSort('answer')} className="px-1 py-0.5 h-auto hover:bg-muted">
+                        {t('tableCorrectAnswer')}
+                        <ArrowUpDown className="ml-2 h-3 w-3" />
+                      </Button>
+                    </TableHead>
                     <TableHead className="text-right w-[10%] sm:w-[10%] md:w-[10%]">{t('tableActions')}</TableHead>
                   </TableRow>
                 </TableHeader>
@@ -507,7 +536,7 @@ export default function AdminQuestionsPage() {
             <DialogTitle>{tForm('editDialogTitle')}</DialogTitle>
             <DialogDescription>{tForm('editDialogDescription', { topic: currentQuestionToEdit?.categoryName || currentQuestionToEdit?.topicValue || '' })}</DialogDescription>
           </DialogHeader>
-          <ScrollArea className="max-h-[calc(90vh-200px)] pr-6"> 
+          <ScrollArea className="max-h-[calc(90vh-200px)] pr-6">
             <Form {...form}>
               <form onSubmit={form.handleSubmit(onQuestionSubmit)} className="space-y-6 py-4">
                 <FormField
@@ -550,7 +579,7 @@ export default function AdminQuestionsPage() {
                     </CardContent>
                   </Card>
                 ))}
-                
+
                 <FormField
                   control={form.control}
                   name="correctAnswerIndex"
@@ -564,7 +593,7 @@ export default function AdminQuestionsPage() {
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          {['0', '1', '2', '3'].map(idx_str => ( 
+                          {['0', '1', '2', '3'].map(idx_str => (
                             <SelectItem key={idx_str} value={idx_str}>{tForm('answerOption', { letter: String.fromCharCode(65 + parseInt(idx_str)) })}</SelectItem>
                           ))}
                         </SelectContent>

@@ -277,6 +277,8 @@
     "toastDeleteError": "Could not delete question. Please try again.",
     "toastUpdateSuccess": "Question updated successfully.",
     "toastUpdateError": "Could not update question. Please try again.",
+    "sortByQuestion": "Sort by Question",
+    "sortByAnswer": "Sort by Correct Answer",
     "form": {
       "editDialogTitle": "Edit Question",
       "editDialogDescription": "Update the details for this question from category \"{topic}\". Topic Value cannot be changed here.",

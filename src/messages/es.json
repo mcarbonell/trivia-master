@@ -253,7 +253,7 @@
     "loadingQuestionsForCategory": "Cargando preguntas para \"{category}\"...",
     "noQuestions": "No se encontraron preguntas predefinidas. Puedes generarlas usando el script de población.",
     "noQuestionsFound": "No se encontraron preguntas que coincidan con los filtros actuales para esta categoría.",
-    "noQuestionsMatchFilters": "Try adjusting your filters or ensure questions have been populated for the selected criteria.",
+    "noQuestionsMatchFilters": "Intenta ajustar tus filtros o asegúrate de que se hayan poblado preguntas para los criterios seleccionados.",
     "tableQuestion": "Pregunta",
     "tableCategory": "Categoría",
     "tableDifficulty": "Dificultad",
@@ -277,6 +277,8 @@
     "toastDeleteError": "No se pudo eliminar la pregunta. Por favor, inténtalo de nuevo.",
     "toastUpdateSuccess": "Pregunta actualizada correctamente.",
     "toastUpdateError": "No se pudo actualizar la pregunta. Por favor, inténtalo de nuevo.",
+    "sortByQuestion": "Ordenar por Pregunta",
+    "sortByAnswer": "Ordenar por Respuesta Correcta",
     "form": {
       "editDialogTitle": "Editar Pregunta",
       "editDialogDescription": "Actualiza los detalles de esta pregunta de la categoría \"{topic}\". El Valor del Tema no se puede cambiar aquí.",
