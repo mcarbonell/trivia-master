@@ -23,6 +23,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { Checkbox } from '@/components/ui/checkbox';
 import { Loader2, AlertTriangle, PlusCircle, Eye, Edit, Trash2, RefreshCw, Search, ArrowUpDown } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
@@ -72,6 +73,8 @@ export default function AdminQuestionsPage() {
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [sortCriteria, setSortCriteria] = useState<'question' | 'answer'>('question');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
+  
+  const [selectedQuestionIds, setSelectedQuestionIds] = useState<string[]>([]);
 
 
   const [isQuestionDialogOpen, setIsQuestionDialogOpen] = useState(false);
@@ -113,6 +116,7 @@ export default function AdminQuestionsPage() {
       return;
     }
     setIsLoadingQuestions(true);
+    setSelectedQuestionIds([]); // Clear selection when category changes
     setError(null);
     try {
       const fetchedQuestions = await getAllPredefinedQuestionsForAdmin(selectedCategory);
@@ -195,6 +199,7 @@ export default function AdminQuestionsPage() {
 
   const handleFilterChange = () => {
     setCurrentPage(1);
+    setSelectedQuestionIds([]); // Clear selection on filter change
   };
 
   useEffect(handleFilterChange, [selectedCategory, selectedDifficulty, searchQuery, sortCriteria, sortOrder]);
@@ -217,7 +222,7 @@ export default function AdminQuestionsPage() {
       await deletePredefinedQuestion(questionId);
       toast({ title: tCommon('toastSuccessTitle') as string, description: t('toastDeleteSuccess', { question: truncateText(questionText, 30) }) });
       if (selectedCategory) {
-        fetchQuestionsForCurrentCategory();
+        fetchQuestionsForCurrentCategory(); // This will also clear selectedQuestionIds
       }
     } catch (err) {
       console.error("Error deleting question:", err);
@@ -298,6 +303,55 @@ export default function AdminQuestionsPage() {
     }
   };
 
+  const handleSelectQuestion = (questionId: string) => {
+    setSelectedQuestionIds(prevSelected =>
+      prevSelected.includes(questionId)
+        ? prevSelected.filter(id => id !== questionId)
+        : [...prevSelected, questionId]
+    );
+  };
+
+  const handleSelectAllVisible = () => {
+    const visibleQuestionIds = paginatedQuestions.map(q => q.id);
+    const allVisibleSelected = visibleQuestionIds.length > 0 && visibleQuestionIds.every(id => selectedQuestionIds.includes(id));
+
+    if (allVisibleSelected) {
+      setSelectedQuestionIds(prevSelected => prevSelected.filter(id => !visibleQuestionIds.includes(id)));
+    } else {
+      setSelectedQuestionIds(prevSelected => [...new Set([...prevSelected, ...visibleQuestionIds])]);
+    }
+  };
+
+  const isAllVisibleSelected = paginatedQuestions.length > 0 && paginatedQuestions.every(q => selectedQuestionIds.includes(q.id));
+  const isSomeVisibleSelected = paginatedQuestions.some(q => selectedQuestionIds.includes(q.id));
+
+
+  const handleBulkDelete = async () => {
+    if (selectedQuestionIds.length === 0) {
+      toast({ variant: "destructive", title: t('noQuestionsSelected') });
+      return;
+    }
+
+    const results = await Promise.allSettled(
+      selectedQuestionIds.map(id => deletePredefinedQuestion(id))
+    );
+
+    const successCount = results.filter(r => r.status === 'fulfilled').length;
+    const failCount = results.filter(r => r.status === 'rejected').length;
+
+    if (failCount === 0) {
+      toast({ title: tCommon('toastSuccessTitle') as string, description: t('toastBulkDeleteSuccess', { count: successCount }) });
+    } else if (successCount > 0) {
+      toast({ variant: "destructive", title: tCommon('toastErrorTitle') as string, description: t('toastBulkDeletePartialError', { successCount, failCount }) });
+    } else {
+      toast({ variant: "destructive", title: tCommon('toastErrorTitle') as string, description: t('toastBulkDeleteError') });
+    }
+    
+    if (selectedCategory) {
+      fetchQuestionsForCurrentCategory(); // This will also clear selectedQuestionIds
+    }
+  };
+
 
   if (loadingCategories) {
     return (
@@ -308,7 +362,7 @@ export default function AdminQuestionsPage() {
     );
   }
 
-  if (error && !selectedCategory) { // Show critical error if categories failed and none selected
+  if (error && !selectedCategory) { 
     return (
       <Card className="shadow-lg border-destructive">
         <CardHeader>
@@ -348,10 +402,36 @@ export default function AdminQuestionsPage() {
             <h1 className="text-3xl font-headline text-primary">{t('title')}</h1>
             <p className="text-muted-foreground">{t('description')}</p>
          </div>
-         <Button disabled>
-            <PlusCircle className="mr-2 h-5 w-5" />
-            {t('addButton')}
-        </Button>
+         <div className="flex gap-2">
+            {selectedQuestionIds.length > 0 && (
+                 <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                        <Button variant="destructive">
+                            <Trash2 className="mr-2 h-4 w-4" />
+                            {t('deleteSelectedButton', { count: selectedQuestionIds.length })}
+                        </Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                        <AlertDialogHeader>
+                        <AlertDialogTitle>{t('bulkDeleteConfirmTitle')}</AlertDialogTitle>
+                        <AlertDialogDescription>
+                            {t('bulkDeleteConfirmDescription', { count: selectedQuestionIds.length })}
+                        </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                        <AlertDialogCancel>{tCommon('cancel')}</AlertDialogCancel>
+                        <AlertDialogAction onClick={handleBulkDelete} className="bg-destructive hover:bg-destructive/90">
+                            {t('deleteButton')}
+                        </AlertDialogAction>
+                        </AlertDialogFooter>
+                    </AlertDialogContent>
+                </AlertDialog>
+            )}
+            <Button disabled> {/* Add Question button functionality can be added later */}
+                <PlusCircle className="mr-2 h-5 w-5" />
+                {t('addButton')}
+            </Button>
+         </div>
       </header>
 
       <Card className="shadow-lg">
@@ -412,7 +492,7 @@ export default function AdminQuestionsPage() {
               <Loader2 className="h-10 w-10 animate-spin text-primary" />
               <p className="ml-3">{t('loadingQuestionsForCategory', { category: categoryMap.get(selectedCategory) || selectedCategory })}</p>
             </div>
-          ) : error && selectedCategory ? ( // Error specific to loading questions for selected category
+          ) : error && selectedCategory ? ( 
             <div className="text-destructive text-center py-4">
               <AlertTriangle className="inline-block mr-2 h-5 w-5" />
               {t('errorLoadingQuestions')}
@@ -430,7 +510,15 @@ export default function AdminQuestionsPage() {
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead className="w-[40%] sm:w-[45%] md:w-[50%] max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg xl:max-w-xl">
+                    <TableHead className="w-[50px] sm:w-[60px]">
+                       <Checkbox
+                        checked={isAllVisibleSelected}
+                        onCheckedChange={handleSelectAllVisible}
+                        aria-label={t('selectAllVisible')}
+                        indeterminate={isSomeVisibleSelected && !isAllVisibleSelected}
+                      />
+                    </TableHead>
+                    <TableHead className="w-[35%] sm:w-[40%] md:w-[45%] max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg xl:max-w-xl">
                       <Button variant="ghost" onClick={() => handleSort('question')} className="px-1 py-0.5 h-auto hover:bg-muted">
                         {t('tableQuestion')}
                         <ArrowUpDown className="ml-2 h-3 w-3" />
@@ -449,11 +537,18 @@ export default function AdminQuestionsPage() {
                 </TableHeader>
                 <TableBody>
                   {paginatedQuestions.map((question) => (
-                    <TableRow key={question.id}>
+                    <TableRow key={question.id} data-state={selectedQuestionIds.includes(question.id) ? "selected" : ""}>
+                      <TableCell>
+                        <Checkbox
+                          checked={selectedQuestionIds.includes(question.id)}
+                          onCheckedChange={() => handleSelectQuestion(question.id)}
+                          aria-labelledby={`question-label-${question.id}`}
+                        />
+                      </TableCell>
                       <TableCell className="font-medium">
                         <Tooltip>
                           <TooltipTrigger asChild>
-                            <span className="block break-words cursor-default">
+                            <span id={`question-label-${question.id}`} className="block break-words cursor-default">
                               {truncateText(question.question[locale] || 'N/A', 70)}
                             </span>
                           </TooltipTrigger>
@@ -637,3 +732,4 @@ export default function AdminQuestionsPage() {
     </div>
   );
 }
+
