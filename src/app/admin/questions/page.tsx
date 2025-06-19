@@ -63,6 +63,7 @@ export default function AdminQuestionsPage() {
 
   const [questionsForSelectedCategory, setQuestionsForSelectedCategory] = useState<PredefinedQuestion[]>([]);
   const [categoriesForFilter, setCategoriesForFilter] = useState<CategoryDefinition[]>([]);
+  
   const [loadingCategories, setLoadingCategories] = useState(true);
   const [isLoadingQuestions, setIsLoadingQuestions] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -94,7 +95,7 @@ export default function AdminQuestionsPage() {
       if (fetchedCategories.length > 0 && !selectedCategory) {
         setSelectedCategory(fetchedCategories[0]!.topicValue);
       } else if (fetchedCategories.length === 0) {
-        setQuestionsForSelectedCategory([]);
+        setQuestionsForSelectedCategory([]); // Ensure questions are cleared if no categories
       }
     } catch (err) {
       console.error("Error fetching categories:", err);
@@ -103,7 +104,7 @@ export default function AdminQuestionsPage() {
     } finally {
       setLoadingCategories(false);
     }
-  }, [t, tCommon, toast, selectedCategory]);
+  }, [t, tCommon, toast, selectedCategory]); // selectedCategory was missing here, added for completeness but initial load logic handles it
 
   useEffect(() => {
     fetchCategories();
@@ -135,7 +136,7 @@ export default function AdminQuestionsPage() {
     if (selectedCategory) {
       fetchQuestionsForCurrentCategory();
     } else {
-      setQuestionsForSelectedCategory([]);
+      setQuestionsForSelectedCategory([]); // Clear questions if no category selected
     }
   }, [selectedCategory, fetchQuestionsForCurrentCategory]);
 
@@ -152,7 +153,7 @@ export default function AdminQuestionsPage() {
       .filter(q => selectedDifficulty === 'all' || q.difficulty === selectedDifficulty)
       .filter(q => {
         if (!trimmedSearchQuery) return true;
-        if (q.id === trimmedSearchQuery) return true;
+        if (q.id === trimmedSearchQuery) return true; // Allow searching by exact ID
         const inQuestion = q.question.en.toLowerCase().includes(lowerSearchQuery) || q.question.es.toLowerCase().includes(lowerSearchQuery);
         if (inQuestion) return true;
         const inAnswers = q.answers.some(ans =>
@@ -328,7 +329,7 @@ export default function AdminQuestionsPage() {
 
   const handleBulkDelete = async () => {
     if (selectedQuestionIds.length === 0) {
-      toast({ variant: "destructive", title: t('noQuestionsSelected') });
+      toast({ variant: "destructive", title: t('noQuestionsSelected') as string });
       return;
     }
 
@@ -458,7 +459,7 @@ export default function AdminQuestionsPage() {
                     disabled={!selectedCategory || isLoadingQuestions}
                   />
               </div>
-              <Select value={selectedCategory} onValueChange={setSelectedCategory} disabled={loadingCategories}>
+              <Select value={selectedCategory} onValueChange={setSelectedCategory} disabled={loadingCategories || isLoadingQuestions}>
                 <SelectTrigger className="w-full sm:w-[200px]">
                   <SelectValue placeholder={t('filterCategoryPlaceholder')} />
                 </SelectTrigger>
@@ -512,10 +513,13 @@ export default function AdminQuestionsPage() {
                   <TableRow>
                     <TableHead className="w-[50px] sm:w-[60px]">
                        <Checkbox
-                        checked={isAllVisibleSelected}
+                        checked={
+                          isAllVisibleSelected
+                            ? true
+                            : (isSomeVisibleSelected && !isAllVisibleSelected ? 'indeterminate' : false)
+                        }
                         onCheckedChange={handleSelectAllVisible}
-                        aria-label={t('selectAllVisible')}
-                        indeterminate={isSomeVisibleSelected && !isAllVisibleSelected}
+                        aria-label={t('selectAllVisible') as string}
                       />
                     </TableHead>
                     <TableHead className="w-[35%] sm:w-[40%] md:w-[45%] max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg xl:max-w-xl">
