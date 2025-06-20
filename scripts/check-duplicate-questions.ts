@@ -26,7 +26,7 @@ try {
 const db = admin.firestore();
 const PREDEFINED_QUESTIONS_COLLECTION = 'predefinedTriviaQuestions';
 const ALL_DIFFICULTY_LEVELS_CONST: DifficultyLevel[] = ["easy", "medium", "hard"];
-const DEFAULT_MODEL_FOR_CHECK = 'googleai/gemini-2.5-flash-lite-preview-06-17';
+const DEFAULT_MODEL_FOR_CHECK = 'googleai/gemini-1.5-flash';
 
 // --- Argument Parsing with yargs ---
 const argv = yargs(hideBin(process.argv))
