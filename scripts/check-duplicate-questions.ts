@@ -5,9 +5,11 @@ config(); // Load environment variables from .env file
 import admin from 'firebase-admin';
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
+import inquirer from 'inquirer'; // Import inquirer
 import { detectDuplicateQuestions, type QuestionInput, type DetectDuplicatesInput, type DetectDuplicatesOutput } from '../src/ai/flows/detect-duplicate-questions';
-import type { PredefinedQuestion, DifficultyLevel } from '../src/services/triviaService'; // Assuming types are here
-import type { BilingualText } from '../src/types';
+import type { PredefinedQuestion, DifficultyLevel } from '../src/services/triviaService'; 
+// BilingualText might not be directly needed here, but good for context if prompt changes
+// import type { BilingualText } from '../src/types';
 
 // Initialize Firebase Admin SDK
 try {
@@ -76,11 +78,11 @@ async function checkDuplicates() {
 
     const questionsFromFirestore: QuestionInput[] = [];
     querySnapshot.forEach(doc => {
-      const data = doc.data() as PredefinedQuestion; // Assuming PredefinedQuestion has a 'question.en' field
+      const data = doc.data() as PredefinedQuestion; 
       if (data.question && data.question.en) {
         questionsFromFirestore.push({
           id: doc.id,
-          questionText: data.question.en, // Using English text for AI comparison
+          questionText: data.question.en, 
         });
       } else {
         console.warn(`Question with ID ${doc.id} is missing English text and will be skipped.`);
@@ -105,9 +107,41 @@ async function checkDuplicates() {
       console.log("AI analysis complete: No conceptual duplicates found.");
     } else {
       console.log(`AI analysis complete: Found ${duplicateResults.length} duplicate pair(s):`);
+      const duplicateIdsToDelete = new Set<string>();
       duplicateResults.forEach(pair => {
         console.log(`  ID ${pair.duplicateId} is duplicated of ID ${pair.originalId} (Reason: ${pair.reason || 'N/A'})`);
+        duplicateIdsToDelete.add(pair.duplicateId);
       });
+
+      if (duplicateIdsToDelete.size > 0) {
+        const { confirmDelete } = await inquirer.prompt([
+          {
+            type: 'confirm',
+            name: 'confirmDelete',
+            message: `Do you want to delete the ${duplicateIdsToDelete.size} identified 'duplicateId' questions from Firestore?`,
+            default: false,
+          },
+        ]);
+
+        if (confirmDelete) {
+          console.log('Deleting questions...');
+          let successCount = 0;
+          let failCount = 0;
+          for (const idToDelete of duplicateIdsToDelete) {
+            try {
+              await db.collection(PREDEFINED_QUESTIONS_COLLECTION).doc(idToDelete).delete();
+              console.log(`  Successfully deleted question ID: ${idToDelete}`);
+              successCount++;
+            } catch (deleteError) {
+              console.error(`  Failed to delete question ID: ${idToDelete}`, deleteError);
+              failCount++;
+            }
+          }
+          console.log(`Finished deleting. ${successCount} questions deleted. ${failCount} deletions failed.`);
+        } else {
+          console.log('No questions were deleted.');
+        }
+      }
     }
 
   } catch (error) {
