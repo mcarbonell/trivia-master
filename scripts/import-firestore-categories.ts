@@ -56,7 +56,7 @@ async function importCategories() {
     const categoriesJson = await fs.readFile(CATEGORIES_FILE_PATH, 'utf-8');
     const categoriesData: any[] = JSON.parse(categoriesJson); // Read as any first for validation
 
-    if (!categoriesData || categoriesData.length === 0) {
+    if (!Array.isArray(categoriesData) || categoriesData.length === 0) {
       console.log(`No categories found in the file "${categoriesJsonFileName}". Exiting.`);
       return;
     }

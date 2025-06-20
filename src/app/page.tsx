@@ -77,7 +77,7 @@ const DIFFICULTY_LEVELS_ORDER: DifficultyLevel[] = ["easy", "medium", "hard"];
 const QUESTION_TIME_LIMIT_SECONDS = 30;
 const QUESTIONS_PER_GAME = 10;
 const CUSTOM_TOPIC_QUESTIONS_TO_GENERATE = 30;
-const DEFAULT_MODEL_FOR_GAME = 'googleai/gemini-2.5-flash-lite-preview-06-17';
+const DEFAULT_MODEL_FOR_GAME = 'googleai/gemini-2.5-flash';
 
 
 export default function TriviaPage() {
