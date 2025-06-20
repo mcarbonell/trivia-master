@@ -113,7 +113,7 @@ async function fetchCategoriesWithAdminSDK(): Promise<CategoryDefinition[]> {
           name: data.name as BilingualText,
           icon: data.icon,
           detailedPromptInstructions: data.detailedPromptInstructions,
-          isPredefined: data.isPredefined === undefined ? true : data.isPredefined,
+          // isPredefined: data.isPredefined === undefined ? true : data.isPredefined, // Removed
         };
         if (data.difficultySpecificGuidelines) {
           const validatedGuidelines: { [key: string]: string } = {};

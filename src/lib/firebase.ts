@@ -1,3 +1,4 @@
+
 // src/lib/firebase.ts
 import { initializeApp, getApps, type FirebaseApp } from "firebase/app";
 import { getFirestore, type Firestore } from "firebase/firestore";
@@ -30,16 +31,19 @@ const auth: Auth = getAuth(app);
 
 // Analytics
 let analytics: FirebaseAnalytics | null = null;
-if (typeof window !== 'undefined') {
+if (typeof window !== 'undefined' && firebaseConfig.measurementId) {
   isAnalyticsSupported().then(supported => {
-    if (supported && firebaseConfig.measurementId) {
+    if (supported) {
       analytics = getAnalytics(app);
       console.log("Firebase Analytics initialized.");
     } else {
-      console.log("Firebase Analytics not supported or measurementId missing.");
+      console.log("Firebase Analytics not supported in this environment.");
     }
+  }).catch(err => {
+    console.warn("Firebase Analytics initialization error:", err);
   });
 }
+
 
 // Export a logEvent function that uses the initialized analytics instance
 const logEvent = (eventName: string, eventParams?: { [key: string]: any }) => {

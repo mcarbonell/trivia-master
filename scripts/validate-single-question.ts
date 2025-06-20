@@ -6,16 +6,21 @@ import admin from 'firebase-admin';
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
 import inquirer from 'inquirer';
-import { doc, getDoc } from 'firebase/firestore';
+// Import getDoc from firebase/firestore/lite for admin SDK scripts if not modifying data.
+// However, since we might update/delete, using the full 'firebase/firestore' is okay for now
+// but be mindful if you split read-only scripts later.
+// For admin scripts, it's often better to use the admin SDK throughout.
+// Let's use the admin SDK for Firestore operations directly.
+// import { doc, getDoc } from 'firebase/firestore'; // Client SDK
 import { validateSingleTriviaQuestion, type ValidateSingleQuestionInput, type ValidateSingleQuestionOutput, type QuestionData } from '../src/ai/flows/validate-single-trivia-question';
-import { updatePredefinedQuestion, deletePredefinedQuestion, PREDEFINED_QUESTIONS_COLLECTION } from '../src/services/triviaService';
+import { updatePredefinedQuestion, deletePredefinedQuestion } from '../src/services/triviaService'; // Re-add PREDEFINED_QUESTIONS_COLLECTION if needed
 import type { GenerateTriviaQuestionOutput, BilingualText, DifficultyLevel } from '@/ai/flows/generate-trivia-question'; // For fixedQuestionData structure
 
 // Initialize Firebase Admin SDK
 try {
   if (!admin.apps.length) {
     admin.initializeApp({
-      credential: admin.credential.applicationDefault(),
+      credential: admin.credential.applicationDefault(), // Assumes GOOGLE_APPLICATION_CREDENTIALS is set
     });
   }
 } catch (error) {
@@ -24,6 +29,7 @@ try {
 }
 
 const db = admin.firestore();
+const PREDEFINED_QUESTIONS_COLLECTION = 'predefinedTriviaQuestions'; // Define locally
 const DEFAULT_MODEL_FOR_VALIDATION = 'googleai/gemini-2.5-flash';
 
 // --- Argument Parsing with yargs ---
@@ -97,10 +103,10 @@ async function validateQuestion() {
   console.log(`Validating question with ID: "${questionId}" using model: "${modelToUse}"...`);
 
   try {
-    const questionRef = doc(db, PREDEFINED_QUESTIONS_COLLECTION, questionId);
-    const docSnap = await getDoc(questionRef);
+    const questionRef = db.collection(PREDEFINED_QUESTIONS_COLLECTION).doc(questionId); // Use admin SDK
+    const docSnap = await questionRef.get();
 
-    if (!docSnap.exists()) {
+    if (!docSnap.exists) {
       console.error(`Error: Question with ID "${questionId}" not found in Firestore collection "${PREDEFINED_QUESTIONS_COLLECTION}".`);
       return;
     }
@@ -135,8 +141,6 @@ async function validateQuestion() {
 
     if (validationResult.validationStatus === "Fix" && validationResult.fixedQuestionData) {
       console.log("AI has proposed a fix for the question:");
-      // Displaying fixedQuestionData (it doesn't have id, topicValue from AI)
-      // but we pass the original ones for context in the display function
       formatQuestionForDisplay("Fixed Question (Proposed by AI)", validationResult.fixedQuestionData as GenerateTriviaQuestionOutput, originalQuestionData.id, originalQuestionData.topicValue);
       
       const { confirmFix } = await inquirer.prompt([
@@ -150,7 +154,16 @@ async function validateQuestion() {
 
       if (confirmFix) {
         try {
-          await updatePredefinedQuestion(questionId, validationResult.fixedQuestionData);
+          // Use the admin SDK directly for updates as well, or ensure triviaService functions are admin-SDK compatible
+          const dataToUpdate = { ...validationResult.fixedQuestionData };
+          if (dataToUpdate.hint === undefined) {
+            // If hint is undefined in fixedQuestionData, we might want to remove it explicitly
+            // This depends on how updatePredefinedQuestion handles undefined fields.
+            // For explicit removal with admin SDK: dataToUpdate.hint = admin.firestore.FieldValue.delete();
+          }
+          await db.collection(PREDEFINED_QUESTIONS_COLLECTION).doc(questionId).update(dataToUpdate);
+          // Or, ensure updatePredefinedQuestion is compatible with server-side execution
+          // await updatePredefinedQuestion(questionId, validationResult.fixedQuestionData);
           console.log(`Successfully applied fix to question ID: ${questionId}`);
         } catch (updateError) {
           console.error(`Failed to apply fix to question ID: ${questionId}`, updateError);
@@ -170,7 +183,9 @@ async function validateQuestion() {
 
       if (confirmDelete) {
         try {
-          await deletePredefinedQuestion(questionId);
+          await db.collection(PREDEFINED_QUESTIONS_COLLECTION).doc(questionId).delete();
+          // Or, ensure deletePredefinedQuestion is compatible
+          // await deletePredefinedQuestion(questionId);
           console.log(`Successfully deleted rejected question ID: ${questionId}`);
         } catch (deleteError) {
           console.error(`Failed to delete rejected question ID: ${questionId}`, deleteError);
@@ -195,3 +210,4 @@ validateQuestion().catch(error => {
   console.error("Unhandled error in validateQuestion script:", error);
   process.exit(1);
 });
+
