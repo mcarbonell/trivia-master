@@ -264,6 +264,7 @@
     "tableQuestion": "Pregunta",
     "tableCategory": "Categoría",
     "tableDifficulty": "Dificultad",
+    "tableStatus": "Estado",
     "tableCorrectAnswer": "Respuesta Correcta",
     "tableActions": "Acciones",
     "viewButton": "Ver Detalles",
@@ -298,6 +299,10 @@
     "noQuestionsSelected": "No hay preguntas seleccionadas para eliminar.",
     "selectAllVisible": "Seleccionar todas las visibles",
     "correctAnswer": "Respuesta Correcta",
+    "statuses": {
+      "accepted": "Aceptada",
+      "fixed": "Corregida"
+    },
     "form": {
       "viewDialogTitle": "Ver Detalles de la Pregunta",
       "viewDialogDescription": "Viendo detalles de la pregunta de la categoría \"{topic}\".",

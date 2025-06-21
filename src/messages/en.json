@@ -264,6 +264,7 @@
     "tableQuestion": "Question",
     "tableCategory": "Category",
     "tableDifficulty": "Difficulty",
+    "tableStatus": "Status",
     "tableCorrectAnswer": "Correct Answer",
     "tableActions": "Actions",
     "viewButton": "View Details",
@@ -298,6 +299,10 @@
     "noQuestionsSelected": "No questions selected to delete.",
     "selectAllVisible": "Select all visible questions",
     "correctAnswer": "Correct Answer",
+    "statuses": {
+      "accepted": "Accepted",
+      "fixed": "Fixed"
+    },
     "form": {
       "viewDialogTitle": "View Question Details",
       "viewDialogDescription": "Viewing question details from category \"{topic}\".",

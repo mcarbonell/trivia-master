@@ -23,6 +23,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Checkbox } from '@/components/ui/checkbox';
+import { Badge } from '@/components/ui/badge';
 import { Loader2, AlertTriangle, PlusCircle, Eye, Edit, Trash2, RefreshCw, Search, ArrowUpDown, Download, ClipboardCopy } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
@@ -386,9 +387,13 @@ export default function AdminQuestionsPage() {
     }
 
     const questionsToExport = displayQuestions.map(q => {
-      // Destructure to pick only the fields we want, excluding 'categoryName' or other client-side additions.
-      const { id, topicValue, question, answers, correctAnswerIndex, explanation, difficulty, hint, source, createdAt } = q;
-      return { id, topicValue, question, answers, correctAnswerIndex, explanation, difficulty, hint, source, createdAt };
+      const { id, topicValue, question, answers, correctAnswerIndex, explanation, difficulty, hint, source, createdAt, status } = q;
+      const exportableQuestion: any = { id, topicValue, question, answers, correctAnswerIndex, explanation, difficulty };
+      if (hint) exportableQuestion.hint = hint;
+      if (source) exportableQuestion.source = source;
+      if (createdAt) exportableQuestion.createdAt = createdAt;
+      if (status) exportableQuestion.status = status;
+      return exportableQuestion;
     });
 
     const jsonString = JSON.stringify(questionsToExport, null, 2);
@@ -601,16 +606,23 @@ export default function AdminQuestionsPage() {
                         />
                       </TableCell>
                       <TableCell className="font-medium">
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <span id={`question-label-${question.id}`} className="block break-words cursor-default">
-                              {truncateText(question.question[locale] || 'N/A', 70)}
-                            </span>
-                          </TooltipTrigger>
-                          <TooltipContent side="top" align="start" className="max-w-md break-words bg-background border shadow-lg p-2 rounded-md">
-                            <p>{question.question[locale] || 'N/A'}</p>
-                          </TooltipContent>
-                        </Tooltip>
+                        <div className="flex items-center gap-2">
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <span id={`question-label-${question.id}`} className="block break-words cursor-default">
+                                {truncateText(question.question[locale] || 'N/A', 70)}
+                              </span>
+                            </TooltipTrigger>
+                            <TooltipContent side="top" align="start" className="max-w-md break-words bg-background border shadow-lg p-2 rounded-md">
+                              <p>{question.question[locale] || 'N/A'}</p>
+                            </TooltipContent>
+                          </Tooltip>
+                          {question.status && (
+                            <Badge variant={question.status === 'fixed' ? 'secondary' : 'default'} className="whitespace-nowrap capitalize">
+                              {t(`statuses.${question.status}`)}
+                            </Badge>
+                          )}
+                        </div>
                       </TableCell>
                       <TableCell className="hidden md:table-cell">{question.categoryName}</TableCell>
                       <TableCell>{tCommon(`difficultyLevels.${question.difficulty}` as any) || question.difficulty}</TableCell>
@@ -702,7 +714,15 @@ export default function AdminQuestionsPage() {
           <ScrollArea className="max-h-[calc(90vh-200px)] pr-6">
             {currentQuestionToView && (
               <div className="space-y-4 py-4 text-sm">
-                <p><span className="font-semibold">{tForm('difficultyLabel')}:</span> {tCommon(`difficultyLevels.${currentQuestionToView.difficulty}` as any)}</p>
+                <div className="flex items-center gap-4">
+                  <p><span className="font-semibold">{tForm('difficultyLabel')}:</span> {tCommon(`difficultyLevels.${currentQuestionToView.difficulty}` as any)}</p>
+                  {currentQuestionToView.status && (
+                    <div className="flex items-center gap-1">
+                      <span className="font-semibold">{t('tableStatus')}:</span>
+                      <Badge variant={currentQuestionToView.status === 'fixed' ? 'secondary' : 'default'} className="capitalize">{t(`statuses.${currentQuestionToView.status}`)}</Badge>
+                    </div>
+                  )}
+                </div>
                 
                 <Card>
                   <CardHeader><CardTitle className="text-base">{tForm('questionLabel')}</CardTitle></CardHeader>

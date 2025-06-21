@@ -9,6 +9,7 @@ export interface PredefinedQuestion extends GenerateTriviaQuestionOutput {
   id: string;
   topicValue: string;
   createdAt?: string; 
+  status?: 'accepted' | 'fixed';
 }
 
 const PREDEFINED_QUESTIONS_COLLECTION = 'predefinedTriviaQuestions';
@@ -56,6 +57,7 @@ export async function getPredefinedQuestionFromFirestore(
           difficulty: data.difficulty as DifficultyLevel,
           topicValue: data.topicValue as string,
           hint: data.hint as BilingualText | undefined,
+          status: data.status,
           createdAt: data.createdAt ? (data.createdAt as Timestamp).toDate().toISOString() : undefined
         });
       }
@@ -107,6 +109,7 @@ export async function getAllQuestionsForTopic(topicValue: string): Promise<Prede
           difficulty: data.difficulty as DifficultyLevel,
           topicValue: data.topicValue as string,
           hint: data.hint as BilingualText | undefined,
+          status: data.status,
           createdAt: data.createdAt ? (data.createdAt as Timestamp).toDate().toISOString() : undefined
         });
       } else {
@@ -154,6 +157,7 @@ export async function getAllPredefinedQuestionsForAdmin(topicValue: string | nul
           difficulty: data.difficulty as DifficultyLevel,
           topicValue: data.topicValue as string,
           hint: data.hint as BilingualText | undefined,
+          status: data.status,
           createdAt: data.createdAt ? (data.createdAt as Timestamp).toDate().toISOString() : undefined
         });
       }
@@ -176,7 +180,7 @@ export async function deletePredefinedQuestion(questionId: string): Promise<void
   }
 }
 
-export async function updatePredefinedQuestion(questionId: string, data: Partial<GenerateTriviaQuestionOutput>): Promise<void> {
+export async function updatePredefinedQuestion(questionId: string, data: Partial<GenerateTriviaQuestionOutput & { status?: 'accepted' | 'fixed' }>): Promise<void> {
   try {
     const questionRef = doc(db, PREDEFINED_QUESTIONS_COLLECTION, questionId);
     await updateDoc(questionRef, data);

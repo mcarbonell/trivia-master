@@ -33,6 +33,7 @@ const QuestionDataSchema = z.object({
     es: z.string().describe('Spanish version of the hint.'),
   }).optional(),
   difficulty: z.enum(["easy", "medium", "hard"]),
+  status: z.string().optional().describe("Validation status of the question, if any (e.g., 'accepted', 'fixed')."),
   source: z.string().optional().describe("Source information for the question, if available."),
   createdAt: z.string().optional().describe("Creation timestamp, if available.")
 });
@@ -52,7 +53,7 @@ const ValidationStatusSchema = z.enum(["Accept", "Reject", "Fix"])
 export const ValidateSingleQuestionOutputSchema = z.object({
   validationStatus: ValidationStatusSchema,
   reasoning: z.string().describe('AI\'s reasoning for the validation status. If "Fix", should explain what was fixed.'),
-  fixedQuestionData: QuestionDataSchema.omit({id: true, topicValue: true, source: true, createdAt: true }).optional() // Omit fields that AI shouldn't change directly
+  fixedQuestionData: QuestionDataSchema.omit({id: true, topicValue: true, source: true, createdAt: true, status: true }).optional() // Omit fields that AI shouldn't change directly
     .describe('The corrected question data if validationStatus is "Fix". Structure should match GenerateTriviaQuestionOutputSchema but without id, topicValue, source, createdAt.'),
 });
 export type ValidateSingleQuestionOutput = z.infer<typeof ValidateSingleQuestionOutputSchema>;
@@ -121,6 +122,7 @@ Question ID: {{{questionData.id}}}
 Current Assigned Difficulty: {{{questionData.difficulty}}}
 Source: {{{questionData.source}}}
 Created At: {{{questionData.createdAt}}}
+Current Validation Status: {{{questionData.status}}}
 
 Question Data to Validate:
 {{{json questionData}}}

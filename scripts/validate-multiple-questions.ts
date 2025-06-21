@@ -63,12 +63,18 @@ const argv = yargs(hideBin(process.argv))
     default: false,
     description: 'Shorthand for --autofix and --autodelete.',
   })
+  .option('force', {
+    alias: 'f',
+    type: 'boolean',
+    default: false,
+    description: "Force re-validation of all questions, ignoring their current status (e.g., 'accepted' or 'fixed').",
+  })
   .help()
   .alias('help', 'h')
   .parseSync();
 
 async function validateMultipleQuestions() {
-  const { topicValue, difficulty, model, auto, autofix, autodelete } = argv;
+  const { topicValue, difficulty, model, auto, autofix, autodelete, force } = argv;
   const doAutoFix = autofix || auto;
   const doAutoDelete = autodelete || auto;
   const modelToUse = model || DEFAULT_MODEL_FOR_VALIDATION;
@@ -77,17 +83,21 @@ async function validateMultipleQuestions() {
   if (difficulty) console.log(`Difficulty filter: "${difficulty}"`);
   console.log(`Using model: "${modelToUse}"`);
   console.log(`Auto-fix: ${doAutoFix}, Auto-delete: ${doAutoDelete}`);
+  console.log(`Force re-validation: ${force}`);
   console.log('----------------------------------------------------');
 
   try {
-    let firestoreQuery = db.collection(PREDEFINED_QUESTIONS_COLLECTION).where('topicValue', '==', topicValue);
+    let firestoreQuery: admin.firestore.Query = db.collection(PREDEFINED_QUESTIONS_COLLECTION).where('topicValue', '==', topicValue);
     if (difficulty) {
       firestoreQuery = firestoreQuery.where('difficulty', '==', difficulty as DifficultyLevel);
+    }
+    if (!force) {
+      firestoreQuery = firestoreQuery.where('status', 'not-in', ['accepted', 'fixed']);
     }
 
     const snapshot = await firestoreQuery.get();
     if (snapshot.empty) {
-      console.log('No questions found for the specified criteria. Exiting.');
+      console.log('No questions found for the specified criteria. If questions exist, they may have already been validated. Use --force to re-validate all.');
       return;
     }
 
@@ -102,6 +112,7 @@ async function validateMultipleQuestions() {
         explanation: data.explanation,
         hint: data.hint,
         difficulty: data.difficulty,
+        status: data.status,
         source: data.source,
         createdAt: data.createdAt ? (data.createdAt as admin.firestore.Timestamp).toDate().toISOString() : undefined,
       };
@@ -116,7 +127,7 @@ async function validateMultipleQuestions() {
 
     for (let i = 0; i < questionsToValidate.length; i++) {
       const question = questionsToValidate[i]!;
-      console.log(`\n[${i + 1}/${questionsToValidate.length}] Validating question ID: ${question.id}`);
+      console.log(`\n[${i + 1}/${questionsToValidate.length}] Validating question ID: ${question.id} (Current status: ${question.status || 'none'})`);
       
       try {
         const flowInput: ValidateSingleQuestionInput = {
@@ -129,6 +140,8 @@ async function validateMultipleQuestions() {
 
         if (validationResult.validationStatus === 'Accept') {
           acceptedCount++;
+          await db.collection(PREDEFINED_QUESTIONS_COLLECTION).doc(question.id).update({ status: 'accepted' });
+          console.log(`  > ACTION: Question ${question.id} accepted and status updated.`);
         } else if (validationResult.validationStatus === 'Reject') {
           rejectedCount++;
           if (doAutoDelete) {
@@ -141,8 +154,11 @@ async function validateMultipleQuestions() {
         } else if (validationResult.validationStatus === 'Fix' && validationResult.fixedQuestionData) {
           fixedCount++;
           if (doAutoFix) {
-            await db.collection(PREDEFINED_QUESTIONS_COLLECTION).doc(question.id).update({ ...validationResult.fixedQuestionData });
-            console.log(`  > ACTION: Question ${question.id} automatically FIXED.`);
+            await db.collection(PREDEFINED_QUESTIONS_COLLECTION).doc(question.id).update({ 
+              ...validationResult.fixedQuestionData,
+              status: 'fixed'
+            });
+            console.log(`  > ACTION: Question ${question.id} automatically FIXED and status updated.`);
           } else {
             console.log(`  > ACTION: Manual fix recommended.`);
           }
@@ -159,8 +175,8 @@ async function validateMultipleQuestions() {
 
     console.log('\n--- Validation Summary ---');
     console.log(`Total Questions Processed: ${questionsToValidate.length}`);
-    console.log(`Accepted: ${acceptedCount}`);
-    console.log(`Fixed: ${fixedCount} (applied automatically if --autofix or --auto was used)`);
+    console.log(`Accepted & Status Set: ${acceptedCount}`);
+    console.log(`Fixed & Status Set: ${fixedCount} (applied automatically if --autofix or --auto was used)`);
     console.log(`Rejected: ${rejectedCount}`);
     console.log(`  - Deleted: ${deletedCount} (applied automatically if --autodelete or --auto was used)`);
     console.log(`Errors during validation: ${errorCount}`);
@@ -168,6 +184,9 @@ async function validateMultipleQuestions() {
 
   } catch (error) {
     console.error("Fatal error during script execution:", error);
+    if (error instanceof Error && error.message.includes('INVALID_ARGUMENT')) {
+        console.error("\nFirestore query error: This can happen if the 'status' field does not exist on any documents matching your query. To resolve this, you can run a one-time script to add a default status to documents or manually add the 'status' field to at least one document in the query's scope.");
+    }
   }
 }
 

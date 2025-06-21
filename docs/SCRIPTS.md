@@ -88,7 +88,7 @@ These scripts leverage Genkit and AI models to generate or validate content. Rem
 
 ### 5. Validate a Single Question (`validate:question`)
 
-- **Purpose:** Uses AI to perform a detailed quality check on a single question from Firestore. The AI can accept it, reject it (and recommend deletion), or propose a fix.
+- **Purpose:** Uses AI to perform a detailed quality check on a single question from Firestore. The AI can accept it, reject it (and recommend deletion), or propose a fix. After validation, the question's `status` field in Firestore is updated to `'accepted'` or `'fixed'`.
 - **Command:** `npm run validate:question -- --id <firestore_id> [options]`
 - **Arguments:**
     - `-i, --id <firestore_id>`: **Required**. The Firestore document ID of the question you want to validate.
@@ -114,11 +114,11 @@ These scripts leverage Genkit and AI models to generate or validate content. Rem
     - If the AI recommends rejection:
         - With `--autodelete` or `--auto`, it deletes the question automatically.
         - Without these flags, it will always ask for confirmation to delete the question.
-    - If the AI accepts the question, it will simply report that no action is needed.
+    - If the AI accepts the question, it will simply report that no action is needed and set the question's status to `'accepted'`.
 
 ### 6. Validate Multiple Questions (`validate:questions`)
 
-- **Purpose:** Runs the same AI quality check as `validate:question` but in bulk for all questions matching a given category and optional difficulty. This script is non-interactive by default (it logs recommendations), but can perform actions automatically if flags are provided.
+- **Purpose:** Runs the same AI quality check as `validate:question` but in bulk for all questions matching a given category and optional difficulty. By default, this script **only processes questions that have not been validated before** (i.e., do not have a `status` of 'accepted' or 'fixed').
 - **Command:** `npm run validate:questions -- --topicValue <topicValue> [options]`
 - **Arguments:**
     - `-t, --topicValue <topicValue>`: **Required**. The `topicValue` of the category to validate.
@@ -126,14 +126,18 @@ These scripts leverage Genkit and AI models to generate or validate content. Rem
     - `--autofix` (alias `-af`): Optional, boolean. Automatically apply any fix proposed by the AI. Default: `false`.
     - `--autodelete` (alias `-ad`): Optional, boolean. Automatically delete any question the AI recommends rejecting. Default: `false`.
     - `--auto` (alias `-a`): Optional, boolean. Enables both `--autofix` and `--autodelete`.
+    - `--force` (alias `-f`): Optional, boolean. Force re-validation of all questions, ignoring their current status.
     - `-m, --model <model_name>`: Optional. Specify the Genkit model to use for validation.
 - **Usage Examples:**
   ```bash
-  # Run a 'dry run' validation on all 'easy' History questions, logging recommendations
+  # Run a 'dry run' validation on all unvalidated 'easy' History questions, logging recommendations
   npm run validate:questions -- -t History -d easy
 
-  # Automatically fix and delete all questions for the 'Science' category
+  # Automatically fix and delete all unvalidated questions for the 'Science' category
   npm run validate:questions -- --topicValue="Science" --auto
+
+  # Force re-validation of ALL 'hard' questions for 'Philosophy', even those already validated
+  npm run validate:questions -- -t Philosophy -d hard --force
   ```
 - **Interaction:**
     - This script is designed for automation. It does not ask for confirmation.

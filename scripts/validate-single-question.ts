@@ -6,14 +6,7 @@ import admin from 'firebase-admin';
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
 import inquirer from 'inquirer';
-// Import getDoc from firebase/firestore/lite for admin SDK scripts if not modifying data.
-// However, since we might update/delete, using the full 'firebase/firestore' is okay for now
-// but be mindful if you split read-only scripts later.
-// For admin scripts, it's often better to use the admin SDK throughout.
-// Let's use the admin SDK for Firestore operations directly.
-// import { doc, getDoc } from 'firebase/firestore'; // Client SDK
 import { validateSingleTriviaQuestion, type ValidateSingleQuestionInput, type ValidateSingleQuestionOutput, type QuestionData } from '../src/ai/flows/validate-single-trivia-question';
-import { updatePredefinedQuestion, deletePredefinedQuestion } from '../src/services/triviaService'; // Re-add PREDEFINED_QUESTIONS_COLLECTION if needed
 import type { GenerateTriviaQuestionOutput, BilingualText, DifficultyLevel } from '@/ai/flows/generate-trivia-question'; // For fixedQuestionData structure
 
 // Initialize Firebase Admin SDK
@@ -93,6 +86,7 @@ function formatQuestionForDisplay(label: string, qData: QuestionData | GenerateT
      }
   } else { // It's the full QuestionData from Firestore
     const data = qData as QuestionData;
+    if (data.status) console.log(`Status: ${data.status}`);
     console.log(`Difficulty: ${data.difficulty}`);
     console.log(`Question EN: ${data.question.en}`);
     console.log(`Question ES: ${data.question.es}`);
@@ -143,6 +137,7 @@ async function validateQuestion() {
         explanation: firestoreData?.explanation,
         hint: firestoreData?.hint,
         difficulty: firestoreData?.difficulty,
+        status: firestoreData?.status,
         source: firestoreData?.source,
         createdAt: firestoreData?.createdAt ? (firestoreData.createdAt as admin.firestore.Timestamp).toDate().toISOString() : undefined,
     };
@@ -183,12 +178,12 @@ async function validateQuestion() {
 
       if (confirmFix) {
         try {
-          const dataToUpdate = { ...validationResult.fixedQuestionData };
-          if (dataToUpdate.hint === undefined) {
-            // This is handled correctly by Firestore update if hint doesn't exist on the object
-          }
+          const dataToUpdate = { 
+            ...validationResult.fixedQuestionData,
+            status: 'fixed'
+          };
           await db.collection(PREDEFINED_QUESTIONS_COLLECTION).doc(questionId).update(dataToUpdate);
-          console.log(`Successfully applied fix to question ID: ${questionId}`);
+          console.log(`Successfully applied fix and set status to 'fixed' for question ID: ${questionId}`);
         } catch (updateError) {
           console.error(`Failed to apply fix to question ID: ${questionId}`, updateError);
         }
@@ -223,7 +218,13 @@ async function validateQuestion() {
             console.log('Question not deleted.');
         }
     } else if (validationResult.validationStatus === "Accept") {
-      console.log("AI validation passed. No action needed for this question.");
+      console.log("AI validation passed. Updating status to 'accepted'.");
+      try {
+        await db.collection(PREDEFINED_QUESTIONS_COLLECTION).doc(questionId).update({ status: 'accepted' });
+        console.log(`Successfully set status to 'accepted' for question ID: ${questionId}.`);
+      } catch (updateError) {
+        console.error(`Failed to update status for question ID: ${questionId}`, updateError);
+      }
     }
 
   } catch (error) {
