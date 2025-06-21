@@ -215,4 +215,3 @@ validateMultipleQuestions().catch(error => {
   console.error("Unhandled error in validateMultipleQuestions script:", error);
   process.exit(1);
 });
-```

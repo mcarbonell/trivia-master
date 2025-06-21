@@ -1,17 +1,36 @@
 'use server';
 /**
  * @fileOverview A Genkit flow to validate a single trivia question.
+ * It now includes category-specific instructions to provide better context to the AI.
  *
  * - validateSingleTriviaQuestion - A function that validates a question and suggests fixes or rejection.
  * - ValidateSingleQuestionInput - The input type for the validateSingleTriviaQuestion function.
- * - ValidateSingleQuestionOutput - The return type for the validateSingleTriviaQuestion function.
+ * - ValidateSingleQuestionOutput - The return type for the validateSingleQuestionOutput function.
  */
 
 import { ai } from '@/ai/genkit';
 import { z } from 'genkit';
-import type { GenerateTriviaQuestionOutput, BilingualText, DifficultyLevel } from '@/ai/flows/generate-trivia-question';
+import type { GenerateTriviaQuestionOutput } from '@/ai/flows/generate-trivia-question';
+import admin from 'firebase-admin';
 
-// Re-using GenerateTriviaQuestionOutputSchema for the fixedQuestionData
+// Initialize Firebase Admin SDK
+try {
+  if (!admin.apps.length) {
+    admin.initializeApp({
+      credential: admin.credential.applicationDefault(),
+    });
+    console.log('[validate-single-trivia-question-flow] Firebase Admin SDK initialized.');
+  }
+} catch (error) {
+  console.error('[validate-single-trivia-question-flow] Firebase Admin initialization error.', error);
+  // We don't want to crash the whole process, so we'll just log the error.
+  // The flow will proceed without category context.
+}
+const db = admin.firestore();
+const CATEGORIES_COLLECTION = 'triviaCategories';
+
+// --- Zod Schemas ---
+
 const QuestionDataSchema = z.object({
   id: z.string().describe("The Firestore ID of the question being validated."),
   topicValue: z.string().describe("The topic value associated with the question."),
@@ -39,13 +58,11 @@ const QuestionDataSchema = z.object({
 });
 export type QuestionData = z.infer<typeof QuestionDataSchema>;
 
-
 export const ValidateSingleQuestionInputSchema = z.object({
   questionData: QuestionDataSchema.describe('The full data of the trivia question to validate.'),
   modelName: z.string().optional().describe('Optional Genkit model name to use for validation (e.g., googleai/gemini-1.5-flash).')
 });
 export type ValidateSingleQuestionInput = z.infer<typeof ValidateSingleQuestionInputSchema>;
-
 
 const ValidationStatusSchema = z.enum(["Accept", "Reject", "Fix"])
   .describe('Status of the validation: "Accept" if correct, "Reject" if unfixable, "Fix" if correctable.');
@@ -53,21 +70,35 @@ const ValidationStatusSchema = z.enum(["Accept", "Reject", "Fix"])
 export const ValidateSingleQuestionOutputSchema = z.object({
   validationStatus: ValidationStatusSchema,
   reasoning: z.string().describe('AI\'s reasoning for the validation status. If "Fix", should explain what was fixed.'),
-  fixedQuestionData: QuestionDataSchema.omit({id: true, topicValue: true, source: true, createdAt: true, status: true }).optional() // Omit fields that AI shouldn't change directly
+  fixedQuestionData: QuestionDataSchema.omit({id: true, topicValue: true, source: true, createdAt: true, status: true }).optional()
     .describe('The corrected question data if validationStatus is "Fix". Structure should match GenerateTriviaQuestionOutputSchema but without id, topicValue, source, createdAt.'),
 });
 export type ValidateSingleQuestionOutput = z.infer<typeof ValidateSingleQuestionOutputSchema>;
 
+// Input schema specifically for the prompt, including the fetched context
+const PromptInputSchema = ValidateSingleQuestionInputSchema.extend({
+  categoryInstructions: z.string().optional().describe('Specific instructions for the category this question belongs to.'),
+});
+
+// --- Exported Function ---
 
 export async function validateSingleTriviaQuestion(input: ValidateSingleQuestionInput): Promise<ValidateSingleQuestionOutput> {
   return validateSingleTriviaQuestionFlow(input);
 }
+
+// --- Prompt Definition ---
 
 const promptTemplate = `
 You are an expert trivia question validator and editor.
 You will be given a single trivia question with its ID, topicValue, question text (English and Spanish), four possible answers (English and Spanish), the index of the correct answer, an explanation (English and Spanish), an optional hint (English and Spanish), its assigned difficulty, and source/createdAt if available.
 
 Your task is to meticulously evaluate the question based on the following criteria:
+
+{{#if categoryInstructions}}
+**IMPORTANT CATEGORY CONTEXT:** This question belongs to the "{{questionData.topicValue}}" category. This category has specific guidelines that you MUST consider during your evaluation.
+Category Instructions: "{{categoryInstructions}}"
+For example, if the category is about the English language, the answers should be in English, not Spanish.
+{{/if}}
 
 1.  **Clarity & Correctness**:
     *   Is the question clear, unambiguous, and grammatically correct in both English and Spanish?
@@ -132,13 +163,15 @@ Analyze carefully and provide your response in the specified JSON format.
 
 const validateSingleTriviaQuestionPrompt = ai.definePrompt({
   name: 'validateSingleTriviaQuestionPrompt',
-  input: { schema: ValidateSingleQuestionInputSchema },
+  input: { schema: PromptInputSchema }, // Use the new schema with context
   output: { schema: ValidateSingleQuestionOutputSchema },
   prompt: promptTemplate,
   config: {
-    temperature: 0.3, // Lower temperature for more deterministic validation and fixing
+    temperature: 0.3,
   },
 });
+
+// --- Flow Definition ---
 
 const validateSingleTriviaQuestionFlow = ai.defineFlow(
   {
@@ -149,12 +182,39 @@ const validateSingleTriviaQuestionFlow = ai.defineFlow(
   async (input) => {
     console.log(`[validateSingleTriviaQuestionFlow] Validating question ID: ${input.questionData.id} for topic: ${input.questionData.topicValue}`);
     
-    const modelToUse = input.modelName || 'googleai/gemini-2.5-flash'; // Default model if not provided
+    const modelToUse = input.modelName || 'googleai/gemini-2.5-flash';
     console.log(`[validateSingleTriviaQuestionFlow] Using model: ${modelToUse}`);
+
+    let categoryInstructions: string | undefined = undefined;
+
+    // Fetch category instructions to provide more context to the AI
+    if (admin.apps.length > 0) { // Check if Firebase Admin is initialized
+        try {
+            const categoryRef = db.collection(CATEGORIES_COLLECTION).doc(input.questionData.topicValue);
+            const categoryDoc = await categoryRef.get();
+            if (categoryDoc.exists) {
+                categoryInstructions = categoryDoc.data()?.detailedPromptInstructions;
+                if (categoryInstructions) {
+                  console.log(`[validateSingleTriviaQuestionFlow] Found category instructions for topic "${input.questionData.topicValue}".`);
+                }
+            } else {
+              console.warn(`[validateSingleTriviaQuestionFlow] Category document for topic "${input.questionData.topicValue}" not found.`);
+            }
+        } catch (error) {
+            console.error('[validateSingleTriviaQuestionFlow] Error fetching category instructions from Firestore:', error);
+        }
+    } else {
+        console.warn('[validateSingleTriviaQuestionFlow] Firebase Admin SDK not initialized. Proceeding without category context.');
+    }
+
+    const promptInput = {
+      ...input,
+      categoryInstructions: categoryInstructions,
+    };
 
     try {
       const { output } = await validateSingleTriviaQuestionPrompt(
-        input, // Pass the whole input object
+        promptInput, // Pass the input with instructions
         { model: modelToUse }
       );
       
@@ -172,8 +232,6 @@ const validateSingleTriviaQuestionFlow = ai.defineFlow(
             reasoning: "AI suggested a fix but failed to provide the corrected data. Original reasoning: " + output.reasoning,
           };
         }
-        // Further ensure fixedQuestionData adheres to its schema parts if needed, Zod on output already does a lot.
-        // Example: check if answers array has 4 elements.
         if (output.fixedQuestionData.answers?.length !== 4) {
              console.warn('[validateSingleTriviaQuestionFlow] AI provided fixedQuestionData with an incorrect number of answers. Changing status to "Reject".');
              return {
@@ -188,9 +246,10 @@ const validateSingleTriviaQuestionFlow = ai.defineFlow(
 
     } catch (error) {
       console.error('[validateSingleTriviaQuestionFlow] Error calling AI prompt:', error);
-      // Provide a more informative error message to the CLI script
       const errorMessage = error instanceof Error ? error.message : 'Unknown error during AI validation.';
       throw new Error(`AI validation failed: ${errorMessage}`);
     }
   }
 );
+
+    
