@@ -123,6 +123,7 @@ These scripts leverage Genkit and AI models to generate or validate content. Rem
 - **Arguments:**
     - `-t, --topicValue <topicValue>`: **Required**. The `topicValue` of the category to validate.
     - `-d, --difficulty <level>`: Optional. Validate only a specific difficulty (`easy`, `medium`, `hard`). If omitted, all difficulties for the topic are validated.
+    - `-b, --batchSize <number>`: Optional. Number of questions to validate in parallel. Higher values are faster but consume more resources and API quota. Default: `1`.
     - `--autofix` (alias `-af`): Optional, boolean. Automatically apply any fix proposed by the AI. Default: `false`.
     - `--autodelete` (alias `-ad`): Optional, boolean. Automatically delete any question the AI recommends rejecting. Default: `false`.
     - `--auto` (alias `-a`): Optional, boolean. Enables both `--autofix` and `--autodelete`.
@@ -133,8 +134,8 @@ These scripts leverage Genkit and AI models to generate or validate content. Rem
   # Run a 'dry run' validation on all unvalidated 'easy' History questions, logging recommendations
   npm run validate:questions -- -t History -d easy
 
-  # Automatically fix and delete all unvalidated questions for the 'Science' category
-  npm run validate:questions -- --topicValue="Science" --auto
+  # Automatically fix and delete all unvalidated questions for the 'Science' category in parallel batches of 10
+  npm run validate:questions -- --topicValue="Science" --auto --batchSize=10
 
   # Force re-validation of ALL 'hard' questions for 'Philosophy', even those already validated
   npm run validate:questions -- -t Philosophy -d hard --force
@@ -144,3 +145,4 @@ These scripts leverage Genkit and AI models to generate or validate content. Rem
     - If run without `--auto`, `--autofix`, or `--autodelete`, it will log the AI's recommendations for each question but will not modify any data.
     - If run with the automation flags, it will perform fixes and deletions automatically and log the actions taken.
     - A summary of all actions is provided at the end of the script's execution.
+```

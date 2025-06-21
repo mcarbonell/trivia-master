@@ -24,7 +24,6 @@ const db = admin.firestore();
 const PREDEFINED_QUESTIONS_COLLECTION = 'predefinedTriviaQuestions';
 const ALL_DIFFICULTY_LEVELS_CONST: DifficultyLevel[] = ["easy", "medium", "hard"];
 const DEFAULT_MODEL_FOR_VALIDATION = 'googleai/gemini-2.5-flash';
-const API_CALL_DELAY_MS = 1000; // 1 second delay between validations
 
 // --- Argument Parsing with yargs ---
 const argv = yargs(hideBin(process.argv))
@@ -44,6 +43,12 @@ const argv = yargs(hideBin(process.argv))
     alias: 'm',
     type: 'string',
     description: `Genkit model name to use. Defaults to ${DEFAULT_MODEL_FOR_VALIDATION}.`,
+  })
+  .option('batchSize', {
+    alias: 'b',
+    type: 'number',
+    default: 1,
+    description: 'Number of questions to validate in parallel.',
   })
   .option('autofix', {
     alias: 'af',
@@ -74,7 +79,7 @@ const argv = yargs(hideBin(process.argv))
   .parseSync();
 
 async function validateMultipleQuestions() {
-  const { topicValue, difficulty, model, auto, autofix, autodelete, force } = argv;
+  const { topicValue, difficulty, model, auto, autofix, autodelete, force, batchSize } = argv;
   const doAutoFix = autofix || auto;
   const doAutoDelete = autodelete || auto;
   const modelToUse = model || DEFAULT_MODEL_FOR_VALIDATION;
@@ -84,6 +89,7 @@ async function validateMultipleQuestions() {
   console.log(`Using model: "${modelToUse}"`);
   console.log(`Auto-fix: ${doAutoFix}, Auto-delete: ${doAutoDelete}`);
   console.log(`Force re-validation: ${force}`);
+  console.log(`Batch size: ${batchSize}`);
   console.log('----------------------------------------------------');
 
   try {
@@ -92,9 +98,6 @@ async function validateMultipleQuestions() {
       firestoreQuery = firestoreQuery.where('difficulty', '==', difficulty as DifficultyLevel);
     }
     
-    // NOTE: We fetch all questions and filter by status in-memory.
-    // This is because a Firestore `not-in` query will not find documents
-    // where the 'status' field does not exist at all.
     const snapshot = await firestoreQuery.get();
     
     if (snapshot.empty) {
@@ -113,7 +116,7 @@ async function validateMultipleQuestions() {
         explanation: data.explanation,
         hint: data.hint,
         difficulty: data.difficulty,
-        status: data.status, // This will be undefined if the field doesn't exist
+        status: data.status,
         source: data.source,
         createdAt: data.createdAt ? (data.createdAt as admin.firestore.Timestamp).toDate().toISOString() : undefined,
       };
@@ -128,7 +131,6 @@ async function validateMultipleQuestions() {
         return;
     }
 
-
     console.log(`Found ${allQuestionsInScope.length} total questions. Will validate ${questionsToValidate.length} of them.`);
     let acceptedCount = 0;
     let fixedCount = 0;
@@ -136,51 +138,59 @@ async function validateMultipleQuestions() {
     let deletedCount = 0;
     let errorCount = 0;
 
-    for (let i = 0; i < questionsToValidate.length; i++) {
-      const question = questionsToValidate[i]!;
-      console.log(`\n[${i + 1}/${questionsToValidate.length}] Validating question ID: ${question.id} (Current status: ${question.status || 'none'})`);
-      
-      try {
+    for (let i = 0; i < questionsToValidate.length; i += batchSize) {
+      const batch = questionsToValidate.slice(i, i + batchSize);
+      console.log(`\n--- Processing batch ${Math.floor(i / batchSize) + 1} of ${Math.ceil(questionsToValidate.length / batchSize)} (size: ${batch.length}) ---`);
+
+      const validationPromises = batch.map(question => {
         const flowInput: ValidateSingleQuestionInput = {
           questionData: question,
           modelName: modelToUse,
         };
-        const validationResult: ValidateSingleQuestionOutput = await validateSingleTriviaQuestion(flowInput);
+        return validateSingleTriviaQuestion(flowInput);
+      });
 
-        console.log(`  > AI Status: ${validationResult.validationStatus}. Reason: ${validationResult.reasoning}`);
+      const results = await Promise.allSettled(validationPromises);
 
-        if (validationResult.validationStatus === 'Accept') {
-          acceptedCount++;
-          await db.collection(PREDEFINED_QUESTIONS_COLLECTION).doc(question.id).update({ status: 'accepted' });
-          console.log(`  > ACTION: Question ${question.id} accepted and status updated.`);
-        } else if (validationResult.validationStatus === 'Reject') {
-          rejectedCount++;
-          if (doAutoDelete) {
-            await db.collection(PREDEFINED_QUESTIONS_COLLECTION).doc(question.id).delete();
-            console.log(`  > ACTION: Question ${question.id} automatically DELETED.`);
-            deletedCount++;
-          } else {
-            console.log(`  > ACTION: Manual deletion recommended.`);
+      for (let j = 0; j < results.length; j++) {
+        const result = results[j];
+        const question = batch[j]!;
+
+        console.log(`\n[${i + j + 1}/${questionsToValidate.length}] Validating question ID: ${question.id} (Current status: ${question.status || 'none'})`);
+
+        if (result.status === 'fulfilled') {
+          const validationResult = result.value;
+          console.log(`  > AI Status: ${validationResult.validationStatus}. Reason: ${validationResult.reasoning}`);
+
+          if (validationResult.validationStatus === 'Accept') {
+            acceptedCount++;
+            await db.collection(PREDEFINED_QUESTIONS_COLLECTION).doc(question.id).update({ status: 'accepted' });
+            console.log(`  > ACTION: Question ${question.id} accepted and status updated.`);
+          } else if (validationResult.validationStatus === 'Reject') {
+            rejectedCount++;
+            if (doAutoDelete) {
+              await db.collection(PREDEFINED_QUESTIONS_COLLECTION).doc(question.id).delete();
+              console.log(`  > ACTION: Question ${question.id} automatically DELETED.`);
+              deletedCount++;
+            } else {
+              console.log(`  > ACTION: Manual deletion recommended.`);
+            }
+          } else if (validationResult.validationStatus === 'Fix' && validationResult.fixedQuestionData) {
+            fixedCount++;
+            if (doAutoFix) {
+              await db.collection(PREDEFINED_QUESTIONS_COLLECTION).doc(question.id).update({ 
+                ...validationResult.fixedQuestionData,
+                status: 'fixed'
+              });
+              console.log(`  > ACTION: Question ${question.id} automatically FIXED and status updated.`);
+            } else {
+              console.log(`  > ACTION: Manual fix recommended.`);
+            }
           }
-        } else if (validationResult.validationStatus === 'Fix' && validationResult.fixedQuestionData) {
-          fixedCount++;
-          if (doAutoFix) {
-            await db.collection(PREDEFINED_QUESTIONS_COLLECTION).doc(question.id).update({ 
-              ...validationResult.fixedQuestionData,
-              status: 'fixed'
-            });
-            console.log(`  > ACTION: Question ${question.id} automatically FIXED and status updated.`);
-          } else {
-            console.log(`  > ACTION: Manual fix recommended.`);
-          }
+        } else { // status is 'rejected'
+          console.error(`  > ERROR validating question ${question.id}:`, result.reason);
+          errorCount++;
         }
-      } catch (validationError) {
-        console.error(`  > ERROR validating question ${question.id}:`, validationError);
-        errorCount++;
-      }
-
-      if (i < questionsToValidate.length - 1) {
-        await new Promise(resolve => setTimeout(resolve, API_CALL_DELAY_MS));
       }
     }
 
@@ -205,3 +215,4 @@ validateMultipleQuestions().catch(error => {
   console.error("Unhandled error in validateMultipleQuestions script:", error);
   process.exit(1);
 });
+```
