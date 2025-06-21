@@ -45,6 +45,12 @@ const argv = yargs(hideBin(process.argv))
     type: 'string',
     description: `Genkit model name to use for validation (e.g., googleai/gemini-1.5-pro). Defaults to ${DEFAULT_MODEL_FOR_VALIDATION}.`,
   })
+  .option('autofix', {
+    alias: 'af',
+    type: 'boolean',
+    default: false,
+    description: 'If true, automatically apply AI fixes without confirmation.',
+  })
   .help()
   .alias('help', 'h')
   .parseSync();
@@ -97,7 +103,7 @@ function formatQuestionForDisplay(label: string, qData: QuestionData | GenerateT
 
 
 async function validateQuestion() {
-  const { id: questionId, model: modelName } = argv;
+  const { id: questionId, model: modelName, autofix } = argv;
   const modelToUse = modelName || DEFAULT_MODEL_FOR_VALIDATION;
 
   console.log(`Validating question with ID: "${questionId}" using model: "${modelToUse}"...`);
@@ -143,14 +149,21 @@ async function validateQuestion() {
       console.log("AI has proposed a fix for the question:");
       formatQuestionForDisplay("Fixed Question (Proposed by AI)", validationResult.fixedQuestionData as GenerateTriviaQuestionOutput, originalQuestionData.id, originalQuestionData.topicValue);
       
-      const { confirmFix } = await inquirer.prompt([
-        {
-          type: 'confirm',
-          name: 'confirmFix',
-          message: 'Do you want to apply this fix to the question in Firestore?',
-          default: false,
-        },
-      ]);
+      let confirmFix = false;
+      if (autofix) {
+        console.log("--autofix flag is set. Applying fix automatically.");
+        confirmFix = true;
+      } else {
+        const answer = await inquirer.prompt([
+          {
+            type: 'confirm',
+            name: 'confirmFix',
+            message: 'Do you want to apply this fix to the question in Firestore?',
+            default: false,
+          },
+        ]);
+        confirmFix = answer.confirmFix;
+      }
 
       if (confirmFix) {
         try {
