@@ -115,3 +115,28 @@ These scripts leverage Genkit and AI models to generate or validate content. Rem
         - With `--autodelete` or `--auto`, it deletes the question automatically.
         - Without these flags, it will always ask for confirmation to delete the question.
     - If the AI accepts the question, it will simply report that no action is needed.
+
+### 6. Validate Multiple Questions (`validate:questions`)
+
+- **Purpose:** Runs the same AI quality check as `validate:question` but in bulk for all questions matching a given category and optional difficulty. This script is non-interactive by default (it logs recommendations), but can perform actions automatically if flags are provided.
+- **Command:** `npm run validate:questions -- --topicValue <topicValue> [options]`
+- **Arguments:**
+    - `-t, --topicValue <topicValue>`: **Required**. The `topicValue` of the category to validate.
+    - `-d, --difficulty <level>`: Optional. Validate only a specific difficulty (`easy`, `medium`, `hard`). If omitted, all difficulties for the topic are validated.
+    - `--autofix` (alias `-af`): Optional, boolean. Automatically apply any fix proposed by the AI. Default: `false`.
+    - `--autodelete` (alias `-ad`): Optional, boolean. Automatically delete any question the AI recommends rejecting. Default: `false`.
+    - `--auto` (alias `-a`): Optional, boolean. Enables both `--autofix` and `--autodelete`.
+    - `-m, --model <model_name>`: Optional. Specify the Genkit model to use for validation.
+- **Usage Examples:**
+  ```bash
+  # Run a 'dry run' validation on all 'easy' History questions, logging recommendations
+  npm run validate:questions -- -t History -d easy
+
+  # Automatically fix and delete all questions for the 'Science' category
+  npm run validate:questions -- --topicValue="Science" --auto
+  ```
+- **Interaction:**
+    - This script is designed for automation. It does not ask for confirmation.
+    - If run without `--auto`, `--autofix`, or `--autodelete`, it will log the AI's recommendations for each question but will not modify any data.
+    - If run with the automation flags, it will perform fixes and deletions automatically and log the actions taken.
+    - A summary of all actions is provided at the end of the script's execution.

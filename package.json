@@ -14,7 +14,8 @@
     "import:categories": "tsx scripts/import-firestore-categories.ts",
     "import:questions": "tsx scripts/import-firestore-questions.ts",
     "check:questions": "tsx scripts/check-duplicate-questions.ts",
-    "validate:question": "tsx scripts/validate-single-question.ts"
+    "validate:question": "tsx scripts/validate-single-question.ts",
+    "validate:questions": "tsx scripts/validate-multiple-questions.ts"
   },
   "dependencies": {
     "@ducanh2912/next-pwa": "^10.2.7",
