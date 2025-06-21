@@ -37,17 +37,22 @@ export async function detectDuplicateQuestions(input: DetectDuplicatesInput): Pr
 }
 
 const promptTemplate = `
-You are an expert in identifying conceptually duplicate trivia questions.
+You are an expert in identifying duplicate trivia questions.
 You will be given a list of questions, each with a unique 'id' and 'questionText'.
 Your task is to identify pairs of questions from this list that are essentially asking the same thing or testing the same specific fact, even if they are worded differently.
 
 - Focus on the core concept or knowledge being tested by each question.
+- Ignore minor differences in phrasing, sentence structure, or the specific entities mentioned if the core query is identical (e.g., "What is the capital of France?" is a duplicate of "Which city is the capital of France?").
 - A question is a duplicate if answering one correctly would almost certainly mean you could answer the other correctly, and vice versa, because they test the same underlying piece of information.
-- Ignore minor differences in phrasing, sentence structure, or the specific entities mentioned if the core query is identical (e.g., "What is the capital of France?" is a duplicate of "Paris is the capital of which country?").
+- A question can be a duplicate only if the right answer is the same. If the right asnwer is different, it is not a duplicate. Could be the same kind question, like asking for city capitals, but if ask from different countries, the questions are not duplicates.
+- Two questions could have the same right answer and not be duplicates (e.g., "What is the capital of France?" is NOT a duplicate of "Which famous city does the Seine River pass through?").
+
 - For each pair of duplicates found (X, Y), list the one with the lexicographically **smaller** ID as \`originalId\` and the one with the lexicographically **larger** ID as \`duplicateId\`. This ensures each pair is reported only once and in a consistent order.
 - A single question might be part of multiple duplicate pairs if it shares the same core concept with several other questions. In such cases, list all valid pairs following the lexicographical ID rule.
 - Ensure \`originalId\` and \`duplicateId\` are different. A question cannot be a duplicate of itself.
 - Provide a brief 'reason' explaining why you consider them duplicates.
+
+- Return ONLY the duplicates. If two questions are not duplicates you dont have to indicate it.
 
 Return your findings as a JSON array of objects. Example format:
 [

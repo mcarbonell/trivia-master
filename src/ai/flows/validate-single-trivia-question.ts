@@ -180,10 +180,10 @@ const validateSingleTriviaQuestionFlow = ai.defineFlow(
     outputSchema: ValidateSingleQuestionOutputSchema,
   },
   async (input) => {
-    console.log(`[validateSingleTriviaQuestionFlow] Validating question ID: ${input.questionData.id} for topic: ${input.questionData.topicValue}`);
+    // console.log(`[validateSingleTriviaQuestionFlow] Validating question ID: ${input.questionData.id} for topic: ${input.questionData.topicValue}`);
     
     const modelToUse = input.modelName || 'googleai/gemini-2.5-flash';
-    console.log(`[validateSingleTriviaQuestionFlow] Using model: ${modelToUse}`);
+    // console.log(`[validateSingleTriviaQuestionFlow] Using model: ${modelToUse}`);
 
     let categoryInstructions: string | undefined = undefined;
 
@@ -195,7 +195,7 @@ const validateSingleTriviaQuestionFlow = ai.defineFlow(
             if (categoryDoc.exists) {
                 categoryInstructions = categoryDoc.data()?.detailedPromptInstructions;
                 if (categoryInstructions) {
-                  console.log(`[validateSingleTriviaQuestionFlow] Found category instructions for topic "${input.questionData.topicValue}".`);
+                  // console.log(`[validateSingleTriviaQuestionFlow] Found category instructions for topic "${input.questionData.topicValue}".`);
                 }
             } else {
               console.warn(`[validateSingleTriviaQuestionFlow] Category document for topic "${input.questionData.topicValue}" not found.`);
@@ -241,7 +241,7 @@ const validateSingleTriviaQuestionFlow = ai.defineFlow(
         }
       }
       
-      console.log(`[validateSingleTriviaQuestionFlow] Validation result for ${input.questionData.id}: ${output.validationStatus}`);
+      // console.log(`[validateSingleTriviaQuestionFlow] Validation result for ${input.questionData.id}: ${output.validationStatus}`);
       return output;
 
     } catch (error) {
