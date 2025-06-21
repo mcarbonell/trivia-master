@@ -92,19 +92,26 @@ These scripts leverage Genkit and AI models to generate or validate content. Rem
 - **Command:** `npm run validate:question -- --id <firestore_id> [options]`
 - **Arguments:**
     - `-i, --id <firestore_id>`: **Required**. The Firestore document ID of the question you want to validate.
-    - `--autofix`: Optional, boolean. If passed, the script will automatically apply any fix proposed by the AI without asking for confirmation. Default: `false`.
+    - `--autofix` (alias `-af`): Optional, boolean. If passed, the script will automatically apply any fix proposed by the AI without asking for confirmation. Default: `false`.
+    - `--autodelete` (alias `-ad`): Optional, boolean. If passed, the script will automatically delete any question the AI recommends rejecting. Default: `false`.
+    - `--auto` (alias `-a`): Optional, boolean. A shortcut that enables both `--autofix` and `--autodelete` simultaneously.
     - `-m, --model <model_name>`: Optional. Specify the Genkit model to use for validation (e.g., `googleai/gemini-1.5-pro`).
-- **Usage Example:**
+- **Usage Examples:**
   ```bash
   # Validate a question with a specific ID interactively
   npm run validate:question -- --id="9vMnFraiklXm3KSZZoQN"
 
   # Validate and automatically fix a question if the AI suggests it
   npm run validate:question -- --id="9vMnFraiklXm3KSZZoQN" --autofix
+
+  # Validate and automatically fix OR delete a question based on AI output
+  npm run validate:question -- --id="9vMnFraiklXm3KSZZoQN" --auto
   ```
 - **Interaction:**
     - If the AI suggests a fix:
-        - With `--autofix`, it applies the fix automatically.
-        - Without `--autofix`, it displays the original and the fixed version and asks for confirmation to apply the update.
-    - If the AI recommends rejection, it will always ask for confirmation to delete the question.
+        - With `--autofix` or `--auto`, it applies the fix automatically.
+        - Without these flags, it displays the original and the fixed version and asks for confirmation to apply the update.
+    - If the AI recommends rejection:
+        - With `--autodelete` or `--auto`, it deletes the question automatically.
+        - Without these flags, it will always ask for confirmation to delete the question.
     - If the AI accepts the question, it will simply report that no action is needed.

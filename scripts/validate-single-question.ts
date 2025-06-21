@@ -51,6 +51,18 @@ const argv = yargs(hideBin(process.argv))
     default: false,
     description: 'If true, automatically apply AI fixes without confirmation.',
   })
+  .option('autodelete', {
+    alias: 'ad',
+    type: 'boolean',
+    default: false,
+    description: 'If true, automatically delete rejected questions without confirmation.',
+  })
+  .option('auto', {
+    alias: 'a',
+    type: 'boolean',
+    default: false,
+    description: 'Shorthand for --autofix and --autodelete.',
+  })
   .help()
   .alias('help', 'h')
   .parseSync();
@@ -103,10 +115,14 @@ function formatQuestionForDisplay(label: string, qData: QuestionData | GenerateT
 
 
 async function validateQuestion() {
-  const { id: questionId, model: modelName, autofix } = argv;
+  const { id: questionId, model: modelName } = argv;
+  const doAutoFix = argv.autofix || argv.auto;
+  const doAutoDelete = argv.autodelete || argv.auto;
   const modelToUse = modelName || DEFAULT_MODEL_FOR_VALIDATION;
 
   console.log(`Validating question with ID: "${questionId}" using model: "${modelToUse}"...`);
+  if(doAutoFix) console.log("Auto-fix mode enabled.");
+  if(doAutoDelete) console.log("Auto-delete mode enabled.");
 
   try {
     const questionRef = db.collection(PREDEFINED_QUESTIONS_COLLECTION).doc(questionId); // Use admin SDK
@@ -150,8 +166,8 @@ async function validateQuestion() {
       formatQuestionForDisplay("Fixed Question (Proposed by AI)", validationResult.fixedQuestionData as GenerateTriviaQuestionOutput, originalQuestionData.id, originalQuestionData.topicValue);
       
       let confirmFix = false;
-      if (autofix) {
-        console.log("--autofix flag is set. Applying fix automatically.");
+      if (doAutoFix) {
+        console.log("--autofix or --auto flag is set. Applying fix automatically.");
         confirmFix = true;
       } else {
         const answer = await inquirer.prompt([
@@ -167,16 +183,11 @@ async function validateQuestion() {
 
       if (confirmFix) {
         try {
-          // Use the admin SDK directly for updates as well, or ensure triviaService functions are admin-SDK compatible
           const dataToUpdate = { ...validationResult.fixedQuestionData };
           if (dataToUpdate.hint === undefined) {
-            // If hint is undefined in fixedQuestionData, we might want to remove it explicitly
-            // This depends on how updatePredefinedQuestion handles undefined fields.
-            // For explicit removal with admin SDK: dataToUpdate.hint = admin.firestore.FieldValue.delete();
+            // This is handled correctly by Firestore update if hint doesn't exist on the object
           }
           await db.collection(PREDEFINED_QUESTIONS_COLLECTION).doc(questionId).update(dataToUpdate);
-          // Or, ensure updatePredefinedQuestion is compatible with server-side execution
-          // await updatePredefinedQuestion(questionId, validationResult.fixedQuestionData);
           console.log(`Successfully applied fix to question ID: ${questionId}`);
         } catch (updateError) {
           console.error(`Failed to apply fix to question ID: ${questionId}`, updateError);
@@ -185,27 +196,32 @@ async function validateQuestion() {
         console.log('Fix not applied.');
       }
     } else if (validationResult.validationStatus === "Reject") {
-      const { confirmDelete } = await inquirer.prompt([
-        {
-          type: 'confirm',
-          name: 'confirmDelete',
-          message: 'The AI recommends rejecting this question. Do you want to delete it from Firestore?',
-          default: false,
-        },
-      ]);
-
-      if (confirmDelete) {
-        try {
-          await db.collection(PREDEFINED_QUESTIONS_COLLECTION).doc(questionId).delete();
-          // Or, ensure deletePredefinedQuestion is compatible
-          // await deletePredefinedQuestion(questionId);
-          console.log(`Successfully deleted rejected question ID: ${questionId}`);
-        } catch (deleteError) {
-          console.error(`Failed to delete rejected question ID: ${questionId}`, deleteError);
+        let confirmDelete = false;
+        if(doAutoDelete) {
+            console.log("--autodelete or --auto flag is set. Deleting question automatically.");
+            confirmDelete = true;
+        } else {
+            const answer = await inquirer.prompt([
+                {
+                    type: 'confirm',
+                    name: 'confirmDelete',
+                    message: 'The AI recommends rejecting this question. Do you want to delete it from Firestore?',
+                    default: false,
+                },
+            ]);
+            confirmDelete = answer.confirmDelete;
         }
-      } else {
-        console.log('Question not deleted.');
-      }
+
+        if (confirmDelete) {
+            try {
+            await db.collection(PREDEFINED_QUESTIONS_COLLECTION).doc(questionId).delete();
+            console.log(`Successfully deleted rejected question ID: ${questionId}`);
+            } catch (deleteError) {
+            console.error(`Failed to delete rejected question ID: ${questionId}`, deleteError);
+            }
+        } else {
+            console.log('Question not deleted.');
+        }
     } else if (validationResult.validationStatus === "Accept") {
       console.log("AI validation passed. No action needed for this question.");
     }
@@ -223,4 +239,3 @@ validateQuestion().catch(error => {
   console.error("Unhandled error in validateQuestion script:", error);
   process.exit(1);
 });
-
