@@ -91,17 +91,18 @@ async function validateMultipleQuestions() {
     if (difficulty) {
       firestoreQuery = firestoreQuery.where('difficulty', '==', difficulty as DifficultyLevel);
     }
-    if (!force) {
-      firestoreQuery = firestoreQuery.where('status', 'not-in', ['accepted', 'fixed']);
-    }
-
+    
+    // NOTE: We fetch all questions and filter by status in-memory.
+    // This is because a Firestore `not-in` query will not find documents
+    // where the 'status' field does not exist at all.
     const snapshot = await firestoreQuery.get();
+    
     if (snapshot.empty) {
-      console.log('No questions found for the specified criteria. If questions exist, they may have already been validated. Use --force to re-validate all.');
+      console.log(`No questions found for topic "${topicValue}"` + (difficulty ? ` and difficulty "${difficulty}"` : '.') );
       return;
     }
 
-    const questionsToValidate: QuestionData[] = snapshot.docs.map(doc => {
+    const allQuestionsInScope = snapshot.docs.map(doc => {
       const data = doc.data();
       return {
         id: doc.id,
@@ -112,13 +113,23 @@ async function validateMultipleQuestions() {
         explanation: data.explanation,
         hint: data.hint,
         difficulty: data.difficulty,
-        status: data.status,
+        status: data.status, // This will be undefined if the field doesn't exist
         source: data.source,
         createdAt: data.createdAt ? (data.createdAt as admin.firestore.Timestamp).toDate().toISOString() : undefined,
       };
     });
 
-    console.log(`Found ${questionsToValidate.length} questions to validate.`);
+    const questionsToValidate = force
+      ? allQuestionsInScope
+      : allQuestionsInScope.filter(q => !['accepted', 'fixed'].includes(q.status || ''));
+
+    if (questionsToValidate.length === 0) {
+        console.log('All questions found for the specified criteria have already been validated. Use --force to re-validate all.');
+        return;
+    }
+
+
+    console.log(`Found ${allQuestionsInScope.length} total questions. Will validate ${questionsToValidate.length} of them.`);
     let acceptedCount = 0;
     let fixedCount = 0;
     let rejectedCount = 0;
