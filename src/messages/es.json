@@ -42,6 +42,7 @@
   "spanish": "Español",
   "save": "Guardar",
   "cancel": "Cancelar",
+  "close": "Cerrar",
   "retryButton": "Reintentar",
   "errorTitle": "Ocurrió un Error",
   "toastErrorTitle": "¡Error!",
@@ -268,6 +269,7 @@
     "viewButton": "Ver Detalles",
     "editButton": "Editar",
     "deleteButton": "Eliminar",
+    "copyIdButton": "Copiar ID",
     "errorLoading": "Error al cargar las preguntas. Por favor, inténtalo de nuevo.",
     "paginationInfo": "Página {currentPage} de {totalPages}. Total: {totalItems} preguntas.",
     "previousPage": "Anterior",
@@ -283,6 +285,8 @@
     "toastDeleteError": "No se pudo eliminar la pregunta. Por favor, inténtalo de nuevo.",
     "toastUpdateSuccess": "Pregunta actualizada correctamente.",
     "toastUpdateError": "No se pudo actualizar la pregunta. Por favor, inténtalo de nuevo.",
+    "toastIdCopied": "¡ID de pregunta copiado al portapapeles!",
+    "toastIdCopyError": "Error al copiar el ID.",
     "sortByQuestion": "Ordenar por Pregunta",
     "sortByAnswer": "Ordenar por Respuesta Correcta",
     "deleteSelectedButton": "Eliminar Seleccionadas ({count})",
@@ -293,7 +297,10 @@
     "toastBulkDeletePartialError": "Se eliminaron {successCount} preguntas correctamente, pero falló la eliminación de {failCount}.",
     "noQuestionsSelected": "No hay preguntas seleccionadas para eliminar.",
     "selectAllVisible": "Seleccionar todas las visibles",
+    "correctAnswer": "Respuesta Correcta",
     "form": {
+      "viewDialogTitle": "Ver Detalles de la Pregunta",
+      "viewDialogDescription": "Viendo detalles de la pregunta de la categoría \"{topic}\".",
       "editDialogTitle": "Editar Pregunta",
       "editDialogDescription": "Actualiza los detalles de esta pregunta de la categoría \"{topic}\". El Valor del Tema no se puede cambiar aquí.",
       "difficultyLabel": "Dificultad",
@@ -409,4 +416,3 @@
     }
   }
 }
-

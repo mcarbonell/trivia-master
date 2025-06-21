@@ -1,0 +1,5737 @@
+[
+  {
+    "id": "J4BY1mStF3Gi6rLWV4tr",
+    "topicValue": "Lang_French",
+    "question": {
+      "es": "¿Cuál es el significado principal del verbo auxiliar francés 'avoir'?",
+      "en": "What is the primary meaning of the French auxiliary verb 'avoir'?"
+    },
+    "answers": [
+      {
+        "es": "Tener",
+        "en": "To have"
+      },
+      {
+        "es": "Ser / Estar",
+        "en": "To be"
+      },
+      {
+        "es": "Hacer",
+        "en": "To do/make"
+      },
+      {
+        "en": "To go",
+        "es": "Ir"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": {
+      "en": "The French auxiliary verb 'avoir' is used to form compound tenses and means 'to have'.",
+      "es": "El verbo auxiliar francés 'avoir' se usa para formar tiempos compuestos y significa 'tener'."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "es": "Este es uno de los dos verbos auxiliares más comunes en francés.",
+      "en": "This is one of the two most common auxiliary verbs in French."
+    },
+    "createdAt": "2025-06-18T20:25:40.991Z"
+  },
+  {
+    "id": "h69YCLe5KTG3WAiYXoaf",
+    "topicValue": "Lang_French",
+    "question": {
+      "en": "What does 'Aujourd'hui' mean?",
+      "es": "¿Qué significa 'Aujourd'hui'?"
+    },
+    "answers": [
+      {
+        "en": "Today",
+        "es": "Hoy"
+      },
+      {
+        "en": "Tomorrow",
+        "es": "Mañana"
+      },
+      {
+        "en": "Yesterday",
+        "es": "Ayer"
+      },
+      {
+        "en": "Now",
+        "es": "Ahora"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": {
+      "en": "'Aujourd'hui' is the French word for 'today'.",
+      "es": "'Aujourd'hui' es la palabra francesa para 'hoy'."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "en": "This refers to the current day.",
+      "es": "Esto se refiere al día actual."
+    },
+    "createdAt": "2025-06-18T20:24:19.593Z"
+  },
+  {
+    "id": "DWGr1JOHOzSWu6PxTHqJ",
+    "topicValue": "Lang_French",
+    "question": {
+      "en": "What does 'Avec' mean?",
+      "es": "¿Qué significa 'Avec'?"
+    },
+    "answers": [
+      {
+        "en": "With",
+        "es": "Con"
+      },
+      {
+        "es": "Sin",
+        "en": "Without"
+      },
+      {
+        "es": "Para",
+        "en": "For"
+      },
+      {
+        "es": "De",
+        "en": "From"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": {
+      "es": "'Avec' es la preposición francesa para 'with'.",
+      "en": "'Avec' is the French preposition for 'con'."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "es": "Esta preposición indica acompañamiento.",
+      "en": "This preposition indicates accompaniment."
+    },
+    "createdAt": "2025-06-18T20:24:18.360Z"
+  },
+  {
+    "id": "BLliFqo8VhBxgyuTrQu3",
+    "topicValue": "Lang_French",
+    "question": {
+      "es": "¿Qué significa 'Beau'?",
+      "en": "What does 'Beau' mean?"
+    },
+    "answers": [
+      {
+        "en": "Beautiful",
+        "es": "Hermoso"
+      },
+      {
+        "es": "Guapo",
+        "en": "Handsome"
+      },
+      {
+        "es": "Bonito",
+        "en": "Pretty"
+      },
+      {
+        "es": "Feo",
+        "en": "Ugly"
+      }
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": {
+      "en": "'Beau' is the masculine form of the adjective meaning 'handsome' or 'beautiful'. The feminine form is 'belle'.",
+      "es": "'Beau' es la forma masculina del adjetivo que significa 'guapo' o 'hermoso'. La forma femenina es 'belle'."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "es": "Este adjetivo se usa a menudo para describir hombres o cosas consideradas estéticamente agradables.",
+      "en": "This adjective is often used to describe men or things considered aesthetically pleasing."
+    },
+    "createdAt": "2025-06-18T20:24:16.702Z"
+  },
+  {
+    "id": "JNNjWXLI5ujnMFMQWxo9",
+    "topicValue": "Lang_French",
+    "question": {
+      "en": "What does 'Beaucoup' mean?",
+      "es": "¿Qué significa 'Beaucoup'?"
+    },
+    "answers": [
+      {
+        "es": "Mucho",
+        "en": "A lot"
+      },
+      {
+        "es": "Un poco",
+        "en": "A little"
+      },
+      {
+        "en": "Thanks",
+        "es": "Gracias"
+      },
+      {
+        "en": "Beautiful",
+        "es": "Bonito"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": {
+      "en": "'Beaucoup' is the French word for 'a lot' or 'much'.",
+      "es": "'Beaucoup' es la palabra francesa para 'mucho'."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "es": "Esto indica una gran cantidad.",
+      "en": "This indicates a large quantity."
+    },
+    "createdAt": "2025-06-18T20:24:19.893Z"
+  },
+  {
+    "id": "8Deb8uy46mp6VniB0GUv",
+    "topicValue": "Lang_French",
+    "question": {
+      "es": "¿Qué significa 'Belle'?",
+      "en": "What does 'Belle' mean?"
+    },
+    "answers": [
+      {
+        "en": "Beautiful (feminine)",
+        "es": "Hermosa (femenino)"
+      },
+      {
+        "es": "Hermoso (masculino)",
+        "en": "Beautiful (masculine)"
+      },
+      {
+        "es": "Fea (femenino)",
+        "en": "Ugly (feminine)"
+      },
+      {
+        "es": "Feo (masculino)",
+        "en": "Ugly (masculine)"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": {
+      "en": "'Belle' is the feminine form of the adjective 'beau', meaning 'beautiful'.",
+      "es": "'Belle' es la forma femenina del adjetivo 'beau', que significa 'bonita' o 'hermosa'."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "en": "This adjective describes something or someone as very attractive.",
+      "es": "Este adjetivo describe algo o a alguien como muy atractivo."
+    },
+    "createdAt": "2025-06-18T20:24:21.315Z"
+  },
+  {
+    "id": "8fzubgrVkndJD1o9bDrv",
+    "topicValue": "Lang_French",
+    "question": {
+      "en": "What does 'Bientôt' mean?",
+      "es": "¿Qué significa 'Bientôt'?"
+    },
+    "answers": [
+      {
+        "es": "Pronto",
+        "en": "Soon"
+      },
+      {
+        "es": "Más tarde",
+        "en": "Later"
+      },
+      {
+        "en": "Now",
+        "es": "Ahora"
+      },
+      {
+        "es": "Inmediatamente",
+        "en": "Immediately"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": {
+      "es": "'Bientôt' es la palabra francesa para 'pronto'.",
+      "en": "'Bientôt' is the French word for 'soon'."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "en": "This indicates a short time from now.",
+      "es": "Esto indica poco tiempo a partir de ahora."
+    },
+    "createdAt": "2025-06-18T20:24:19.820Z"
+  },
+  {
+    "id": "ZnfMqXloFPjWsWPpnqYh",
+    "topicValue": "Lang_French",
+    "question": {
+      "es": "¿Qué significa 'Blanc'?",
+      "en": "What does 'Blanc' mean?"
+    },
+    "answers": [
+      {
+        "es": "Blanco",
+        "en": "White"
+      },
+      {
+        "en": "Black",
+        "es": "Negro"
+      },
+      {
+        "en": "Gray",
+        "es": "Gris"
+      },
+      {
+        "en": "Silver",
+        "es": "Plata"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": {
+      "es": "'Blanc' es la forma masculina del adjetivo que significa 'blanco'. La forma femenina es 'blanche'.",
+      "en": "'Blanc' is the masculine form of the adjective meaning 'white'. The feminine form is 'blanche'."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "es": "Este es el color de la nieve o el papel.",
+      "en": "This is the color of snow or paper."
+    },
+    "createdAt": "2025-06-18T20:24:17.554Z"
+  },
+  {
+    "id": "TP2ZZGqIOUn9SaInTdbd",
+    "topicValue": "Lang_French",
+    "question": {
+      "en": "What does 'Bleu' mean?",
+      "es": "¿Qué significa 'Bleu'?"
+    },
+    "answers": [
+      {
+        "es": "Azul",
+        "en": "Blue"
+      },
+      {
+        "es": "Rojo",
+        "en": "Red"
+      },
+      {
+        "en": "Green",
+        "es": "Verde"
+      },
+      {
+        "en": "Black",
+        "es": "Negro"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": {
+      "es": "'Bleu' es la palabra francesa para 'azul'. Es un sustantivo masculino.",
+      "en": "'Bleu' is the French word for 'blue'. It is a masculine noun."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "en": "This is the color of the sky on a clear day.",
+      "es": "Este es el color del cielo en un día despejado."
+    },
+    "createdAt": "2025-06-18T20:24:17.373Z"
+  },
+  {
+    "id": "5oINARv4LFzsLsHH9P14",
+    "topicValue": "Lang_French",
+    "question": {
+      "es": "¿Qué significa 'Bon'?",
+      "en": "What does 'Bon' mean?"
+    },
+    "answers": [
+      {
+        "es": "Bueno",
+        "en": "Good"
+      },
+      {
+        "en": "Bad",
+        "es": "Malo"
+      },
+      {
+        "en": "Big",
+        "es": "Grande"
+      },
+      {
+        "en": "Small",
+        "es": "Pequeño"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": {
+      "en": "'Bon' is the masculine form of the adjective meaning 'good'. The feminine form is 'bonne'.",
+      "es": "'Bon' es la forma masculina del adjetivo que significa 'bueno'. La forma femenina es 'bonne'."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "es": "Este adjetivo describe algo positivo.",
+      "en": "This adjective describes something positive."
+    },
+    "createdAt": "2025-06-18T20:24:16.644Z"
+  },
+  {
+    "id": "g8vjGUBKPGPmjGZD8w1l",
+    "topicValue": "Lang_French",
+    "question": {
+      "es": "¿Qué significa 'Bonjour'?",
+      "en": "What does 'Bonjour' mean?"
+    },
+    "answers": [
+      {
+        "es": "Hola",
+        "en": "Hello"
+      },
+      {
+        "es": "Adiós",
+        "en": "Goodbye"
+      },
+      {
+        "en": "Thank you",
+        "es": "Gracias"
+      },
+      {
+        "en": "Please",
+        "es": "Por favor"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": {
+      "en": "'Bonjour' is a standard French greeting used during the day, meaning 'Hello' or 'Good day'.",
+      "es": "'Bonjour' es un saludo francés estándar que se usa durante el día, y significa 'Hola' o 'Buen día'."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "en": "This is a common way to greet someone in French.",
+      "es": "Esta es una forma común de saludar a alguien en francés."
+    },
+    "createdAt": "2025-06-18T20:24:15.287Z"
+  },
+  {
+    "id": "76g0LHXcMNEonOTIBK2v",
+    "topicValue": "Lang_French",
+    "question": {
+      "en": "What does 'Bonne nuit' mean?",
+      "es": "¿Qué significa 'Bonne nuit'?"
+    },
+    "answers": [
+      {
+        "en": "Good night",
+        "es": "Buenas noches"
+      },
+      {
+        "es": "Buenas tardes",
+        "en": "Good evening"
+      },
+      {
+        "es": "Hola",
+        "en": "Hello"
+      },
+      {
+        "es": "Buenos días",
+        "en": "Good day"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": {
+      "en": "'Bonne nuit' is a French farewell used before going to sleep, meaning 'Good night'.",
+      "es": "'Bonne nuit' es una despedida francesa que se usa antes de ir a dormir, significando 'Buenas noches'."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "es": "Esto se dice antes de ir a la cama.",
+      "en": "This is said before going to bed."
+    },
+    "createdAt": "2025-06-18T20:24:19.134Z"
+  },
+  {
+    "id": "G1a6NGpwN3hmu0iAf5Fx",
+    "topicValue": "Lang_French",
+    "question": {
+      "en": "What does 'Bonsoir' mean?",
+      "es": "¿Qué significa 'Bonsoir'?"
+    },
+    "answers": [
+      {
+        "es": "Buenas tardes",
+        "en": "Good evening"
+      },
+      {
+        "es": "Buenas noches",
+        "en": "Good night"
+      },
+      {
+        "en": "Hello",
+        "es": "Hola"
+      },
+      {
+        "es": "Adiós",
+        "en": "Goodbye"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": {
+      "es": "'Bonsoir' es un saludo francés que se usa por la tarde/noche, y significa 'Good evening'.",
+      "en": "'Bonsoir' is a French greeting used in the evening, meaning 'Buenas tardes'."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "en": "This greeting is used when the sun goes down.",
+      "es": "Este saludo se usa cuando el sol se pone."
+    },
+    "createdAt": "2025-06-18T20:24:19.101Z"
+  },
+  {
+    "id": "vRy8xDe2OS4L9SMjh4XM",
+    "topicValue": "Lang_French",
+    "question": {
+      "es": "¿Qué significa 'Chat'?",
+      "en": "What does 'Chat' mean?"
+    },
+    "answers": [
+      {
+        "es": "Gato",
+        "en": "Cat"
+      },
+      {
+        "es": "Perro",
+        "en": "Dog"
+      },
+      {
+        "es": "Gatito",
+        "en": "Kitten"
+      },
+      {
+        "es": "Cachorro",
+        "en": "Puppy"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": {
+      "en": "'Chat' is the French word for 'cat'. It is a masculine noun.",
+      "es": "'Chat' es la palabra francesa para 'gato'. Es un sustantivo masculino."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "es": "Este animal doméstico es conocido por ronronear.",
+      "en": "This pet is known for purring."
+    },
+    "createdAt": "2025-06-18T20:24:16.229Z"
+  },
+  {
+    "id": "BNceiwADrldZmaUaE29o",
+    "topicValue": "Lang_French",
+    "question": {
+      "es": "¿Qué significa 'Chien'?",
+      "en": "What does 'Chien' mean?"
+    },
+    "answers": [
+      {
+        "en": "Cat",
+        "es": "Gato"
+      },
+      {
+        "en": "Dog",
+        "es": "Perro"
+      },
+      {
+        "es": "Pájaro",
+        "en": "Bird"
+      },
+      {
+        "es": "Pez",
+        "en": "Fish"
+      }
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": {
+      "en": "'Chien' is the French word for 'dog'. It is a masculine noun.",
+      "es": "'Chien' es la palabra francesa para 'perro'. Es un sustantivo masculino."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "en": "This is a common pet, often called 'man's best friend'.",
+      "es": "Este es un animal doméstico común, a menudo llamado 'el mejor amigo del hombre'."
+    },
+    "createdAt": "2025-06-18T20:24:16.186Z"
+  },
+  {
+    "id": "CQjXgUlKXEoaVqxCKOxn",
+    "topicValue": "Lang_French",
+    "question": {
+      "es": "¿Qué significa 'Cinq'?",
+      "en": "What does 'Cinq' mean?"
+    },
+    "answers": [
+      {
+        "es": "Cinco",
+        "en": "Five"
+      },
+      {
+        "es": "Cuatro",
+        "en": "Four"
+      },
+      {
+        "en": "Six",
+        "es": "Seis"
+      },
+      {
+        "en": "Seven",
+        "es": "Siete"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": {
+      "es": "'Cinq' es la palabra francesa para el número 'cinco'.",
+      "en": "'Cinq' is the French word for the number 'five'."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "es": "Este es el número de dedos en una mano humana.",
+      "en": "This is the number of fingers on one human hand."
+    },
+    "createdAt": "2025-06-18T20:24:17.058Z"
+  },
+  {
+    "id": "Dz6EzGH94VmL39ef1XV1",
+    "topicValue": "Lang_French",
+    "question": {
+      "es": "¿Qué significa 'Dans'?",
+      "en": "What does 'Dans' mean?"
+    },
+    "answers": [
+      {
+        "en": "In / On",
+        "es": "En"
+      },
+      {
+        "es": "Desde",
+        "en": "At"
+      },
+      {
+        "es": "A",
+        "en": "To"
+      },
+      {
+        "es": "De",
+        "en": "From"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": {
+      "en": "'Dans' is a French preposition often meaning 'in' or 'on'.",
+      "es": "'Dans' es una preposición francesa que a menudo significa 'en'."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "en": "This preposition indicates location or time.",
+      "es": "Esta preposición indica ubicación o tiempo."
+    },
+    "createdAt": "2025-06-18T20:24:18.457Z"
+  },
+  {
+    "id": "xtaaRFi2EiNv1LCBfAtE",
+    "topicValue": "Lang_French",
+    "question": {
+      "es": "¿Qué significa 'De rien'?",
+      "en": "What does 'De rien' mean?"
+    },
+    "answers": [
+      {
+        "es": "De nada",
+        "en": "You're welcome"
+      },
+      {
+        "es": "Gracias",
+        "en": "Thank you"
+      },
+      {
+        "es": "Por favor",
+        "en": "Please"
+      },
+      {
+        "en": "Goodbye",
+        "es": "Adiós"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": {
+      "en": "'De rien' is a common response to 'Merci', meaning 'You're welcome'.",
+      "es": "'De rien' es una respuesta común a 'Merci', que significa 'De nada'."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "es": "Esto es lo que dices después de que alguien te agradece.",
+      "en": "This is what you say after someone thanks you."
+    },
+    "createdAt": "2025-06-18T20:24:17.757Z"
+  },
+  {
+    "id": "Q8unANakWtn2RWFNGeYs",
+    "topicValue": "Lang_French",
+    "question": {
+      "en": "What does 'Demain' mean?",
+      "es": "¿Qué significa 'Demain'?"
+    },
+    "answers": [
+      {
+        "en": "Tomorrow",
+        "es": "Mañana"
+      },
+      {
+        "en": "Today",
+        "es": "Hoy"
+      },
+      {
+        "en": "Yesterday",
+        "es": "Ayer"
+      },
+      {
+        "en": "Next week",
+        "es": "La semana que viene"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": {
+      "es": "'Demain' es la palabra francesa para 'mañana'.",
+      "en": "'Demain' is the French word for 'tomorrow'."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "en": "This refers to the day after today.",
+      "es": "Esto se refiere al día después de hoy."
+    },
+    "createdAt": "2025-06-18T20:24:19.644Z"
+  },
+  {
+    "id": "8KR0fahVCLldYa44BwzL",
+    "topicValue": "Lang_French",
+    "question": {
+      "en": "What does 'Deux' mean?",
+      "es": "¿Qué significa 'Deux'?"
+    },
+    "answers": [
+      {
+        "en": "Two",
+        "es": "Dos"
+      },
+      {
+        "es": "Uno",
+        "en": "One"
+      },
+      {
+        "en": "Three",
+        "es": "Tres"
+      },
+      {
+        "es": "Cuatro",
+        "en": "Four"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": {
+      "es": "'Deux' es la palabra francesa para el número 'dos'.",
+      "en": "'Deux' is the French word for the number 'two'."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "en": "This is the number that comes after one.",
+      "es": "Este es el número que viene después del uno."
+    },
+    "createdAt": "2025-06-18T20:24:16.933Z"
+  },
+  {
+    "id": "zpRq0OEQJKkV8JWLT0jg",
+    "topicValue": "Lang_French",
+    "question": {
+      "es": "¿Qué significa 'Dix'?",
+      "en": "What does 'Dix' mean?"
+    },
+    "answers": [
+      {
+        "es": "Diez",
+        "en": "Ten"
+      },
+      {
+        "es": "Nueve",
+        "en": "Nine"
+      },
+      {
+        "es": "Once",
+        "en": "Eleven"
+      },
+      {
+        "en": "Twelve",
+        "es": "Doce"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": {
+      "en": "'Dix' is the French word for the number 'ten'.",
+      "es": "'Dix' es la palabra francesa para el número 'diez'."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "es": "Este es el número de dedos y pulgares en ambas manos humanas.",
+      "en": "This is the number of fingers and thumbs on both human hands."
+    },
+    "createdAt": "2025-06-18T20:24:17.284Z"
+  },
+  {
+    "id": "AYCFqOwWYLq8zrGgzArZ",
+    "topicValue": "Lang_French",
+    "question": {
+      "es": "¿Qué significa 'Elle a'?",
+      "en": "What does 'Elle a' mean?"
+    },
+    "answers": [
+      {
+        "en": "To have",
+        "es": "Tener"
+      },
+      {
+        "es": "Ser / Estar",
+        "en": "To be"
+      },
+      {
+        "es": "Ir",
+        "en": "To go"
+      },
+      {
+        "es": "Hacer",
+        "en": "To do/make"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": {
+      "es": "La conjugación francesa 'elle a' significa 'tiene'. Proviene del verbo 'avoir'.",
+      "en": "The French conjugation 'elle a' means 'she has' or 'it has' in English. It is from the verb 'avoir'."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "en": "This is the third-person singular feminine present tense of 'avoir'.",
+      "es": "Esta es la tercera persona del singular femenino en presente del verbo 'avoir'."
+    },
+    "createdAt": "2025-06-18T20:25:41.444Z"
+  },
+  {
+    "id": "tvKFfZdClySBbmQHd1Yz",
+    "topicValue": "Lang_French",
+    "question": {
+      "en": "What does 'Elle a' mean?",
+      "es": "¿Qué significa 'Elle a'?"
+    },
+    "answers": [
+      {
+        "en": "She has / It has",
+        "es": "Ella tiene / Ello tiene"
+      },
+      {
+        "es": "Él tiene / Ello tiene",
+        "en": "He has / It has"
+      },
+      {
+        "en": "I have",
+        "es": "Yo tengo"
+      },
+      {
+        "en": "We have",
+        "es": "Nosotros tenemos"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": {
+      "en": "'Elle a' is the third person singular feminine present tense of the verb 'avoir' (to have).",
+      "es": "'Elle a' es la tercera persona del singular femenino en presente del verbo 'avoir' (tener)."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "en": "This phrase uses the pronoun 'she' or 'it' (feminine) and the verb 'to have'.",
+      "es": "Esta frase usa el pronombre 'ella' o 'ello' (femenino) y el verbo 'tener'."
+    },
+    "createdAt": "2025-06-18T20:24:18.082Z"
+  },
+  {
+    "id": "ZCspnPyXNZTEdWeI1dRX",
+    "topicValue": "Lang_French",
+    "question": {
+      "en": "What does 'Elle est' mean?",
+      "es": "¿Qué significa 'Elle est'?"
+    },
+    "answers": [
+      {
+        "en": "To be",
+        "es": "Ser / Estar"
+      },
+      {
+        "en": "To have",
+        "es": "Tener"
+      },
+      {
+        "en": "To go",
+        "es": "Ir"
+      },
+      {
+        "en": "To do/make",
+        "es": "Hacer"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": {
+      "en": "The French conjugation 'elle est' means 'she is' or 'it is' in English. It is from the verb 'être'.",
+      "es": "La conjugación francesa 'elle est' significa 'ella es'. Proviene del verbo 'être'."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "es": "Esta es la tercera persona del singular femenino en presente del verbo 'être'.",
+      "en": "This is the third-person singular feminine present tense of 'être'."
+    },
+    "createdAt": "2025-06-18T20:25:41.322Z"
+  },
+  {
+    "id": "4KJ0W62yccTs30XIp21d",
+    "topicValue": "Lang_French",
+    "question": {
+      "es": "¿Qué significa 'Excusez-moi'?",
+      "en": "What does 'Excusez-moi' mean?"
+    },
+    "answers": [
+      {
+        "en": "Sorry",
+        "es": "Perdón"
+      },
+      {
+        "en": "Excuse me",
+        "es": "Disculpe"
+      },
+      {
+        "es": "Por favor",
+        "en": "Please"
+      },
+      {
+        "en": "Thank you",
+        "es": "Gracias"
+      }
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": {
+      "en": "'Excusez-moi' is used to get someone's attention or to apologize politely, meaning 'Excuse me'.",
+      "es": "'Excusez-moi' se usa para llamar la atención de alguien o para disculparse cortésmente, significando 'Disculpe'."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "en": "Use this when you need to interrupt or apologize lightly.",
+      "es": "Usa esto cuando necesites interrumpir o disculparte levemente."
+    },
+    "createdAt": "2025-06-18T20:24:15.682Z"
+  },
+  {
+    "id": "1Uf65WDQTmz4c6WvEeYx",
+    "topicValue": "Lang_French",
+    "question": {
+      "en": "What does 'Fils' mean?",
+      "es": "¿Qué significa 'Fils'?"
+    },
+    "answers": [
+      {
+        "en": "Son",
+        "es": "Hijo"
+      },
+      {
+        "es": "Hija",
+        "en": "Daughter"
+      },
+      {
+        "en": "Father",
+        "es": "Padre"
+      },
+      {
+        "es": "Niño",
+        "en": "Boy"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": {
+      "es": "'Fils' es la palabra francesa para 'hijo'. Es un sustantivo masculino.",
+      "en": "'Fils' is the French word for 'son'. It is a masculine noun."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "en": "This refers to a male child of parents.",
+      "es": "Esto se refiere a un hijo varón de los padres."
+    },
+    "createdAt": "2025-06-18T20:24:18.915Z"
+  },
+  {
+    "id": "WgTcM5Ffy2nRis3FhW9k",
+    "topicValue": "Lang_French",
+    "question": {
+      "es": "¿Qué significa 'français' cuando se usa como adjetivo?",
+      "en": "What does 'français' mean when used as an adjective?"
+    },
+    "answers": [
+      {
+        "es": "Francés (adjetivo)",
+        "en": "French (adjective)"
+      },
+      {
+        "en": "France (country)",
+        "es": "Francia (país)"
+      },
+      {
+        "es": "Idioma francés",
+        "en": "French language"
+      },
+      {
+        "es": "Persona francesa",
+        "en": "French person"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": {
+      "es": "La palabra francesa 'français', cuando se usa como adjetivo, significa 'francés', describiendo algo relacionado con Francia.",
+      "en": "The French word 'français' when used as an adjective means 'French', describing something related to France."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "en": "This describes nationality or origin.",
+      "es": "Esto describe la nacionalidad u origen."
+    },
+    "createdAt": "2025-06-18T20:25:44.185Z"
+  },
+  {
+    "id": "1vkn1x6ciPQdMbbARhDm",
+    "topicValue": "Lang_French",
+    "question": {
+      "en": "What does 'Grand' mean?",
+      "es": "¿Qué significa 'Grand'?"
+    },
+    "answers": [
+      {
+        "en": "Big",
+        "es": "Grande"
+      },
+      {
+        "en": "Small",
+        "es": "Pequeño"
+      },
+      {
+        "es": "Alto",
+        "en": "Tall"
+      },
+      {
+        "en": "Short",
+        "es": "Bajo"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": {
+      "en": "'Grand' is the masculine form of the adjective meaning 'big' or 'large'. The feminine form is 'grande'.",
+      "es": "'Grand' es la forma masculina del adjetivo que significa 'grande'. La forma femenina es 'grande'."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "es": "Este adjetivo se refiere al tamaño.",
+      "en": "This adjective refers to size."
+    },
+    "createdAt": "2025-06-18T20:24:16.796Z"
+  },
+  {
+    "id": "vrEv8dnP8l02lBiRsOmV",
+    "topicValue": "Lang_French",
+    "question": {
+      "en": "What does 'Hier' mean?",
+      "es": "¿Qué significa 'Hier'?"
+    },
+    "answers": [
+      {
+        "es": "Ayer",
+        "en": "Yesterday"
+      },
+      {
+        "es": "Mañana",
+        "en": "Tomorrow"
+      },
+      {
+        "es": "Hoy",
+        "en": "Today"
+      },
+      {
+        "en": "The day before",
+        "es": "El día anterior"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": {
+      "es": "'Hier' es la palabra francesa para 'ayer'.",
+      "en": "'Hier' is the French word for 'yesterday'."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "en": "This refers to the day before today.",
+      "es": "Esto se refiere al día antes de hoy."
+    },
+    "createdAt": "2025-06-18T20:24:19.687Z"
+  },
+  {
+    "id": "crztw3AVw0euYNFaHOiC",
+    "topicValue": "Lang_French",
+    "question": {
+      "es": "¿Qué significa 'Il est'?",
+      "en": "What does 'Il est' mean?"
+    },
+    "answers": [
+      {
+        "en": "To be",
+        "es": "Ser / Estar"
+      },
+      {
+        "es": "Tener",
+        "en": "To have"
+      },
+      {
+        "es": "Ir",
+        "en": "To go"
+      },
+      {
+        "en": "To do/make",
+        "es": "Hacer"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": {
+      "es": "La conjugación francesa 'il est' significa 'él is'. Proviene del verbo 'être'.",
+      "en": "The French conjugation 'il est' means 'he is' or 'it is'. It is from the verb 'être'."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "es": "Esta es la tercera persona del singular masculino en presente del verbo 'être'.",
+      "en": "This is the third-person singular masculine present tense of 'être'."
+    },
+    "createdAt": "2025-06-18T20:25:41.285Z"
+  },
+  {
+    "id": "DhODtBMYSLoXstObU0HY",
+    "topicValue": "Lang_French",
+    "question": {
+      "es": "¿Qué significa 'J'ai'?",
+      "en": "What does 'J'ai' mean?"
+    },
+    "answers": [
+      {
+        "en": "I have",
+        "es": "Tengo"
+      },
+      {
+        "en": "I am",
+        "es": "Estoy"
+      },
+      {
+        "en": "I go",
+        "es": "Voy"
+      },
+      {
+        "es": "Hago",
+        "en": "I do/make"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": {
+      "en": "The French conjugation 'j'ai' means 'I have' in English. It is from the verb 'avoir'.",
+      "es": "La conjugación francesa 'j'ai' significa 'tengo'. Proviene del verbo 'avoir'."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "es": "Esta es la primera persona del singular en presente del verbo 'avoir'.",
+      "en": "This is the first-person singular present tense of 'avoir'."
+    },
+    "createdAt": "2025-06-18T20:25:41.202Z"
+  },
+  {
+    "id": "l4uVTiUkEWgwMA4cWoKc",
+    "topicValue": "Lang_French",
+    "question": {
+      "en": "What does 'Je ne sais pas' mean?",
+      "es": "¿Qué significa 'Je ne sais pas'?"
+    },
+    "answers": [
+      {
+        "en": "I don't know",
+        "es": "No lo sé"
+      },
+      {
+        "es": "No entiendo",
+        "en": "I don't understand"
+      },
+      {
+        "es": "No hablo francés",
+        "en": "I don't speak French"
+      },
+      {
+        "en": "I am lost",
+        "es": "Estoy perdido"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": {
+      "es": "'Je ne sais pas' es la frase francesa para 'No lo sé'.",
+      "en": "'Je ne sais pas' is the French phrase for 'I don't know'."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "en": "This is said when you lack information.",
+      "es": "Esto se dice cuando careces de información."
+    },
+    "createdAt": "2025-06-18T20:24:19.968Z"
+  },
+  {
+    "id": "2NRPP5hrp7qnXpA1w8MQ",
+    "topicValue": "Lang_French",
+    "question": {
+      "en": "What does 'Je parle un peu français' mean?",
+      "es": "¿Qué significa 'Je parle un peu français'?"
+    },
+    "answers": [
+      {
+        "en": "I speak a little French",
+        "es": "Hablo un poco de francés"
+      },
+      {
+        "en": "I speak French",
+        "es": "Hablo francés"
+      },
+      {
+        "es": "Hablo inglés",
+        "en": "I speak English"
+      },
+      {
+        "en": "I speak a little",
+        "es": "Hablo un poco"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": {
+      "en": "'Je parle un peu français' is the French phrase for 'I speak a little French'.",
+      "es": "'Je parle un peu français' es la frase francesa para 'Hablo un poco de francés'."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "en": "This indicates limited ability in the language.",
+      "es": "Esto indica una habilidad limitada en el idioma."
+    },
+    "createdAt": "2025-06-18T20:24:20.176Z"
+  },
+  {
+    "id": "cr22IUgk0zyzDRNkvf5m",
+    "topicValue": "Lang_French",
+    "question": {
+      "es": "¿Qué significa 'Je suis'?",
+      "en": "What does 'Je suis' mean?"
+    },
+    "answers": [
+      {
+        "en": "I am",
+        "es": "Yo soy"
+      },
+      {
+        "en": "I have",
+        "es": "Yo tengo"
+      },
+      {
+        "es": "Yo voy",
+        "en": "I go"
+      },
+      {
+        "es": "Yo hago",
+        "en": "I do"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": {
+      "es": "'Je suis' es la primera persona del singular en presente del verbo 'être' (ser/estar).",
+      "en": "'Je suis' is the first person singular present tense of the verb 'être' (to be)."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "en": "This phrase uses the pronoun 'I' and the verb 'to be'.",
+      "es": "Esta frase usa el pronombre 'Yo' y el verbo 'ser/estar'."
+    },
+    "createdAt": "2025-06-18T20:24:17.800Z"
+  },
+  {
+    "id": "5WLj30lcI7pDWDD5BleD",
+    "topicValue": "Lang_French",
+    "question": {
+      "en": "What does 'Jolie' mean?",
+      "es": "¿Qué significa 'Jolie'?"
+    },
+    "answers": [
+      {
+        "en": "Pretty",
+        "es": "Bonita"
+      },
+      {
+        "es": "Hermosa",
+        "en": "Beautiful"
+      },
+      {
+        "es": "Guapo",
+        "en": "Handsome"
+      },
+      {
+        "en": "Lovely",
+        "es": "Encantador"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": {
+      "es": "'Jolie' es la forma femenina del adjetivo 'joli', que significa 'bonita'. La forma masculina es 'joli'.",
+      "en": "'Jolie' is the feminine form of the adjective 'joli', meaning 'pretty'. The masculine form is 'joli'."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "es": "Este adjetivo se usa comúnmente para describir a las mujeres o cosas pequeñas y delicadas.",
+      "en": "This adjective is commonly used to describe females or small, delicate things."
+    },
+    "createdAt": "2025-06-18T20:24:16.752Z"
+  },
+  {
+    "id": "r73GUO7OmC3fiJ8MqV3W",
+    "topicValue": "Lang_French",
+    "question": {
+      "es": "¿Qué significa 'Jour'?",
+      "en": "What does 'Jour' mean?"
+    },
+    "answers": [
+      {
+        "es": "Día",
+        "en": "Day"
+      },
+      {
+        "es": "Noche",
+        "en": "Night"
+      },
+      {
+        "en": "Morning",
+        "es": "Mañana"
+      },
+      {
+        "es": "Tarde",
+        "en": "Evening"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": {
+      "es": "'Jour' es la palabra francesa para 'día'. Es un sustantivo masculino.",
+      "en": "'Jour' is the French word for 'day'. It is a masculine noun."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "es": "Este es el período de luz entre el amanecer y el atardecer.",
+      "en": "This is the period of light between sunrise and sunset."
+    },
+    "createdAt": "2025-06-18T20:24:16.525Z"
+  },
+  {
+    "id": "9rRWn0j9YAX2RspAO1tL",
+    "topicValue": "Lang_French",
+    "question": {
+      "en": "What does 'L'eau' mean?",
+      "es": "¿Qué significa 'L'eau'?"
+    },
+    "answers": [
+      {
+        "es": "El agua",
+        "en": "The water"
+      },
+      {
+        "es": "El zumo",
+        "en": "The juice"
+      },
+      {
+        "es": "La leche",
+        "en": "The milk"
+      },
+      {
+        "en": "The wine",
+        "es": "El vino"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": {
+      "es": "'L'eau' es francés para 'agua'. 'Eau' es un sustantivo femenino, y se usa 'l'' porque empieza con vocal.",
+      "en": "'L'eau' is French for 'water'. 'Eau' is a feminine noun, and 'l'' is used because it starts with a vowel."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "en": "This is essential for life and is clear.",
+      "es": "Esto es esencial para la vida y es transparente."
+    },
+    "createdAt": "2025-06-18T20:24:20.617Z"
+  },
+  {
+    "id": "JAgdevB3daGNIlzFFBBU",
+    "topicValue": "Lang_French",
+    "question": {
+      "es": "¿Qué significa 'La nuit'?",
+      "en": "What does 'La nuit' mean?"
+    },
+    "answers": [
+      {
+        "en": "The night",
+        "es": "La noche"
+      },
+      {
+        "en": "The day",
+        "es": "El día"
+      },
+      {
+        "en": "The evening",
+        "es": "La tarde"
+      },
+      {
+        "en": "The midnight",
+        "es": "La medianoche"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": {
+      "es": "'La nuit' es francés para 'la noche'. 'Nuit' es un sustantivo femenino.",
+      "en": "'La nuit' is French for 'the night'. 'Nuit' is a feminine noun."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "es": "Este es el período de oscuridad entre el atardecer y el amanecer.",
+      "en": "This is the period of darkness between sunset and sunrise."
+    },
+    "createdAt": "2025-06-18T20:24:20.834Z"
+  },
+  {
+    "id": "DEx3xW4A2LvtklLpg6Xy",
+    "topicValue": "Lang_French",
+    "question": {
+      "en": "What does 'La question' mean?",
+      "es": "¿Qué significa 'La question'?"
+    },
+    "answers": [
+      {
+        "en": "The question",
+        "es": "La pregunta"
+      },
+      {
+        "en": "The answer",
+        "es": "La respuesta"
+      },
+      {
+        "es": "El problema",
+        "en": "The problem"
+      },
+      {
+        "en": "The inquiry",
+        "es": "La consulta"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": {
+      "en": "'La question' is French for 'the question'. 'Question' is a feminine noun.",
+      "es": "'La question' es francés para 'la pregunta'. 'Question' es un sustantivo femenino."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "en": "This is asked to obtain information.",
+      "es": "Esto se pregunta para obtener información."
+    },
+    "createdAt": "2025-06-18T20:24:20.996Z"
+  },
+  {
+    "id": "OZDCFSaigsW57p1KhWvs",
+    "topicValue": "Lang_French",
+    "question": {
+      "es": "¿Qué significa 'La table'?",
+      "en": "What does 'La table' mean?"
+    },
+    "answers": [
+      {
+        "es": "La mesa",
+        "en": "The table"
+      },
+      {
+        "es": "La silla",
+        "en": "The chair"
+      },
+      {
+        "en": "The house",
+        "es": "La casa"
+      },
+      {
+        "es": "El libro",
+        "en": "The book"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": {
+      "es": "'La table' es francés para 'la mesa'. 'Table' es un sustantivo femenino.",
+      "en": "'La table' is French for 'the table'. 'Table' is a feminine noun."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "en": "This refers to the piece of furniture you eat at.",
+      "es": "Esto se refiere al mueble en el que comes."
+    },
+    "createdAt": "2025-06-18T20:24:20.260Z"
+  },
+  {
+    "id": "D1iUh6flDWbk8HAakbsM",
+    "topicValue": "Lang_French",
+    "question": {
+      "en": "What does 'La' mean?",
+      "es": "¿Qué significa 'La'?"
+    },
+    "answers": [
+      {
+        "en": "The (feminine)",
+        "es": "La (femenino)"
+      },
+      {
+        "en": "The (masculine)",
+        "es": "El (masculino)"
+      },
+      {
+        "es": "Una (femenino)",
+        "en": "A (feminine)"
+      },
+      {
+        "es": "Un (masculino)",
+        "en": "A (masculine)"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": {
+      "en": "'La' is the feminine singular definite article in French, meaning 'the'.",
+      "es": "'La' es el artículo definido singular femenino en francés, que significa 'la'."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "es": "Este artículo definido precede a los sustantivos femeninos.",
+      "en": "This definite article precedes feminine nouns."
+    },
+    "createdAt": "2025-06-18T20:24:15.959Z"
+  },
+  {
+    "id": "JFmIvMNxNYdbDVNiD9CJ",
+    "topicValue": "Lang_French",
+    "question": {
+      "en": "What does 'Le chien' mean?",
+      "es": "¿Qué significa 'Le chien'?"
+    },
+    "answers": [
+      {
+        "en": "The dog",
+        "es": "El perro"
+      },
+      {
+        "en": "The cat",
+        "es": "El gato"
+      },
+      {
+        "en": "The animal",
+        "es": "El animal"
+      },
+      {
+        "es": "El cachorro",
+        "en": "The puppy"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": {
+      "es": "'Le chien' es francés para 'el perro'. 'Chien' es un sustantivo masculino.",
+      "en": "'Le chien' is French for 'the dog'. 'Chien' is a masculine noun."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "es": "Esto se refiere a una mascota doméstica común conocida por ladrar.",
+      "en": "This refers to a common domestic pet known for barking."
+    },
+    "createdAt": "2025-06-18T20:24:20.528Z"
+  },
+  {
+    "id": "b2NHd1gi9uwM4A2kdth0",
+    "topicValue": "Lang_French",
+    "question": {
+      "en": "What does 'Le français' mean?",
+      "es": "¿Qué significa 'Le français'?"
+    },
+    "answers": [
+      {
+        "en": "The French language",
+        "es": "El idioma francés"
+      },
+      {
+        "es": "Gente francesa",
+        "en": "French people"
+      },
+      {
+        "en": "The French flag",
+        "es": "La bandera francesa"
+      },
+      {
+        "en": "French culture",
+        "es": "La cultura francesa"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": {
+      "es": "'Le français' se refiere al idioma francés.",
+      "en": "'Le français' refers to the French language."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "en": "This is what you learn in French class.",
+      "es": "Esto es lo que aprendes en la clase de francés."
+    },
+    "createdAt": "2025-06-18T20:24:21.154Z"
+  },
+  {
+    "id": "ELqc2qr5onqCbNtpIzaA",
+    "topicValue": "Lang_French",
+    "question": {
+      "en": "What does 'Le livre' mean?",
+      "es": "¿Qué significa 'Le livre'?"
+    },
+    "answers": [
+      {
+        "es": "El libro",
+        "en": "The book"
+      },
+      {
+        "es": "El bolígrafo",
+        "en": "The pen"
+      },
+      {
+        "en": "The paper",
+        "es": "El papel"
+      },
+      {
+        "en": "The notebook",
+        "es": "El cuaderno"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": {
+      "es": "'Le livre' es francés para 'el libro'. 'Livre' es un sustantivo masculino.",
+      "en": "'Le livre' is French for 'the book'. 'Livre' is a masculine noun."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "es": "Esto se refiere al artículo que lees.",
+      "en": "This refers to the item you read."
+    },
+    "createdAt": "2025-06-18T20:24:20.309Z"
+  },
+  {
+    "id": "LQMiwHKk8KkYHAFKDjBm",
+    "topicValue": "Lang_French",
+    "question": {
+      "es": "¿Qué significa 'Le mot'?",
+      "en": "What does 'Le mot' mean?"
+    },
+    "answers": [
+      {
+        "en": "The word",
+        "es": "La palabra"
+      },
+      {
+        "en": "The name",
+        "es": "El nombre"
+      },
+      {
+        "en": "The phrase",
+        "es": "La frase"
+      },
+      {
+        "es": "El término",
+        "en": "The term"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": {
+      "en": "'Le mot' is French for 'la palabra'. 'Mot' is a masculine noun.",
+      "es": "'Le mot' es francés para 'the word'. 'Mot' es un sustantivo masculino."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "en": "This is a single unit of language.",
+      "es": "Esta es una unidad única de lenguaje."
+    },
+    "createdAt": "2025-06-18T20:24:20.903Z"
+  },
+  {
+    "id": "qC7CuHBtkPCgD2S1cCmO",
+    "topicValue": "Lang_French",
+    "question": {
+      "en": "What does 'Le nom' mean?",
+      "es": "¿Qué significa 'Le nom'?"
+    },
+    "answers": [
+      {
+        "en": "The name",
+        "es": "El nombre"
+      },
+      {
+        "en": "The word",
+        "es": "La palabra"
+      },
+      {
+        "en": "The title",
+        "es": "El título"
+      },
+      {
+        "en": "The label",
+        "es": "La etiqueta"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": {
+      "es": "'Le nom' es francés para 'el nombre'. 'Nom' es un sustantivo masculino.",
+      "en": "'Le nom' is French for 'the name'. 'Nom' is a masculine noun."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "en": "This is what you call someone or something.",
+      "es": "Esto es lo que llamas a alguien o algo."
+    },
+    "createdAt": "2025-06-18T20:24:20.868Z"
+  },
+  {
+    "id": "IKUQi8cMMypsVywccF4d",
+    "topicValue": "Lang_French",
+    "question": {
+      "en": "What does 'Le temps' mean?",
+      "es": "¿Qué significa 'Le temps'?"
+    },
+    "answers": [
+      {
+        "en": "The time",
+        "es": "El tiempo"
+      },
+      {
+        "en": "The moment",
+        "es": "El momento"
+      },
+      {
+        "en": "The hour",
+        "es": "La hora"
+      },
+      {
+        "es": "El reloj",
+        "en": "The watch"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": {
+      "es": "'Le temps' es francés para 'el tiempo' o 'el clima'. 'Temps' es un sustantivo masculino.",
+      "en": "'Le temps' is French for 'the time' or 'the weather'. 'Temps' is a masculine noun."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "es": "Esto se refiere a la progresión de la existencia.",
+      "en": "This refers to the progression of existence."
+    },
+    "createdAt": "2025-06-18T20:24:20.722Z"
+  },
+  {
+    "id": "pgizfTFgEuYqMCl9Bgvn",
+    "topicValue": "Lang_French",
+    "question": {
+      "es": "¿Qué significa 'Le'?",
+      "en": "What does 'Le' mean?"
+    },
+    "answers": [
+      {
+        "en": "The (masculine)",
+        "es": "El (masculino)"
+      },
+      {
+        "es": "La (femenino)",
+        "en": "The (feminine)"
+      },
+      {
+        "es": "Un (masculino)",
+        "en": "A (masculine)"
+      },
+      {
+        "es": "Una (femenino)",
+        "en": "A (feminine)"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": {
+      "es": "'Le' es el artículo definido singular masculino en francés, que significa 'el'.",
+      "en": "'Le' is the masculine singular definite article in French, meaning 'the'."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "es": "Este artículo definido precede a los sustantivos masculinos.",
+      "en": "This definite article precedes masculine nouns."
+    },
+    "createdAt": "2025-06-18T20:24:15.912Z"
+  },
+  {
+    "id": "Yzd4MeTmpncqu2MXGXDE",
+    "topicValue": "Lang_French",
+    "question": {
+      "es": "¿Qué significa 'Les frites'?",
+      "en": "What does 'Les frites' mean?"
+    },
+    "answers": [
+      {
+        "en": "French fries",
+        "es": "Papas fritas"
+      },
+      {
+        "es": "Tostada francesa",
+        "en": "French toast"
+      },
+      {
+        "es": "Pan francés",
+        "en": "French bread"
+      },
+      {
+        "es": "Queso francés",
+        "en": "French cheese"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": {
+      "en": "'Les frites' are French fries in English. The word is plural.",
+      "es": "'Les frites' son papas fritas. La palabra está en plural."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "en": "These are a popular side dish, often served with burgers.",
+      "es": "Este es un acompañamiento popular, a menudo servido con hamburguesas."
+    },
+    "createdAt": "2025-06-18T20:24:21.236Z"
+  },
+  {
+    "id": "MUEJKrefqM37Kf0d5281",
+    "topicValue": "Lang_French",
+    "question": {
+      "en": "What does 'Les' mean?",
+      "es": "¿Qué significa 'Les'?"
+    },
+    "answers": [
+      {
+        "en": "The (plural)",
+        "es": "Los/Las (plural)"
+      },
+      {
+        "es": "Unos/Unas (plural)",
+        "en": "A (plural)"
+      },
+      {
+        "en": "Some (plural)",
+        "es": "Algunos/Algunas (plural)"
+      },
+      {
+        "es": "Ningunos/Ningunas (plural)",
+        "en": "No (plural)"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": {
+      "en": "'Les' is the plural definite article in French, used for both masculine and feminine nouns, meaning 'the'.",
+      "es": "'Les' es el artículo definido plural en francés, usado tanto para sustantivos masculinos como femeninos, que significa 'los/las'."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "es": "Este artículo definido se usa antes de sustantivos en plural.",
+      "en": "This definite article is used before plural nouns."
+    },
+    "createdAt": "2025-06-18T20:24:16.077Z"
+  },
+  {
+    "id": "azjcmZTZ8M1DEP1VxfSo",
+    "topicValue": "Lang_French",
+    "question": {
+      "es": "¿Qué significa 'Madame'?",
+      "en": "What does 'Madame' mean?"
+    },
+    "answers": [
+      {
+        "es": "Señor",
+        "en": "Sir"
+      },
+      {
+        "en": "Madam",
+        "es": "Señora"
+      },
+      {
+        "en": "Miss",
+        "es": "Señorita"
+      },
+      {
+        "en": "Friend",
+        "es": "Amigo"
+      }
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": {
+      "es": "'Madame' es un título formal de respeto para una mujer en francés, similar a 'Señora' o 'Sra.'.",
+      "en": "'Madame' is a formal title of respect for a woman in French, similar to 'Madam' or 'Mrs.' in English."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "es": "Esta es una forma educada de dirigirse a una mujer adulta.",
+      "en": "This is a polite way to address an adult woman."
+    },
+    "createdAt": "2025-06-18T20:24:15.551Z"
+  },
+  {
+    "id": "04d8MaHPX9Lr9CgT7JOx",
+    "topicValue": "Lang_French",
+    "question": {
+      "es": "¿Qué significa 'Maison'?",
+      "en": "What does 'Maison' mean?"
+    },
+    "answers": [
+      {
+        "es": "Casa",
+        "en": "House"
+      },
+      {
+        "en": "Car",
+        "es": "Coche"
+      },
+      {
+        "es": "Libro",
+        "en": "Book"
+      },
+      {
+        "es": "Mesa",
+        "en": "Table"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": {
+      "es": "'Maison' es un sustantivo francés para 'casa'. Es un sustantivo femenino.",
+      "en": "'Maison' is a French noun for 'house'. It is a feminine noun."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "en": "Think of where people live.",
+      "es": "Piensa en dónde vive la gente."
+    },
+    "createdAt": "2025-06-18T20:24:16.134Z"
+  },
+  {
+    "id": "PWAGaNqLAfuGNzKU49MD",
+    "topicValue": "Lang_French",
+    "question": {
+      "en": "What does 'Mal' mean?",
+      "es": "¿Qué significa 'Mal'?"
+    },
+    "answers": [
+      {
+        "en": "Bad",
+        "es": "Malo"
+      },
+      {
+        "en": "Good",
+        "es": "Bueno"
+      },
+      {
+        "es": "Mal",
+        "en": "Poorly"
+      },
+      {
+        "es": "No bueno",
+        "en": "Not good"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": {
+      "en": "'Mal' is the French word for 'bad' or 'badly'.",
+      "es": "'Mal' es la palabra francesa para 'malo' o 'malamente'."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "en": "This word describes a negative state or quality.",
+      "es": "Esta palabra describe un estado o cualidad negativa."
+    },
+    "createdAt": "2025-06-18T20:24:19.522Z"
+  },
+  {
+    "id": "PNOBDpntRZPrDzs3HHnm",
+    "topicValue": "Lang_French",
+    "question": {
+      "es": "¿Qué significa 'Merci'?",
+      "en": "What does 'Merci' mean?"
+    },
+    "answers": [
+      {
+        "en": "Thank you",
+        "es": "Gracias"
+      },
+      {
+        "en": "Please",
+        "es": "Por favor"
+      },
+      {
+        "es": "De nada",
+        "en": "You're welcome"
+      },
+      {
+        "es": "Perdón",
+        "en": "Sorry"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": {
+      "en": "'Merci' is the French word for 'thank you'.",
+      "es": "'Merci' es la palabra francesa para 'gracias'."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "en": "This is said to express gratitude.",
+      "es": "Esto se dice para expresar gratitud."
+    },
+    "createdAt": "2025-06-18T20:24:17.712Z"
+  },
+  {
+    "id": "385D2TfezqgCCb3hoGnj",
+    "topicValue": "Lang_French",
+    "question": {
+      "en": "What does 'Monsieur' mean?",
+      "es": "¿Qué significa 'Monsieur'?"
+    },
+    "answers": [
+      {
+        "en": "Sir",
+        "es": "Señor"
+      },
+      {
+        "en": "Madam",
+        "es": "Señora"
+      },
+      {
+        "en": "Miss",
+        "es": "Señorita"
+      },
+      {
+        "en": "Boy",
+        "es": "Niño"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": {
+      "en": "'Monsieur' is a title of respect for a man in French, equivalent to 'Sir' or 'Mr.' in English.",
+      "es": "'Monsieur' es un título de respeto para un hombre en francés, equivalente a 'Señor' o 'Sr.'."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "es": "Esta es una forma educada de dirigirse a un hombre adulto.",
+      "en": "This is a polite way to address an adult man."
+    },
+    "createdAt": "2025-06-18T20:24:15.597Z"
+  },
+  {
+    "id": "TWmCkwK8sJopN3ZNIfTP",
+    "topicValue": "Lang_French",
+    "question": {
+      "en": "What does 'Noir' mean?",
+      "es": "¿Qué significa 'Noir'?"
+    },
+    "answers": [
+      {
+        "es": "Negro",
+        "en": "Black"
+      },
+      {
+        "en": "White",
+        "es": "Blanco"
+      },
+      {
+        "en": "Gray",
+        "es": "Gris"
+      },
+      {
+        "en": "Brown",
+        "es": "Marrón"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": {
+      "es": "'Noir' es la palabra francesa para 'negro'. Es un sustantivo masculino.",
+      "en": "'Noir' is the French word for 'black'. It is a masculine noun."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "en": "This is the color of coal or a raven.",
+      "es": "Este es el color del carbón o un cuervo."
+    },
+    "createdAt": "2025-06-18T20:24:17.513Z"
+  },
+  {
+    "id": "GbCYr2tcPeDxu3rECAa7",
+    "topicValue": "Lang_French",
+    "question": {
+      "en": "What does 'Ou' mean?",
+      "es": "¿Qué significa 'Ou'?"
+    },
+    "answers": [
+      {
+        "en": "Or",
+        "es": "O"
+      },
+      {
+        "es": "Y",
+        "en": "And"
+      },
+      {
+        "en": "But",
+        "es": "Pero"
+      },
+      {
+        "en": "Or else",
+        "es": "O si no"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": {
+      "es": "'Ou' es la conjunción francesa para 'o'.",
+      "en": "'Ou' is the French conjunction for 'or'."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "es": "Esta palabra presenta una alternativa.",
+      "en": "This word presents an alternative."
+    },
+    "createdAt": "2025-06-18T20:24:18.172Z"
+  },
+  {
+    "id": "r64XYpYG3VrEzdpXYrlT",
+    "topicValue": "Lang_French",
+    "question": {
+      "en": "What does 'Oui, je parle anglais' mean?",
+      "es": "¿Qué significa 'Oui, je parle anglais'?"
+    },
+    "answers": [
+      {
+        "en": "Yes, I speak English",
+        "es": "Sí, hablo inglés"
+      },
+      {
+        "en": "Yes, I speak French",
+        "es": "Sí, hablo francés"
+      },
+      {
+        "es": "Sí, hablo un poco",
+        "en": "Yes, I speak a little"
+      },
+      {
+        "es": "Sí, entiendo",
+        "en": "Yes, I understand"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": {
+      "en": "'Oui, je parle anglais' is the French phrase for 'Yes, I speak English'.",
+      "es": "'Oui, je parle anglais' es la frase francesa para 'Sí, hablo inglés'."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "en": "This is a positive response to asking about speaking English.",
+      "es": "Esta es una respuesta positiva a la pregunta sobre si habla inglés."
+    },
+    "createdAt": "2025-06-18T20:24:20.223Z"
+  },
+  {
+    "id": "kE112Syshw9mdn1kwFTK",
+    "topicValue": "Lang_French",
+    "question": {
+      "es": "¿Qué significa 'Oui'?",
+      "en": "What does 'Oui' mean?"
+    },
+    "answers": [
+      {
+        "en": "Yes",
+        "es": "Sí"
+      },
+      {
+        "en": "No",
+        "es": "No"
+      },
+      {
+        "es": "Quizás",
+        "en": "Maybe"
+      },
+      {
+        "es": "Tal vez",
+        "en": "Perhaps"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": {
+      "en": "'Oui' is the French word for 'Yes'.",
+      "es": "'Oui' es la palabra francesa para 'Sí'."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "es": "Esta es una palabra de afirmación.",
+      "en": "This is a word of affirmation."
+    },
+    "createdAt": "2025-06-18T20:24:15.461Z"
+  },
+  {
+    "id": "Rq3r1wSS31MTJiio0R4d",
+    "topicValue": "Lang_French",
+    "question": {
+      "es": "¿Qué significa 'Pain'?",
+      "en": "What does 'Pain' mean?"
+    },
+    "answers": [
+      {
+        "en": "Bread",
+        "es": "Pan"
+      },
+      {
+        "en": "Cheese",
+        "es": "Queso"
+      },
+      {
+        "es": "Mantequilla",
+        "en": "Butter"
+      },
+      {
+        "en": "Wine",
+        "es": "Vino"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": {
+      "es": "'Pain' es la palabra francesa para 'pan'. Es un sustantivo masculino.",
+      "en": "'Pain' is the French word for 'bread'. It is a masculine noun."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "es": "Este es un alimento básico, a menudo horneado.",
+      "en": "This is a staple food, often baked."
+    },
+    "createdAt": "2025-06-18T20:24:16.327Z"
+  },
+  {
+    "id": "ckrGzfOLZ5Fd8rKI8VCn",
+    "topicValue": "Lang_French",
+    "question": {
+      "es": "¿Qué significa 'Petit'?",
+      "en": "What does 'Petit' mean?"
+    },
+    "answers": [
+      {
+        "en": "Small",
+        "es": "Pequeño"
+      },
+      {
+        "es": "Grande",
+        "en": "Big"
+      },
+      {
+        "en": "Little",
+        "es": "Pequeño"
+      },
+      {
+        "es": "Diminuto",
+        "en": "Tiny"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": {
+      "en": "'Petit' is the masculine form of the adjective meaning 'small' or 'little'. The feminine form is 'petite'.",
+      "es": "'Petit' es la forma masculina del adjetivo que significa 'pequeño'. La forma femenina es 'petite'."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "es": "Este adjetivo se refiere a un tamaño que no es grande.",
+      "en": "This adjective refers to a size that is not large."
+    },
+    "createdAt": "2025-06-18T20:24:16.835Z"
+  },
+  {
+    "id": "Ho6SFmCFGxIJSwCjA1mm",
+    "topicValue": "Lang_French",
+    "question": {
+      "en": "What does 'Petite' mean?",
+      "es": "¿Qué significa 'Petite'?"
+    },
+    "answers": [
+      {
+        "es": "Pequeña (femenino)",
+        "en": "Small (feminine)"
+      },
+      {
+        "es": "Pequeño (masculino)",
+        "en": "Small (masculine)"
+      },
+      {
+        "es": "Grande (femenino)",
+        "en": "Big (feminine)"
+      },
+      {
+        "en": "Sad (feminine)",
+        "es": "Triste (femenino)"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": {
+      "es": "'Petite' es la forma femenina del adjetivo 'petit', que significa 'pequeña'.",
+      "en": "'Petite' is the feminine form of the adjective 'petit', meaning 'small' or 'little'."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "en": "This adjective describes something of lesser size.",
+      "es": "Este adjetivo describe algo de menor tamaño."
+    },
+    "createdAt": "2025-06-18T20:24:21.396Z"
+  },
+  {
+    "id": "CvNCIt01W759RpfZpM9Y",
+    "topicValue": "Lang_French",
+    "question": {
+      "en": "What does 'Plus tard' mean?",
+      "es": "¿Qué significa 'Plus tard'?"
+    },
+    "answers": [
+      {
+        "en": "Later",
+        "es": "Más tarde"
+      },
+      {
+        "en": "Now",
+        "es": "Ahora"
+      },
+      {
+        "en": "Soon",
+        "es": "Pronto"
+      },
+      {
+        "es": "Después",
+        "en": "Later on"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": {
+      "es": "'Plus tard' es la frase francesa para 'más tarde'.",
+      "en": "'Plus tard' is the French phrase for 'later'."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "en": "This refers to a time after the present.",
+      "es": "Esto se refiere a un tiempo después del presente."
+    },
+    "createdAt": "2025-06-18T20:24:19.774Z"
+  },
+  {
+    "id": "8Xs3KdzdJBEZ8OQRNEFi",
+    "topicValue": "Lang_French",
+    "question": {
+      "en": "What does 'Quand' mean?",
+      "es": "¿Qué significa 'Quand'?"
+    },
+    "answers": [
+      {
+        "en": "When?",
+        "es": "¿Cuándo?"
+      },
+      {
+        "es": "¿Dónde?",
+        "en": "Where?"
+      },
+      {
+        "es": "¿Quién?",
+        "en": "Who?"
+      },
+      {
+        "es": "¿Qué?",
+        "en": "What?"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": {
+      "en": "'Quand' is the French interrogative adverb for 'cuándo'.",
+      "es": "'Quand' es el adverbio interrogativo francés para 'when'."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "es": "Esta palabra interrogativa pregunta por el tiempo.",
+      "en": "This question word asks about time."
+    },
+    "createdAt": "2025-06-18T20:24:19.352Z"
+  },
+  {
+    "id": "B4t1TOHub78nzfz0EWKO",
+    "topicValue": "Lang_French",
+    "question": {
+      "en": "What does 'Quatre' mean?",
+      "es": "¿Qué significa 'Quatre'?"
+    },
+    "answers": [
+      {
+        "es": "Cuatro",
+        "en": "Four"
+      },
+      {
+        "en": "Three",
+        "es": "Tres"
+      },
+      {
+        "es": "Cinco",
+        "en": "Five"
+      },
+      {
+        "en": "Six",
+        "es": "Seis"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": {
+      "es": "'Quatre' es la palabra francesa para el número 'cuatro'.",
+      "en": "'Quatre' is the French word for the number 'four'."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "en": "This is the number of wheels on most cars.",
+      "es": "Este es el número de ruedas en la mayoría de los coches."
+    },
+    "createdAt": "2025-06-18T20:24:17.017Z"
+  },
+  {
+    "id": "9qg2eZvaWjpWlzjfMvor",
+    "topicValue": "Lang_French",
+    "question": {
+      "en": "What does 'Rouge' mean?",
+      "es": "¿Qué significa 'Rouge'?"
+    },
+    "answers": [
+      {
+        "en": "Red",
+        "es": "Rojo"
+      },
+      {
+        "en": "Blue",
+        "es": "Azul"
+      },
+      {
+        "en": "Green",
+        "es": "Verde"
+      },
+      {
+        "es": "Amarillo",
+        "en": "Yellow"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": {
+      "es": "'Rouge' es la palabra francesa para 'rojo'. Es un sustantivo femenino.",
+      "en": "'Rouge' is the French word for 'red'. It is a feminine noun."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "es": "Este color a menudo se asocia con la pasión o el peligro.",
+      "en": "This color is often associated with passion or danger."
+    },
+    "createdAt": "2025-06-18T20:24:17.326Z"
+  },
+  {
+    "id": "UgEeaNbVzrVl5MgZVyw8",
+    "topicValue": "Lang_French",
+    "question": {
+      "en": "What does 'Salut' mean?",
+      "es": "¿Qué significa 'Salut'?"
+    },
+    "answers": [
+      {
+        "es": "Hola",
+        "en": "Hello"
+      },
+      {
+        "en": "Goodbye",
+        "es": "Adiós"
+      },
+      {
+        "en": "Good morning",
+        "es": "Buenos días"
+      },
+      {
+        "en": "Good evening",
+        "es": "Buenas tardes"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": {
+      "en": "'Salut' is an informal French greeting, similar to 'Hola'.",
+      "es": "'Salut' es un saludo informal francés, similar a 'Hi' o 'Hello'."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "en": "This greeting is casual and friendly.",
+      "es": "Este saludo es informal y amistoso."
+    },
+    "createdAt": "2025-06-18T20:24:19.061Z"
+  },
+  {
+    "id": "37vSXxMQEKW6XCLrmjG1",
+    "topicValue": "Lang_French",
+    "question": {
+      "en": "What does 'Sept' mean?",
+      "es": "¿Qué significa 'Sept'?"
+    },
+    "answers": [
+      {
+        "en": "Seven",
+        "es": "Siete"
+      },
+      {
+        "es": "Seis",
+        "en": "Six"
+      },
+      {
+        "es": "Ocho",
+        "en": "Eight"
+      },
+      {
+        "es": "Nueve",
+        "en": "Nine"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": {
+      "es": "'Sept' es la palabra francesa para el número 'siete'.",
+      "en": "'Sept' is the French word for the number 'seven'."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "en": "This is the number of days in a week.",
+      "es": "Este es el número de días en una semana."
+    },
+    "createdAt": "2025-06-18T20:24:17.161Z"
+  },
+  {
+    "id": "EdYjqH5La4z2F671v60l",
+    "topicValue": "Lang_French",
+    "question": {
+      "es": "¿Qué significa 'Six'?",
+      "en": "What does 'Six' mean?"
+    },
+    "answers": [
+      {
+        "en": "Six",
+        "es": "Seis"
+      },
+      {
+        "es": "Cinco",
+        "en": "Five"
+      },
+      {
+        "en": "Seven",
+        "es": "Siete"
+      },
+      {
+        "es": "Ocho",
+        "en": "Eight"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": {
+      "es": "'Six' es la palabra francesa para el número 'seis'.",
+      "en": "'Six' is the French word for the number 'six'."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "en": "This is the number of sides on a cube.",
+      "es": "Este es el número de caras de un cubo."
+    },
+    "createdAt": "2025-06-18T20:24:17.111Z"
+  },
+  {
+    "id": "Mxarpy9nRWb0yBnafYbp",
+    "topicValue": "Lang_French",
+    "question": {
+      "en": "What does 'Table' mean?",
+      "es": "¿Qué significa 'Table'?"
+    },
+    "answers": [
+      {
+        "en": "Table",
+        "es": "Mesa"
+      },
+      {
+        "en": "Chair",
+        "es": "Silla"
+      },
+      {
+        "en": "Desk",
+        "es": "Escritorio"
+      },
+      {
+        "es": "Cama",
+        "en": "Bed"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": {
+      "es": "'Table' es la palabra francesa para 'mesa'. Es un sustantivo femenino.",
+      "en": "'Table' is the French word for 'table'. It is a feminine noun."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "es": "Este mueble se usa para comer o trabajar.",
+      "en": "This piece of furniture is used for eating or working on."
+    },
+    "createdAt": "2025-06-18T20:24:16.428Z"
+  },
+  {
+    "id": "MlPF7UgfMAEYsX6xpxaP",
+    "topicValue": "Lang_French",
+    "question": {
+      "es": "¿Qué significa 'Trois'?",
+      "en": "What does 'Trois' mean?"
+    },
+    "answers": [
+      {
+        "en": "Three",
+        "es": "Tres"
+      },
+      {
+        "es": "Dos",
+        "en": "Two"
+      },
+      {
+        "es": "Cuatro",
+        "en": "Four"
+      },
+      {
+        "en": "Five",
+        "es": "Cinco"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": {
+      "es": "'Trois' es la palabra francesa para el número 'tres'.",
+      "en": "'Trois' is the French word for the number 'three'."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "es": "Este es el número de lados de un triángulo.",
+      "en": "This is the number of sides on a triangle."
+    },
+    "createdAt": "2025-06-18T20:24:16.970Z"
+  },
+  {
+    "id": "4OzUuWYhJCBJWdyMgU16",
+    "topicValue": "Lang_French",
+    "question": {
+      "es": "¿Qué significa 'Tu as'?",
+      "en": "What does 'Tu as' mean?"
+    },
+    "answers": [
+      {
+        "en": "You have",
+        "es": "Tú tienes"
+      },
+      {
+        "es": "Yo tengo",
+        "en": "I have"
+      },
+      {
+        "es": "Él tiene",
+        "en": "He has"
+      },
+      {
+        "en": "She has",
+        "es": "Ella tiene"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": {
+      "en": "'Tu as' is the second person singular familiar present tense of the verb 'avoir' (to have).",
+      "es": "'Tu as' es la segunda persona del singular familiar en presente del verbo 'avoir' (tener)."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "en": "This phrase uses the pronoun 'you' (familiar) and the verb 'to have'.",
+      "es": "Esta frase usa el pronombre 'tú' (familiar) y el verbo 'tener'."
+    },
+    "createdAt": "2025-06-18T20:24:18.005Z"
+  },
+  {
+    "id": "Hr6xdIVwXo7uqXOV7Moc",
+    "topicValue": "Lang_French",
+    "question": {
+      "es": "¿Qué significa 'Tu es'?",
+      "en": "What does 'Tu es' mean?"
+    },
+    "answers": [
+      {
+        "en": "You are",
+        "es": "Tú eres"
+      },
+      {
+        "en": "You have",
+        "es": "Tú tienes"
+      },
+      {
+        "es": "Tú vas",
+        "en": "You go"
+      },
+      {
+        "en": "You do/make",
+        "es": "Tú haces"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": {
+      "es": "La conjugación francesa 'tu es' significa 'tú eres' (informal). Proviene del verbo 'être'.",
+      "en": "The French conjugation 'tu es' means 'you are' in English (informal). It is from the verb 'être'."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "en": "This is the second-person singular informal present tense of 'être'.",
+      "es": "Esta es la segunda persona del singular informal en presente del verbo 'être'."
+    },
+    "createdAt": "2025-06-18T20:25:41.241Z"
+  },
+  {
+    "id": "xi06MnXOIIJSXaL35wTh",
+    "topicValue": "Lang_French",
+    "question": {
+      "es": "¿Qué significa 'Tu es'?",
+      "en": "What does 'Tu es' mean?"
+    },
+    "answers": [
+      {
+        "en": "You are",
+        "es": "Tú eres"
+      },
+      {
+        "en": "I am",
+        "es": "Yo soy"
+      },
+      {
+        "en": "He is",
+        "es": "Él es"
+      },
+      {
+        "es": "Nosotros somos",
+        "en": "We are"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": {
+      "es": "'Tu es' es la segunda persona del singular familiar en presente del verbo 'être' (ser/estar).",
+      "en": "'Tu es' is the second person singular familiar present tense of the verb 'être' (to be)."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "en": "This phrase uses the pronoun 'you' (familiar) and the verb 'to be'.",
+      "es": "Esta frase usa el pronombre 'tú' (familiar) y el verbo 'ser/estar'."
+    },
+    "createdAt": "2025-06-18T20:24:17.881Z"
+  },
+  {
+    "id": "0B1Tmk3WYdvgFNfVraUa",
+    "topicValue": "Lang_French",
+    "question": {
+      "en": "What does 'Un' mean?",
+      "es": "¿Qué significa 'Un'?"
+    },
+    "answers": [
+      {
+        "es": "Uno",
+        "en": "One"
+      },
+      {
+        "es": "Dos",
+        "en": "Two"
+      },
+      {
+        "es": "Tres",
+        "en": "Three"
+      },
+      {
+        "es": "Cuatro",
+        "en": "Four"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": {
+      "es": "'Un' es la palabra francesa para el número 'uno'.",
+      "en": "'Un' is the French word for the number 'one'."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "es": "Este es el primer número cardinal.",
+      "en": "This is the first cardinal number."
+    },
+    "createdAt": "2025-06-18T20:24:16.869Z"
+  },
+  {
+    "id": "an10s7l59JLRfe9O0CDA",
+    "topicValue": "Lang_French",
+    "question": {
+      "en": "What does 'Vert' mean?",
+      "es": "¿Qué significa 'Vert'?"
+    },
+    "answers": [
+      {
+        "es": "Verde",
+        "en": "Green"
+      },
+      {
+        "es": "Azul",
+        "en": "Blue"
+      },
+      {
+        "es": "Amarillo",
+        "en": "Yellow"
+      },
+      {
+        "en": "Red",
+        "es": "Rojo"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": {
+      "es": "'Vert' es la palabra francesa para 'verde'. Es un sustantivo masculino.",
+      "en": "'Vert' is the French word for 'green'. It is a masculine noun."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "es": "Este es el color de la hierba y las hojas.",
+      "en": "This is the color of grass and leaves."
+    },
+    "createdAt": "2025-06-18T20:24:17.427Z"
+  },
+  {
+    "id": "FouBXaiHUOBXwDvb6heV",
+    "topicValue": "Lang_French",
+    "question": {
+      "en": "What does the French word 'dans' commonly mean?",
+      "es": "¿Qué significa comúnmente la palabra francesa 'dans'?"
+    },
+    "answers": [
+      {
+        "es": "En / Sobre",
+        "en": "In / On"
+      },
+      {
+        "es": "A / En",
+        "en": "To / At"
+      },
+      {
+        "en": "From",
+        "es": "De"
+      },
+      {
+        "en": "Under",
+        "es": "Debajo"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": {
+      "en": "The French word 'dans' means 'in' or 'on' (within a space or time) in English. It is a preposition.",
+      "es": "La palabra francesa 'dans' significa 'en' o 'sobre' (dentro de un espacio o tiempo). Es una preposición."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "en": "This preposition indicates location within something.",
+      "es": "Esta preposición indica la ubicación dentro de algo."
+    },
+    "createdAt": "2025-06-18T20:25:41.726Z"
+  },
+  {
+    "id": "0mHy9Za402AWVG168Wc1",
+    "topicValue": "Lang_French",
+    "question": {
+      "es": "¿Qué significa comúnmente la preposición francesa 'à'?",
+      "en": "What does the French preposition 'à' commonly mean?"
+    },
+    "answers": [
+      {
+        "en": "To / At",
+        "es": "A / En"
+      },
+      {
+        "es": "En / Sobre",
+        "en": "In / On"
+      },
+      {
+        "en": "From",
+        "es": "De"
+      },
+      {
+        "en": "With",
+        "es": "Con"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": {
+      "es": "La preposición francesa 'à' tiene múltiples significados, incluyendo 'a' o 'en', indicando dirección o ubicación.",
+      "en": "The French preposition 'à' has multiple meanings, including 'to' or 'at', indicating direction or location."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "es": "Esta preposición a menudo indica destino o un punto específico.",
+      "en": "This preposition often indicates destination or a specific point."
+    },
+    "createdAt": "2025-06-18T20:25:41.765Z"
+  },
+  {
+    "id": "XnEdbG4cw9oamPMc6KhD",
+    "topicValue": "Lang_French",
+    "question": {
+      "en": "What does the French preposition 'de' commonly mean?",
+      "es": "¿Qué significa comúnmente la preposición francesa 'de'?"
+    },
+    "answers": [
+      {
+        "es": "De",
+        "en": "From"
+      },
+      {
+        "en": "To / At",
+        "es": "A / En"
+      },
+      {
+        "en": "Of",
+        "es": "De"
+      },
+      {
+        "es": "Con",
+        "en": "With"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": {
+      "en": "The French preposition 'de' has multiple meanings, including 'from' or 'of', indicating origin or possession.",
+      "es": "La preposición francesa 'de' tiene múltiples significados, incluyendo 'de', indicando origen o posesión."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "en": "This preposition often indicates origin or possession.",
+      "es": "Esta preposición a menudo indica origen o posesión."
+    },
+    "createdAt": "2025-06-18T20:25:41.805Z"
+  },
+  {
+    "id": "fXMzPBUmxmQojKtdslFT",
+    "topicValue": "Lang_French",
+    "question": {
+      "en": "What does the French verb 'aimer' mean referring to people?",
+      "es": "¿Qué significa el verbo francés 'aimer' cuando se refiere a personas?"
+    },
+    "answers": [
+      {
+        "en": "To love",
+        "es": "Amar"
+      },
+      {
+        "en": "To hate",
+        "es": "Odiar"
+      },
+      {
+        "en": "To like",
+        "es": "Gustar"
+      },
+      {
+        "es": "Preferir",
+        "en": "To prefer"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": {
+      "es": "El verbo francés 'aimer' significa 'amar' o 'gustar'. Cuando se refiere a personas, generalmente significa 'to love'.",
+      "en": "The French verb 'aimer' means 'to love' or 'to like' in English. When referring to people, it usually means 'to love'."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "es": "Este verbo expresa un fuerte sentimiento de afecto.",
+      "en": "This verb expresses a strong feeling of affection."
+    },
+    "createdAt": "2025-06-18T20:25:39.456Z"
+  },
+  {
+    "id": "VjIt4GUIkgNquvphCwIF",
+    "topicValue": "Lang_French",
+    "question": {
+      "es": "¿Qué significa el verbo francés 'aller'?",
+      "en": "What does the French verb 'aller' mean?"
+    },
+    "answers": [
+      {
+        "es": "Ir",
+        "en": "To go"
+      },
+      {
+        "es": "Venir",
+        "en": "To come"
+      },
+      {
+        "en": "To see",
+        "es": "Ver"
+      },
+      {
+        "es": "Hacer",
+        "en": "To do"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": {
+      "en": "The French verb 'aller' means 'to go' in English. It is a highly irregular verb.",
+      "es": "El verbo francés 'aller' significa 'ir'. Es un verbo muy irregular."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "en": "This verb describes movement from one place to another.",
+      "es": "Este verbo describe el movimiento de un lugar a otro."
+    },
+    "createdAt": "2025-06-18T20:25:39.200Z"
+  },
+  {
+    "id": "Z0g7Vp4nsLjJmiIy5pnq",
+    "topicValue": "Lang_French",
+    "question": {
+      "en": "What does the French verb 'boire' mean?",
+      "es": "¿Qué significa el verbo francés 'boire'?"
+    },
+    "answers": [
+      {
+        "en": "To drink",
+        "es": "Beber"
+      },
+      {
+        "en": "To eat",
+        "es": "Comer"
+      },
+      {
+        "es": "Dormir",
+        "en": "To sleep"
+      },
+      {
+        "es": "Correr",
+        "en": "To run"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": {
+      "es": "El verbo francés 'boire' significa 'beber'. Es un verbo irregular.",
+      "en": "The French verb 'boire' means 'to drink' in English. It is an irregular verb."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "es": "Esto es lo que haces con los líquidos.",
+      "en": "This is what you do with liquids."
+    },
+    "createdAt": "2025-06-18T20:25:39.341Z"
+  },
+  {
+    "id": "juqWWuBw4re0fFzvDlXf",
+    "topicValue": "Lang_French",
+    "question": {
+      "es": "¿Qué significa el verbo francés 'connaître'?",
+      "en": "What does the French verb 'connaître' mean?"
+    },
+    "answers": [
+      {
+        "en": "To know",
+        "es": "Saber / Conocer"
+      },
+      {
+        "es": "Querer",
+        "en": "To want"
+      },
+      {
+        "es": "Necesitar",
+        "en": "To need"
+      },
+      {
+        "en": "To think",
+        "es": "Pensar"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": {
+      "en": "The French verb 'connaître' means 'to know' (people, places, things) in English. It is an irregular verb.",
+      "es": "El verbo francés 'connaître' significa 'conocer' (personas, lugares, cosas). Es un verbo irregular."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "en": "This verb relates to being familiar with someone or something.",
+      "es": "Este verbo se relaciona con estar familiarizado con alguien o algo."
+    },
+    "createdAt": "2025-06-18T20:25:40.740Z"
+  },
+  {
+    "id": "AxffrxrTIcJvRYlzaAOz",
+    "topicValue": "Lang_French",
+    "question": {
+      "es": "¿Qué significa el verbo francés 'dormir'?",
+      "en": "What does the French verb 'dormir' mean?"
+    },
+    "answers": [
+      {
+        "en": "To sleep",
+        "es": "Dormir"
+      },
+      {
+        "en": "To wake up",
+        "es": "Despertarse"
+      },
+      {
+        "en": "To dream",
+        "es": "Soñar"
+      },
+      {
+        "es": "Descansar",
+        "en": "To rest"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": {
+      "es": "El verbo francés 'dormir' significa 'dormir'. Es un verbo irregular.",
+      "en": "The French verb 'dormir' means 'to sleep' in English. It is an irregular verb."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "en": "This is what you do at night to recover energy.",
+      "es": "Esto es lo que haces por la noche para recuperar energía."
+    },
+    "createdAt": "2025-06-18T20:25:40.129Z"
+  },
+  {
+    "id": "rDPSKjin5eFoK48XYWDU",
+    "topicValue": "Lang_French",
+    "question": {
+      "es": "¿Qué significa el verbo francés 'écrire'?",
+      "en": "What does the French verb 'écrire' mean?"
+    },
+    "answers": [
+      {
+        "en": "To write",
+        "es": "Escribir"
+      },
+      {
+        "en": "To read",
+        "es": "Leer"
+      },
+      {
+        "en": "To draw",
+        "es": "Dibujar"
+      },
+      {
+        "en": "To paint",
+        "es": "Pintar"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": {
+      "en": "The French verb 'écrire' means 'to write' in English. It is an irregular verb.",
+      "es": "El verbo francés 'écrire' significa 'escribir'. Es un verbo irregular."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "es": "Esta es la acción de formar letras o palabras en una superficie.",
+      "en": "This is the action of forming letters or words on a surface."
+    },
+    "createdAt": "2025-06-18T20:25:39.781Z"
+  },
+  {
+    "id": "VSCVRufQCpGF2xPeUBOz",
+    "topicValue": "Lang_French",
+    "question": {
+      "en": "What does the French verb 'être' mean?",
+      "es": "¿Qué significa el verbo francés 'être'?"
+    },
+    "answers": [
+      {
+        "en": "To be",
+        "es": "Ser / Estar"
+      },
+      {
+        "es": "Tener",
+        "en": "To have"
+      },
+      {
+        "es": "Ir",
+        "en": "To go"
+      },
+      {
+        "en": "To do/make",
+        "es": "Hacer"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": {
+      "es": "El verbo francés 'être' significa 'ser'. Es un verbo irregular fundamental, utilizado para estados del ser e identidad.",
+      "en": "The French verb 'être' means 'to be' in English. It is a fundamental irregular verb, used for states of being and identity."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "es": "Este verbo describe la existencia y las características.",
+      "en": "This verb describes existence and characteristics."
+    },
+    "createdAt": "2025-06-18T20:25:41.037Z"
+  },
+  {
+    "id": "HwDsuBzriKuQfWEeVOhp",
+    "topicValue": "Lang_French",
+    "question": {
+      "es": "¿Qué significa el verbo francés 'lire'?",
+      "en": "What does the French verb 'lire' mean?"
+    },
+    "answers": [
+      {
+        "en": "To read",
+        "es": "Leer"
+      },
+      {
+        "es": "Escribir",
+        "en": "To write"
+      },
+      {
+        "es": "Escuchar",
+        "en": "To listen"
+      },
+      {
+        "en": "To speak",
+        "es": "Hablar"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": {
+      "es": "El verbo francés 'lire' significa 'leer'. Es un verbo irregular.",
+      "en": "The French verb 'lire' means 'to read' in English. It is an irregular verb."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "en": "This is what you do with a book or text.",
+      "es": "Esto es lo que haces con un libro o un texto."
+    },
+    "createdAt": "2025-06-18T20:25:40.535Z"
+  },
+  {
+    "id": "02knY12tR2DgVuYhR5sJ",
+    "topicValue": "Lang_French",
+    "question": {
+      "es": "¿Qué significa el verbo francés 'parler'?",
+      "en": "What does the French verb 'parler' mean?"
+    },
+    "answers": [
+      {
+        "en": "To speak",
+        "es": "Hablar"
+      },
+      {
+        "es": "Escuchar",
+        "en": "To listen"
+      },
+      {
+        "en": "To see",
+        "es": "Ver"
+      },
+      {
+        "es": "Oír",
+        "en": "To hear"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": {
+      "en": "The French verb 'parler' means 'to speak' in English. It is a regular -er verb.",
+      "es": "El verbo francés 'parler' significa 'hablar'. Es un verbo regular terminado en -er."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "en": "This is the action of communicating with words.",
+      "es": "Esta es la acción de comunicarse con palabras."
+    },
+    "createdAt": "2025-06-18T20:25:38.884Z"
+  },
+  {
+    "id": "KSzkuLTmZwTkVAVLFhx5",
+    "topicValue": "Lang_French",
+    "question": {
+      "en": "What does the French verb 'savoir' mean?",
+      "es": "¿Qué significa el verbo francés 'savoir'?"
+    },
+    "answers": [
+      {
+        "es": "Saber / Conocer",
+        "en": "To know"
+      },
+      {
+        "en": "To understand",
+        "es": "Entender / Comprender"
+      },
+      {
+        "es": "Pensar",
+        "en": "To think"
+      },
+      {
+        "es": "Creer",
+        "en": "To believe"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": {
+      "en": "The French verb 'savoir' means 'to know' (facts, information, how to do something) in English. The verb 'connaître' also means 'to know' (people, places).",
+      "es": "El verbo francés 'savoir' significa 'saber' (hechos, información, cómo hacer algo). El verbo 'connaître' también significa 'conocer' (personas, lugares)."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "en": "This verb relates to possessing knowledge or information.",
+      "es": "Este verbo se relaciona con la posesión de conocimiento o información."
+    },
+    "createdAt": "2025-06-18T20:25:39.920Z"
+  },
+  {
+    "id": "Aw9DFtPBE6khrOClBsUR",
+    "topicValue": "Lang_French",
+    "question": {
+      "es": "¿Qué significa el verbo francés 'travailler'?",
+      "en": "What does the French verb 'travailler' mean?"
+    },
+    "answers": [
+      {
+        "es": "Trabajar",
+        "en": "To work"
+      },
+      {
+        "en": "To study",
+        "es": "Estudiar"
+      },
+      {
+        "en": "To play",
+        "es": "Jugar"
+      },
+      {
+        "es": "Descansar",
+        "en": "To rest"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": {
+      "en": "The French verb 'travailler' means 'to work' in English. It is a regular -er verb.",
+      "es": "El verbo francés 'travailler' significa 'trabajar'. Es un verbo regular terminado en -er."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "en": "This is the action of performing a job or task.",
+      "es": "Esta es la acción de realizar un trabajo o tarea."
+    },
+    "createdAt": "2025-06-18T20:25:40.368Z"
+  },
+  {
+    "id": "tskRa0nh72L8Rvkk2dl2",
+    "topicValue": "Lang_French",
+    "question": {
+      "en": "What does the French verb 'venir' mean?",
+      "es": "¿Qué significa el verbo francés 'venir'?"
+    },
+    "answers": [
+      {
+        "es": "Venir",
+        "en": "To come"
+      },
+      {
+        "es": "Ir",
+        "en": "To go"
+      },
+      {
+        "es": "Llegar",
+        "en": "To arrive"
+      },
+      {
+        "es": "Salir",
+        "en": "To leave"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": {
+      "es": "El verbo francés 'venir' significa 'venir'. Es un verbo irregular.",
+      "en": "The French verb 'venir' means 'to come' in English. It is an irregular verb."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "en": "This verb describes movement towards a place or person.",
+      "es": "Este verbo describe el movimiento hacia un lugar o persona."
+    },
+    "createdAt": "2025-06-18T20:25:40.835Z"
+  },
+  {
+    "id": "nkietTSFCOisgXk09KfB",
+    "topicValue": "Lang_French",
+    "question": {
+      "es": "¿Qué significa el verbo francés 'voir'?",
+      "en": "What does the French verb 'voir' mean?"
+    },
+    "answers": [
+      {
+        "es": "Ver",
+        "en": "To see"
+      },
+      {
+        "es": "Mirar",
+        "en": "To look"
+      },
+      {
+        "en": "To watch",
+        "es": "Observar"
+      },
+      {
+        "en": "To perceive",
+        "es": "Percibir"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": {
+      "en": "The French verb 'voir' means 'to see' in English. It is an irregular verb.",
+      "es": "El verbo francés 'voir' significa 'ver'. Es un verbo irregular."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "es": "Este es el acto de percibir con los ojos.",
+      "en": "This is the act of perceiving with your eyes."
+    },
+    "createdAt": "2025-06-18T20:25:40.689Z"
+  },
+  {
+    "id": "LI2H1AroRThCQzbHvjsJ",
+    "topicValue": "Lang_French",
+    "question": {
+      "en": "What does the French verb 'vouloir' mean?",
+      "es": "¿Qué significa el verbo francés 'vouloir'?"
+    },
+    "answers": [
+      {
+        "en": "To want",
+        "es": "Querer"
+      },
+      {
+        "es": "Necesitar",
+        "en": "To need"
+      },
+      {
+        "es": "Gustar",
+        "en": "To like"
+      },
+      {
+        "es": "Tener",
+        "en": "To have"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": {
+      "en": "The French verb 'vouloir' means 'to want' in English. It is an irregular verb.",
+      "es": "El verbo francés 'vouloir' significa 'querer'. Es un verbo irregular."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "en": "This verb expresses desire or wish.",
+      "es": "Este verbo expresa deseo o voluntad."
+    },
+    "createdAt": "2025-06-18T20:25:39.035Z"
+  },
+  {
+    "id": "0hnJhEVnwKgpULETkOSj",
+    "topicValue": "Lang_French",
+    "question": {
+      "en": "What does the French phrase 'bonne année' mean?",
+      "es": "¿Qué significa la frase francesa 'bonne année'?"
+    },
+    "answers": [
+      {
+        "es": "Feliz Año Nuevo",
+        "en": "Happy New Year"
+      },
+      {
+        "es": "Feliz cumpleaños",
+        "en": "Happy birthday"
+      },
+      {
+        "es": "Feliz Navidad",
+        "en": "Merry Christmas"
+      },
+      {
+        "en": "Good luck",
+        "es": "Buena suerte"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": {
+      "en": "The French phrase 'bonne année' means 'happy new year' in English. It is a common holiday greeting.",
+      "es": "La frase francesa 'bonne année' significa 'Feliz Año Nuevo'. Es un saludo navideño común."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "en": "This phrase is said at the beginning of January.",
+      "es": "Esta frase se dice a principios de enero."
+    },
+    "createdAt": "2025-06-18T20:25:42.242Z"
+  },
+  {
+    "id": "Wzpbo7FYLEl8IvD15qih",
+    "topicValue": "Lang_French",
+    "question": {
+      "en": "What does the French phrase 'Bonne journée' mean?",
+      "es": "¿Qué significa la frase francesa 'Bonne journée'?"
+    },
+    "answers": [
+      {
+        "en": "Good day",
+        "es": "Buen día"
+      },
+      {
+        "en": "Good morning",
+        "es": "Buenos días"
+      },
+      {
+        "es": "Buenas tardes",
+        "en": "Good afternoon"
+      },
+      {
+        "en": "Good night",
+        "es": "Buenas noches"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": {
+      "es": "La frase francesa 'bonne journée' significa 'buen día' o 'que tengas un buen día'. Se usa como despedida.",
+      "en": "The French phrase 'bonne journée' means 'good day' or 'have a nice day' in English. It is used as a farewell."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "es": "Esta frase se dice al despedirse durante el día.",
+      "en": "This phrase is said when parting during the daytime."
+    },
+    "createdAt": "2025-06-18T20:25:44.338Z"
+  },
+  {
+    "id": "32wW3pUzxaK0oq3do6VL",
+    "topicValue": "Lang_French",
+    "question": {
+      "es": "¿Qué significa la frase francesa 'je ne comprends pas'?",
+      "en": "What does the French phrase 'je ne comprends pas' mean?"
+    },
+    "answers": [
+      {
+        "en": "I don't understand",
+        "es": "No entiendo"
+      },
+      {
+        "en": "I don't know",
+        "es": "No sé"
+      },
+      {
+        "en": "I don't speak French",
+        "es": "No hablo francés"
+      },
+      {
+        "es": "Por favor repita",
+        "en": "Please repeat"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": {
+      "es": "La frase francesa 'je ne comprends pas' significa 'no entiendo'. Indica una falta de comprensión.",
+      "en": "The French phrase 'je ne comprends pas' means 'I don't understand' in English. It indicates a lack of comprehension."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "en": "This phrase is used when you fail to grasp something.",
+      "es": "Esta frase se usa cuando no logras captar algo."
+    },
+    "createdAt": "2025-06-18T20:25:43.114Z"
+  },
+  {
+    "id": "IsTCRG8yEXEJjDbnHNgf",
+    "topicValue": "Lang_French",
+    "question": {
+      "en": "What does the French phrase 'je ne parle pas français' mean?",
+      "es": "¿Qué significa la frase francesa 'je ne parle pas français'?"
+    },
+    "answers": [
+      {
+        "en": "I don't speak French",
+        "es": "No hablo francés"
+      },
+      {
+        "es": "No hablo inglés",
+        "en": "I don't speak English"
+      },
+      {
+        "es": "Hablo francés",
+        "en": "I speak French"
+      },
+      {
+        "en": "I speak a little",
+        "es": "Hablo un poco"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": {
+      "es": "La frase francesa 'je ne parle pas français' significa 'No hablo francés'.",
+      "en": "The French phrase 'je ne parle pas français' means 'I don't speak French' in English."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "es": "Esta frase indica tu incapacidad para comunicarte en francés.",
+      "en": "This phrase states your inability to communicate in French."
+    },
+    "createdAt": "2025-06-18T20:25:43.160Z"
+  },
+  {
+    "id": "EOTSxd10Z85wK6frEFbP",
+    "topicValue": "Lang_French",
+    "question": {
+      "es": "¿Qué significa la frase francesa 'je ne sais pas'?",
+      "en": "What does the French phrase 'je ne sais pas' mean?"
+    },
+    "answers": [
+      {
+        "en": "I don't know",
+        "es": "No sé"
+      },
+      {
+        "es": "No entiendo",
+        "en": "I don't understand"
+      },
+      {
+        "es": "No hablo francés",
+        "en": "I don't speak French"
+      },
+      {
+        "es": "Quizás",
+        "en": "Maybe"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": {
+      "es": "La frase francesa 'je ne sais pas' significa 'No sé'. Expresa incertidumbre.",
+      "en": "The French phrase 'je ne sais pas' means 'I don't know' in English. It expresses uncertainty."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "es": "Esta frase indica una falta de conocimiento.",
+      "en": "This phrase indicates a lack of knowledge."
+    },
+    "createdAt": "2025-06-18T20:25:43.046Z"
+  },
+  {
+    "id": "i7J7tMBBas9eo6aXTujS",
+    "topicValue": "Lang_French",
+    "question": {
+      "en": "What does the French phrase 'joyeux anniversaire' mean?",
+      "es": "¿Qué significa la frase francesa 'joyeux anniversaire'?"
+    },
+    "answers": [
+      {
+        "es": "Feliz cumpleaños",
+        "en": "Happy birthday"
+      },
+      {
+        "en": "Happy New Year",
+        "es": "Feliz Año Nuevo"
+      },
+      {
+        "es": "Felicidades",
+        "en": "Congratulations"
+      },
+      {
+        "en": "Good luck",
+        "es": "Buena suerte"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": {
+      "es": "La frase francesa 'joyeux anniversaire' significa 'Feliz cumpleaños'.",
+      "en": "The French phrase 'joyeux anniversaire' means 'happy birthday' in English."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "en": "This phrase is used to celebrate someone's special day.",
+      "es": "Esta frase se usa para celebrar el día especial de alguien."
+    },
+    "createdAt": "2025-06-18T20:25:42.200Z"
+  },
+  {
+    "id": "8sytIxLTftFJCpZjWQA9",
+    "topicValue": "Lang_French",
+    "question": {
+      "es": "¿Qué significa la frase francesa 'L'homme'?",
+      "en": "What does the French phrase 'L'homme' mean?"
+    },
+    "answers": [
+      {
+        "es": "El hombre",
+        "en": "The man"
+      },
+      {
+        "en": "The woman",
+        "es": "La mujer"
+      },
+      {
+        "es": "El niño",
+        "en": "The boy"
+      },
+      {
+        "es": "La persona",
+        "en": "The person"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": {
+      "es": "La frase francesa 'l'homme' significa 'el hombre'. 'Homme' es un sustantivo masculino, y 'l'' es el artículo definido elidido.",
+      "en": "The French phrase 'l'homme' means 'the man' in English. 'Homme' is a masculine noun, and 'l'' is the elided definite article."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "es": "Esto se refiere a un ser humano adulto masculino.",
+      "en": "This refers to an adult male human."
+    },
+    "createdAt": "2025-06-18T20:25:43.544Z"
+  },
+  {
+    "id": "GcMcu1fAPnqzpwqSRX3N",
+    "topicValue": "Lang_French",
+    "question": {
+      "es": "¿Qué significa la frase francesa 'La femme'?",
+      "en": "What does the French phrase 'La femme' mean?"
+    },
+    "answers": [
+      {
+        "en": "The woman",
+        "es": "La mujer"
+      },
+      {
+        "es": "El hombre",
+        "en": "The man"
+      },
+      {
+        "en": "The girl",
+        "es": "La niña"
+      },
+      {
+        "es": "La señora",
+        "en": "The lady"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": {
+      "en": "The French phrase 'la femme' means 'la mujer' in English. 'Femme' is a feminine noun.",
+      "es": "La frase francesa 'la femme' significa 'the woman'. 'Femme' es un sustantivo femenino."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "es": "Esto se refiere a un ser humano adulto femenino.",
+      "en": "This refers to an adult female human."
+    },
+    "createdAt": "2025-06-18T20:25:43.577Z"
+  },
+  {
+    "id": "3eRGk1xSY6XV56ryVBB0",
+    "topicValue": "Lang_French",
+    "question": {
+      "es": "¿Qué significa la frase francesa 'La France'?",
+      "en": "What does the French phrase 'La France' mean?"
+    },
+    "answers": [
+      {
+        "es": "Francia",
+        "en": "France"
+      },
+      {
+        "es": "Francés",
+        "en": "French"
+      },
+      {
+        "en": "Paris",
+        "es": "París"
+      },
+      {
+        "es": "Europa",
+        "en": "Europe"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": {
+      "en": "The French phrase 'La France' means 'France' in English. It is the name of the country.",
+      "es": "La frase francesa 'La France' significa 'Francia'. Es el nombre del país."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "es": "Este es un país europeo conocido por su cocina y moda.",
+      "en": "This is a European country known for its cuisine and fashion."
+    },
+    "createdAt": "2025-06-18T20:25:44.153Z"
+  },
+  {
+    "id": "hQDObPgMt9pma1rgNSSa",
+    "topicValue": "Lang_French",
+    "question": {
+      "es": "¿Qué significa la frase francesa 'La nuit'?",
+      "en": "What does the French phrase 'La nuit' mean?"
+    },
+    "answers": [
+      {
+        "es": "La noche",
+        "en": "The night"
+      },
+      {
+        "en": "The day",
+        "es": "El día"
+      },
+      {
+        "en": "The evening",
+        "es": "La tarde/noche"
+      },
+      {
+        "en": "The midnight",
+        "es": "La medianoche"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": {
+      "es": "La frase francesa 'la nuit' significa 'la noche'. 'Nuit' es un sustantivo femenino.",
+      "en": "The French phrase 'la nuit' means 'the night' in English. 'Nuit' is a feminine noun."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "es": "Esto se refiere al período de oscuridad entre el atardecer y el amanecer.",
+      "en": "This refers to the period of darkness between sunset and sunrise."
+    },
+    "createdAt": "2025-06-18T20:25:43.892Z"
+  },
+  {
+    "id": "G8lbmV3HFsLefYeRF6mP",
+    "topicValue": "Lang_French",
+    "question": {
+      "es": "¿Qué significa la frase francesa 'La phrase'?",
+      "en": "What does the French phrase 'La phrase' mean?"
+    },
+    "answers": [
+      {
+        "es": "La frase",
+        "en": "The phrase"
+      },
+      {
+        "en": "The phase",
+        "es": "La fase"
+      },
+      {
+        "en": "The word",
+        "es": "La palabra"
+      },
+      {
+        "en": "The expression",
+        "es": "La expresión"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": {
+      "en": "The French phrase 'la phrase' means 'the phrase' or 'the sentence' in English. 'Phrase' is a feminine noun.",
+      "es": "La frase francesa 'la phrase' significa 'la frase' o 'la oración'. 'Phrase' es un sustantivo femenino."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "es": "Esto se refiere a un grupo de palabras que expresan un pensamiento completo.",
+      "en": "This refers to a group of words expressing a complete thought."
+    },
+    "createdAt": "2025-06-18T20:25:44.023Z"
+  },
+  {
+    "id": "QCyQd368OmBUJ00jSTeM",
+    "topicValue": "Lang_French",
+    "question": {
+      "es": "¿Qué significa la frase francesa 'La réponse'?",
+      "en": "What does the French phrase 'La réponse' mean?"
+    },
+    "answers": [
+      {
+        "en": "The answer",
+        "es": "La respuesta"
+      },
+      {
+        "es": "La pregunta",
+        "en": "The question"
+      },
+      {
+        "es": "La réplica",
+        "en": "The reply"
+      },
+      {
+        "es": "La solución",
+        "en": "The solution"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": {
+      "es": "La frase francesa 'la réponse' significa 'la respuesta'. 'Réponse' es un sustantivo femenino.",
+      "en": "The French phrase 'la réponse' means 'the answer' in English. 'Réponse' is a feminine noun."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "es": "Esto se refiere a una declaración hecha para contrarrestar o como respuesta a algo.",
+      "en": "This refers to a statement made to counteract or as a reply to something."
+    },
+    "createdAt": "2025-06-18T20:25:44.115Z"
+  },
+  {
+    "id": "Ail46zattwl6rThsYb3G",
+    "topicValue": "Lang_French",
+    "question": {
+      "en": "What does the French phrase 'La ville' mean?",
+      "es": "¿Qué significa la frase francesa 'La ville'?"
+    },
+    "answers": [
+      {
+        "en": "The city",
+        "es": "La ciudad"
+      },
+      {
+        "en": "The town",
+        "es": "El pueblo"
+      },
+      {
+        "es": "La aldea",
+        "en": "The village"
+      },
+      {
+        "en": "The country",
+        "es": "El país"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": {
+      "es": "La frase francesa 'la ville' significa 'la ciudad'. 'Ville' es un sustantivo femenino en francés.",
+      "en": "The French phrase 'la ville' means 'the city' in English. 'Ville' is a feminine noun in French."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "en": "This refers to a large, densely populated area.",
+      "es": "Esto se refiere a un área grande y densamente poblada."
+    },
+    "createdAt": "2025-06-18T20:25:43.506Z"
+  },
+  {
+    "id": "FrxS6o5ZQ7tHrFpJnWZm",
+    "topicValue": "Lang_French",
+    "question": {
+      "en": "What does the French phrase 'La voiture' mean?",
+      "es": "¿Qué significa la frase francesa 'La voiture'?"
+    },
+    "answers": [
+      {
+        "es": "El coche",
+        "en": "The car"
+      },
+      {
+        "en": "The bicycle",
+        "es": "La bicicleta"
+      },
+      {
+        "en": "The train",
+        "es": "El tren"
+      },
+      {
+        "es": "El autobús",
+        "en": "The bus"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": {
+      "es": "La frase francesa 'la voiture' significa 'el coche'. 'Voiture' es un sustantivo femenino en francés.",
+      "en": "The French phrase 'la voiture' means 'the car' in English. 'Voiture' is a feminine noun in French."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "en": "This refers to a wheeled motor vehicle used for transportation.",
+      "es": "Esto se refiere a un vehículo motorizado con ruedas utilizado para el transporte."
+    },
+    "createdAt": "2025-06-18T20:25:43.428Z"
+  },
+  {
+    "id": "UmtzBF7mhxDVmByJvND3",
+    "topicValue": "Lang_French",
+    "question": {
+      "en": "What does the French phrase 'Le chat' mean?",
+      "es": "¿Qué significa la frase francesa 'Le chat'?"
+    },
+    "answers": [
+      {
+        "es": "El gato",
+        "en": "The cat"
+      },
+      {
+        "en": "The dog",
+        "es": "El perro"
+      },
+      {
+        "en": "The animal",
+        "es": "El animal"
+      },
+      {
+        "es": "La mascota",
+        "en": "The pet"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": {
+      "en": "The French phrase 'le chat' means 'the cat' in English. 'Chat' is a masculine noun.",
+      "es": "La frase francesa 'le chat' significa 'el gato'. 'Chat' es un sustantivo masculino."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "es": "Esto se refiere a una mascota felina doméstica común.",
+      "en": "This refers to a common domestic feline pet."
+    },
+    "createdAt": "2025-06-18T20:25:43.653Z"
+  },
+  {
+    "id": "1MlD7JsJb4EnKZrqrKLt",
+    "topicValue": "Lang_French",
+    "question": {
+      "es": "¿Qué significa la frase francesa 'Le vin'?",
+      "en": "What does the French phrase 'Le vin' mean?"
+    },
+    "answers": [
+      {
+        "es": "El vino",
+        "en": "The wine"
+      },
+      {
+        "en": "The water",
+        "es": "El agua"
+      },
+      {
+        "es": "La cerveza",
+        "en": "The beer"
+      },
+      {
+        "es": "El café",
+        "en": "The coffee"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": {
+      "en": "The French phrase 'le vin' means 'the wine' in English. 'Vin' is a masculine noun.",
+      "es": "La frase francesa 'le vin' significa 'el vino'. 'Vin' es un sustantivo masculino."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "es": "Esta es una bebida alcohólica hecha de uvas fermentadas.",
+      "en": "This is an alcoholic beverage made from fermented grapes."
+    },
+    "createdAt": "2025-06-18T20:25:43.767Z"
+  },
+  {
+    "id": "TuthPcLEPfy1ZIdeOVf4",
+    "topicValue": "Lang_French",
+    "question": {
+      "es": "¿Qué significa la frase francesa 'Merci beaucoup'?",
+      "en": "What does the French phrase 'Merci beaucoup' mean?"
+    },
+    "answers": [
+      {
+        "es": "Muchas gracias",
+        "en": "Thank you very much"
+      },
+      {
+        "es": "De nada",
+        "en": "You're welcome"
+      },
+      {
+        "en": "Please",
+        "es": "Por favor"
+      },
+      {
+        "en": "Goodbye",
+        "es": "Adiós"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": {
+      "en": "'Merci beaucoup' is a French phrase that means 'Thank you very much' in English. It's a way to express strong gratitude.",
+      "es": "'Merci beaucoup' es una frase francesa que significa 'Muchas gracias'. Es una forma de expresar un fuerte agradecimiento."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "en": "This phrase is a more emphatic way of saying thank you.",
+      "es": "Esta frase es una forma más enfática de decir gracias."
+    },
+    "createdAt": "2025-06-18T20:25:38.658Z"
+  },
+  {
+    "id": "gKLtzzwxgvG8T5RFXfw8",
+    "topicValue": "Lang_French",
+    "question": {
+      "es": "¿Qué significa la frase francesa 'oui, bien sûr'?",
+      "en": "What does the French phrase 'oui, bien sûr' mean?"
+    },
+    "answers": [
+      {
+        "en": "Yes, of course",
+        "es": "Sí, por supuesto"
+      },
+      {
+        "en": "Yes",
+        "es": "Sí"
+      },
+      {
+        "es": "Ciertamente",
+        "en": "Certainly"
+      },
+      {
+        "es": "Por supuesto",
+        "en": "Of course"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": {
+      "en": "The French phrase 'oui, bien sûr' means 'yes, of course' in English. It is an affirmative response.",
+      "es": "La frase francesa 'oui, bien sûr' significa 'sí, por supuesto'. Es una respuesta afirmativa."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "es": "Esta es una confirmación positiva.",
+      "en": "This is a positive confirmation."
+    },
+    "createdAt": "2025-06-18T20:25:43.002Z"
+  },
+  {
+    "id": "RjjtpV2sLXm9S571CXCo",
+    "topicValue": "Lang_French",
+    "question": {
+      "es": "¿Qué significa la frase francesa 'parce que'?",
+      "en": "What does the French phrase 'parce que' mean?"
+    },
+    "answers": [
+      {
+        "en": "Because",
+        "es": "Porque"
+      },
+      {
+        "en": "So",
+        "es": "Así que"
+      },
+      {
+        "es": "Por lo tanto",
+        "en": "Therefore"
+      },
+      {
+        "es": "Desde",
+        "en": "Since"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": {
+      "es": "La frase francesa 'parce que' significa 'porque'. Se usa para dar una razón.",
+      "en": "The French phrase 'parce que' means 'because' in English. It is used to give a reason."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "es": "Esta frase explica la razón de algo.",
+      "en": "This phrase explains the reason for something."
+    },
+    "createdAt": "2025-06-18T20:25:41.605Z"
+  },
+  {
+    "id": "1sELLmvmb550TXPArqqh",
+    "topicValue": "Lang_French",
+    "question": {
+      "es": "¿Qué significa la frase francesa 'Parlez-vous anglais?'?",
+      "en": "What does the French phrase 'Parlez-vous anglais?' mean?"
+    },
+    "answers": [
+      {
+        "en": "Do you speak English?",
+        "es": "¿Habla inglés?"
+      },
+      {
+        "es": "¿Habla francés?",
+        "en": "Do you speak French?"
+      },
+      {
+        "es": "¿Puede ayudarme?",
+        "en": "Can you help me?"
+      },
+      {
+        "es": "¿Dónde está el baño?",
+        "en": "Where is the bathroom?"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": {
+      "es": "La frase francesa 'Parlez-vous anglais?' significa '¿Habla inglés?'. Es una forma educada de preguntar si alguien entiende inglés.",
+      "en": "The French phrase 'Parlez-vous anglais?' means 'Do you speak English?' in English. It is a polite way to ask someone if they understand English."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "en": "This phrase is useful for tourists who don't speak French.",
+      "es": "Esta frase es útil para los turistas que no hablan francés."
+    },
+    "createdAt": "2025-06-18T20:25:43.233Z"
+  },
+  {
+    "id": "Aeum5HKCbcriFGACHtOr",
+    "topicValue": "Lang_French",
+    "question": {
+      "en": "What does the French word 'aujourd'hui' mean?",
+      "es": "¿Qué significa la palabra francesa 'aujourd'hui'?"
+    },
+    "answers": [
+      {
+        "en": "Today",
+        "es": "Hoy"
+      },
+      {
+        "en": "Tomorrow",
+        "es": "Mañana"
+      },
+      {
+        "es": "Ayer",
+        "en": "Yesterday"
+      },
+      {
+        "es": "Ahora",
+        "en": "Now"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": {
+      "es": "La palabra francesa 'aujourd'hui' significa 'hoy'. Se refiere al día actual.",
+      "en": "The French word 'aujourd'hui' means 'today' in English. It refers to the current day."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "es": "Esta palabra se refiere al día presente.",
+      "en": "This word refers to the present day."
+    },
+    "createdAt": "2025-06-18T20:25:42.647Z"
+  },
+  {
+    "id": "9YBjMevgXUu961jbeEyb",
+    "topicValue": "Lang_French",
+    "question": {
+      "en": "What does the French word 'bien' mean?",
+      "es": "¿Qué significa la palabra francesa 'bien'?"
+    },
+    "answers": [
+      {
+        "en": "Good / Well",
+        "es": "Bien"
+      },
+      {
+        "en": "Bad / Badly",
+        "es": "Mal"
+      },
+      {
+        "es": "Muy",
+        "en": "Very"
+      },
+      {
+        "en": "Nice",
+        "es": "Bonito"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": {
+      "es": "La palabra francesa 'bien' significa 'bien'. Puede funcionar como adverbio o adjetivo.",
+      "en": "The French word 'bien' means 'good' or 'well' in English. It can function as an adverb or an adjective."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "en": "This word describes a positive state or quality.",
+      "es": "Esta palabra describe un estado o cualidad positiva."
+    },
+    "createdAt": "2025-06-18T20:25:42.537Z"
+  },
+  {
+    "id": "DqVG5f8pKQ4nHbVbnJq1",
+    "topicValue": "Lang_French",
+    "question": {
+      "es": "¿Qué significa la palabra francesa 'blanc'?",
+      "en": "What does the French word 'blanc' mean?"
+    },
+    "answers": [
+      {
+        "en": "White",
+        "es": "Blanco"
+      },
+      {
+        "en": "Black",
+        "es": "Negro"
+      },
+      {
+        "en": "Gray",
+        "es": "Gris"
+      },
+      {
+        "es": "Marrón",
+        "en": "Brown"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": {
+      "en": "The French word 'blanc' (masculine) or 'blanche' (feminine) means 'white' in English.",
+      "es": "La palabra francesa 'blanc' (masculino) o 'blanche' (femenino) significa 'blanco'."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "es": "Este es el color de la nieve y la leche.",
+      "en": "This is the color of snow and milk."
+    },
+    "createdAt": "2025-06-18T20:25:40.417Z"
+  },
+  {
+    "id": "Ez55TCMaFbfN17JeOjQa",
+    "topicValue": "Lang_French",
+    "question": {
+      "es": "¿Qué significa la palabra francesa 'bonne'?",
+      "en": "What does the French word 'bonne' mean?"
+    },
+    "answers": [
+      {
+        "es": "Buena (femenino)",
+        "en": "Good (feminine)"
+      },
+      {
+        "es": "Bueno (masculino)",
+        "en": "Good (masculine)"
+      },
+      {
+        "en": "Nice (feminine)",
+        "es": "Agradable (femenino)"
+      },
+      {
+        "es": "Bien (adverbio)",
+        "en": "Well (adverb)"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": {
+      "es": "La palabra francesa 'bonne' es la forma femenina de 'bon', que significa 'bueno'.",
+      "en": "The French word 'bonne' is the feminine form of 'bon', meaning 'good' in English."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "es": "Este adjetivo describe algo positivo o satisfactorio, usado para sustantivos femeninos.",
+      "en": "This adjective describes something positive or satisfactory, used for feminine nouns."
+    },
+    "createdAt": "2025-06-18T20:25:44.452Z"
+  },
+  {
+    "id": "QZBKmrZkffiGug1B5vDU",
+    "topicValue": "Lang_French",
+    "question": {
+      "es": "¿Qué significa la palabra francesa 'comment'?",
+      "en": "What does the French word 'comment' mean?"
+    },
+    "answers": [
+      {
+        "en": "How?",
+        "es": "¿Cómo?"
+      },
+      {
+        "es": "¿Qué?",
+        "en": "What?"
+      },
+      {
+        "es": "¿Dónde?",
+        "en": "Where?"
+      },
+      {
+        "es": "¿Quién?",
+        "en": "Who?"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": {
+      "en": "The French word 'comment' means 'how' in English. It is an interrogative adverb used to ask about manner or method.",
+      "es": "La palabra francesa 'comment' significa 'cómo'. Es un adverbio interrogativo que se usa para preguntar sobre la manera o el método."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "es": "Esta palabra interrogativa pregunta sobre la manera en que se hace algo.",
+      "en": "This question word asks about the manner in which something is done."
+    },
+    "createdAt": "2025-06-18T20:25:42.502Z"
+  },
+  {
+    "id": "YqwETI5BnU9MndkK9quL",
+    "topicValue": "Lang_French",
+    "question": {
+      "es": "¿Qué significa la palabra francesa 'dimanche'?",
+      "en": "What does the French word 'dimanche' mean?"
+    },
+    "answers": [
+      {
+        "en": "Sunday",
+        "es": "Domingo"
+      },
+      {
+        "en": "Monday",
+        "es": "Lunes"
+      },
+      {
+        "en": "Tuesday",
+        "es": "Martes"
+      },
+      {
+        "en": "Wednesday",
+        "es": "Miércoles"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": {
+      "en": "The French word 'dimanche' means 'Sunday' in English. It is the first day of the week in many cultures.",
+      "es": "La palabra francesa 'dimanche' significa 'Domingo'. Es el primer día de la semana en muchas culturas."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "en": "This is typically the last day of the weekend.",
+      "es": "Este suele ser el último día del fin de semana."
+    },
+    "createdAt": "2025-06-18T20:25:39.741Z"
+  },
+  {
+    "id": "rTlpeYrTud9Mki8CVNys",
+    "topicValue": "Lang_French",
+    "question": {
+      "es": "¿Qué significa la palabra francesa 'école'?",
+      "en": "What does the French word 'école' mean?"
+    },
+    "answers": [
+      {
+        "en": "School",
+        "es": "Escuela"
+      },
+      {
+        "es": "Hogar",
+        "en": "Home"
+      },
+      {
+        "en": "Office",
+        "es": "Oficina"
+      },
+      {
+        "en": "Hospital",
+        "es": "Hospital"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": {
+      "es": "La palabra francesa 'école' significa 'Escuela'. Es un sustantivo femenino.",
+      "en": "The French word 'école' means 'school' in English. It is a feminine noun."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "es": "Este es un lugar al que van los estudiantes para aprender.",
+      "en": "This is a place where students go to learn."
+    },
+    "createdAt": "2025-06-18T20:25:38.984Z"
+  },
+  {
+    "id": "KuPFeKJunOhlzquN3Vmo",
+    "topicValue": "Lang_French",
+    "question": {
+      "es": "¿Qué significa la palabra francesa 'enfant'?",
+      "en": "What does the French word 'enfant' mean?"
+    },
+    "answers": [
+      {
+        "en": "Child",
+        "es": "Niño/a"
+      },
+      {
+        "en": "Baby",
+        "es": "Bebé"
+      },
+      {
+        "es": "Chico/a",
+        "en": "Kid"
+      },
+      {
+        "es": "Joven",
+        "en": "Youth"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": {
+      "en": "The French word 'enfant' means 'child' in English. It can refer to a boy or a girl.",
+      "es": "La palabra francesa 'enfant' significa 'Niño/a'. Puede referirse a un niño o una niña."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "es": "Esto se refiere a un ser humano joven menor de la edad de la pubertad.",
+      "en": "This refers to a young human being below the age of puberty."
+    },
+    "createdAt": "2025-06-18T20:25:40.326Z"
+  },
+  {
+    "id": "hUWqwmj0d57I7KosUFB7",
+    "topicValue": "Lang_French",
+    "question": {
+      "es": "¿Qué significa la palabra francesa 'et'?",
+      "en": "What does the French word 'et' mean?"
+    },
+    "answers": [
+      {
+        "en": "And",
+        "es": "Y"
+      },
+      {
+        "en": "Or",
+        "es": "O"
+      },
+      {
+        "es": "Pero",
+        "en": "But"
+      },
+      {
+        "en": "Because",
+        "es": "Porque"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": {
+      "es": "La palabra francesa 'et' significa 'Y'. Es una conjunción que se usa para conectar palabras o frases.",
+      "en": "The French word 'et' means 'and' in English. It is a conjunction used to connect words or phrases."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "en": "This word connects two elements together.",
+      "es": "Esta palabra une dos elementos."
+    },
+    "createdAt": "2025-06-18T20:25:41.485Z"
+  },
+  {
+    "id": "eXGXQgDEwLUXuimA9NN1",
+    "topicValue": "Lang_French",
+    "question": {
+      "es": "¿Qué significa la palabra francesa 'été'?",
+      "en": "What does the French word 'été' mean?"
+    },
+    "answers": [
+      {
+        "en": "Summer",
+        "es": "Verano"
+      },
+      {
+        "en": "Winter",
+        "es": "Invierno"
+      },
+      {
+        "en": "Spring",
+        "es": "Primavera"
+      },
+      {
+        "en": "Autumn",
+        "es": "Otoño"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": {
+      "es": "La palabra francesa 'été' significa 'Verano'. Es un sustantivo masculino.",
+      "en": "The French word 'été' means 'summer' in English. It is a masculine noun."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "es": "Esta es la estación más cálida del año.",
+      "en": "This is the warmest season of the year."
+    },
+    "createdAt": "2025-06-18T20:25:39.961Z"
+  },
+  {
+    "id": "6hR2AAALsFpkEttjpE2C",
+    "topicValue": "Lang_French",
+    "question": {
+      "es": "¿Qué significa la palabra francesa 'février'?",
+      "en": "What does the French word 'février' mean?"
+    },
+    "answers": [
+      {
+        "en": "February",
+        "es": "Febrero"
+      },
+      {
+        "es": "Enero",
+        "en": "January"
+      },
+      {
+        "es": "Marzo",
+        "en": "March"
+      },
+      {
+        "en": "December",
+        "es": "Diciembre"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": {
+      "en": "The French word 'février' means 'February' in English. It is the second month of the year.",
+      "es": "La palabra francesa 'février' significa 'Febrero'. Es el segundo mes del año."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "es": "Este mes es conocido por tener 28 o 29 días.",
+      "en": "This month is known for having 28 or 29 days."
+    },
+    "createdAt": "2025-06-18T20:25:40.875Z"
+  },
+  {
+    "id": "KOJcKmMUIJuPRh6vwICa",
+    "topicValue": "Lang_French",
+    "question": {
+      "es": "¿Qué significa la palabra francesa 'fille'?",
+      "en": "What does the French word 'fille' mean?"
+    },
+    "answers": [
+      {
+        "es": "Niña",
+        "en": "Girl"
+      },
+      {
+        "es": "Niño",
+        "en": "Boy"
+      },
+      {
+        "en": "Woman",
+        "es": "Mujer"
+      },
+      {
+        "en": "Man",
+        "es": "Hombre"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": {
+      "en": "The French word 'fille' means 'girl' in English. It is a feminine noun.",
+      "es": "La palabra francesa 'fille' significa 'Niña'. Es un sustantivo femenino."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "en": "This refers to a young female human.",
+      "es": "Esto se refiere a un ser humano joven femenino."
+    },
+    "createdAt": "2025-06-18T20:25:41.958Z"
+  },
+  {
+    "id": "75RqYbQMk5TZahrlvLsk",
+    "topicValue": "Lang_French",
+    "question": {
+      "es": "¿Qué significa la palabra francesa 'frère'?",
+      "en": "What does the French word 'frère' mean?"
+    },
+    "answers": [
+      {
+        "es": "Hermano",
+        "en": "Brother"
+      },
+      {
+        "es": "Hermana",
+        "en": "Sister"
+      },
+      {
+        "es": "Hijo",
+        "en": "Son"
+      },
+      {
+        "es": "Hija",
+        "en": "Daughter"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": {
+      "en": "The French word 'frère' means 'brother' in English. It is a masculine noun.",
+      "es": "La palabra francesa 'frère' significa 'hermano'. Es un sustantivo masculino."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "en": "This refers to a male sibling.",
+      "es": "Esto se refiere a un hermano varón."
+    },
+    "createdAt": "2025-06-18T20:25:41.996Z"
+  },
+  {
+    "id": "ojemRLjeT27vgMyOzc9R",
+    "topicValue": "Lang_French",
+    "question": {
+      "en": "What does the French word 'froid' mean?",
+      "es": "¿Qué significa la palabra francesa 'froid'?"
+    },
+    "answers": [
+      {
+        "es": "Frío",
+        "en": "Cold"
+      },
+      {
+        "en": "Hot",
+        "es": "Caliente"
+      },
+      {
+        "en": "Warm",
+        "es": "Templado"
+      },
+      {
+        "en": "Cool",
+        "es": "Fresco"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": {
+      "en": "The French word 'froid' means 'cold' in English. It can be used as an adjective or a noun.",
+      "es": "La palabra francesa 'froid' significa 'frio'. Se puede usar como adjetivo o sustantivo."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "en": "This is the opposite of hot.",
+      "es": "Este es lo opuesto a caliente."
+    },
+    "createdAt": "2025-06-18T20:25:38.843Z"
+  },
+  {
+    "id": "FkCVCc5UjGsJj7CUXHSZ",
+    "topicValue": "Lang_French",
+    "question": {
+      "en": "What does the French word 'garçon' mean?",
+      "es": "¿Qué significa la palabra francesa 'garçon'?"
+    },
+    "answers": [
+      {
+        "en": "Boy",
+        "es": "Niño"
+      },
+      {
+        "es": "Niña",
+        "en": "Girl"
+      },
+      {
+        "es": "Hombre",
+        "en": "Man"
+      },
+      {
+        "en": "Woman",
+        "es": "Mujer"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": {
+      "es": "La palabra francesa 'garçon' significa 'niño'. Es un sustantivo masculino.",
+      "en": "The French word 'garçon' means 'boy' in English. It is a masculine noun."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "en": "This refers to a young male human.",
+      "es": "Esto se refiere a un ser humano joven masculino."
+    },
+    "createdAt": "2025-06-18T20:25:41.914Z"
+  },
+  {
+    "id": "LGAx0uGJvtKi62ZdRZqh",
+    "topicValue": "Lang_French",
+    "question": {
+      "es": "¿Qué significa la palabra francesa 'heureux'?",
+      "en": "What does the French word 'heureux' mean?"
+    },
+    "answers": [
+      {
+        "es": "Feliz",
+        "en": "Happy"
+      },
+      {
+        "es": "Triste",
+        "en": "Sad"
+      },
+      {
+        "en": "Angry",
+        "es": "Enojado"
+      },
+      {
+        "en": "Tired",
+        "es": "Cansado"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": {
+      "en": "The French word 'heureux' means 'happy' in English. It is an adjective used to describe a state of happiness.",
+      "es": "La palabra francesa 'heureux' significa 'feliz'. Es un adjetivo que se usa para describir un estado de felicidad."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "en": "This adjective describes a positive emotional state.",
+      "es": "Este adjetivo describe un estado emocional positivo."
+    },
+    "createdAt": "2025-06-18T20:25:38.942Z"
+  },
+  {
+    "id": "frYJrhZhj1DehV1Tl56G",
+    "topicValue": "Lang_French",
+    "question": {
+      "en": "What does the French word 'hier' mean?",
+      "es": "¿Qué significa la palabra francesa 'hier'?"
+    },
+    "answers": [
+      {
+        "es": "Ayer",
+        "en": "Yesterday"
+      },
+      {
+        "en": "Tomorrow",
+        "es": "Mañana"
+      },
+      {
+        "en": "Today",
+        "es": "Hoy"
+      },
+      {
+        "es": "La semana pasada",
+        "en": "Last week"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": {
+      "en": "The French word 'hier' means 'yesterday' in English. It refers to the day before today.",
+      "es": "La palabra francesa 'hier' significa 'ayer'. Se refiere al día antes de hoy."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "en": "This word refers to the day that preceded today.",
+      "es": "Esta palabra se refiere al día que precedió a hoy."
+    },
+    "createdAt": "2025-06-18T20:25:42.735Z"
+  },
+  {
+    "id": "lUe7U8vv68xo6NKf2OcF",
+    "topicValue": "Lang_French",
+    "question": {
+      "en": "What does the French word 'jaune' mean?",
+      "es": "¿Qué significa la palabra francesa 'jaune'?"
+    },
+    "answers": [
+      {
+        "en": "Yellow",
+        "es": "Amarillo"
+      },
+      {
+        "es": "Naranja",
+        "en": "Orange"
+      },
+      {
+        "en": "Purple",
+        "es": "Morado"
+      },
+      {
+        "es": "Rosa",
+        "en": "Pink"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": {
+      "es": "La palabra francesa 'jaune' significa 'amarillo'. Es un adjetivo.",
+      "en": "The French word 'jaune' means 'yellow' in English. It is an adjective."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "en": "This is the color of the sun and lemons.",
+      "es": "Este es el color del sol y los limones."
+    },
+    "createdAt": "2025-06-18T20:25:40.172Z"
+  },
+  {
+    "id": "roi8erUkH6kfDq6OEbLh",
+    "topicValue": "Lang_French",
+    "question": {
+      "en": "What does the French word 'lundi' mean?",
+      "es": "¿Qué significa la palabra francesa 'lundi'?"
+    },
+    "answers": [
+      {
+        "es": "Lunes",
+        "en": "Monday"
+      },
+      {
+        "en": "Tuesday",
+        "es": "Martes"
+      },
+      {
+        "en": "Wednesday",
+        "es": "Miércoles"
+      },
+      {
+        "en": "Thursday",
+        "es": "Jueves"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": {
+      "es": "La palabra francesa 'lundi' significa 'Lunes'. Es el segundo día de la semana.",
+      "en": "The French word 'lundi' means 'Monday' in English. It is the second day of the week."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "es": "Este es el primer día de la semana laboral para muchos.",
+      "en": "This is the first day of the work week for many."
+    },
+    "createdAt": "2025-06-18T20:25:40.020Z"
+  },
+  {
+    "id": "CPUxV05XgqbOZJI78N7F",
+    "topicValue": "Lang_French",
+    "question": {
+      "en": "What does the French word 'mais' mean?",
+      "es": "¿Qué significa la palabra francesa 'mais'?"
+    },
+    "answers": [
+      {
+        "es": "Pero",
+        "en": "But"
+      },
+      {
+        "en": "Or",
+        "es": "O"
+      },
+      {
+        "es": "Y",
+        "en": "And"
+      },
+      {
+        "es": "Así que",
+        "en": "So"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": {
+      "en": "The French word 'mais' means 'but' in English. It is a conjunction used to introduce a contrast.",
+      "es": "La palabra francesa 'mais' significa 'Pero'. Es una conjunción que se usa para introducir un contraste."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "es": "Esta palabra introduce una idea de contraste.",
+      "en": "This word introduces a contrasting idea."
+    },
+    "createdAt": "2025-06-18T20:25:41.568Z"
+  },
+  {
+    "id": "cZOyl1gdEwA1iwzdmqbI",
+    "topicValue": "Lang_French",
+    "question": {
+      "en": "What does the French word 'mardi' mean?",
+      "es": "¿Qué significa la palabra francesa 'mardi'?"
+    },
+    "answers": [
+      {
+        "es": "Martes",
+        "en": "Tuesday"
+      },
+      {
+        "en": "Wednesday",
+        "es": "Miércoles"
+      },
+      {
+        "es": "Jueves",
+        "en": "Thursday"
+      },
+      {
+        "es": "Viernes",
+        "en": "Friday"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": {
+      "es": "La palabra francesa 'mardi' significa 'Martes'. Sigue al lunes.",
+      "en": "The French word 'mardi' means 'Tuesday' in English. It follows Monday."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "en": "This is the second day of the work week.",
+      "es": "Este es el segundo día de la semana laboral."
+    },
+    "createdAt": "2025-06-18T20:25:40.278Z"
+  },
+  {
+    "id": "wyAzyRh8R8vc2rDoS0CT",
+    "topicValue": "Lang_French",
+    "question": {
+      "es": "¿Qué significa la palabra francesa 'mars'?",
+      "en": "What does the French word 'mars' mean?"
+    },
+    "answers": [
+      {
+        "es": "El mes de abril",
+        "en": "The month of April"
+      },
+      {
+        "es": "El mes de marzo",
+        "en": "The month of March"
+      },
+      {
+        "en": "The month of May",
+        "es": "El mes de mayo"
+      },
+      {
+        "es": "El mes de junio",
+        "en": "The month of June"
+      }
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": {
+      "es": "La palabra francesa 'mars' se traduce como 'marzo'. Es el tercer mes del año.",
+      "en": "The French word 'mars' translates to 'March' in English. It is the third month of the year."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "en": "Think of the month that follows February.",
+      "es": "Piensa en el mes que sigue a febrero."
+    },
+    "createdAt": "2025-06-18T20:25:38.484Z"
+  },
+  {
+    "id": "94RSDR3sbNFIHNBsb4f6",
+    "topicValue": "Lang_French",
+    "question": {
+      "es": "¿Qué significa la palabra francesa 'matin'?",
+      "en": "What does the French word 'matin' mean?"
+    },
+    "answers": [
+      {
+        "es": "Tarde",
+        "en": "Evening"
+      },
+      {
+        "en": "Morning",
+        "es": "Mañana"
+      },
+      {
+        "es": "Noche",
+        "en": "Night"
+      },
+      {
+        "es": "Tarde",
+        "en": "Afternoon"
+      }
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": {
+      "es": "La palabra francesa 'matin' significa 'Mañana'. Se usa para saludar a alguien en la primera parte del día.",
+      "en": "The French word 'matin' means 'morning' in English. It is used to greet someone in the first part of the day."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "es": "Este es un saludo común que se usa antes del mediodía.",
+      "en": "This is a common greeting used before noon."
+    },
+    "createdAt": "2025-06-18T20:25:38.555Z"
+  },
+  {
+    "id": "1cYqX6GUTEQ9Yrflikc6",
+    "topicValue": "Lang_French",
+    "question": {
+      "es": "¿Qué significa la palabra francesa 'mercredi'?",
+      "en": "What does the French word 'mercredi' mean?"
+    },
+    "answers": [
+      {
+        "en": "Wednesday",
+        "es": "Miércoles"
+      },
+      {
+        "en": "Thursday",
+        "es": "Jueves"
+      },
+      {
+        "es": "Viernes",
+        "en": "Friday"
+      },
+      {
+        "es": "Sábado",
+        "en": "Saturday"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": {
+      "es": "La palabra francesa 'mercredi' significa 'Miércoles'. Es la mitad de la semana laboral.",
+      "en": "The French word 'mercredi' means 'Wednesday' in English. It is the middle of the work week."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "en": "This day falls between Tuesday and Thursday.",
+      "es": "Este día cae entre el martes y el jueves."
+    },
+    "createdAt": "2025-06-18T20:25:40.789Z"
+  },
+  {
+    "id": "1eqSMso0DWAxu8CP5EVj",
+    "topicValue": "Lang_French",
+    "question": {
+      "es": "¿Qué significa la palabra francesa 'mère'?",
+      "en": "What does the French word 'mère' mean?"
+    },
+    "answers": [
+      {
+        "en": "Mother",
+        "es": "Madre"
+      },
+      {
+        "es": "Padre",
+        "en": "Father"
+      },
+      {
+        "es": "Hermana",
+        "en": "Sister"
+      },
+      {
+        "en": "Brother",
+        "es": "Hermano"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": {
+      "en": "The French word 'mère' means 'mother' in English. It is a feminine noun.",
+      "es": "La palabra francesa 'mère' significa 'Madre'. Es un sustantivo femenino."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "es": "Esta palabra se refiere a la progenitora.",
+      "en": "This word refers to one's female parent."
+    },
+    "createdAt": "2025-06-18T20:25:39.674Z"
+  },
+  {
+    "id": "muncootz3SebdSehdFFJ",
+    "topicValue": "Lang_French",
+    "question": {
+      "en": "What does the French word 'mois' mean?",
+      "es": "¿Qué significa la palabra francesa 'mois'?"
+    },
+    "answers": [
+      {
+        "es": "Mes",
+        "en": "Month"
+      },
+      {
+        "es": "Año",
+        "en": "Year"
+      },
+      {
+        "es": "Semana",
+        "en": "Week"
+      },
+      {
+        "es": "Día",
+        "en": "Day"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": {
+      "es": "La palabra francesa 'mois' significa 'Mes'. Es un sustantivo masculino.",
+      "en": "The French word 'mois' means 'month' in English. It is a masculine noun."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "es": "Esto se refiere a un período de unos 30 días.",
+      "en": "This refers to a period of about 30 days."
+    },
+    "createdAt": "2025-06-18T20:25:39.150Z"
+  },
+  {
+    "id": "fc28IMZuTAkiq5xsCK2m",
+    "topicValue": "Lang_French",
+    "question": {
+      "es": "¿Qué significa la palabra francesa 'nouveau'?",
+      "en": "What does the French word 'nouveau' mean?"
+    },
+    "answers": [
+      {
+        "es": "Nuevo",
+        "en": "New"
+      },
+      {
+        "es": "Viejo",
+        "en": "Old"
+      },
+      {
+        "es": "Joven",
+        "en": "Young"
+      },
+      {
+        "es": "Grande",
+        "en": "Big"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": {
+      "en": "The French word 'nouveau' (masculine) or 'nouvelle' (feminine) means 'new' in English.",
+      "es": "La palabra francesa 'nouveau' (masculino) o 'nouvelle' (femenino) significa 'Nuevo'."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "en": "This adjective describes something recently made or discovered.",
+      "es": "Este adjetivo describe algo recién hecho o descubierto."
+    },
+    "createdAt": "2025-06-18T20:25:39.282Z"
+  },
+  {
+    "id": "66DkQ9V19yfw1qDj3bEQ",
+    "topicValue": "Lang_French",
+    "question": {
+      "es": "¿Qué significa la palabra francesa 'nuit'?",
+      "en": "What does the French word 'nuit' mean?"
+    },
+    "answers": [
+      {
+        "en": "Night",
+        "es": "Noche"
+      },
+      {
+        "es": "Día",
+        "en": "Day"
+      },
+      {
+        "es": "Mañana",
+        "en": "Morning"
+      },
+      {
+        "en": "Evening",
+        "es": "Tarde/Noche"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": {
+      "es": "La palabra francesa 'nuit' significa 'Noche'. Es un sustantivo femenino.",
+      "en": "The French word 'nuit' means 'night' in English. It is a feminine noun."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "es": "Este es el momento del día en que está oscuro.",
+      "en": "This is the time of day when it is dark."
+    },
+    "createdAt": "2025-06-18T20:25:40.634Z"
+  },
+  {
+    "id": "4aOjgCi7sgRDLOyBhmfn",
+    "topicValue": "Lang_French",
+    "question": {
+      "es": "¿Qué significa la palabra francesa 'où'?",
+      "en": "What does the French word 'où' mean?"
+    },
+    "answers": [
+      {
+        "es": "¿Dónde?",
+        "en": "Where?"
+      },
+      {
+        "en": "What?",
+        "es": "¿Qué?"
+      },
+      {
+        "en": "Who?",
+        "es": "¿Quién?"
+      },
+      {
+        "en": "How?",
+        "es": "¿Cómo?"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": {
+      "en": "The French word 'où' means 'where' in English. It is an interrogative adverb used to ask about place.",
+      "es": "La palabra francesa 'où' significa 'Dónde'. Es un adverbio interrogativo que se usa para preguntar sobre el lugar."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "en": "This question word asks about a location.",
+      "es": "Esta palabra interrogativa pregunta sobre una ubicación."
+    },
+    "createdAt": "2025-06-18T20:25:42.373Z"
+  },
+  {
+    "id": "CYVoBNx0Qd9mHSRhwyfj",
+    "topicValue": "Lang_French",
+    "question": {
+      "en": "What does the French word 'Pardon?' mean?",
+      "es": "¿Qué significa la palabra francesa 'Pardon?'?"
+    },
+    "answers": [
+      {
+        "es": "¿Perdón? / ¿Disculpe?",
+        "en": "Pardon? / Excuse me?"
+      },
+      {
+        "en": "Sorry",
+        "es": "Lo siento"
+      },
+      {
+        "es": "Disculpe",
+        "en": "Excuse me"
+      },
+      {
+        "es": "¿Qué dijiste?",
+        "en": "What did you say?"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": {
+      "en": "The French word 'pardon?' can mean 'pardon?' or 'excuse me?' in English, often used when you didn't hear or understand something.",
+      "es": "La palabra francesa 'pardon?' puede significar '¿Perdón? / ¿Disculpe?', a menudo se usa cuando no escuchaste o entendiste algo."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "en": "This word is used to ask someone to repeat themselves.",
+      "es": "Esta palabra se usa para pedirle a alguien que repita."
+    },
+    "createdAt": "2025-06-18T20:25:43.196Z"
+  },
+  {
+    "id": "8sIsvuA9MmcBaIw4xcgS",
+    "topicValue": "Lang_French",
+    "question": {
+      "es": "¿Qué significa la palabra francesa 'père'?",
+      "en": "What does the French word 'père' mean?"
+    },
+    "answers": [
+      {
+        "es": "Padre",
+        "en": "Father"
+      },
+      {
+        "en": "Mother",
+        "es": "Madre"
+      },
+      {
+        "es": "Hijo",
+        "en": "Son"
+      },
+      {
+        "en": "Daughter",
+        "es": "Hija"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": {
+      "es": "La palabra francesa 'père' significa 'Padre'. Es un sustantivo masculino.",
+      "en": "The French word 'père' means 'father' in English. It is a masculine noun."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "en": "This word refers to one's male parent.",
+      "es": "Esta palabra se refiere al progenitor masculino."
+    },
+    "createdAt": "2025-06-18T20:25:39.865Z"
+  },
+  {
+    "id": "t2YoVLJc0TntAVvkrezt",
+    "topicValue": "Lang_French",
+    "question": {
+      "en": "What does the French word 'pomme' mean?",
+      "es": "¿Qué significa la palabra francesa 'pomme'?"
+    },
+    "answers": [
+      {
+        "en": "Apple",
+        "es": "Manzana"
+      },
+      {
+        "en": "Banana",
+        "es": "Plátano"
+      },
+      {
+        "en": "Orange",
+        "es": "Naranja"
+      },
+      {
+        "en": "Grape",
+        "es": "Uva"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": {
+      "es": "La palabra francesa 'pomme' significa 'Manzana'. Es un sustantivo femenino.",
+      "en": "The French word 'pomme' means 'apple' in English. It is a feminine noun."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "en": "This is a common fruit, often red or green.",
+      "es": "Esta es una fruta común, a menudo roja o verde."
+    },
+    "createdAt": "2025-06-18T20:25:40.074Z"
+  },
+  {
+    "id": "LDJIEhs5DwDDrzfcfPZa",
+    "topicValue": "Lang_French",
+    "question": {
+      "en": "What does the French word 'qui' mean?",
+      "es": "¿Qué significa la palabra francesa 'qui'?"
+    },
+    "answers": [
+      {
+        "es": "¿Quién?",
+        "en": "Who?"
+      },
+      {
+        "en": "What?",
+        "es": "¿Qué?"
+      },
+      {
+        "es": "¿Dónde?",
+        "en": "Where?"
+      },
+      {
+        "en": "Why?",
+        "es": "¿Por qué?"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": {
+      "es": "La palabra francesa 'qui' significa 'Quién'. Es un pronombre interrogativo que se usa para preguntar sobre personas.",
+      "en": "The French word 'qui' means 'who' in English. It is an interrogative pronoun used to ask about people."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "es": "Esta palabra interrogativa pide identificar a una persona.",
+      "en": "This question word asks to identify a person."
+    },
+    "createdAt": "2025-06-18T20:25:42.332Z"
+  },
+  {
+    "id": "6C2GOSbm5Aecbe869Upe",
+    "topicValue": "Lang_French",
+    "question": {
+      "es": "¿Qué significa la palabra francesa 'quoi'?",
+      "en": "What does the French word 'quoi' mean?"
+    },
+    "answers": [
+      {
+        "en": "What?",
+        "es": "¿Qué?"
+      },
+      {
+        "en": "Who?",
+        "es": "¿Quién?"
+      },
+      {
+        "en": "Where?",
+        "es": "¿Dónde?"
+      },
+      {
+        "es": "¿Cuándo?",
+        "en": "When?"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": {
+      "en": "The French word 'quoi' means 'what' in English. It is an interrogative pronoun.",
+      "es": "La palabra francesa 'quoi' significa 'Qué'. Es un pronombre interrogativo."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "es": "Esta palabra interrogativa pide información sobre una cosa o evento.",
+      "en": "This question word asks for information about a thing or event."
+    },
+    "createdAt": "2025-06-18T20:25:42.286Z"
+  },
+  {
+    "id": "3zUv4meDXBwWaLNc8Nq4",
+    "topicValue": "Lang_French",
+    "question": {
+      "en": "What does the French word 'rue' mean?",
+      "es": "¿Qué significa la palabra francesa 'rue'?"
+    },
+    "answers": [
+      {
+        "en": "Street",
+        "es": "Calle"
+      },
+      {
+        "en": "Road",
+        "es": "Camino"
+      },
+      {
+        "es": "Avenida",
+        "en": "Avenue"
+      },
+      {
+        "es": "Bulevar",
+        "en": "Boulevard"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": {
+      "es": "La palabra francesa 'rue' significa 'Calle'. Es un sustantivo femenino.",
+      "en": "The French word 'rue' means 'street' in English. It is a feminine noun."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "es": "Esta es una vía pública en una ciudad o pueblo.",
+      "en": "This is a public road in a city or town."
+    },
+    "createdAt": "2025-06-18T20:25:40.224Z"
+  },
+  {
+    "id": "NDvE9SXkqqPexcuLMDrC",
+    "topicValue": "Lang_French",
+    "question": {
+      "en": "What does the French word 'sans' mean?",
+      "es": "¿Qué significa la palabra francesa 'sans'?"
+    },
+    "answers": [
+      {
+        "en": "Without",
+        "es": "Sin"
+      },
+      {
+        "es": "Con",
+        "en": "With"
+      },
+      {
+        "es": "De",
+        "en": "From"
+      },
+      {
+        "es": "Sobre",
+        "en": "About"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": {
+      "es": "La palabra francesa 'sans' significa 'Sin'. Es una preposición que indica ausencia.",
+      "en": "The French word 'sans' means 'without' in English. It is a preposition indicating absence."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "en": "This preposition indicates the absence of something.",
+      "es": "Esta preposición indica la ausencia de algo."
+    },
+    "createdAt": "2025-06-18T20:25:41.686Z"
+  },
+  {
+    "id": "02YeNeBPtShZ9gEoKsji",
+    "topicValue": "Lang_French",
+    "question": {
+      "en": "What does the French word 'sœur' mean?",
+      "es": "¿Qué significa la palabra francesa 'sœur'?"
+    },
+    "answers": [
+      {
+        "en": "Sister",
+        "es": "Hermana"
+      },
+      {
+        "es": "Hermano",
+        "en": "Brother"
+      },
+      {
+        "es": "Hija",
+        "en": "Daughter"
+      },
+      {
+        "en": "Son",
+        "es": "Hijo"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": {
+      "en": "The French word 'sœur' means 'sister' in English. It is a feminine noun.",
+      "es": "La palabra francesa 'sœur' significa 'Hermana'. Es un sustantivo femenino."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "en": "This refers to a female sibling.",
+      "es": "Esto se refiere a una hermana."
+    },
+    "createdAt": "2025-06-18T20:25:42.041Z"
+  },
+  {
+    "id": "82fIIGrrwskjmtpebIn3",
+    "topicValue": "Lang_French",
+    "question": {
+      "es": "¿Qué significa la palabra francesa 'soleil'?",
+      "en": "What does the French word 'soleil' mean?"
+    },
+    "answers": [
+      {
+        "es": "Sol",
+        "en": "Sun"
+      },
+      {
+        "es": "Luna",
+        "en": "Moon"
+      },
+      {
+        "en": "Star",
+        "es": "Estrella"
+      },
+      {
+        "es": "Cielo",
+        "en": "Sky"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": {
+      "es": "La palabra francesa 'soleil' significa 'Sol'. Es un sustantivo masculino.",
+      "en": "The French word 'soleil' means 'sun' in English. It is a masculine noun."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "es": "Esta es la estrella que calienta la Tierra durante el día.",
+      "en": "This is the star that warms the Earth during the day."
+    },
+    "createdAt": "2025-06-18T20:25:39.400Z"
+  },
+  {
+    "id": "GOOODzeUGI5nysurIhmr",
+    "topicValue": "Lang_French",
+    "question": {
+      "es": "¿Qué significa la palabra francesa 'très'?",
+      "en": "What does the French word 'très' mean?"
+    },
+    "answers": [
+      {
+        "en": "Very",
+        "es": "Muy"
+      },
+      {
+        "es": "Mucho",
+        "en": "Much"
+      },
+      {
+        "es": "Tan",
+        "en": "So"
+      },
+      {
+        "es": "Demasiado",
+        "en": "Too"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": {
+      "en": "The French word 'très' means 'very' in English. It is an adverb used to intensify adjectives or other adverbs.",
+      "es": "La palabra francesa 'très' significa 'Muy'. Es un adverbio que se usa para intensificar adjetivos u otros adverbios."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "en": "This word emphasizes the degree of something.",
+      "es": "Esta palabra enfatiza el grado de algo."
+    },
+    "createdAt": "2025-06-18T20:25:42.601Z"
+  },
+  {
+    "id": "B74nqLkXKPkbIjvK4dIb",
+    "topicValue": "Lang_French",
+    "question": {
+      "es": "¿Qué significa la palabra francesa 'vendredi'?",
+      "en": "What does the French word 'vendredi' mean?"
+    },
+    "answers": [
+      {
+        "es": "Viernes",
+        "en": "Friday"
+      },
+      {
+        "en": "Saturday",
+        "es": "Sábado"
+      },
+      {
+        "en": "Sunday",
+        "es": "Domingo"
+      },
+      {
+        "es": "Lunes",
+        "en": "Monday"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": {
+      "es": "La palabra francesa 'vendredi' significa 'Viernes'. Es el final de la semana laboral tradicional.",
+      "en": "The French word 'vendredi' means 'Friday' in English. It is the end of the traditional work week."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "es": "Este día es justo antes del fin de semana.",
+      "en": "This day is just before the weekend."
+    },
+    "createdAt": "2025-06-18T20:25:40.949Z"
+  },
+  {
+    "id": "NRLBv3betClmY1mM3krc",
+    "topicValue": "Lang_French",
+    "question": {
+      "es": "¿Qué significa la palabra francesa 'voiture'?",
+      "en": "What does the French word 'voiture' mean?"
+    },
+    "answers": [
+      {
+        "es": "Casa",
+        "en": "House"
+      },
+      {
+        "en": "Car",
+        "es": "Coche"
+      },
+      {
+        "en": "Book",
+        "es": "Libro"
+      },
+      {
+        "es": "Ciudad",
+        "en": "City"
+      }
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": {
+      "en": "The French word 'voiture' translates to 'car' in English. It is a feminine noun.",
+      "es": "La palabra francesa 'voiture' se traduce como 'Coche'. Es un sustantivo femenino."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "es": "Este es un medio de transporte común.",
+      "en": "This is a common mode of transportation."
+    },
+    "createdAt": "2025-06-18T20:25:38.789Z"
+  },
+  {
+    "id": "jk0rvHxRLHVo9qTQFA8v",
+    "topicValue": "Lang_French",
+    "question": {
+      "es": "¿Qué significan 'un' y 'une'?",
+      "en": "What do 'un' and 'une' mean?"
+    },
+    "answers": [
+      {
+        "en": "A",
+        "es": "Un/Una"
+      },
+      {
+        "es": "El/La/Los/Las",
+        "en": "The"
+      },
+      {
+        "en": "Some",
+        "es": "Algunos/Algunas"
+      },
+      {
+        "en": "No",
+        "es": "Ningún/Ninguna"
+      }
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": {
+      "en": "'Un' and 'Une' are French indefinite articles, meaning 'a' or 'an' in English. 'Un' is masculine, and 'Une' is feminine.",
+      "es": "'Un' y 'Une' son artículos indefinidos franceses, que significan 'un' o 'una'. 'Un' es masculino y 'Une' es femenino."
+    },
+    "difficulty": "easy",
+    "hint": {
+      "en": "This article is used for one non-specific item.",
+      "es": "Este artículo se usa para un artículo no específico."
+    },
+    "createdAt": "2025-06-18T20:24:15.843Z"
+  }
+]

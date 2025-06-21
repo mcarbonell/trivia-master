@@ -23,8 +23,9 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Loader2, AlertTriangle, PlusCircle, Eye, Edit, Trash2, RefreshCw, Search, ArrowUpDown, Download } from 'lucide-react';
+import { Loader2, AlertTriangle, PlusCircle, Eye, Edit, Trash2, RefreshCw, Search, ArrowUpDown, Download, ClipboardCopy } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { cn } from '@/lib/utils';
 
 const ITEMS_PER_PAGE = 10;
 
@@ -80,6 +81,9 @@ export default function AdminQuestionsPage() {
   const [isQuestionDialogOpen, setIsQuestionDialogOpen] = useState(false);
   const [currentQuestionToEdit, setCurrentQuestionToEdit] = useState<PredefinedQuestion | null>(null);
   const [isSubmittingQuestion, setIsSubmittingQuestion] = useState(false);
+  
+  const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
+  const [currentQuestionToView, setCurrentQuestionToView] = useState<PredefinedQuestion | null>(null);
 
   const form = useForm<QuestionFormData>({
     resolver: zodResolver(questionFormSchema),
@@ -252,6 +256,29 @@ export default function AdminQuestionsPage() {
     });
     setIsQuestionDialogOpen(true);
   };
+  
+  const handleOpenViewDialog = (question: PredefinedQuestion) => {
+    setCurrentQuestionToView(question);
+    setIsViewDialogOpen(true);
+  };
+
+  const handleCopyId = (id: string | undefined) => {
+    if (!id) return;
+    navigator.clipboard.writeText(id).then(() => {
+        toast({
+            title: tCommon('toastSuccessTitle') as string,
+            description: t('toastIdCopied'),
+        });
+    }).catch(err => {
+        console.error('Failed to copy ID:', err);
+        toast({
+            variant: 'destructive',
+            title: tCommon('toastErrorTitle') as string,
+            description: t('toastIdCopyError'),
+        });
+    });
+  };
+
 
   const onQuestionSubmit = async (data: QuestionFormData) => {
     if (!currentQuestionToEdit) return;
@@ -593,7 +620,7 @@ export default function AdminQuestionsPage() {
                          </span>
                       </TableCell>
                       <TableCell className="text-right space-x-1">
-                        <Button variant="outline" size="icon" className="h-8 w-8" disabled>
+                        <Button variant="outline" size="icon" className="h-8 w-8" onClick={() => handleOpenViewDialog(question)}>
                           <Eye className="h-4 w-4" />
                           <span className="sr-only">{t('viewButton')}</span>
                         </Button>
@@ -652,6 +679,81 @@ export default function AdminQuestionsPage() {
             </CardFooter>
         )}
       </Card>
+
+      <Dialog open={isViewDialogOpen} onOpenChange={setIsViewDialogOpen}>
+        <DialogContent className="sm:max-w-3xl max-h-[90vh]">
+          <DialogHeader>
+            <DialogTitle className="flex justify-between items-center">
+              <span>{tForm('viewDialogTitle')}</span>
+              {currentQuestionToView?.id && (
+                <div className="flex items-center gap-2">
+                  <span className="text-sm font-mono text-muted-foreground bg-secondary px-2 py-1 rounded-md">{currentQuestionToView.id}</span>
+                  <Button variant="outline" size="icon" onClick={() => handleCopyId(currentQuestionToView?.id)} className="h-8 w-8">
+                      <ClipboardCopy className="h-4 w-4" />
+                      <span className="sr-only">{t('copyIdButton')}</span>
+                  </Button>
+                </div>
+              )}
+            </DialogTitle>
+            <DialogDescription>
+              {tForm('viewDialogDescription', { topic: currentQuestionToView?.categoryName || currentQuestionToView?.topicValue || '' })}
+            </DialogDescription>
+          </DialogHeader>
+          <ScrollArea className="max-h-[calc(90vh-200px)] pr-6">
+            {currentQuestionToView && (
+              <div className="space-y-4 py-4 text-sm">
+                <p><span className="font-semibold">{tForm('difficultyLabel')}:</span> {tCommon(`difficultyLevels.${currentQuestionToView.difficulty}` as any)}</p>
+                
+                <Card>
+                  <CardHeader><CardTitle className="text-base">{tForm('questionLabel')}</CardTitle></CardHeader>
+                  <CardContent className="space-y-2">
+                    <p><strong>{tCommon('english')}:</strong> {currentQuestionToView.question.en}</p>
+                    <p><strong>{tCommon('spanish')}:</strong> {currentQuestionToView.question.es}</p>
+                  </CardContent>
+                </Card>
+
+                {currentQuestionToView.answers.map((ans, idx) => (
+                  <Card key={idx} className={cn(idx === currentQuestionToView.correctAnswerIndex && "border-green-500 ring-2 ring-green-500")}>
+                    <CardHeader className="py-2">
+                      <CardTitle className="text-base">
+                        {tForm('answerLabel', { letter: String.fromCharCode(65 + idx) })}
+                        {idx === currentQuestionToView.correctAnswerIndex && <span className="text-sm font-normal text-green-600 ml-2">({t('correctAnswer')})</span>}
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-2 pt-0 pb-2">
+                      <p><strong>{tCommon('english')}:</strong> {ans.en}</p>
+                      <p><strong>{tCommon('spanish')}:</strong> {ans.es}</p>
+                    </CardContent>
+                  </Card>
+                ))}
+
+                <Card>
+                  <CardHeader><CardTitle className="text-base">{tForm('explanationLabel')}</CardTitle></CardHeader>
+                  <CardContent className="space-y-2">
+                    <p><strong>{tCommon('english')}:</strong> {currentQuestionToView.explanation.en}</p>
+                    <p><strong>{tCommon('spanish')}:</strong> {currentQuestionToView.explanation.es}</p>
+                  </CardContent>
+                </Card>
+
+                {currentQuestionToView.hint && (
+                  <Card>
+                    <CardHeader><CardTitle className="text-base">{tForm('hintLabelOptional')}</CardTitle></CardHeader>
+                    <CardContent className="space-y-2">
+                      <p><strong>{tCommon('english')}:</strong> {currentQuestionToView.hint.en}</p>
+                      <p><strong>{tCommon('spanish')}:</strong> {currentQuestionToView.hint.es}</p>
+                    </CardContent>
+                  </Card>
+                )}
+              </div>
+            )}
+          </ScrollArea>
+          <DialogFooter className="pt-4">
+            <DialogClose asChild>
+              <Button type="button" variant="outline">{tCommon('close')}</Button>
+            </DialogClose>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       <Dialog open={isQuestionDialogOpen} onOpenChange={setIsQuestionDialogOpen}>
         <DialogContent className="sm:max-w-3xl max-h-[90vh]">
@@ -716,7 +818,7 @@ export default function AdminQuestionsPage() {
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          {['0', '1', '2', '3'].map(idx_str => (
+                          {['0', '1', '2', '3'].map(idx_str => ( 
                             <SelectItem key={idx_str} value={idx_str}>{tForm('answerOption', { letter: String.fromCharCode(65 + parseInt(idx_str)) })}</SelectItem>
                           ))}
                         </SelectContent>
@@ -756,8 +858,6 @@ export default function AdminQuestionsPage() {
           </ScrollArea>
         </DialogContent>
       </Dialog>
-
     </div>
   );
 }
-
