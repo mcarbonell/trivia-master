@@ -1,3 +1,4 @@
+
 'use server';
 /**
  * @fileOverview A Genkit flow to validate a single trivia question.
@@ -31,6 +32,11 @@ const CATEGORIES_COLLECTION = 'triviaCategories';
 
 // --- Zod Schemas ---
 
+const BilingualAnswerSchema = z.object({
+    en: z.string().describe('English version of the answer text.'),
+    es: z.string().describe('Spanish version of the answer text.'),
+});
+
 const QuestionDataSchema = z.object({
   id: z.string().describe("The Firestore ID of the question being validated."),
   topicValue: z.string().describe("The topic value associated with the question."),
@@ -38,11 +44,8 @@ const QuestionDataSchema = z.object({
     en: z.string().describe('English version of the question text.'),
     es: z.string().describe('Spanish version of the question text.'),
   }),
-  answers: z.array(z.object({
-    en: z.string().describe('English version of an answer option.'),
-    es: z.string().describe('Spanish version of an answer option.'),
-  })).length(4),
-  correctAnswerIndex: z.number().min(0).max(3),
+  correctAnswer: BilingualAnswerSchema.describe('The single correct answer.'),
+  distractors: z.array(BilingualAnswerSchema).length(3).describe('An array of three incorrect answers (distractors).'),
   explanation: z.object({
     en: z.string().describe('English version of the explanation.'),
     es: z.string().describe('Spanish version of the explanation.'),
@@ -90,7 +93,7 @@ export async function validateSingleTriviaQuestion(input: ValidateSingleQuestion
 
 const promptTemplate = `
 You are an expert trivia question validator and editor.
-You will be given a single trivia question with its ID, topicValue, question text (English and Spanish), four possible answers (English and Spanish), the index of the correct answer, an explanation (English and Spanish), an optional hint (English and Spanish), its assigned difficulty, and source/createdAt if available.
+You will be given a single trivia question with its ID, topicValue, question text, a single \`correctAnswer\`, an array of three incorrect \`distractors\`, an explanation, and other metadata.
 
 Your task is to meticulously evaluate the question based on the following criteria:
 
@@ -103,57 +106,46 @@ For example, if the category is about the English language, the answers should b
 1.  **Clarity & Correctness**:
     *   Is the question clear, unambiguous, and grammatically correct in both English and Spanish?
     *   Is the information factually accurate?
-    *   Is the question phrased naturally in both languages?
 
 2.  **Answer Validity**:
-    *   Is the indicated correct answer (at \`correctAnswerIndex\`) TRULY and UNDISPUTABLY correct?
-    *   Are the other three answers plausible distractors but DEFINITELY incorrect? There should be no ambiguity or multiple correct answers.
-    *   Are all answers grammatically correct and phrased naturally in both English and Spanish?
+    *   Is the \`correctAnswer\` TRULY and UNDISPUTABLY correct?
+    *   Are all three \`distractors\` plausible but DEFINITELY incorrect? There should be no ambiguity or other correct answers within the distractors.
+    *   Are all answer texts (correct and distractors) grammatically correct and phrased naturally in both languages?
 
 3.  **Explanation Quality**:
-    *   Does the explanation clearly and accurately explain WHY the correct answer is correct?
+    *   Does the explanation clearly and accurately explain WHY the \`correctAnswer\` is correct?
     *   Is it concise (1-2 sentences ideally) and informative in both languages?
-    *   Is it grammatically correct and natural in both languages?
 
 4.  **Hint Usefulness (if present)**:
-    *   Is the hint helpful without giving away the answer too directly?
-    *   Is it too obscure or, conversely, too obvious?
-    *   Is it grammatically correct and natural in both languages? If no hint is needed or appropriate, it can be omitted in a fix.
+    *   Is the hint helpful without giving away the answer too directly? Is it too obscure or, conversely, too obvious?
 
 5.  **Difficulty Assessment**:
-    *   Does the assigned difficulty level ('easy', 'medium', 'hard') seem appropriate for the question's content and the likely knowledge required to answer it?
-    *   - "easy": Knowledge typically acquired in primary or early secondary school. Common knowledge for most people.
-    *   - "medium": Knowledge typically acquired in secondary school or through general cultural awareness. Requires some specific knowledge.
-    *   - "hard": Knowledge typically associated with higher education or specialized interest. Questions at this level should be challenging but answerable by someone well-versed in the subject.
+    *   Does the assigned difficulty level ('easy', 'medium', 'hard') seem appropriate?
+    *   - "easy": Common knowledge.
+    *   - "medium": Requires some specific knowledge.
+    *   - "hard": Specialized, university-level knowledge.
 
 6.  **Bilingual Consistency**:
-    *   Are all textual fields (question, answers, explanation, hint) provided and accurately translated/localized between English and Spanish? The meaning should be identical.
+    *   Are all textual fields (question, answers, explanation, hint) provided and accurately translated/localized between English and Spanish?
 
 Based on your evaluation, determine a \`validationStatus\`:
 
-*   \`"Accept"\`: If the question is well-formed, factually correct, the correct answer is valid, distractors are good, explanation and hint (if any) are appropriate, difficulty is reasonable, and bilingual content is consistent.
-*   \`"Reject"\`: If the question has significant flaws (e.g., factually incorrect, unsolvable, correct answer is wrong and cannot be easily fixed by rephrasing or minor data correction, multiple correct answers, offensive content, poor translations that change meaning significantly) and you cannot confidently fix it to meet all criteria.
-*   \`"Fix"\`: If the question has minor to moderate issues that YOU CAN CORRECT to meet all criteria. This includes typos, grammatical errors, slightly misleading wording, improving a distractor, enhancing an explanation/hint, adjusting difficulty, or improving translations. IF YOU CHOOSE "Fix", YOU MUST PROVIDE THE ENTIRE CORRECTED QUESTION DATA IN THE \`fixedQuestionData\` field.
+*   \`"Accept"\`: If the question and all its parts are excellent and meet all criteria.
+*   \`"Reject"\`: If the question has significant flaws (e.g., factually incorrect, unsolvable, offensive) and you cannot confidently fix it.
+*   \`"Fix"\`: If the question has minor to moderate issues that YOU CAN CORRECT. This includes typos, grammar, improving a distractor, adjusting difficulty, or enhancing an explanation. IF YOU CHOOSE "Fix", YOU MUST PROVIDE THE ENTIRE CORRECTED QUESTION DATA IN THE \`fixedQuestionData\` field.
 
 **Output Format Rules:**
 
 *   Your response MUST be a single, valid JSON object.
-*   The JSON object must conform to the schema: \`{ validationStatus: string, reasoning: string, fixedQuestionData?: { question: {en, es}, answers: [{en, es}, ...], correctAnswerIndex: number, explanation: {en, es}, hint?: {en, es}, difficulty: string } }\`
 *   If \`validationStatus\` is \`"Fix"\`, the \`fixedQuestionData\` field is MANDATORY.
-    *   In \`fixedQuestionData\`, provide the COMPLETE, corrected question data. Do not include the original 'id', 'topicValue', 'source', or 'createdAt' in \`fixedQuestionData\`. Only include the fields that can be edited: 'question', 'answers', 'correctAnswerIndex', 'explanation', 'hint' (optional), 'difficulty'.
-    *   Ensure \`fixedQuestionData.answers\` is an array of 4 bilingual answer objects.
-    *   Ensure \`fixedQuestionData.correctAnswerIndex\` is a number between 0 and 3.
-    *   Ensure \`fixedQuestionData.difficulty\` is one of "easy", "medium", or "hard".
+    *   In \`fixedQuestionData\`, provide the COMPLETE, corrected question data. It must include: \`question\`, \`correctAnswer\`, \`distractors\` (as an array of 3 bilingual objects), \`explanation\`, \`hint\` (optional), and \`difficulty\`.
 *   If \`validationStatus\` is \`"Accept"\` or \`"Reject"\`, the \`fixedQuestionData\` field MUST be omitted.
-*   Your \`reasoning\` field should clearly explain your decision. If fixing, detail WHAT you fixed and WHY. If rejecting, specify the critical flaws.
+*   Your \`reasoning\` field should clearly explain your decision. If fixing, detail WHAT you fixed and WHY.
 
 **Input Question Details:**
 Topic Value: {{{questionData.topicValue}}}
 Question ID: {{{questionData.id}}}
 Current Assigned Difficulty: {{{questionData.difficulty}}}
-Source: {{{questionData.source}}}
-Created At: {{{questionData.createdAt}}}
-Current Validation Status: {{{questionData.status}}}
 
 Question Data to Validate:
 {{{json questionData}}}
@@ -232,11 +224,11 @@ const validateSingleTriviaQuestionFlow = ai.defineFlow(
             reasoning: "AI suggested a fix but failed to provide the corrected data. Original reasoning: " + output.reasoning,
           };
         }
-        if (output.fixedQuestionData.answers?.length !== 4) {
-             console.warn('[validateSingleTriviaQuestionFlow] AI provided fixedQuestionData with an incorrect number of answers. Changing status to "Reject".');
+        if (output.fixedQuestionData.distractors?.length !== 3) {
+             console.warn('[validateSingleTriviaQuestionFlow] AI provided fixedQuestionData with an incorrect number of distractors. Changing status to "Reject".');
              return {
                 validationStatus: "Reject",
-                reasoning: "AI provided fixedQuestionData with an incorrect number of answers (" + output.fixedQuestionData.answers?.length + "). Original reasoning: " + output.reasoning,
+                reasoning: "AI provided fixedQuestionData with an incorrect number of distractors (" + output.fixedQuestionData.distractors?.length + "). Original reasoning: " + output.reasoning,
              }
         }
       }
@@ -251,5 +243,3 @@ const validateSingleTriviaQuestionFlow = ai.defineFlow(
     }
   }
 );
-
-    

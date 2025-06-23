@@ -112,7 +112,6 @@ async function fetchCategoriesWithAdminSDK(): Promise<CategoryDefinition[]> {
           name: data.name as BilingualText,
           icon: data.icon,
           detailedPromptInstructions: data.detailedPromptInstructions,
-          // isPredefined: data.isPredefined === undefined ? true : data.isPredefined, // Removed
         };
         if (data.difficultySpecificGuidelines) {
           const validatedGuidelines: { [key: string]: string } = {};
@@ -240,11 +239,14 @@ async function populateQuestions() {
           .get();
 
         difficultyContextSnapshot.forEach(doc => {
-          const data = doc.data() as GenerateTriviaQuestionOutput & { topicValue: string };
+          const data = doc.data(); // Keep as any to check for old/new format
             if (data.question && data.question.en) {
               existingQuestionConceptTextsForDifficulty.push(data.question.en);
             }
-            if (data.answers && typeof data.correctAnswerIndex === 'number' && data.answers[data.correctAnswerIndex]) {
+            // Handle both new and old data formats for correct answer context
+            if (data.correctAnswer && data.correctAnswer.en) { // New format
+              existingCorrectAnswerConceptTextsForDifficulty.push(data.correctAnswer.en);
+            } else if (data.answers && typeof data.correctAnswerIndex === 'number' && data.answers[data.correctAnswerIndex]) { // Old format
               const correctAnswer = data.answers[data.correctAnswerIndex]!;
               if (correctAnswer.en) {
                 existingCorrectAnswerConceptTextsForDifficulty.push(correctAnswer.en);
@@ -315,12 +317,8 @@ async function populateQuestions() {
 
           if (newQuestionsArray && newQuestionsArray.length > 0) {
             for (const newQuestionData of newQuestionsArray) {
-              // if (questionsGeneratedForThisDifficultyInThisRun >= maxNewQuestionsToFetchForThisDifficulty) {
-              //    console.log(`        Max new questions for this run/difficulty (${maxNewQuestionsToFetchForThisDifficulty}) reached. Stopping save for this API call's results.`);
-              //    break;
-              // }
 
-              if (newQuestionData && newQuestionData.question && newQuestionData.answers && newQuestionData.difficulty) {
+              if (newQuestionData && newQuestionData.question && newQuestionData.correctAnswer && newQuestionData.difficulty) {
                 if (newQuestionData.difficulty !== difficulty) {
                     console.warn(`      AI generated question with difficulty "${newQuestionData.difficulty}" but target was "${difficulty}". Saving with AI's assessed difficulty.`);
                 }
@@ -342,9 +340,8 @@ async function populateQuestions() {
 
                 if (!NO_CONTEXT_MODE) {
                     if (newQuestionData.question.en) existingQuestionConceptTextsForDifficulty.push(newQuestionData.question.en);
-                    const correctAnswer = newQuestionData.answers[newQuestionData.correctAnswerIndex];
-                    if (correctAnswer && correctAnswer.en) {
-                      existingCorrectAnswerConceptTextsForDifficulty.push(correctAnswer.en);
+                    if (newQuestionData.correctAnswer.en) {
+                      existingCorrectAnswerConceptTextsForDifficulty.push(newQuestionData.correctAnswer.en);
                     }
                 }
               } else {
@@ -398,4 +395,3 @@ populateQuestions().catch(error => {
   console.error("Unhandled error in populateQuestions:", error);
   process.exit(1);
 });
-

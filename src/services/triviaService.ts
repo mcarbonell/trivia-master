@@ -1,3 +1,4 @@
+
 // src/services/triviaService.ts
 'use server';
 
@@ -180,10 +181,11 @@ export async function deletePredefinedQuestion(questionId: string): Promise<void
   }
 }
 
-export async function updatePredefinedQuestion(questionId: string, data: Partial<GenerateTriviaQuestionOutput & { status?: 'accepted' | 'fixed' }>): Promise<void> {
+export async function updatePredefinedQuestion(questionId: string, data: Partial<GenerateTriviaQuestionOutput> & { status?: 'accepted' | 'fixed' }): Promise<void> {
   try {
     const questionRef = doc(db, PREDEFINED_QUESTIONS_COLLECTION, questionId);
-    await updateDoc(questionRef, data);
+    // This will now accept the new format from GenerateTriviaQuestionOutput
+    await updateDoc(questionRef, data as any); // Using 'as any' to bypass temporary type mismatch during refactor
   } catch (error) {
     console.error(`[triviaService] Error updating question ${questionId}:`, error);
     throw error; 

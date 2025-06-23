@@ -50,12 +50,8 @@ export type GenerateTriviaQuestionsInput = z.infer<typeof GenerateTriviaQuestion
 // This remains the schema for a SINGLE question.
 const GenerateTriviaQuestionOutputSchema = z.object({
   question: BilingualTextSchema.describe('The trivia question in English and Spanish.'),
-  answers: z.array(BilingualAnswerSchema).length(4).describe('Four possible answers to the question, each in English and Spanish.'),
-  correctAnswerIndex: z
-    .number()
-    .min(0)
-    .max(3)
-    .describe('The index (0-3) of the correct answer in the answers array. This index applies to both language versions of the answers.'),
+  correctAnswer: BilingualAnswerSchema.describe('The single correct answer to the question, in English and Spanish.'),
+  distractors: z.array(BilingualAnswerSchema).length(3).describe('Three plausible but incorrect answers (distractors), each in English and Spanish.'),
   explanation: BilingualTextSchema.describe('A brief explanation (1-2 sentences) of why the correct answer is correct, in English and Spanish.'),
   hint: BilingualTextSchema.describe('A concise hint (1 short sentence) to help the user deduce the answer without revealing it directly, in English and Spanish.'),
   difficulty: DifficultyLevelSchema,
@@ -70,9 +66,9 @@ export async function generateTriviaQuestions(input: GenerateTriviaQuestionsInpu
   return generateTriviaQuestionsFlow(input);
 }
 
-const promptTemplateString = `You are an expert trivia question generator. Given a topic, you will generate a trivia question, four possible answers, indicate the index of the correct answer, provide a brief explanation for the correct answer, a concise hint, and assess its difficulty level.
+const promptTemplateString = `You are an expert trivia question generator. Given a topic, you will generate a trivia question, ONE correct answer, THREE plausible but incorrect "distractor" answers, an explanation, a hint, and difficulty.
 
-IMPORTANT: You MUST generate all textual content (question, each of the four answers, the explanation, and the hint) in BOTH English (en) and Spanish (es).
+IMPORTANT: You MUST generate all textual content (question, the correct answer, each of the three distractors, the explanation, and the hint) in BOTH English (en) and Spanish (es).
 
 Your response MUST be a valid JSON string that represents an array of question objects.
 
@@ -132,13 +128,12 @@ Please assess the inherent difficulty of each question you generate based on the
 Each question object in the array must conform to the following structure:
 {
   "question": { "en": "English Question Text", "es": "Spanish Question Text" },
-  "answers": [
-    { "en": "Answer A en", "es": "Respuesta A es" },
-    { "en": "Answer B en", "es": "Respuesta B es" },
-    { "en": "Answer C en", "es": "Respuesta C es" },
-    { "en": "Answer D en", "es": "Respuesta D es" }
+  "correctAnswer": { "en": "Correct Answer en", "es": "Respuesta Correcta es" },
+  "distractors": [
+    { "en": "Distractor A en", "es": "Distractor A es" },
+    { "en": "Distractor B en", "es": "Distractor B es" },
+    { "en": "Distractor C en", "es": "Distractor C es" }
   ],
-  "correctAnswerIndex": 0,
   "explanation": { "en": "English Explanation", "es": "Spanish Explanation" },
   "hint": { "en": "English Hint", "es": "Spanish Hint (optional)" },
   "difficulty": "easy"
@@ -146,11 +141,8 @@ Each question object in the array must conform to the following structure:
 Ensure the entire response is a single JSON string like: "[ {question1_object}, {question2_object}, ... ]"
 
 Example for the 'question' object: { "en": "What is the capital of France?", "es": "¿Cuál es la capital de Francia?" }
-Example for a single answer object within the 'answers' array: { "en": "Paris", "es": "París" }
-Example for the 'hint' object: { "en": "It's a famous European city known for a tall iron tower.", "es": "Es una famosa ciudad europea conocida por una alta torre de hierro." }
-
-Make sure that only one answer is correct (indicated by correctAnswerIndex).
-
+Example for 'correctAnswer': { "en": "Paris", "es": "París" }
+Example for 'distractors': [ { "en": "London", "es": "Londres" }, { "en": "Berlin", "es": "Berlín" }, { "en": "Rome", "es": "Roma" } ]
 The number of question objects in the JSON array string SHOULD ideally match the requested "{{count}}", but it is more important that each object is valid.
 `;
 
@@ -172,8 +164,6 @@ const generateTriviaQuestionsFlow = ai.defineFlow(
   },
   async (input) => {
     const effectiveInput = { ...input, count: input.count || 1 };
-    // The following log was misleading and has been removed:
-    // console.log('[generateTriviaQuestionsFlow] Checking ai object and ai.model method. Type of ai.model:', typeof ai.model);
 
     let llmOutputArray: any[] | null = null;
 
