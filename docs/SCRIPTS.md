@@ -30,7 +30,7 @@ These scripts are used to import content from local JSON files into Firestore.
 
 ### 2. Import Questions (`import:questions`)
 
-- **Purpose:** Imports or updates predefined trivia questions from a specified JSON file into the `predefinedTriviaQuestions` collection in Firestore.
+- **Purpose:** Imports or updates predefined trivia questions from a specified JSON file into the `predefinedTriviaQuestions` collection in Firestore. This script now automatically converts questions from the old format (`answers`, `correctAnswerIndex`) to the new format (`correctAnswer`, `distractors`).
 - **Command:** `npm run import:questions -- --source <filename_prefix>`
 - **Arguments:**
     - `--source <prefix>` (or `-s <prefix>`): **Required**. The prefix of the JSON file located in `src/data/`. For example, a source of `history-set1` will use `src/data/history-set1-questions.json`.
@@ -51,7 +51,7 @@ These scripts leverage Genkit and AI models to generate or validate content. Rem
 
 ### 3. Populate Questions (`populate:questions`)
 
-- **Purpose:** Uses AI to generate a batch of new, unique trivia questions for specified categories and difficulties and saves them to Firestore.
+- **Purpose:** Uses AI to generate a batch of new, unique trivia questions for specified categories and difficulties and saves them to Firestore. Now generates using the new data model (`correctAnswer`, `distractors`).
 - **Command:** `npm run populate:questions -- [options]`
 - **Arguments:**
     - `-c, --category <topicValue>`: Optional. Process only the category with this specific `topicValue`. If omitted, all predefined categories are processed.
@@ -73,7 +73,7 @@ These scripts leverage Genkit and AI models to generate or validate content. Rem
 
 ### 4. Check for Duplicate Questions (`check:questions`)
 
-- **Purpose:** Uses AI to analyze all questions within a category (and optionally a specific difficulty) to find conceptual duplicates, even if they are worded differently. It then gives an interactive prompt to delete the identified duplicates.
+- **Purpose:** Uses AI to analyze all questions within a category (and optionally a specific difficulty) to find conceptual duplicates, even if they are worded differently. It now considers both the question text and the correct answer for a more accurate check. It then gives an interactive prompt to delete the identified duplicates.
 - **Command:** `npm run check:questions -- --topicValue <topicValue> [options]`
 - **Arguments:**
     - `-t, --topicValue <topicValue>`: **Required**. The `topicValue` of the category to check.
@@ -145,4 +145,22 @@ These scripts leverage Genkit and AI models to generate or validate content. Rem
     - If run without `--auto`, `--autofix`, or `--autodelete`, it will log the AI's recommendations for each question but will not modify any data.
     - If run with the automation flags, it will perform fixes and deletions automatically and log the actions taken.
     - A summary of all actions is provided at the end of the script's execution.
-```
+
+---
+
+## Data Migration Scripts
+
+### 7. Migrate Questions Format (`migrate:questions`)
+
+- **Purpose:** A one-time utility script to migrate all predefined questions in Firestore from the old data format (using `answers` array and `correctAnswerIndex`) to the new, more robust format (using a single `correctAnswer` object and a `distractors` array). This should be run after updating the application code to handle the new format.
+- **Command:** `npm run migrate:questions`
+- **Arguments:** None. This script runs on the entire `predefinedTriviaQuestions` collection.
+- **Usage Example:**
+  ```bash
+  # Run the migration script for all questions
+  npm run migrate:questions
+  ```
+- **Notes:**
+    - The script is idempotent; it will only modify questions that are in the old format. Running it multiple times is safe and will have no effect after the first successful run.
+    - This script directly modifies your production data. It's recommended to have a backup of your Firestore data before running it, just in case.
+    - It processes questions in batches to avoid overwhelming Firestore resources.
