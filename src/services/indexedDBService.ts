@@ -1,19 +1,35 @@
-
 // src/services/indexedDBService.ts
 'use client';
 
-import type { PredefinedQuestion } from './triviaService'; // Assuming PredefinedQuestion can represent custom ones too for now
+import type { PredefinedQuestion as QuestionWithNewFormat } from './triviaService';
 import type { DifficultyLevel, CategoryDefinition, BilingualText } from '@/types';
 
+// The new format from the service
+export type PredefinedQuestion = QuestionWithNewFormat;
+
+// Define old format for conversion
+interface OldFormatQuestion {
+  id: string;
+  topicValue: string;
+  question: BilingualText;
+  answers: BilingualText[];
+  correctAnswerIndex: number;
+  explanation: BilingualText;
+  difficulty: DifficultyLevel;
+  hint?: BilingualText;
+  createdAt?: string;
+  status?: 'accepted' | 'fixed';
+}
+
+
 const DB_NAME = 'AITriviaMasterDB';
-const DB_VERSION = 3; // Incremented DB_VERSION for new stores
+const DB_VERSION = 3; 
 const PREDEFINED_QUESTIONS_STORE_NAME = 'predefinedQuestions';
-const CUSTOM_QUESTIONS_STORE_NAME = 'customTriviaQuestions'; // New store for custom questions
-const CUSTOM_TOPICS_META_STORE_NAME = 'customTopicsMeta'; // New store for custom topic metadata
+const CUSTOM_QUESTIONS_STORE_NAME = 'customTriviaQuestions';
+const CUSTOM_TOPICS_META_STORE_NAME = 'customTopicsMeta';
 const APP_DATA_STORE_NAME = 'appDataStore';
 const CATEGORIES_CACHE_ID = 'categoriesCache';
 
-// Utility to promisify IDBRequest
 function promisifyRequest<T>(request: IDBRequest<T>): Promise<T> {
   return new Promise((resolve, reject) => {
     request.onsuccess = () => resolve(request.result);
@@ -41,13 +57,11 @@ export async function openDB(): Promise<IDBDatabase> {
       }
       if (!db.objectStoreNames.contains(CUSTOM_QUESTIONS_STORE_NAME)) {
         const store = db.createObjectStore(CUSTOM_QUESTIONS_STORE_NAME, { keyPath: 'id' });
-        // Index to fetch questions by custom topic and difficulty
         store.createIndex('customTopicValue_difficulty', ['customTopicValue', 'difficulty'], { unique: false });
         store.createIndex('customTopicValue', 'customTopicValue', { unique: false });
       }
       if (!db.objectStoreNames.contains(CUSTOM_TOPICS_META_STORE_NAME)) {
         db.createObjectStore(CUSTOM_TOPICS_META_STORE_NAME, { keyPath: 'customTopicValue' });
-        // No other indexes needed for meta for now
       }
     };
 
@@ -55,6 +69,41 @@ export async function openDB(): Promise<IDBDatabase> {
     request.onerror = (event) => reject((event.target as IDBRequest).error);
   });
 }
+
+/**
+ * Normalizes question data from IndexedDB to the new format.
+ * @param q The question object from IndexedDB.
+ * @returns A question in the new format (PredefinedQuestion).
+ */
+function normalizeIDBQuestion(q: any): PredefinedQuestion | null {
+  // If it's already in the new format
+  if (q.correctAnswer && q.distractors) {
+    return q as PredefinedQuestion;
+  }
+  // If it's in the old format
+  if (q.answers && typeof q.correctAnswerIndex === 'number') {
+    const oldQ = q as OldFormatQuestion;
+    const correctAnswer = oldQ.answers[oldQ.correctAnswerIndex];
+    if (!correctAnswer) return null;
+    const distractors = oldQ.answers.filter((_, i) => i !== oldQ.correctAnswerIndex);
+    
+    const newQ: PredefinedQuestion = {
+      id: oldQ.id,
+      topicValue: oldQ.topicValue,
+      question: oldQ.question,
+      explanation: oldQ.explanation,
+      difficulty: oldQ.difficulty,
+      correctAnswer: correctAnswer,
+      distractors: distractors,
+      hint: oldQ.hint,
+      createdAt: oldQ.createdAt,
+      status: oldQ.status
+    };
+    return newQ;
+  }
+  return null;
+}
+
 
 // --- Predefined Questions ---
 export async function saveQuestionsToDB(questions: PredefinedQuestion[]): Promise<void> {
@@ -71,8 +120,6 @@ export async function saveQuestionsToDB(questions: PredefinedQuestion[]): Promis
       }
       store.put(question);
     }
-    // For modern browsers, transaction.commit() is not needed and transaction.complete (event) is used.
-    // We'll rely on the promise from transaction completion.
     await new Promise<void>((resolve, reject) => {
         transaction.oncomplete = () => resolve();
         transaction.onerror = (event) => reject((event.target as IDBTransaction).error);
@@ -101,8 +148,8 @@ export async function getQuestionFromDB(
 
     return new Promise<PredefinedQuestion | null>((resolve, reject) => {
       request.onsuccess = () => {
-        const allMatchingQuestions = request.result as PredefinedQuestion[];
-        console.log(`[DEBUG] [IndexedDB Predefined] Found ${allMatchingQuestions.length} total for ${topicValue}-${difficulty}.`);
+        const allMatchingQuestions = request.result.map(normalizeIDBQuestion).filter(Boolean) as PredefinedQuestion[];
+        console.log(`[DEBUG] [IndexedDB Predefined] Found ${allMatchingQuestions.length} total normalized questions for ${topicValue}-${difficulty}.`);
         const unaskedQuestions = allMatchingQuestions.filter(q => !askedIds.includes(q.id));
 
         if (unaskedQuestions.length > 0) {
@@ -138,19 +185,16 @@ export async function clearAllQuestionsFromDB(): Promise<void> {
 }
 
 // --- Custom Questions & Meta ---
-// Re-exporting PredefinedQuestion as CustomQuestion type for now as structure is identical,
-// but with customTopicValue instead of topicValue for clarity in usage context.
-export interface CustomQuestion extends Omit<PredefinedQuestion, 'topicValue' | 'createdAt'> {
-  customTopicValue: string; // Link to custom topic meta
-  id: string; // Ensure ID is always present
-  createdAt?: number; // Optional: when this specific question instance was generated/saved
+export interface CustomQuestion extends Omit<PredefinedQuestion, 'topicValue'> {
+  customTopicValue: string; 
+  id: string;
 }
 export interface CustomTopicMeta {
-  customTopicValue: string; // Unique ID for the custom topic
+  customTopicValue: string; 
   name: BilingualText;
   detailedPromptInstructions: string;
-  createdAt: number; // Timestamp for sorting or potential cleanup
-  icon?: string; // Optional icon for display
+  createdAt: number;
+  icon?: string;
 }
 
 export async function saveCustomQuestionsToDB(questions: CustomQuestion[]): Promise<void> {
@@ -249,11 +293,9 @@ export async function getCustomTopicsMeta(): Promise<CustomTopicMeta[]> {
 export async function deleteCustomTopicAndQuestions(customTopicValue: string): Promise<void> {
   try {
     const db = await openDB();
-    // Delete questions
     const questionsTx = db.transaction(CUSTOM_QUESTIONS_STORE_NAME, 'readwrite');
     const questionsStore = questionsTx.objectStore(CUSTOM_QUESTIONS_STORE_NAME);
     const questionsIndex = questionsStore.index('customTopicValue');
-    // Iterate and delete
     const cursorRequest = questionsIndex.openCursor(IDBKeyRange.only(customTopicValue));
     cursorRequest.onsuccess = (event) => {
         const cursor = (event.target as IDBRequest<IDBCursorWithValue | null>).result;
@@ -268,7 +310,6 @@ export async function deleteCustomTopicAndQuestions(customTopicValue: string): P
     });
     console.log(`[DEBUG] [IndexedDB Custom] Deleted questions for custom topic: ${customTopicValue}`);
 
-    // Delete meta
     const metaTx = db.transaction(CUSTOM_TOPICS_META_STORE_NAME, 'readwrite');
     const metaStore = metaTx.objectStore(CUSTOM_TOPICS_META_STORE_NAME);
     metaStore.delete(customTopicValue);
@@ -431,4 +472,4 @@ if (typeof window !== 'undefined') {
 // --- Constants for page.tsx ---
 export const CONTENT_VERSION_STORAGE_KEY = 'downloadedContentVersion';
 export const DOWNLOADED_TOPICS_STORAGE_KEY = 'downloadedTopicValues_v1'; // For predefined categories download status
-export const CURRENT_CONTENT_VERSION = "v1.0.4"; // Incremented due to DB structure changes
+export const CURRENT_CONTENT_VERSION = "v1.0.4";

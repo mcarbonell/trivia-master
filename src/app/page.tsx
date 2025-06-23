@@ -72,6 +72,8 @@ interface ActiveCategoryDetails {
   isCustomActive: boolean;
 }
 
+// Combined question type to handle both predefined and custom questions from DB
+type GameQuestion = PredefinedQuestion | CustomQuestion;
 
 const DIFFICULTY_LEVELS_ORDER: DifficultyLevel[] = ["easy", "medium", "hard"];
 const QUESTION_TIME_LIMIT_SECONDS = 30;
@@ -79,6 +81,15 @@ const QUESTIONS_PER_GAME = 10;
 const CUSTOM_TOPIC_QUESTIONS_TO_GENERATE = 30;
 const DEFAULT_MODEL_FOR_GAME = 'googleai/gemini-2.5-flash';
 
+// Utility function to shuffle an array (Fisher-Yates shuffle)
+const shuffleArray = <T>(array: T[]): T[] => {
+  const newArray = [...array];
+  for (let i = newArray.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [newArray[i], newArray[j]] = [newArray[j]!, newArray[i]!];
+  }
+  return newArray;
+};
 
 export default function TriviaPage() {
   const t = useTranslations();
@@ -96,7 +107,10 @@ export default function TriviaPage() {
   const [currentCategoryDetails, setCurrentCategoryDetails] = useState<ActiveCategoryDetails | null>(null);
 
 
-  const [questionData, setQuestionData] = useState<PredefinedQuestion | CustomQuestion | null>(null);
+  const [questionData, setQuestionData] = useState<GameQuestion | null>(null);
+  const [shuffledAnswers, setShuffledAnswers] = useState<BilingualText[]>([]);
+  const [currentCorrectShuffledIndex, setCurrentCorrectShuffledIndex] = useState<number | null>(null);
+
   const [selectedAnswerIndex, setSelectedAnswerIndex] = useState<number | null>(null);
   const [score, setScore] = useState({ correct: 0, incorrect: 0 });
   const [feedback, setFeedback] = useState<{ message: string; isCorrect: boolean; detailedMessage?: string; explanation?: string } | null>(null);
@@ -289,15 +303,22 @@ export default function TriviaPage() {
     }, 1000);
   }, [clearTimer]);
 
-  const prepareAndSetQuestion = (qData: PredefinedQuestion | CustomQuestion) => {
+  const prepareAndSetQuestion = useCallback((qData: GameQuestion) => {
     console.log("[DEBUG] prepareAndSetQuestion: Setting question:", qData.id || "AI Generated", "for topicValue:", currentTopicValue);
     setQuestionData(qData);
-    const questionTextInLocale = qData.question[locale] || `q_text_${Date.now()}`;
-    if (qData.answers && typeof qData.correctAnswerIndex === 'number' && qData.answers[qData.correctAnswerIndex]) {
-       const correctAnswerTextInLocale = qData.answers[qData.correctAnswerIndex]![locale];
-       setAskedCorrectAnswerTexts(prev => [...new Set([...prev, correctAnswerTextInLocale])]);
-    }
+    
+    // Shuffle answers
+    const allAnswers = [qData.correctAnswer, ...qData.distractors];
+    const shuffled = shuffleArray(allAnswers);
+    const newCorrectIndex = shuffled.findIndex(ans => ans.en === qData.correctAnswer.en && ans.es === qData.correctAnswer.es);
 
+    setShuffledAnswers(shuffled);
+    setCurrentCorrectShuffledIndex(newCorrectIndex);
+
+    const questionTextInLocale = qData.question[locale] || `q_text_${Date.now()}`;
+    const correctAnswerTextInLocale = qData.correctAnswer[locale];
+
+    setAskedCorrectAnswerTexts(prev => [...new Set([...prev, correctAnswerTextInLocale])]);
     setAskedQuestionTextsForAI(prev => [...new Set([...prev, questionTextInLocale])]);
 
     if (qData.id ) {
@@ -310,21 +331,21 @@ export default function TriviaPage() {
     setIsHintVisible(false);
     setGameState('playing');
     console.log("[DEBUG] prepareAndSetQuestion: GameState set to playing");
-  };
+  }, [locale, currentTopicValue]);
 
   const fetchAndSetNextQuestionForGame = useCallback(async (topicVal: string, difficulty: DifficultyLevel, activeCatDetails: ActiveCategoryDetails | null) => {
     setGameState('loading_question');
     const isCustom = activeCatDetails?.isCustomActive || false;
     console.log(`[DEBUG] fetchAndSetNextQuestionForGame: TopicValue: ${topicVal}, Diff: ${difficulty}, isCustom: ${isCustom}`);
 
-    let fetchedQuestionData: PredefinedQuestion | CustomQuestion | null = null;
+    let fetchedQuestionData: GameQuestion | null = null;
 
     if (isCustom) {
         console.log(`[DEBUG] fetchAndSetNextQuestionForGame: Custom topic. Attempting to get from customQuestionsStore. Asked IDs:`, askedQuestionIdsFromDB);
         fetchedQuestionData = await getCustomQuestionFromDB(topicVal, difficulty, askedQuestionIdsFromDB);
         if (fetchedQuestionData) console.log(`[DEBUG] fetchAndSetNextQuestionForGame: Found custom question in IDB (ID: ${fetchedQuestionData.id}) for topic ${topicVal}`);
         else console.log(`[DEBUG] fetchAndSetNextQuestionForGame: No unasked custom question in IDB for ${topicVal} - ${difficulty}. This might mean the batch is exhausted for this difficulty.`);
-    } else { // Predefined topic
+    } else { 
         console.log(`[DEBUG] fetchAndSetNextQuestionForGame: Predefined topic. Attempting to get from predefinedQuestionsStore. Asked IDs:`, askedQuestionIdsFromDB);
         fetchedQuestionData = await getQuestionFromDB(topicVal, difficulty, askedQuestionIdsFromDB);
         if (fetchedQuestionData) console.log(`[DEBUG] fetchAndSetNextQuestionForGame: Found predefined question in IDB (ID: ${fetchedQuestionData.id})`);
@@ -335,7 +356,7 @@ export default function TriviaPage() {
         }
     }
 
-    if (!fetchedQuestionData && !isCustom && activeCatDetails) { // Fallback to AI only for predefined topics not found in DB
+    if (!fetchedQuestionData && !isCustom && activeCatDetails) { 
       const instructions = activeCatDetails?.detailedPromptInstructions;
       const diffInstruction = activeCatDetails?.difficultySpecificGuidelines?.[difficulty];
       console.log(`[DEBUG] fetchAndSetNextQuestionForGame: No DB question. Falling back to Genkit AI for predefined topic ${topicVal}.`);
@@ -354,7 +375,8 @@ export default function TriviaPage() {
       try {
         const newQuestionArray = await generateTriviaQuestions(inputForAI);
         if (newQuestionArray && newQuestionArray.length > 0) {
-          fetchedQuestionData = { ...newQuestionArray[0]!, id: `ai_${crypto.randomUUID()}` };
+          const aiQuestion = newQuestionArray[0]!;
+          fetchedQuestionData = { ...aiQuestion, id: `ai_${crypto.randomUUID()}`, topicValue: topicVal };
           console.log(`[DEBUG] fetchAndSetNextQuestionForGame: AI generated question for predefined topic ${topicVal}.`);
         } else {
            console.log(`[DEBUG] fetchAndSetNextQuestionForGame: AI generation returned no questions for predefined topic ${topicVal}.`);
@@ -375,13 +397,11 @@ export default function TriviaPage() {
       });
       setGameState('error');
       console.warn(`[DEBUG] fetchAndSetNextQuestionForGame: Failed to fetch or generate ANY question for ${topicVal} - ${difficulty}. GameState set to error.`);
-      // Do not decrement currentQuestionNumberInGame here if isCustom and batch exhausted
-      // For predefined, if it failed to load, decrementing might make sense to retry the same number.
       if (!isCustom || errorDetailKey !== 'errorNoMoreQuestionsForCustomTopicDifficulty') {
         setCurrentQuestionNumberInGame(prev => Math.max(0, prev - 1));
       }
     }
-  }, [locale, askedQuestionIdsFromDB, askedQuestionTextsForAI, askedCorrectAnswerTexts, t, logAnalyticsEvent]);
+  }, [askedQuestionIdsFromDB, askedQuestionTextsForAI, askedCorrectAnswerTexts, locale, logAnalyticsEvent, prepareAndSetQuestion, t]);
 
 
   const handleTimeout = useCallback(() => {
@@ -391,7 +411,7 @@ export default function TriviaPage() {
     setSelectedAnswerIndex(null);
     setScore(prev => ({ ...prev, incorrect: prev.incorrect + 1 }));
 
-    const correctAnswerText = questionData.answers[questionData.correctAnswerIndex]?.[locale] ?? t('errorLoadingQuestionDetail');
+    const correctAnswerText = questionData.correctAnswer[locale] ?? t('errorLoadingQuestionDetail');
     const explanationText = questionData.explanation?.[locale] ?? '';
 
     setFeedback({
@@ -760,12 +780,12 @@ export default function TriviaPage() {
   };
 
   const handleAnswerSelect = (answerIndex: number) => {
-    if (!questionData || gameState !== 'playing') return;
+    if (!questionData || gameState !== 'playing' || currentCorrectShuffledIndex === null) return;
 
     clearTimer();
     setSelectedAnswerIndex(answerIndex);
-    const isCorrect = answerIndex === questionData.correctAnswerIndex;
-    const correctAnswerTextInLocale = questionData.answers[questionData.correctAnswerIndex]![locale];
+    const isCorrect = answerIndex === currentCorrectShuffledIndex;
+    const correctAnswerTextInLocale = questionData.correctAnswer[locale];
     const explanationInLocale = questionData.explanation[locale];
 
     logAnalyticsEvent('answer_question', {
@@ -896,11 +916,11 @@ export default function TriviaPage() {
       </div>
     );
   };
-
+  
   const localizedQuestionCardData = questionData ? {
     question: questionData.question[locale],
-    answers: questionData.answers.map(ans => ans[locale]),
-    correctAnswerIndex: questionData.correctAnswerIndex,
+    answers: shuffledAnswers.map(ans => ans[locale]),
+    correctAnswerIndex: currentCorrectShuffledIndex ?? 0, // Fallback, should not happen in practice
     explanation: questionData.explanation[locale],
     difficulty: questionData.difficulty,
     hint: questionData.hint?.[locale],
@@ -1168,7 +1188,6 @@ export default function TriviaPage() {
               {currentTopicValue &&
               gameState === 'error' &&
               !feedback.message.includes(t('errorLoadingCategories')) &&
-              // Only show "Try Again" button if the error is NOT "batch exhausted for custom topic"
               feedback.detailedMessage !== t('errorNoMoreQuestionsForCustomTopicDifficulty', { difficulty: t(`difficultyLevels.${currentDifficultyLevel}` as any) as string, topic: currentCategoryDetails?.name[locale] || currentTopicValue }) &&
               (
                 <Button
@@ -1194,4 +1213,3 @@ export default function TriviaPage() {
     </div>
   );
 }
-
