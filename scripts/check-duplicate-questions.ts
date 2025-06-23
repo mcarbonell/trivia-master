@@ -7,9 +7,8 @@ import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
 import inquirer from 'inquirer'; // Import inquirer
 import { detectDuplicateQuestions, type QuestionInput, type DetectDuplicatesInput, type DetectDuplicatesOutput } from '../src/ai/flows/detect-duplicate-questions';
-import type { PredefinedQuestion, DifficultyLevel } from '../src/services/triviaService'; 
-// BilingualText might not be directly needed here, but good for context if prompt changes
-// import type { BilingualText } from '../src/types';
+import type { PredefinedQuestion } from '../src/services/triviaService'; 
+import type { DifficultyLevel, BilingualText } from '../src/types';
 
 // Initialize Firebase Admin SDK
 try {
@@ -51,6 +50,37 @@ const argv = yargs(hideBin(process.argv))
   .alias('help', 'h')
   .parseSync();
 
+
+function normalizeQuestionForDuplicateCheck(doc: admin.firestore.DocumentSnapshot): QuestionInput | null {
+    const data = doc.data();
+    if (!data || !data.question || !data.question.en) {
+        return null;
+    }
+    
+    let correctAnswerText: string | undefined;
+
+    // New format
+    if (data.correctAnswer && data.correctAnswer.en) {
+        correctAnswerText = data.correctAnswer.en;
+    } 
+    // Old format
+    else if (data.answers && typeof data.correctAnswerIndex === 'number' && data.answers[data.correctAnswerIndex]?.en) {
+        correctAnswerText = data.answers[data.correctAnswerIndex].en;
+    }
+
+    if (!correctAnswerText) {
+        console.warn(`Could not determine correct answer for question ID ${doc.id}. Skipping.`);
+        return null;
+    }
+
+    return {
+        id: doc.id,
+        questionText: data.question.en,
+        correctAnswerText: correctAnswerText,
+    };
+}
+
+
 async function checkDuplicates() {
   const { topicValue, difficulty, model: modelName } = argv;
   const modelToUse = modelName || DEFAULT_MODEL_FOR_CHECK;
@@ -78,14 +108,9 @@ async function checkDuplicates() {
 
     const questionsFromFirestore: QuestionInput[] = [];
     querySnapshot.forEach(doc => {
-      const data = doc.data() as PredefinedQuestion; 
-      if (data.question && data.question.en) {
-        questionsFromFirestore.push({
-          id: doc.id,
-          questionText: data.question.en, 
-        });
-      } else {
-        console.warn(`Question with ID ${doc.id} is missing English text and will be skipped.`);
+      const normalizedQuestion = normalizeQuestionForDuplicateCheck(doc);
+      if (normalizedQuestion) {
+        questionsFromFirestore.push(normalizedQuestion);
       }
     });
 
@@ -94,7 +119,7 @@ async function checkDuplicates() {
       return;
     }
     
-    console.log(`Fetched ${questionsFromFirestore.length} questions from Firestore. Sending to AI for duplicate detection...`);
+    console.log(`Fetched and normalized ${questionsFromFirestore.length} questions from Firestore. Sending to AI for duplicate detection...`);
 
     const flowInput: DetectDuplicatesInput = {
       questionsList: questionsFromFirestore,

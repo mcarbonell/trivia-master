@@ -22,7 +22,7 @@ try {
 }
 
 const db = admin.firestore();
-const PREDEFINED_QUESTIONS_COLLECTION = 'predefinedTriviaQuestions'; // Define locally
+const PREDEFINED_QUESTIONS_COLLECTION = 'predefinedTriviaQuestions';
 const DEFAULT_MODEL_FOR_VALIDATION = 'googleai/gemini-2.5-flash';
 
 // --- Argument Parsing with yargs ---
@@ -60,50 +60,92 @@ const argv = yargs(hideBin(process.argv))
   .alias('help', 'h')
   .parseSync();
 
+
+function normalizeFirestoreDocToQuestionData(doc: admin.firestore.DocumentSnapshot): QuestionData | null {
+    const data = doc.data();
+    if (!data) return null;
+
+    // Base validation for common fields
+    if (!data.question || !data.explanation || !data.difficulty || !data.topicValue) {
+        return null;
+    }
+
+    const baseQuestion = {
+        id: doc.id,
+        question: data.question as BilingualText,
+        explanation: data.explanation as BilingualText,
+        difficulty: data.difficulty as DifficultyLevel,
+        topicValue: data.topicValue as string,
+        hint: data.hint as BilingualText | undefined,
+        status: data.status as 'accepted' | 'fixed' | undefined,
+        source: data.source as string | undefined,
+        createdAt: data.createdAt ? (data.createdAt as admin.firestore.Timestamp).toDate().toISOString() : undefined
+    };
+
+    // Check for new format
+    if (data.correctAnswer && Array.isArray(data.distractors) && data.distractors.length === 3) {
+        return {
+            ...baseQuestion,
+            correctAnswer: data.correctAnswer as BilingualText,
+            distractors: data.distractors as BilingualText[]
+        };
+    }
+
+    // Check for old format and convert
+    if (Array.isArray(data.answers) && data.answers.length === 4 && typeof data.correctAnswerIndex === 'number') {
+        const { answers, correctAnswerIndex } = data;
+        const correctAnswer = answers[correctAnswerIndex];
+        if (!correctAnswer) {
+            console.warn(`[normalizeQuestion] Invalid old format for ${doc.id}: correctAnswerIndex out of bounds.`);
+            return null;
+        }
+        const distractors = answers.filter((_: any, i: number) => i !== correctAnswerIndex);
+
+        return {
+            ...baseQuestion,
+            correctAnswer: correctAnswer,
+            distractors: distractors
+        };
+    }
+
+    console.warn(`[normalizeQuestion] Document ${doc.id} does not match any known question format. Skipping.`);
+    return null;
+}
+
 function formatQuestionForDisplay(label: string, qData: QuestionData | GenerateTriviaQuestionOutput, originalId?: string, originalTopicValue?: string) {
   console.log(`\n--- ${label} ---`);
   if (originalId) console.log(`ID: ${originalId}`);
   if (originalTopicValue) console.log(`Topic Value: ${originalTopicValue}`);
   
-  // Type guard to check if it's QuestionData (which has id, topicValue etc.) or GenerateTriviaQuestionOutput
   const isFullQuestionData = (data: any): data is QuestionData => 'id' in data;
 
-  if (!isFullQuestionData(qData) || label.startsWith("Fixed")) { // For fixed data, or if we are passed the partial fixed structure
-     const data = qData as GenerateTriviaQuestionOutput; // Cast to the structure AI returns for fixes
-     console.log(`Difficulty: ${data.difficulty}`);
-     console.log(`Question EN: ${data.question.en}`);
-     console.log(`Question ES: ${data.question.es}`);
-     data.answers.forEach((ans, i) => {
-       console.log(`  Answer ${i + 1} EN: ${ans.en}`);
-       console.log(`  Answer ${i + 1} ES: ${ans.es}`);
-     });
-     console.log(`Correct Answer Index: ${data.correctAnswerIndex}`);
-     console.log(`Explanation EN: ${data.explanation.en}`);
-     console.log(`Explanation ES: ${data.explanation.es}`);
-     if (data.hint) {
-       console.log(`Hint EN: ${data.hint.en}`);
-       console.log(`Hint ES: ${data.hint.es}`);
-     }
-  } else { // It's the full QuestionData from Firestore
-    const data = qData as QuestionData;
-    if (data.status) console.log(`Status: ${data.status}`);
-    console.log(`Difficulty: ${data.difficulty}`);
-    console.log(`Question EN: ${data.question.en}`);
-    console.log(`Question ES: ${data.question.es}`);
-    data.answers.forEach((ans, i) => {
-      console.log(`  Answer ${i + 1} EN: ${ans.en}`);
-      console.log(`  Answer ${i + 1} ES: ${ans.es}`);
-    });
-    console.log(`Correct Answer Index: ${data.correctAnswerIndex}`);
-    console.log(`Explanation EN: ${data.explanation.en}`);
-    console.log(`Explanation ES: ${data.explanation.es}`);
-    if (data.hint) {
-      console.log(`Hint EN: ${data.hint.en}`);
-      console.log(`Hint ES: ${data.hint.es}`);
-    }
-    if (data.source) console.log(`Source: ${data.source}`);
-    if (data.createdAt) console.log(`Created At: ${data.createdAt}`);
+  const dataToDisplay = isFullQuestionData(qData) ? qData : qData as GenerateTriviaQuestionOutput;
+
+  console.log(`Difficulty: ${dataToDisplay.difficulty}`);
+  console.log(`Question EN: ${dataToDisplay.question.en}`);
+  console.log(`Question ES: ${dataToDisplay.question.es}`);
+  console.log(`Correct Answer EN: ${dataToDisplay.correctAnswer.en}`);
+  console.log(`Correct Answer ES: ${dataToDisplay.correctAnswer.es}`);
+  
+  dataToDisplay.distractors.forEach((ans, i) => {
+    console.log(`  Distractor ${i + 1} EN: ${ans.en}`);
+    console.log(`  Distractor ${i + 1} ES: ${ans.es}`);
+  });
+
+  console.log(`Explanation EN: ${dataToDisplay.explanation.en}`);
+  console.log(`Explanation ES: ${dataToDisplay.explanation.es}`);
+
+  if (dataToDisplay.hint) {
+    console.log(`Hint EN: ${dataToDisplay.hint.en}`);
+    console.log(`Hint ES: ${dataToDisplay.hint.es}`);
   }
+
+  if (isFullQuestionData(qData)) {
+    if (qData.status) console.log(`Status: ${qData.status}`);
+    if (qData.source) console.log(`Source: ${qData.source}`);
+    if (qData.createdAt) console.log(`Created At: ${qData.createdAt}`);
+  }
+  
   console.log(`--- End ${label} ---\n`);
 }
 
@@ -119,7 +161,7 @@ async function validateQuestion() {
   if(doAutoDelete) console.log("Auto-delete mode enabled.");
 
   try {
-    const questionRef = db.collection(PREDEFINED_QUESTIONS_COLLECTION).doc(questionId); // Use admin SDK
+    const questionRef = db.collection(PREDEFINED_QUESTIONS_COLLECTION).doc(questionId);
     const docSnap = await questionRef.get();
 
     if (!docSnap.exists) {
@@ -127,20 +169,12 @@ async function validateQuestion() {
       return;
     }
 
-    const firestoreData = docSnap.data();
-    const originalQuestionData: QuestionData = {
-        id: docSnap.id,
-        topicValue: firestoreData?.topicValue,
-        question: firestoreData?.question,
-        answers: firestoreData?.answers,
-        correctAnswerIndex: firestoreData?.correctAnswerIndex,
-        explanation: firestoreData?.explanation,
-        hint: firestoreData?.hint,
-        difficulty: firestoreData?.difficulty,
-        status: firestoreData?.status,
-        source: firestoreData?.source,
-        createdAt: firestoreData?.createdAt ? (firestoreData.createdAt as admin.firestore.Timestamp).toDate().toISOString() : undefined,
-    };
+    const originalQuestionData = normalizeFirestoreDocToQuestionData(docSnap);
+    
+    if (!originalQuestionData) {
+        console.error(`Error: Could not normalize question data for ID "${questionId}". It might have an invalid format.`);
+        return;
+    }
     
     formatQuestionForDisplay("Original Question", originalQuestionData);
 

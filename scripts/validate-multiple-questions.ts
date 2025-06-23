@@ -5,8 +5,8 @@ config(); // Load environment variables from .env file
 import admin from 'firebase-admin';
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
-import { validateSingleTriviaQuestion, type ValidateSingleQuestionInput, type ValidateSingleQuestionOutput, type QuestionData } from '../src/ai/flows/validate-single-trivia-question';
-import type { DifficultyLevel } from '@/ai/flows/generate-trivia-question';
+import { validateSingleTriviaQuestion, type ValidateSingleQuestionInput, type QuestionData } from '../src/ai/flows/validate-single-trivia-question';
+import type { DifficultyLevel, BilingualText } from '@/ai/flows/generate-trivia-question';
 
 // Initialize Firebase Admin SDK
 try {
@@ -78,6 +78,58 @@ const argv = yargs(hideBin(process.argv))
   .alias('help', 'h')
   .parseSync();
 
+
+function normalizeFirestoreDocToQuestionData(doc: admin.firestore.DocumentSnapshot): QuestionData | null {
+    const data = doc.data();
+    if (!data) return null;
+
+    // Base validation for common fields
+    if (!data.question || !data.explanation || !data.difficulty || !data.topicValue) {
+        return null;
+    }
+
+    const baseQuestion = {
+        id: doc.id,
+        question: data.question as BilingualText,
+        explanation: data.explanation as BilingualText,
+        difficulty: data.difficulty as DifficultyLevel,
+        topicValue: data.topicValue as string,
+        hint: data.hint as BilingualText | undefined,
+        status: data.status as 'accepted' | 'fixed' | undefined,
+        source: data.source as string | undefined,
+        createdAt: data.createdAt ? (data.createdAt as admin.firestore.Timestamp).toDate().toISOString() : undefined
+    };
+
+    // Check for new format
+    if (data.correctAnswer && Array.isArray(data.distractors) && data.distractors.length === 3) {
+        return {
+            ...baseQuestion,
+            correctAnswer: data.correctAnswer as BilingualText,
+            distractors: data.distractors as BilingualText[]
+        };
+    }
+
+    // Check for old format and convert
+    if (Array.isArray(data.answers) && data.answers.length === 4 && typeof data.correctAnswerIndex === 'number') {
+        const { answers, correctAnswerIndex } = data;
+        const correctAnswer = answers[correctAnswerIndex];
+        if (!correctAnswer) {
+            console.warn(`[normalizeQuestion] Invalid old format for ${doc.id}: correctAnswerIndex out of bounds.`);
+            return null;
+        }
+        const distractors = answers.filter((_: any, i: number) => i !== correctAnswerIndex);
+
+        return {
+            ...baseQuestion,
+            correctAnswer: correctAnswer,
+            distractors: distractors
+        };
+    }
+
+    console.warn(`[normalizeQuestion] Document ${doc.id} does not match any known question format. Skipping.`);
+    return null;
+}
+
 async function validateMultipleQuestions() {
   const { topicValue, difficulty, model, auto, autofix, autodelete, force, batchSize } = argv;
   const doAutoFix = autofix || auto;
@@ -105,22 +157,9 @@ async function validateMultipleQuestions() {
       return;
     }
 
-    const allQuestionsInScope = snapshot.docs.map(doc => {
-      const data = doc.data();
-      return {
-        id: doc.id,
-        topicValue: data.topicValue,
-        question: data.question,
-        answers: data.answers,
-        correctAnswerIndex: data.correctAnswerIndex,
-        explanation: data.explanation,
-        hint: data.hint,
-        difficulty: data.difficulty,
-        status: data.status,
-        source: data.source,
-        createdAt: data.createdAt ? (data.createdAt as admin.firestore.Timestamp).toDate().toISOString() : undefined,
-      };
-    });
+    const allQuestionsInScope = snapshot.docs
+        .map(normalizeFirestoreDocToQuestionData)
+        .filter((q): q is QuestionData => q !== null);
 
     const questionsToValidate = force
       ? allQuestionsInScope
@@ -205,9 +244,6 @@ async function validateMultipleQuestions() {
 
   } catch (error) {
     console.error("Fatal error during script execution:", error);
-    if (error instanceof Error && error.message.includes('INVALID_ARGUMENT')) {
-        console.error("\nFirestore query error: This can happen if the 'status' field does not exist on any documents matching your query. To resolve this, you can run a one-time script to add a default status to documents or manually add the 'status' field to at least one document in the query's scope.");
-    }
   }
 }
 

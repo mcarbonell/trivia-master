@@ -9,6 +9,7 @@ import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
 import type { PredefinedQuestion } from '../src/services/triviaService'; // Using this type for structure
 import type { DifficultyLevel, BilingualText } from '../src/types';
+import type { GenerateTriviaQuestionOutput } from '@/ai/flows/generate-trivia-question';
 
 // Initialize Firebase Admin SDK
 try {
@@ -73,7 +74,7 @@ async function importQuestions() {
     let questionsSkipped = 0;
 
     for (const question of questionsData) {
-      // Basic validation
+      // Basic validation for old format
       if (
         !question.id || typeof question.id !== 'string' ||
         !question.topicValue || typeof question.topicValue !== 'string' ||
@@ -83,17 +84,21 @@ async function importQuestions() {
         !isValidBilingualText(question.explanation) ||
         !question.difficulty || !ALL_DIFFICULTY_LEVELS_CONST.includes(question.difficulty)
       ) {
-        console.warn(`Skipping question due to missing/invalid required fields. ID: ${question.id || 'N/A'}, Data: ${JSON.stringify(question).substring(0, 200)}...`);
+        console.warn(`Skipping question due to missing/invalid required fields in old format. ID: ${question.id || 'N/A'}, Data: ${JSON.stringify(question).substring(0, 200)}...`);
         questionsSkipped++;
         continue;
       }
-
+      
+      // Convert old format to new format
+      const correctAnswer = question.answers[question.correctAnswerIndex];
+      const distractors = question.answers.filter((_: any, i: number) => i !== question.correctAnswerIndex);
+      
       const questionToSave: { [key: string]: any } = {
-        id: question.id, // Firestore doc ID will be this
+        // id field is not stored in the document, but used for doc ID
         topicValue: question.topicValue,
         question: question.question,
-        answers: question.answers,
-        correctAnswerIndex: question.correctAnswerIndex,
+        correctAnswer: correctAnswer,
+        distractors: distractors,
         explanation: question.explanation,
         difficulty: question.difficulty,
       };
@@ -104,25 +109,23 @@ async function importQuestions() {
       if (question.source && typeof question.source === 'string') {
         questionToSave.source = question.source;
       }
+      // Convert ISO string date back to Firestore Timestamp for consistency
       if (question.createdAt && typeof question.createdAt === 'string') {
         try {
           const date = new Date(question.createdAt);
           if (!isNaN(date.getTime())) {
             questionToSave.createdAt = admin.firestore.Timestamp.fromDate(date);
-          } else {
-            console.warn(`Invalid createdAt date string for question ID ${question.id}: ${question.createdAt}. Skipping createdAt field.`);
           }
         } catch (e) {
-            console.warn(`Error parsing createdAt date string for question ID ${question.id}: ${question.createdAt}. Skipping createdAt field. Error: ${e}`);
+          console.warn(`Could not parse createdAt for question ${question.id}. Skipping.`);
         }
-      } else if (!question.createdAt) {
-        // If createdAt is not in JSON, set it to server timestamp for new imports,
-        // but merge:true will keep existing if question.id matches.
-        // For simplicity, if you want to always override, you can set it here.
-        // If you want to preserve existing, ensure JSON doesn't have it or handle selectively.
-        // Here, if not present, we don't add it, relying on Firestore's behavior with merge:true.
+      } else {
+        // For new imports without a date, set it to now
+        questionToSave.createdAt = admin.firestore.FieldValue.serverTimestamp();
       }
-
+      if (question.status && ['accepted', 'fixed'].includes(question.status)) {
+        questionToSave.status = question.status;
+      }
 
       const docRef = db.collection(PREDEFINED_QUESTIONS_COLLECTION).doc(question.id);
       batch.set(docRef, questionToSave, { merge: true });
@@ -144,7 +147,7 @@ async function importQuestions() {
       console.log('Final batch committed.');
     }
 
-    console.log(`Successfully imported/updated ${questionsImported} questions.`);
+    console.log(`Successfully imported/updated ${questionsImported} questions (converted to new format).`);
     if (questionsSkipped > 0) {
       console.warn(`Skipped ${questionsSkipped} questions due to validation errors.`);
     }
@@ -163,4 +166,3 @@ importQuestions().catch(error => {
   console.error("Unhandled error in importQuestions script:", error);
   process.exit(1);
 });
-
