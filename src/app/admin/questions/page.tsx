@@ -29,23 +29,22 @@ import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
 
 const ITEMS_PER_PAGE = 10;
-
 const ALL_DIFFICULTY_LEVELS: DifficultyLevel[] = ["easy", "medium", "hard"];
 
 export const questionFormSchema = z.object({
   questionEn: z.string().min(1, { message: "English question is required." }),
   questionEs: z.string().min(1, { message: "Spanish question is required." }),
-  answer1En: z.string().min(1, { message: "Answer A (English) is required." }),
-  answer1Es: z.string().min(1, { message: "Answer A (Spanish) is required." }),
-  answer2En: z.string().min(1, { message: "Answer B (English) is required." }),
-  answer2Es: z.string().min(1, { message: "Answer B (Spanish) is required." }),
-  answer3En: z.string().min(1, { message: "Answer C (English) is required." }),
-  answer3Es: z.string().min(1, { message: "Answer C (Spanish) is required." }),
-  answer4En: z.string().min(1, { message: "Answer D (English) is required." }),
-  answer4Es: z.string().min(1, { message: "Answer D (Spanish) is required." }),
-  correctAnswerIndex: z.string().refine(val => ['0', '1', '2', '3'].includes(val), {
-    message: "Please select a valid correct answer.",
-  }),
+
+  correctAnswerEn: z.string().min(1, { message: "Correct Answer (English) is required." }),
+  correctAnswerEs: z.string().min(1, { message: "Correct Answer (Spanish) is required." }),
+
+  distractor1En: z.string().min(1, { message: "Distractor 1 (English) is required." }),
+  distractor1Es: z.string().min(1, { message: "Distractor 1 (Spanish) is required." }),
+  distractor2En: z.string().min(1, { message: "Distractor 2 (English) is required." }),
+  distractor2Es: z.string().min(1, { message: "Distractor 2 (Spanish) is required." }),
+  distractor3En: z.string().min(1, { message: "Distractor 3 (English) is required." }),
+  distractor3Es: z.string().min(1, { message: "Distractor 3 (Spanish) is required." }),
+
   explanationEn: z.string().min(1, { message: "English explanation is required." }),
   explanationEs: z.string().min(1, { message: "Spanish explanation is required." }),
   hintEn: z.string().optional(),
@@ -152,6 +151,19 @@ export default function AdminQuestionsPage() {
   const filteredQuestions = useMemo(() => {
     const trimmedSearchQuery = searchQuery.trim();
     const lowerSearchQuery = trimmedSearchQuery.toLowerCase();
+    
+    // Normalize correct answer for searching across old/new formats if necessary
+    const getSearchableAnswers = (q: PredefinedQuestion): string[] => {
+      const answers: string[] = [];
+      if (q.correctAnswer) {
+        answers.push(q.correctAnswer.en.toLowerCase(), q.correctAnswer.es.toLowerCase());
+      }
+      if (q.distractors) {
+        q.distractors.forEach(d => answers.push(d.en.toLowerCase(), d.es.toLowerCase()));
+      }
+      return answers;
+    };
+
 
     let questions = questionsForSelectedCategory
       .filter(q => selectedDifficulty === 'all' || q.difficulty === selectedDifficulty)
@@ -160,10 +172,9 @@ export default function AdminQuestionsPage() {
         if (q.id === trimmedSearchQuery) return true; 
         const inQuestion = q.question.en.toLowerCase().includes(lowerSearchQuery) || q.question.es.toLowerCase().includes(lowerSearchQuery);
         if (inQuestion) return true;
-        const inAnswers = q.answers.some(ans =>
-          ans.en.toLowerCase().includes(lowerSearchQuery) || ans.es.toLowerCase().includes(lowerSearchQuery)
-        );
-        return inAnswers;
+        
+        const searchableAnswers = getSearchableAnswers(q);
+        return searchableAnswers.some(ans => ans.includes(lowerSearchQuery));
       });
 
     if (selectedCategory) {
@@ -175,8 +186,8 @@ export default function AdminQuestionsPage() {
           textA = a.question[locale]?.toLowerCase() || '';
           textB = b.question[locale]?.toLowerCase() || '';
         } else if (sortCriteria === 'answer') {
-          textA = a.answers[a.correctAnswerIndex]?.[locale]?.toLowerCase() || '';
-          textB = b.answers[b.correctAnswerIndex]?.[locale]?.toLowerCase() || '';
+          textA = a.correctAnswer?.[locale]?.toLowerCase() || '';
+          textB = b.correctAnswer?.[locale]?.toLowerCase() || '';
         }
         
         const comparison = textA.localeCompare(textB);
@@ -240,15 +251,14 @@ export default function AdminQuestionsPage() {
     form.reset({
       questionEn: question.question.en,
       questionEs: question.question.es,
-      answer1En: question.answers[0]?.en || '',
-      answer1Es: question.answers[0]?.es || '',
-      answer2En: question.answers[1]?.en || '',
-      answer2Es: question.answers[1]?.es || '',
-      answer3En: question.answers[2]?.en || '',
-      answer3Es: question.answers[2]?.es || '',
-      answer4En: question.answers[3]?.en || '',
-      answer4Es: question.answers[3]?.es || '',
-      correctAnswerIndex: String(question.correctAnswerIndex),
+      correctAnswerEn: question.correctAnswer.en,
+      correctAnswerEs: question.correctAnswer.es,
+      distractor1En: question.distractors[0]?.en || '',
+      distractor1Es: question.distractors[0]?.es || '',
+      distractor2En: question.distractors[1]?.en || '',
+      distractor2Es: question.distractors[1]?.es || '',
+      distractor3En: question.distractors[2]?.en || '',
+      distractor3Es: question.distractors[2]?.es || '',
       explanationEn: question.explanation.en,
       explanationEs: question.explanation.es,
       hintEn: question.hint?.en || '',
@@ -287,13 +297,12 @@ export default function AdminQuestionsPage() {
 
     const updatedQuestionData: Partial<GenerateTriviaQuestionOutput> = {
       question: { en: data.questionEn, es: data.questionEs },
-      answers: [
-        { en: data.answer1En, es: data.answer1Es },
-        { en: data.answer2En, es: data.answer2Es },
-        { en: data.answer3En, es: data.answer3Es },
-        { en: data.answer4En, es: data.answer4Es },
+      correctAnswer: { en: data.correctAnswerEn, es: data.correctAnswerEs },
+      distractors: [
+        { en: data.distractor1En, es: data.distractor1Es },
+        { en: data.distractor2En, es: data.distractor2Es },
+        { en: data.distractor3En, es: data.distractor3Es },
       ],
-      correctAnswerIndex: parseInt(data.correctAnswerIndex, 10),
       explanation: { en: data.explanationEn, es: data.explanationEs },
       hint: (data.hintEn || data.hintEs) ? { en: data.hintEn || '', es: data.hintEs || '' } : undefined,
       difficulty: data.difficulty,
@@ -387,8 +396,8 @@ export default function AdminQuestionsPage() {
     }
 
     const questionsToExport = displayQuestions.map(q => {
-      const { id, topicValue, question, answers, correctAnswerIndex, explanation, difficulty, hint, source, createdAt, status } = q;
-      const exportableQuestion: any = { id, topicValue, question, answers, correctAnswerIndex, explanation, difficulty };
+      const { id, topicValue, question, correctAnswer, distractors, explanation, difficulty, hint, source, createdAt, status } = q;
+      const exportableQuestion: any = { id, topicValue, question, correctAnswer, distractors, explanation, difficulty };
       if (hint) exportableQuestion.hint = hint;
       if (source) exportableQuestion.source = source;
       if (createdAt) exportableQuestion.createdAt = createdAt;
@@ -628,7 +637,7 @@ export default function AdminQuestionsPage() {
                       <TableCell>{tCommon(`difficultyLevels.${question.difficulty}` as any) || question.difficulty}</TableCell>
                       <TableCell className="hidden lg:table-cell">
                          <span className="block break-words">
-                           {truncateText(question.answers[question.correctAnswerIndex]?.[locale] || 'N/A', 40)}
+                           {truncateText(question.correctAnswer?.[locale] || 'N/A', 40)}
                          </span>
                       </TableCell>
                       <TableCell className="text-right space-x-1">
@@ -731,18 +740,25 @@ export default function AdminQuestionsPage() {
                     <p><strong>{tCommon('spanish')}:</strong> {currentQuestionToView.question.es}</p>
                   </CardContent>
                 </Card>
-
-                {currentQuestionToView.answers.map((ans, idx) => (
-                  <Card key={idx} className={cn(idx === currentQuestionToView.correctAnswerIndex && "border-green-500 ring-2 ring-green-500")}>
+                
+                <Card className="border-green-500 ring-2 ring-green-500">
                     <CardHeader className="py-2">
-                      <CardTitle className="text-base">
-                        {tForm('answerLabel', { letter: String.fromCharCode(65 + idx) })}
-                        {idx === currentQuestionToView.correctAnswerIndex && <span className="text-sm font-normal text-green-600 ml-2">({t('correctAnswer')})</span>}
+                      <CardTitle className="text-base text-green-600">
+                        {tForm('correctAnswerLabel')}
                       </CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-2 pt-0 pb-2">
-                      <p><strong>{tCommon('english')}:</strong> {ans.en}</p>
-                      <p><strong>{tCommon('spanish')}:</strong> {ans.es}</p>
+                      <p><strong>{tCommon('english')}:</strong> {currentQuestionToView.correctAnswer.en}</p>
+                      <p><strong>{tCommon('spanish')}:</strong> {currentQuestionToView.correctAnswer.es}</p>
+                    </CardContent>
+                </Card>
+
+                {currentQuestionToView.distractors.map((distractor, idx) => (
+                  <Card key={idx}>
+                    <CardHeader className="py-2"><CardTitle className="text-base">{tForm('distractorLabel', { number: idx + 1 })}</CardTitle></CardHeader>
+                    <CardContent className="space-y-2 pt-0 pb-2">
+                      <p><strong>{tCommon('english')}:</strong> {distractor.en}</p>
+                      <p><strong>{tCommon('spanish')}:</strong> {distractor.es}</p>
                     </CardContent>
                   </Card>
                 ))}
@@ -815,38 +831,23 @@ export default function AdminQuestionsPage() {
                   </CardContent>
                 </Card>
 
-                {[1, 2, 3, 4].map(idx => (
+                <Card className="border-green-500 ring-2 ring-green-500">
+                  <CardHeader><CardTitle className="text-lg text-green-600">{tForm('correctAnswerLabel')}</CardTitle></CardHeader>
+                  <CardContent className="space-y-4">
+                      <FormField control={form.control} name="correctAnswerEn" render={({ field }) => ( <FormItem> <FormLabel>{tCommon('english')}</FormLabel> <FormControl><Input placeholder={tForm('answerPlaceholder')} {...field} /></FormControl> <FormMessage /> </FormItem> )}/>
+                      <FormField control={form.control} name="correctAnswerEs" render={({ field }) => ( <FormItem> <FormLabel>{tCommon('spanish')}</FormLabel> <FormControl><Input placeholder={tForm('answerPlaceholder')} {...field} /></FormControl> <FormMessage /> </FormItem> )}/>
+                  </CardContent>
+                </Card>
+
+                {[1, 2, 3].map(idx => (
                   <Card key={idx}>
-                    <CardHeader><CardTitle className="text-lg">{tForm('answerLabel', { letter: String.fromCharCode(64 + idx) })}</CardTitle></CardHeader>
+                    <CardHeader><CardTitle className="text-lg">{tForm('distractorLabel', { number: idx })}</CardTitle></CardHeader>
                     <CardContent className="space-y-4">
-                      <FormField control={form.control} name={`answer${idx}En` as keyof QuestionFormData} render={({ field }) => ( <FormItem> <FormLabel>{tCommon('english')}</FormLabel> <FormControl><Input placeholder={tForm('answerPlaceholder')} {...field} /></FormControl> <FormMessage /> </FormItem> )}/>
-                      <FormField control={form.control} name={`answer${idx}Es` as keyof QuestionFormData} render={({ field }) => ( <FormItem> <FormLabel>{tCommon('spanish')}</FormLabel> <FormControl><Input placeholder={tForm('answerPlaceholder')} {...field} /></FormControl> <FormMessage /> </FormItem> )}/>
+                      <FormField control={form.control} name={`distractor${idx}En` as keyof QuestionFormData} render={({ field }) => ( <FormItem> <FormLabel>{tCommon('english')}</FormLabel> <FormControl><Input placeholder={tForm('answerPlaceholder')} {...field} /></FormControl> <FormMessage /> </FormItem> )}/>
+                      <FormField control={form.control} name={`distractor${idx}Es` as keyof QuestionFormData} render={({ field }) => ( <FormItem> <FormLabel>{tCommon('spanish')}</FormLabel> <FormControl><Input placeholder={tForm('answerPlaceholder')} {...field} /></FormControl> <FormMessage /> </FormItem> )}/>
                     </CardContent>
                   </Card>
                 ))}
-
-                <FormField
-                  control={form.control}
-                  name="correctAnswerIndex"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>{tForm('correctAnswerLabel')}</FormLabel>
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder={tForm('correctAnswerPlaceholder')} />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          {['0', '1', '2', '3'].map(idx_str => ( 
-                            <SelectItem key={idx_str} value={idx_str}>{tForm('answerOption', { letter: String.fromCharCode(65 + parseInt(idx_str)) })}</SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
 
                 <Card>
                   <CardHeader><CardTitle className="text-lg">{tForm('explanationLabel')}</CardTitle></CardHeader>

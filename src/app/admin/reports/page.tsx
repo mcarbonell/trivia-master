@@ -7,9 +7,9 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { format } from 'date-fns';
 import { es as esLocale, enUS as enLocale } from 'date-fns/locale';
 import { getReportedQuestions, updateReportStatus, deleteReport } from '@/services/reportService';
-import { deletePredefinedQuestion, updatePredefinedQuestion } from '@/services/triviaService'; // Added updatePredefinedQuestion
+import { deletePredefinedQuestion, updatePredefinedQuestion, normalizeQuestionData as normalizeFirestoreQuestion } from '@/services/triviaService';
 import { getAppCategories } from '@/services/categoryService';
-import type { ReportData, ReportStatus, CategoryDefinition, DifficultyLevel, PredefinedQuestion } from '@/types'; // Added PredefinedQuestion
+import type { ReportData, ReportStatus, CategoryDefinition, DifficultyLevel, PredefinedQuestion } from '@/types';
 import type { AppLocale } from '@/lib/i18n-config';
 import type { GenerateTriviaQuestionOutput } from '@/ai/flows/generate-trivia-question';
 
@@ -20,27 +20,26 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogClose } from '@/components/ui/dialog'; // Added Dialog components
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'; // Added Form components
-import { Input } from '@/components/ui/input'; // Added Input
-import { Textarea } from '@/components/ui/textarea'; // Added Textarea
-import { ScrollArea } from '@/components/ui/scroll-area'; // Added ScrollArea
-import { Loader2, AlertTriangle, RefreshCw, Trash2, ClipboardCopy, Edit } from 'lucide-react'; // Added Edit
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogClose } from '@/components/ui/dialog';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { Loader2, AlertTriangle, RefreshCw, Trash2, ClipboardCopy, Edit } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import { db } from '@/lib/firebase'; // For getDoc
-import { doc, getDoc } from 'firebase/firestore'; // For getDoc
-// Removed import of PREDEFINED_QUESTIONS_COLLECTION
-import { questionFormSchema, type QuestionFormData } from '@/app/admin/questions/page'; // Import schema and type
+import { db } from '@/lib/firebase';
+import { doc, getDoc } from 'firebase/firestore';
+import { questionFormSchema, type QuestionFormData } from '@/app/admin/questions/page';
 
 const ITEMS_PER_PAGE = 10;
 const REPORT_STATUSES: ReportStatus[] = ['new', 'reviewed', 'resolved', 'ignored'];
-const ALL_DIFFICULTY_LEVELS_CONST: DifficultyLevel[] = ["easy", "medium", "hard"]; // Replicate or import from questions page
-const PREDEFINED_QUESTIONS_COLLECTION = 'predefinedTriviaQuestions'; // Define constant locally
+const ALL_DIFFICULTY_LEVELS_CONST: DifficultyLevel[] = ["easy", "medium", "hard"];
+const PREDEFINED_QUESTIONS_COLLECTION = 'predefinedTriviaQuestions';
 
 export default function AdminReportsPage() {
   const t = useTranslations('AdminReportsPage');
   const tCommon = useTranslations();
-  const tForm = useTranslations('AdminQuestionsPage.form'); // Use translations from questions page for form
+  const tForm = useTranslations('AdminQuestionsPage.form');
   const currentLocale = useLocale() as AppLocale;
   const { toast } = useToast();
 
@@ -176,20 +175,24 @@ export default function AdminReportsPage() {
       const questionRef = doc(db, PREDEFINED_QUESTIONS_COLLECTION, report.questionId);
       const docSnap = await getDoc(questionRef);
       if (docSnap.exists()) {
-        const questionData = { id: docSnap.id, ...docSnap.data() } as PredefinedQuestion;
+        const questionData = await normalizeFirestoreQuestion(docSnap.id, docSnap.data());
+        if (!questionData) {
+            toast({ variant: "destructive", title: tCommon('toastErrorTitle') as string, description: t('errorQuestionNotFoundForEdit', {questionId: report.questionId}) });
+            return;
+        }
+
         setQuestionToEditData(questionData);
         questionEditForm.reset({
           questionEn: questionData.question.en,
           questionEs: questionData.question.es,
-          answer1En: questionData.answers[0]?.en || '',
-          answer1Es: questionData.answers[0]?.es || '',
-          answer2En: questionData.answers[1]?.en || '',
-          answer2Es: questionData.answers[1]?.es || '',
-          answer3En: questionData.answers[2]?.en || '',
-          answer3Es: questionData.answers[2]?.es || '',
-          answer4En: questionData.answers[3]?.en || '',
-          answer4Es: questionData.answers[3]?.es || '',
-          correctAnswerIndex: String(questionData.correctAnswerIndex),
+          correctAnswerEn: questionData.correctAnswer.en,
+          correctAnswerEs: questionData.correctAnswer.es,
+          distractor1En: questionData.distractors[0]?.en || '',
+          distractor1Es: questionData.distractors[0]?.es || '',
+          distractor2En: questionData.distractors[1]?.en || '',
+          distractor2Es: questionData.distractors[1]?.es || '',
+          distractor3En: questionData.distractors[2]?.en || '',
+          distractor3Es: questionData.distractors[2]?.es || '',
           explanationEn: questionData.explanation.en,
           explanationEs: questionData.explanation.es,
           hintEn: questionData.hint?.en || '',
@@ -212,13 +215,12 @@ export default function AdminReportsPage() {
 
     const updatedQuestionData: Partial<GenerateTriviaQuestionOutput> = {
       question: { en: data.questionEn, es: data.questionEs },
-      answers: [
-        { en: data.answer1En, es: data.answer1Es },
-        { en: data.answer2En, es: data.answer2Es },
-        { en: data.answer3En, es: data.answer3Es },
-        { en: data.answer4En, es: data.answer4Es },
+      correctAnswer: { en: data.correctAnswerEn, es: data.correctAnswerEs },
+      distractors: [
+        { en: data.distractor1En, es: data.distractor1Es },
+        { en: data.distractor2En, es: data.distractor2Es },
+        { en: data.distractor3En, es: data.distractor3Es },
       ],
-      correctAnswerIndex: parseInt(data.correctAnswerIndex, 10),
       explanation: { en: data.explanationEn, es: data.explanationEs },
       hint: (data.hintEn || data.hintEs) ? { en: data.hintEn || '', es: data.hintEs || '' } : undefined,
       difficulty: data.difficulty,
@@ -230,10 +232,6 @@ export default function AdminReportsPage() {
     try {
       await updatePredefinedQuestion(questionToEditData.id, updatedQuestionData);
       toast({ title: tCommon('toastSuccessTitle') as string, description: t('toastQuestionUpdateSuccess') });
-      // Note: fetchAllData() might be too broad if only question content changed,
-      // but report list itself doesn't change from this action.
-      // Consider if a more targeted update is needed or if this is acceptable.
-      // For now, keeping it simple and not re-fetching reports.
       setIsEditQuestionDialogOpen(false);
     } catch (err) {
       console.error("Error updating question:", err);
@@ -486,39 +484,24 @@ export default function AdminReportsPage() {
                   </CardContent>
                 </Card>
 
-                {[1, 2, 3, 4].map(idx => (
+                <Card className="border-green-500 ring-2 ring-green-500">
+                  <CardHeader><CardTitle className="text-lg text-green-600">{tForm('correctAnswerLabel')}</CardTitle></CardHeader>
+                  <CardContent className="space-y-4">
+                      <FormField control={questionEditForm.control} name="correctAnswerEn" render={({ field }) => ( <FormItem> <FormLabel>{tCommon('english')}</FormLabel> <FormControl><Input placeholder={tForm('answerPlaceholder')} {...field} /></FormControl> <FormMessage /> </FormItem> )}/>
+                      <FormField control={questionEditForm.control} name="correctAnswerEs" render={({ field }) => ( <FormItem> <FormLabel>{tCommon('spanish')}</FormLabel> <FormControl><Input placeholder={tForm('answerPlaceholder')} {...field} /></FormControl> <FormMessage /> </FormItem> )}/>
+                  </CardContent>
+                </Card>
+
+                {[1, 2, 3].map(idx => (
                   <Card key={idx}>
-                    <CardHeader><CardTitle className="text-lg">{tForm('answerLabel', { letter: String.fromCharCode(64 + idx) })}</CardTitle></CardHeader>
+                    <CardHeader><CardTitle className="text-lg">{tForm('distractorLabel', { number: idx })}</CardTitle></CardHeader>
                     <CardContent className="space-y-4">
-                      <FormField control={questionEditForm.control} name={`answer${idx}En` as keyof QuestionFormData} render={({ field }) => ( <FormItem> <FormLabel>{tCommon('english')}</FormLabel> <FormControl><Input placeholder={tForm('answerPlaceholder')} {...field} /></FormControl> <FormMessage /> </FormItem> )}/>
-                      <FormField control={questionEditForm.control} name={`answer${idx}Es` as keyof QuestionFormData} render={({ field }) => ( <FormItem> <FormLabel>{tCommon('spanish')}</FormLabel> <FormControl><Input placeholder={tForm('answerPlaceholder')} {...field} /></FormControl> <FormMessage /> </FormItem> )}/>
+                      <FormField control={questionEditForm.control} name={`distractor${idx}En` as keyof QuestionFormData} render={({ field }) => ( <FormItem> <FormLabel>{tCommon('english')}</FormLabel> <FormControl><Input placeholder={tForm('answerPlaceholder')} {...field} /></FormControl> <FormMessage /> </FormItem> )}/>
+                      <FormField control={questionEditForm.control} name={`distractor${idx}Es` as keyof QuestionFormData} render={({ field }) => ( <FormItem> <FormLabel>{tCommon('spanish')}</FormLabel> <FormControl><Input placeholder={tForm('answerPlaceholder')} {...field} /></FormControl> <FormMessage /> </FormItem> )}/>
                     </CardContent>
                   </Card>
                 ))}
                 
-                <FormField
-                  control={questionEditForm.control}
-                  name="correctAnswerIndex"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>{tForm('correctAnswerLabel')}</FormLabel>
-                      <Select onValueChange={field.onChange} value={field.value}>
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder={tForm('correctAnswerPlaceholder')} />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          {['0', '1', '2', '3'].map(idx_str => ( 
-                            <SelectItem key={idx_str} value={idx_str}>{tForm('answerOption', { letter: String.fromCharCode(65 + parseInt(idx_str)) })}</SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
                 <Card>
                   <CardHeader><CardTitle className="text-lg">{tForm('explanationLabel')}</CardTitle></CardHeader>
                   <CardContent className="space-y-4">

@@ -22,7 +22,7 @@ const FIRESTORE_QUERY_LIMIT_FOR_SINGLE_FETCH = 200;
  * @param data The document data.
  * @returns A PredefinedQuestion object in the new format, or null if data is invalid.
  */
-function normalizeQuestionData(docId: string, data: DocumentData): PredefinedQuestion | null {
+export async function normalizeQuestionData(docId: string, data: DocumentData): Promise<PredefinedQuestion | null> {
   // Base validation for common fields
   if (!data.question || !data.explanation || !data.difficulty || !data.topicValue) {
     return null;
@@ -40,7 +40,7 @@ function normalizeQuestionData(docId: string, data: DocumentData): PredefinedQue
   };
 
   // Check for new format (correctAnswer + distractors)
-  if (data.correctAnswer && Array.isArray(data.distractors) && data.distractors.length === 3) {
+  if (data.correctAnswer && Array.isArray(data.distractors)) {
     return {
       ...baseQuestion,
       correctAnswer: data.correctAnswer as BilingualText,
@@ -49,11 +49,15 @@ function normalizeQuestionData(docId: string, data: DocumentData): PredefinedQue
   }
 
   // Check for old format (answers + correctAnswerIndex) and convert it
-  if (Array.isArray(data.answers) && data.answers.length === 4 && typeof data.correctAnswerIndex === 'number') {
+  if (Array.isArray(data.answers) && typeof data.correctAnswerIndex === 'number') {
     const { answers, correctAnswerIndex } = data;
+    if (correctAnswerIndex < 0 || correctAnswerIndex >= answers.length) {
+        console.warn(`[normalizeQuestionData] Invalid old format for ${docId}: correctAnswerIndex out of bounds.`);
+        return null;
+    }
     const correctAnswer = answers[correctAnswerIndex];
     if (!correctAnswer) {
-      console.warn(`[normalizeQuestionData] Invalid old format for ${docId}: correctAnswerIndex out of bounds.`);
+      console.warn(`[normalizeQuestionData] Invalid old format for ${docId}: correctAnswer at index ${correctAnswerIndex} is missing.`);
       return null;
     }
     const distractors = answers.filter((_: any, i: number) => i !== correctAnswerIndex);
@@ -97,14 +101,8 @@ export async function getPredefinedQuestionFromFirestore(
     );
 
     const querySnapshot = await getDocs(q);
-    const potentialQuestions: PredefinedQuestion[] = [];
-    
-    querySnapshot.forEach((doc) => {
-      const normalized = normalizeQuestionData(doc.id, doc.data());
-      if (normalized) {
-        potentialQuestions.push(normalized);
-      }
-    });
+    const normalizationPromises = querySnapshot.docs.map(doc => normalizeQuestionData(doc.id, doc.data()));
+    const potentialQuestions = (await Promise.all(normalizationPromises)).filter((q): q is PredefinedQuestion => q !== null);
 
     const unaskedQuestions = potentialQuestions.filter(
       (pq) => !askedFirestoreIds.includes(pq.id)
@@ -135,13 +133,9 @@ export async function getAllQuestionsForTopic(topicValue: string): Promise<Prede
     const q = query(questionsRef, where('topicValue', '==', topicValue));
     const querySnapshot = await getDocs(q);
 
-    const questions: PredefinedQuestion[] = [];
-    querySnapshot.forEach((doc) => {
-      const normalized = normalizeQuestionData(doc.id, doc.data());
-      if (normalized) {
-        questions.push(normalized);
-      }
-    });
+    const normalizationPromises = querySnapshot.docs.map(doc => normalizeQuestionData(doc.id, doc.data()));
+    const questions = (await Promise.all(normalizationPromises)).filter((q): q is PredefinedQuestion => q !== null);
+    
     return questions;
   } catch (error) {
     console.error(`[triviaService.getAllQuestionsForTopic] Error fetching questions for topic ${topicValue}:`, error);
@@ -152,7 +146,7 @@ export async function getAllQuestionsForTopic(topicValue: string): Promise<Prede
 
 /**
  * Fetches all predefined bilingual trivia questions from Firestore for a specific category (for Admin Panel).
- * If no topicValue is provided, it returns an empty array.
+ * It normalizes data on read to ensure the admin panel always works with the new format.
  * @param topicValue The topicValue of the category to fetch questions for. If null/undefined, returns empty.
  * @returns A promise that resolves to an array of PredefinedQuestion.
  */
@@ -165,32 +159,12 @@ export async function getAllPredefinedQuestionsForAdmin(topicValue: string | nul
     const q = query(
         questionsRef, 
         where('topicValue', '==', topicValue), 
-        orderBy('difficulty') // Keep some basic ordering within category
+        orderBy('difficulty') 
     ); 
     const querySnapshot = await getDocs(q);
     
-    const questions: PredefinedQuestion[] = [];
-    querySnapshot.forEach((doc) => {
-      const normalized = normalizeQuestionData(doc.id, doc.data());
-      if (normalized) {
-        // Here, we convert back to the old format for the admin panel to work without changes for now.
-        // This is a temporary bridge.
-        const allAnswers = [normalized.correctAnswer, ...normalized.distractors];
-        // To make it deterministic for editing, we don't shuffle. Let's just put correct first.
-        // This is a compromise.
-        const correctAnswerIndex = 0; 
-        
-        const legacyFormatForAdmin = {
-            ...normalized,
-            answers: allAnswers,
-            correctAnswerIndex: correctAnswerIndex,
-        }
-        delete (legacyFormatForAdmin as any).correctAnswer;
-        delete (legacyFormatForAdmin as any).distractors;
-
-        questions.push(legacyFormatForAdmin as unknown as PredefinedQuestion);
-      }
-    });
+    const normalizationPromises = querySnapshot.docs.map(doc => normalizeQuestionData(doc.id, doc.data()));
+    const questions = (await Promise.all(normalizationPromises)).filter((q): q is PredefinedQuestion => q !== null);
     
     return questions;
   } catch (error) {
@@ -212,166 +186,9 @@ export async function deletePredefinedQuestion(questionId: string): Promise<void
 export async function updatePredefinedQuestion(questionId: string, data: Partial<GenerateTriviaQuestionOutput> & { status?: 'accepted' | 'fixed' }): Promise<void> {
   try {
     const questionRef = doc(db, PREDEFINED_QUESTIONS_COLLECTION, questionId);
-    // This will now accept the new format from GenerateTriviaQuestionOutput
-    await updateDoc(questionRef, data as any); // Using 'as any' to bypass temporary type mismatch during refactor
+    await updateDoc(questionRef, data as any);
   } catch (error) {
     console.error(`[triviaService] Error updating question ${questionId}:`, error);
     throw error; 
   }
 }
-
-// In `getAllPredefinedQuestionsForAdmin` I converted back to the old format.
-// This is a temporary measure so the admin panel doesn't break.
-// I need to do the same for `updatePredefinedQuestion` which receives the old format from the admin panel.
-// The admin panel sends an object with `answers` and `correctAnswerIndex`.
-
-export async function updatePredefinedQuestionFromAdmin(questionId: string, data: any): Promise<void> {
-    try {
-        const questionRef = doc(db, PREDEFINED_QUESTIONS_COLLECTION, questionId);
-        
-        // If data is in old format, convert to new before updating
-        if (data.answers && typeof data.correctAnswerIndex === 'number') {
-            const correctAnswer = data.answers[data.correctAnswerIndex];
-            const distractors = data.answers.filter((_: any, i: number) => i !== data.correctAnswerIndex);
-            
-            const newData = {
-                question: data.question,
-                explanation: data.explanation,
-                hint: data.hint,
-                difficulty: data.difficulty,
-                status: data.status,
-                correctAnswer: correctAnswer,
-                distractors: distractors
-            };
-            
-            // Remove old fields
-            delete data.answers;
-            delete data.correctAnswerIndex;
-            
-            await updateDoc(questionRef, newData);
-        } else {
-            // Assume it's already in the new format or other partial update
-            await updateDoc(questionRef, data);
-        }
-    } catch (error) {
-        console.error(`[triviaService] Error updating question ${questionId} from admin:`, error);
-        throw error;
-    }
-}
-// I will replace the call in `admin/questions/page.tsx` later. For now, I'll update the original `updatePredefinedQuestion`.
-// Let's check `admin/questions/page.tsx` to see what it sends.
-// It sends a `Partial<GenerateTriviaQuestionOutput>`
-// GenerateTriviaQuestionOutput is now { correctAnswer, distractors }.
-// But the form builds `answers` and `correctAnswerIndex`.
-// So I will update `updatePredefinedQuestion` to handle this conversion.
-
-const originalUpdatePredefinedQuestion = updatePredefinedQuestion;
-export async function updatePredefinedQuestion_modified(questionId: string, data: any): Promise<void> {
-    try {
-        const questionRef = doc(db, PREDEFINED_QUESTIONS_COLLECTION, questionId);
-        
-        let dataToUpdate = data;
-        // The admin panel sends the old format from its form
-        if (data.answers && typeof data.correctAnswerIndex === 'number') {
-            const correctAnswer = data.answers[data.correctAnswerIndex];
-            const distractors = data.answers.filter((_: any, i: number) => i !== data.correctAnswerIndex);
-            
-            dataToUpdate = {
-                ...data,
-                correctAnswer,
-                distractors,
-            };
-            delete dataToUpdate.answers;
-            delete dataToUpdate.correctAnswerIndex;
-        }
-
-        await updateDoc(questionRef, dataToUpdate);
-    } catch (error) {
-        console.error(`[triviaService] Error updating question ${questionId}:`, error);
-        throw error;
-    }
-}
-
-// I will overwrite the existing function with this logic.
-async function finalUpdatePredefinedQuestion(questionId: string, data: any): Promise<void> {
-  try {
-    const questionRef = doc(db, PREDEFINED_QUESTIONS_COLLECTION, questionId);
-    let dataToUpdate = { ...data };
-
-    if (data.answers && typeof data.correctAnswerIndex !== 'undefined') {
-        const { answers, correctAnswerIndex, ...rest } = data;
-        const correctAnswer = answers[correctAnswerIndex];
-        const distractors = answers.filter((_: any, i: number) => i !== correctAnswerIndex);
-        dataToUpdate = {
-            ...rest,
-            correctAnswer,
-            distractors
-        };
-    }
-    await updateDoc(questionRef, dataToUpdate);
-  } catch (error) {
-    console.error(`[triviaService] Error updating question ${questionId}:`, error);
-    throw error;
-  }
-}
-// This is getting complicated. I'll stick with my first plan. The admin panel can be updated later.
-// The game page is the priority.
-// The conversion in `getAllPredefinedQuestionsForAdmin` should be undone for now. It will break the admin UI, but that's a later phase.
-// I will just implement the normalization on read.
-// The admin panel will break, but that's expected.
-
-// Reverting `getAllPredefinedQuestionsForAdmin` to its simpler form for now. It will return normalized data.
-// The admin panel WILL break. This is expected. I will fix it in a later phase.
-
-const cleanGetAllPredefinedQuestionsForAdmin = async (topicValue: string | null): Promise<PredefinedQuestion[]> => {
-  if (!topicValue) {
-    return [];
-  }
-  try {
-    const questionsRef = collection(db, PREDEFINED_QUESTIONS_COLLECTION);
-    const q = query(
-        questionsRef, 
-        where('topicValue', '==', topicValue), 
-        orderBy('difficulty')
-    ); 
-    const querySnapshot = await getDocs(q);
-    
-    const questions: PredefinedQuestion[] = [];
-    querySnapshot.forEach((doc) => {
-      const normalized = normalizeQuestionData(doc.id, doc.data());
-      if (normalized) {
-          questions.push(normalized);
-      }
-    });
-    
-    return questions;
-  } catch (error) {
-    console.error(`[triviaService] Error fetching predefined questions for admin (topic: ${topicValue}):`, error);
-    throw error; 
-  }
-};
-// I'll replace the old `getAllPredefinedQuestionsForAdmin` with this clean one.
-
-// I'll also modify `updatePredefinedQuestion` to be simple. It will expect the new format.
-const cleanUpdatePredefinedQuestion = async(questionId: string, data: Partial<GenerateTriviaQuestionOutput> & { status?: 'accepted' | 'fixed' }): Promise<void> => {
-  try {
-    const questionRef = doc(db, PREDEFINED_QUESTIONS_COLLECTION, questionId);
-    await updateDoc(questionRef, data);
-  } catch (error) {
-    console.error(`[triviaService] Error updating question ${questionId}:`, error);
-    throw error; 
-  }
-};
-// I will replace `updatePredefinedQuestion` with this.
-
-// This is the final plan for `triviaService.ts`:
-// 1. Add `normalizeQuestionData` helper.
-// 2. Use it in `getPredefinedQuestionFromFirestore` and `getAllQuestionsForTopic`.
-// 3. Update `getAllPredefinedQuestionsForAdmin` to use it as well.
-// 4. Leave `updatePredefinedQuestion` as is, expecting new format. Admin panel will be fixed later.
-
-// Let's write the file.
-// I will also adjust the old format PredefinedQuestion interface in `triviaService.ts` to be an internal type.
-// The public exported `PredefinedQuestion` will be the new format.
-// This is getting too complex. I'll just change the data structures and then deal with the fallout.
-// I'll modify `triviaService.ts` to normalize on read. That's the simplest path forward.
