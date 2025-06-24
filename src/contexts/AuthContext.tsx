@@ -56,7 +56,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       // Create user profile in Firestore immediately after successful sign-up
-      await createUserProfile(userCredential.user);
+      const user = userCredential.user;
+      await createUserProfile(user.uid, user.email);
       // onAuthStateChanged will handle setting the user and loading state
     } catch (error) {
       setLoading(false);

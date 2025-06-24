@@ -3,7 +3,6 @@
 
 import { db } from '@/lib/firebase';
 import { doc, setDoc, getDoc, serverTimestamp, type DocumentData } from 'firebase/firestore';
-import type { User } from 'firebase/auth';
 import type { UserData } from '@/types';
 
 const USERS_COLLECTION = 'users';
@@ -11,22 +10,23 @@ const USERS_COLLECTION = 'users';
 /**
  * Creates a user profile document in Firestore.
  * This is typically called right after a user signs up.
- * @param user - The Firebase Auth User object.
+ * @param uid - The UID from the Firebase Auth user.
+ * @param email - The email from the Firebase Auth user.
  */
-export async function createUserProfile(user: User): Promise<void> {
-  const userRef = doc(db, USERS_COLLECTION, user.uid);
+export async function createUserProfile(uid: string, email: string | null): Promise<void> {
+  const userRef = doc(db, USERS_COLLECTION, uid);
   const userProfile: Omit<UserData, 'createdAt'> & { createdAt: any } = {
-    uid: user.uid,
-    email: user.email || '',
+    uid: uid,
+    email: email || '',
     role: 'user', // Default role for new sign-ups
     createdAt: serverTimestamp(),
   };
 
   try {
     await setDoc(userRef, userProfile);
-    console.log(`[userService] User profile created for UID: ${user.uid}`);
+    console.log(`[userService] User profile created for UID: ${uid}`);
   } catch (error) {
-    console.error(`[userService] Error creating user profile for UID ${user.uid}:`, error);
+    console.error(`[userService] Error creating user profile for UID ${uid}:`, error);
     throw new Error('Failed to create user profile.');
   }
 }
