@@ -6,6 +6,7 @@ import { generateTriviaQuestions, type GenerateTriviaQuestionOutput, type Genera
 import { validateCustomTopic, type ValidateCustomTopicOutput } from "@/ai/flows/validate-custom-topic";
 import { getPredefinedQuestionFromFirestore, getAllQuestionsForTopic, type PredefinedQuestion } from "@/services/triviaService";
 import { getAppCategories } from "@/services/categoryService";
+import { addGameSession } from "@/services/gameSessionService";
 import {
   saveQuestionsToDB, getQuestionFromDB, clearAllQuestionsFromDB,
   saveCategoriesToCache, getCategoriesFromCache, clearCategoriesCache,
@@ -850,6 +851,7 @@ export default function TriviaPage() {
     if (questionsAnsweredThisGame >= QUESTIONS_PER_GAME) {
       setGameState('game_over');
       console.log("[DEBUG] handleNextQuestion: Game over. GameState to game_over.");
+
       logAnalyticsEvent('game_over', {
         category_topic_value: currentTopicValue,
         category_name: currentCategoryDetails?.name[locale] || currentTopicValue,
@@ -859,6 +861,20 @@ export default function TriviaPage() {
         final_difficulty_level: currentDifficultyLevel,
         is_custom_topic: currentCategoryDetails?.isCustomActive || false,
       });
+
+      if (user && currentCategoryDetails && selectedDifficultyMode) {
+        addGameSession({
+          userId: user.uid,
+          categoryTopicValue: currentTopicValue,
+          categoryName: currentCategoryDetails.name,
+          difficultyMode: selectedDifficultyMode,
+          finalScoreCorrect: score.correct,
+          finalScoreIncorrect: score.incorrect,
+          totalQuestions: QUESTIONS_PER_GAME,
+          isCustomTopic: currentCategoryDetails.isCustomActive,
+        }).catch(err => console.error("Failed to save game session:", err));
+      }
+
     } else {
       setCurrentQuestionNumberInGame(prev => prev + 1);
       fetchAndSetNextQuestionForGame(currentTopicValue, currentDifficultyLevel, currentCategoryDetails);

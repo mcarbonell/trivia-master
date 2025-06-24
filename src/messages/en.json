@@ -62,7 +62,8 @@
   "difficultyLevels": {
     "easy": "Easy",
     "medium": "Medium",
-    "hard": "Hard"
+    "hard": "Hard",
+    "adaptive": "Adaptive"
   },
   "currentDifficulty": "Current Difficulty",
   "showHintButton": "Show Hint",
@@ -119,6 +120,21 @@
   "logoutButton": "Logout",
   "loggedInAs": "Logged In As",
   "myProfile": "My Profile",
+
+  "ProfilePage": {
+    "title": "My Profile",
+    "backToGame": "Back to Game",
+    "welcome": "Welcome",
+    "historyTitle": "Game History",
+    "historyDescription": "Here are the results from your previous games.",
+    "noHistory": "You haven't played any games yet. Go play a round!",
+    "errorLoadingHistory": "Could not load your game history. Please try again.",
+    "tableDate": "Date",
+    "tableCategory": "Category",
+    "tableDifficulty": "Difficulty",
+    "tableScore": "Score",
+    "customTopicBadge": "Custom"
+  },
 
   "AboutPage": {
     "title": "About / Contact",

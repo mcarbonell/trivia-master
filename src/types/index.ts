@@ -66,3 +66,16 @@ export interface UserData {
   role: 'user' | 'admin';
   createdAt: string; 
 }
+
+export interface GameSession {
+  id: string;
+  userId: string;
+  completedAt: string; // ISO string
+  categoryTopicValue: string;
+  categoryName: BilingualText;
+  difficultyMode: DifficultyMode;
+  finalScoreCorrect: number;
+  finalScoreIncorrect: number;
+  totalQuestions: number;
+  isCustomTopic: boolean;
+}

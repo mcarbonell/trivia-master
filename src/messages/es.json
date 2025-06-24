@@ -62,7 +62,8 @@
   "difficultyLevels": {
     "easy": "Fácil",
     "medium": "Medio",
-    "hard": "Difícil"
+    "hard": "Difícil",
+    "adaptive": "Adaptativa"
   },
   "currentDifficulty": "Dificultad Actual",
   "showHintButton": "Mostrar Pista",
@@ -119,6 +120,21 @@
   "logoutButton": "Cerrar Sesión",
   "loggedInAs": "Sesión Iniciada Como",
   "myProfile": "Mi Perfil",
+
+  "ProfilePage": {
+    "title": "Mi Perfil",
+    "backToGame": "Volver al Juego",
+    "welcome": "Bienvenido/a",
+    "historyTitle": "Historial de Partidas",
+    "historyDescription": "Aquí están los resultados de tus partidas anteriores.",
+    "noHistory": "Aún no has jugado ninguna partida. ¡Juega una ronda!",
+    "errorLoadingHistory": "No se pudo cargar tu historial de partidas. Por favor, inténtalo de nuevo.",
+    "tableDate": "Fecha",
+    "tableCategory": "Categoría",
+    "tableDifficulty": "Dificultad",
+    "tableScore": "Puntuación",
+    "customTopicBadge": "Personalizado"
+  },
 
   "AboutPage": {
     "title": "Acerca de / Contacto",
