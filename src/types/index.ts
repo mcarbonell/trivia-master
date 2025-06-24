@@ -1,6 +1,5 @@
-
 // src/types/index.ts
-import type { FieldValue } from 'firebase/firestore'; // Keep for write operations if needed elsewhere
+import type { FieldValue } from 'firebase/firestore'; 
 import type { AppLocale } from '@/lib/i18n-config';
 
 export type DifficultyLevel = "easy" | "medium" | "hard";
@@ -24,7 +23,6 @@ export interface CategoryDefinition {
     "medium"?: CategoryDifficultyGuideline;
     "hard"?: CategoryDifficultyGuideline;
   };
-  // isPredefined?: boolean; // Removed: Visibility is handled by hierarchy, predefinition by existence of questions
 }
 
 export type DifficultyMode = "adaptive" | DifficultyLevel;
@@ -58,11 +56,13 @@ export interface SuggestionData {
   name?: string;
   email?: string;
   message: string;
-  submittedAt: string; // Changed to string for client components
+  submittedAt: string; 
   locale: AppLocale;
 }
 
-// Add Timestamp for reading compatibility where services interact directly with Firestore
-// but ensure conversion to string before passing to client.
-import type { Timestamp } from 'firebase/firestore';
-
+export interface UserData {
+  uid: string;
+  email: string;
+  role: 'user' | 'admin';
+  createdAt: FieldValue; 
+}

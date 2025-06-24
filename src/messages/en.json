@@ -178,8 +178,10 @@
     "navReports": "Reports",
     "navSuggestions": "Suggestions",
     "logoutButton": "Logout",
+    "backToGame": "Back to Game",
     "loggedInAs": "Logged in as: {email}",
-    "footerText": "© {year} AI Trivia Master - Admin"
+    "footerText": "© {year} AI Trivia Master - Admin",
+    "accessDenied": "You do not have permission to access the admin panel."
   },
   "AdminDashboardPage": {
     "title": "Admin Dashboard",
@@ -188,9 +190,11 @@
     "quickAccessDescription": "Navigate to different management sections.",
     "manageCategoriesDescription": "View, add, edit, or delete trivia categories.",
     "manageQuestionsDescription": "Browse, search, and manage predefined trivia questions.",
+    "manageReportsDescription": "Review and take action on user-submitted question reports.",
+    "manageSuggestionsDescription": "View and manage feedback and suggestions from users.",
     "otherActionsTitle": "Other Actions",
     "viewLiveAppButton": "View Live App",
-    "openFirestoreButton": "Open Firestore",
+    "openUsersInFirestoreButton": "Manage Users in Firestore",
     "footerText": "© {year} AI Trivia Master - Admin Panel"
   },
   "AdminCategoriesPage": {

@@ -178,8 +178,10 @@
     "navReports": "Reportes",
     "navSuggestions": "Sugerencias",
     "logoutButton": "Cerrar Sesión",
+    "backToGame": "Volver al Juego",
     "loggedInAs": "Sesión iniciada como: {email}",
-    "footerText": "© {year} Maestro de Trivia IA - Admin"
+    "footerText": "© {year} Maestro de Trivia IA - Admin",
+    "accessDenied": "No tienes permiso para acceder al panel de administración."
   },
   "AdminDashboardPage": {
     "title": "Dashboard de Admin",
@@ -188,9 +190,11 @@
     "quickAccessDescription": "Navega a las diferentes secciones de gestión.",
     "manageCategoriesDescription": "Ver, añadir, editar o eliminar categorías de trivia.",
     "manageQuestionsDescription": "Explorar, buscar y gestionar preguntas de trivia predefinidas.",
+    "manageReportsDescription": "Revisar y tomar acciones sobre los reportes de preguntas de los usuarios.",
+    "manageSuggestionsDescription": "Ver y gestionar comentarios y sugerencias de los usuarios.",
     "otherActionsTitle": "Otras Acciones",
     "viewLiveAppButton": "Ver App en Vivo",
-    "openFirestoreButton": "Abrir Firestore",
+    "openUsersInFirestoreButton": "Gestionar Usuarios en Firestore",
     "footerText": "© {year} Maestro de Trivia IA - Panel de Admin"
   },
   "AdminCategoriesPage": {

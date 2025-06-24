@@ -6,10 +6,11 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { Loader2, LogOut, LayoutDashboard, ListChecks, HelpCircle, ShieldAlert, MessageSquareText } from 'lucide-react'; // Added MessageSquareText
+import { Loader2, LogOut, LayoutDashboard, ListChecks, HelpCircle, ShieldAlert, MessageSquareText, Home } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { LanguageSwitcher } from '@/components/LanguageSwitcher';
 import { cn } from '@/lib/utils';
+import { useToast } from '@/hooks/use-toast';
 
 interface AdminLayoutProps {
   children: ReactNode;
@@ -17,15 +18,31 @@ interface AdminLayoutProps {
 
 export default function AdminLayout({ children }: AdminLayoutProps) {
   const t = useTranslations('AdminLayout');
-  const { user, loading, signOut } = useAuth();
+  const tCommon = useTranslations();
+  const { user, userProfile, loading, signOut } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
+  const { toast } = useToast();
 
   useEffect(() => {
-    if (!loading && !user) {
-      router.replace('/login');
+    if (!loading) {
+      if (!user) {
+        // Not logged in at all, redirect to login
+        router.replace('/login');
+      } else if (userProfile && userProfile.role !== 'admin') {
+        // Logged in, but is not an admin, redirect to home page
+        router.replace('/');
+        toast({
+            variant: "destructive",
+            title: tCommon('toastErrorTitle') as string,
+            description: t('accessDenied')
+        });
+      }
+      // If user is logged in, but userProfile is still loading, the loading screen will show.
+      // Once userProfile loads, this effect will re-run and the role check will trigger.
     }
-  }, [user, loading, router]);
+  }, [user, userProfile, loading, router, toast, t, tCommon]);
+
 
   const handleSignOut = async () => {
     try {
@@ -36,7 +53,18 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
     }
   };
 
-  if (loading || !user) {
+  // Show loading spinner while auth state is resolving or if user profile is being fetched
+  if (loading || !user || !userProfile) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-background">
+        <Loader2 className="h-16 w-16 animate-spin text-primary" />
+      </div>
+    );
+  }
+  
+  // Final check to ensure only admins render the layout content
+  if (userProfile.role !== 'admin') {
+     // This is a fallback loading state while redirection happens
     return (
       <div className="flex min-h-screen items-center justify-center bg-background">
         <Loader2 className="h-16 w-16 animate-spin text-primary" />
@@ -56,9 +84,11 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
     <div className="flex min-h-screen bg-muted/40">
       <aside className="fixed inset-y-0 left-0 z-10 hidden w-60 flex-col border-r bg-background sm:flex">
         <nav className="flex flex-col items-start gap-2 p-4">
-          <h2 className="mb-2 text-lg font-semibold tracking-tight text-primary self-center">
-            {t('adminPanelTitle')}
-          </h2>
+          <Link href="/" className="mb-2 self-center">
+            <h2 className="text-lg font-semibold tracking-tight text-primary hover:text-primary/80">
+              {t('adminPanelTitle')}
+            </h2>
+          </Link>
           {navItems.map((item) => (
             <Link
               key={item.href}
@@ -73,7 +103,13 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
             </Link>
           ))}
         </nav>
-        <div className="mt-auto p-4">
+        <div className="mt-auto p-4 space-y-2">
+           <Link href="/" passHref>
+             <Button variant="outline" className="w-full">
+              <Home className="mr-2 h-4 w-4" />
+              {t('backToGame')}
+             </Button>
+           </Link>
           <Button onClick={handleSignOut} variant="outline" className="w-full">
             <LogOut className="mr-2 h-4 w-4" />
             {t('logoutButton')}
