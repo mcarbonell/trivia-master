@@ -11,7 +11,7 @@ import {
   saveQuestionsToDB, getQuestionFromDB, clearAllQuestionsFromDB,
   saveCategoriesToCache, getCategoriesFromCache, clearCategoriesCache,
   saveCustomQuestionsToDB, getCustomQuestionFromDB, clearAllCustomQuestionsFromDB,
-  saveCustomTopicMeta, getCustomTopicsMeta, clearAllCustomTopicsMeta,
+  saveCustomTopicMeta, getCustomTopicsMeta, clearAllCustomTopicsMeta, deleteCustomTopicAndQuestions,
   type CustomTopicMeta, type CustomQuestion,
   CONTENT_VERSION_STORAGE_KEY, DOWNLOADED_TOPICS_STORAGE_KEY, CURRENT_CONTENT_VERSION
 } from "@/services/indexedDBService";
@@ -567,6 +567,24 @@ export default function TriviaPage() {
     });
   };
 
+  const handleDeleteCustomTopic = async (topicValueToDelete: string) => {
+    try {
+      await deleteCustomTopicAndQuestions(topicValueToDelete);
+      setUserGeneratedCustomTopics(prev => prev.filter(topic => topic.customTopicValue !== topicValueToDelete));
+      toast({
+        title: t('toastSuccessTitle') as string,
+        description: t('customTopicDeletedSuccess'),
+      });
+    } catch (error) {
+      console.error(`Error deleting custom topic ${topicValueToDelete}:`, error);
+      toast({
+        variant: 'destructive',
+        title: t('toastErrorTitle') as string,
+        description: t('customTopicDeletedError'),
+      });
+    }
+  };
+
   const handleCustomTopicFormSubmit = async (rawTopic: string) => {
     if (!rawTopic.trim()) return;
     console.log(`[DEBUG] handleCustomTopicFormSubmit: Validating raw topic: "${rawTopic}"`);
@@ -1082,6 +1100,7 @@ export default function TriviaPage() {
             isCustomTopicValidating={isCustomTopicValidating}
             userGeneratedCustomTopics={userGeneratedCustomTopics}
             onSelectUserGeneratedCustomTopic={handleUserGeneratedCustomTopicSelect}
+            onDeleteCustomTopic={handleDeleteCustomTopic}
           />
         )}
         {gameState === 'confirming_custom_topic' && customTopicToConfirm && (

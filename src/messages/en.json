@@ -120,6 +120,11 @@
   "logoutButton": "Logout",
   "loggedInAs": "Logged In As",
   "myProfile": "My Profile",
+  "deleteCustomTopicConfirmTitle": "Delete Custom Topic?",
+  "deleteCustomTopicConfirmDescription": "Are you sure you want to delete the custom topic \"{topicName}\"? This will also delete all of its saved questions and cannot be undone.",
+  "customTopicDeletedSuccess": "Custom topic deleted successfully.",
+  "customTopicDeletedError": "Could not delete the custom topic. Please try again.",
+  "deleteCustomTopicButtonTooltip": "Delete this custom topic",
 
   "ProfilePage": {
     "title": "My Profile",
@@ -436,24 +441,24 @@
     "tooltipDeleteSuggestion": "Delete this suggestion"
   },
   "ReportDialog": {
-    "title": "Report Question",
-    "description": "Let us know what's wrong with this question. Your feedback helps us improve!",
-    "reasonLabel": "Reason for reporting",
-    "reasonPlaceholder": "Select a reason",
-    "detailsLabel": "Additional Details (Optional)",
-    "detailsPlaceholder": "Provide more information here...",
-    "submitButton": "Submit Report",
-    "reportButtonLabel": "Report this question",
-    "reportThisQuestionButton": "Report Question",
-    "reportSubmittedSuccess": "Report submitted successfully. Thank you!",
-    "reportSubmittedError": "Failed to submit report. Please try again.",
+    "title": "Reportar Pregunta",
+    "description": "Dinos qué problema tiene esta pregunta. ¡Tu opinión nos ayuda a mejorar!",
+    "reasonLabel": "Motivo del reporte",
+    "reasonPlaceholder": "Selecciona un motivo",
+    "detailsLabel": "Detalles Adicionales (Opcional)",
+    "detailsPlaceholder": "Proporciona más información aquí...",
+    "submitButton": "Enviar Reporte",
+    "reportButtonLabel": "Reportar esta pregunta",
+    "reportThisQuestionButton": "Reportar Pregunta",
+    "reportSubmittedSuccess": "Reporte enviado correctamente. ¡Gracias!",
+    "reportSubmittedError": "Error al enviar el reporte. Por favor, inténtalo de nuevo.",
     "reasons": {
-      "incorrect_info": "Incorrect Information",
-      "poorly_worded": "Poorly Worded / Confusing",
-      "typo_grammar": "Typo / Grammatical Error",
-      "duplicate_question": "Duplicate Question",
-      "offensive_content": "Offensive Content",
-      "other": "Other"
+      "incorrect_info": "Información Incorrecta",
+      "poorly_worded": "Mal Redactada / Confusa",
+      "typo_grammar": "Error Tipográfico / Gramatical",
+      "duplicate_question": "Pregunta Duplicada",
+      "offensive_content": "Contenido Ofensivo",
+      "other": "Otro"
     }
   }
 }

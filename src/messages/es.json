@@ -120,6 +120,11 @@
   "logoutButton": "Cerrar Sesión",
   "loggedInAs": "Sesión Iniciada Como",
   "myProfile": "Mi Perfil",
+  "deleteCustomTopicConfirmTitle": "¿Eliminar Tema Personalizado?",
+  "deleteCustomTopicConfirmDescription": "¿Estás seguro de que quieres eliminar el tema personalizado \"{topicName}\"? Esto también eliminará todas sus preguntas guardadas y no se puede deshacer.",
+  "customTopicDeletedSuccess": "Tema personalizado eliminado correctamente.",
+  "customTopicDeletedError": "No se pudo eliminar el tema personalizado. Por favor, inténtalo de nuevo.",
+  "deleteCustomTopicButtonTooltip": "Eliminar este tema personalizado",
 
   "ProfilePage": {
     "title": "Mi Perfil",

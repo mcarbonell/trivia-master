@@ -11,8 +11,20 @@ import { Label } from "@/components/ui/label";
 import { useTranslations } from "next-intl";
 import type { CategoryDefinition } from "@/types";
 import type { AppLocale } from '@/lib/i18n-config';
-import { ArrowLeft, Loader2, Sparkles, ListChecks } from 'lucide-react'; // Added Sparkles, ListChecks
-import type { CustomTopicMeta } from '@/services/indexedDBService'; // Import CustomTopicMeta
+import { ArrowLeft, Loader2, Sparkles, ListChecks, Trash2 } from 'lucide-react';
+import type { CustomTopicMeta } from '@/services/indexedDBService';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { Tooltip, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 const getIcon = (iconName: string | undefined): LucideIcon => {
   if (!iconName) return LucideIcons.HelpCircle; // Default if no iconName
@@ -31,8 +43,9 @@ interface CategorySelectorProps {
   onGoBack?: () => void;
   currentLocale: AppLocale;
   isCustomTopicValidating: boolean;
-  userGeneratedCustomTopics: CustomTopicMeta[]; // New prop
-  onSelectUserGeneratedCustomTopic: (topicMeta: CustomTopicMeta) => void; // New prop
+  userGeneratedCustomTopics: CustomTopicMeta[];
+  onSelectUserGeneratedCustomTopic: (topicMeta: CustomTopicMeta) => void;
+  onDeleteCustomTopic: (topicValue: string) => void;
 }
 
 export function CategorySelector({
@@ -48,8 +61,10 @@ export function CategorySelector({
   isCustomTopicValidating,
   userGeneratedCustomTopics,
   onSelectUserGeneratedCustomTopic,
+  onDeleteCustomTopic,
 }: CategorySelectorProps) {
   const t = useTranslations();
+  const tCommon = useTranslations();
 
   const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -120,20 +135,63 @@ export function CategorySelector({
           <div className="pt-4 border-t">
             <h3 className="font-semibold mb-3 text-lg text-center">{t('savedCustomTopicsTitle')}</h3>
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+              <TooltipProvider delayDuration={100}>
               {userGeneratedCustomTopics.map((topicMeta) => {
                 const IconComponent = getIcon(topicMeta.icon || 'Sparkles');
                 return (
-                  <Button
-                    key={topicMeta.customTopicValue}
-                    variant="outline"
-                    className="flex flex-col items-center justify-center h-28 p-4 hover:bg-accent hover:text-accent-foreground transition-all duration-200 group [&_svg]:h-8 [&_svg]:w-8"
-                    onClick={() => onSelectUserGeneratedCustomTopic(topicMeta)}
-                  >
-                    <IconComponent className="mb-2 text-primary group-hover:text-accent-foreground transition-colors h-8 w-8" />
-                    <span className="text-sm font-medium text-center">{topicMeta.name[currentLocale]}</span>
-                  </Button>
+                  <div key={topicMeta.customTopicValue} className="relative group/item">
+                    <Button
+                      variant="outline"
+                      className="flex flex-col items-center justify-center h-28 p-4 hover:bg-accent hover:text-accent-foreground transition-all duration-200 group [&_svg]:h-8 [&_svg]:w-8 w-full"
+                      onClick={() => onSelectUserGeneratedCustomTopic(topicMeta)}
+                    >
+                      <IconComponent className="mb-2 text-primary group-hover:text-accent-foreground transition-colors h-8 w-8" />
+                      <span className="text-sm font-medium text-center">{topicMeta.name[currentLocale]}</span>
+                    </Button>
+                    <AlertDialog>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <AlertDialogTrigger asChild>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="absolute top-1 right-1 h-7 w-7 opacity-0 group-hover/item:opacity-100 transition-opacity hover:bg-destructive/10 text-muted-foreground hover:text-destructive"
+                              onClick={(e) => e.stopPropagation()}
+                              aria-label={t('deleteCustomTopicButtonTooltip') as string}
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </AlertDialogTrigger>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>{t('deleteCustomTopicButtonTooltip')}</p>
+                        </TooltipContent>
+                      </Tooltip>
+                      <AlertDialogContent>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>{t('deleteCustomTopicConfirmTitle')}</AlertDialogTitle>
+                          <AlertDialogDescription>
+                            {t('deleteCustomTopicConfirmDescription', { topicName: topicMeta.name[currentLocale] })}
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel onClick={(e) => e.stopPropagation()}>{tCommon('cancel')}</AlertDialogCancel>
+                          <AlertDialogAction
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              onDeleteCustomTopic(topicMeta.customTopicValue);
+                            }}
+                            className="bg-destructive hover:bg-destructive/90"
+                          >
+                            {tCommon('deleteButton')}
+                          </AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
+                  </div>
                 );
               })}
+              </TooltipProvider>
             </div>
           </div>
         )}
