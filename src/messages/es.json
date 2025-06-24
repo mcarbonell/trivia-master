@@ -138,7 +138,20 @@
     "tableCategory": "Categoría",
     "tableDifficulty": "Dificultad",
     "tableScore": "Puntuación",
-    "customTopicBadge": "Personalizado"
+    "customTopicBadge": "Personalizado",
+    "statsTitle": "Tus Estadísticas",
+    "statsDescription": "Un resumen de tu rendimiento en la trivia.",
+    "totalGames": "Partidas Jugadas",
+    "overallAccuracy": "Precisión General",
+    "highlightsTitle": "Destacados",
+    "highlightsDescription": "Tus categorías más destacadas según tu rendimiento.",
+    "bestCategory": "Mejor Categoría",
+    "worstCategory": "Categoría a Mejorar",
+    "accuracy": "Precisión",
+    "categoryPerformanceTitle": "Rendimiento por Categoría",
+    "notEnoughData": "Datos insuficientes",
+    "notEnoughDataForHighlights": "Juega al menos {count} preguntas en una categoría para ver destacados.",
+    "chartYAxisLabel": "Precisión (%)"
   },
 
   "AboutPage": {

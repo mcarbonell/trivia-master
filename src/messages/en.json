@@ -138,7 +138,20 @@
     "tableCategory": "Category",
     "tableDifficulty": "Difficulty",
     "tableScore": "Score",
-    "customTopicBadge": "Custom"
+    "customTopicBadge": "Custom",
+    "statsTitle": "Your Statistics",
+    "statsDescription": "A summary of your trivia performance.",
+    "totalGames": "Total Games Played",
+    "overallAccuracy": "Overall Accuracy",
+    "highlightsTitle": "Highlights",
+    "highlightsDescription": "Your standout categories based on performance.",
+    "bestCategory": "Best Category",
+    "worstCategory": "Worst Category",
+    "accuracy": "Accuracy",
+    "categoryPerformanceTitle": "Performance by Category",
+    "notEnoughData": "Not enough data",
+    "notEnoughDataForHighlights": "Play at least {count} questions in a category to see highlights.",
+    "chartYAxisLabel": "Accuracy (%)"
   },
 
   "AboutPage": {

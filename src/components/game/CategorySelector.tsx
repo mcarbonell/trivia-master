@@ -24,7 +24,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { Tooltip, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { Tooltip, TooltipProvider, TooltipTrigger, TooltipContent  } from '@/components/ui/tooltip';
 
 const getIcon = (iconName: string | undefined): LucideIcon => {
   if (!iconName) return LucideIcons.HelpCircle; // Default if no iconName
