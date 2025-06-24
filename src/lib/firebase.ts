@@ -29,29 +29,64 @@ if (!getApps().length) {
 const db: Firestore = getFirestore(app);
 const auth: Auth = getAuth(app);
 
-// Analytics
+// --- Analytics ---
 let analytics: FirebaseAnalytics | null = null;
-if (typeof window !== 'undefined' && firebaseConfig.measurementId) {
-  isAnalyticsSupported().then(supported => {
-    if (supported) {
-      analytics = getAnalytics(app);
-      console.log("Firebase Analytics initialized.");
-    } else {
-      console.log("Firebase Analytics not supported in this environment.");
+let analyticsPromise: Promise<FirebaseAnalytics | null> | null = null;
+
+/**
+ * Gets the singleton Firebase Analytics instance, initializing it if necessary.
+ * This function handles the asynchronous nature of analytics initialization.
+ * @returns A promise that resolves with the Analytics instance or null if not supported.
+ */
+const getAnalyticsInstance = (): Promise<FirebaseAnalytics | null> => {
+    if (analytics) {
+        return Promise.resolve(analytics);
     }
-  }).catch(err => {
-    console.warn("Firebase Analytics initialization error:", err);
-  });
-}
+    if (analyticsPromise) {
+        return analyticsPromise;
+    }
+    if (typeof window !== 'undefined' && firebaseConfig.measurementId) {
+        analyticsPromise = isAnalyticsSupported().then(supported => {
+            if (supported) {
+                console.log("Firebase Analytics is supported. Initializing...");
+                analytics = getAnalytics(app);
+                return analytics;
+            }
+            console.log("Firebase Analytics is not supported in this environment.");
+            return null;
+        }).catch(err => {
+            console.warn("Firebase Analytics initialization failed:", err);
+            return null;
+        });
+        return analyticsPromise;
+    }
+    return Promise.resolve(null);
+};
+
+// Start the initialization process as soon as this module is loaded.
+getAnalyticsInstance();
 
 
-// Export a logEvent function that uses the initialized analytics instance
-const logEvent = (eventName: string, eventParams?: { [key: string]: any }) => {
-  if (analytics) {
-    firebaseLogEvent(analytics, eventName, eventParams);
-  } else {
-    // console.log(`Analytics not initialized. Event "${eventName}" not logged.`, eventParams);
+/**
+ * Logs a custom event to Firebase Analytics.
+ * It safely handles the case where analytics is not yet initialized or not supported.
+ * @param eventName The name of the event to log.
+ * @param eventParams Optional parameters for the event.
+ */
+const logEvent = async (eventName: string, eventParams?: { [key: string]: any }) => {
+  try {
+    const analyticsInstance = await getAnalyticsInstance();
+    if (analyticsInstance) {
+      firebaseLogEvent(analyticsInstance, eventName, eventParams);
+    } else {
+      // Optional: log to console if analytics is not available, useful for debugging
+      // console.log(`Analytics not available. Event: ${eventName}`, eventParams);
+    }
+  } catch (error) {
+    console.error("Error logging analytics event:", error);
   }
 };
 
+// Note: We export the `analytics` variable, but it might be null initially.
+// The `logEvent` function is the safe way to interact with Analytics.
 export { app, db, auth, analytics, logEvent };

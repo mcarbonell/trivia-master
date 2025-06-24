@@ -60,7 +60,7 @@ import {
   LayoutDashboard,
   User
 } from "lucide-react";
-import { logEvent as logEventFromLib, analytics } from "@/lib/firebase";
+import { logEvent as logEventFromLib } from "@/lib/firebase";
 
 type GameState =
   'initial_loading' |
@@ -162,9 +162,9 @@ export default function TriviaPage() {
 
 
   const logAnalyticsEvent = useCallback((eventName: string, eventParams?: { [key: string]: any }) => {
-    if (analytics) {
-      logEventFromLib(eventName, eventParams);
-    }
+    // logEventFromLib is async and handles checking if analytics is available.
+    // No need to await, it's a "fire-and-forget" call.
+    logEventFromLib(eventName, eventParams);
   }, []);
 
   useEffect(() => {
