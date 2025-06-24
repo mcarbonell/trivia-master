@@ -55,7 +55,9 @@ import {
   ListChecks,
   LogIn,
   LogOut,
-  UserCircle
+  UserCircle,
+  LayoutDashboard,
+  User
 } from "lucide-react";
 import { logEvent as logEventFromLib, analytics } from "@/lib/firebase";
 
@@ -109,7 +111,7 @@ export default function TriviaPage() {
   const t = useTranslations();
   const locale = useLocale() as AppLocale;
   const { toast } = useToast();
-  const { user, loading: authLoading, signOut } = useAuth();
+  const { user, userProfile, loading: authLoading, signOut } = useAuth();
 
   const [allAppCategories, setAllAppCategories] = useState<CategoryDefinition[]>([]);
   const [topLevelCategories, setTopLevelCategories] = useState<CategoryDefinition[]>([]);
@@ -999,6 +1001,22 @@ export default function TriviaPage() {
                     </div>
                   </DropdownMenuLabel>
                   <DropdownMenuSeparator />
+                  {userProfile?.role === 'admin' && (
+                    <DropdownMenuItem asChild className="cursor-pointer">
+                      <Link href="/admin/dashboard">
+                        <LayoutDashboard className="mr-2 h-4 w-4" />
+                        <span>{t('AdminLayout.adminPanelTitle')}</span>
+                      </Link>
+                    </DropdownMenuItem>
+                  )}
+                  {userProfile?.role === 'user' && (
+                    <DropdownMenuItem asChild className="cursor-pointer">
+                      <Link href="/profile">
+                        <User className="mr-2 h-4 w-4" />
+                        <span>{t('myProfile')}</span>
+                      </Link>
+                    </DropdownMenuItem>
+                  )}
                   <DropdownMenuItem onClick={signOut} className="cursor-pointer">
                     <LogOut className="mr-2 h-4 w-4" />
                     <span>{t('logoutButton')}</span>

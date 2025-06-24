@@ -118,6 +118,7 @@
   "loginButton": "Login / Sign Up",
   "logoutButton": "Logout",
   "loggedInAs": "Logged In As",
+  "myProfile": "My Profile",
 
   "AboutPage": {
     "title": "About / Contact",
