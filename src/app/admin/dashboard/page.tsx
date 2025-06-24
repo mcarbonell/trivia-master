@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { useTranslations } from 'next-intl';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { ListChecks, HelpCircle, ExternalLink, ShieldAlert, MessageSquare } from 'lucide-react';
+import { ListChecks, HelpCircle, ExternalLink, ShieldAlert, MessageSquare, Users } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 
 export default function AdminDashboardPage() {
@@ -67,6 +67,17 @@ export default function AdminDashboardPage() {
                         </CardHeader>
                         <CardContent>
                             <p className="text-sm text-muted-foreground">{t('manageSuggestionsDescription')}</p>
+                        </CardContent>
+                    </Card>
+                </Link>
+                <Link href="/admin/users" className="block">
+                    <Card className="hover:shadow-md transition-shadow h-full">
+                        <CardHeader className="flex flex-row items-center justify-between pb-2">
+                            <CardTitle className="text-lg font-medium">{tCommon('navUsers')}</CardTitle>
+                            <Users className="h-5 w-5 text-primary" />
+                        </CardHeader>
+                        <CardContent>
+                            <p className="text-sm text-muted-foreground">{t('manageUsersDescription')}</p>
                         </CardContent>
                     </Card>
                 </Link>

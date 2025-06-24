@@ -1,11 +1,10 @@
 // src/services/userService.ts
 'use server';
 
-import { db } from '@/lib/firebase';
+import { db } from '@/lib/firebase'; // Client SDK for existing functions
+import { adminDb } from '@/lib/firebase-admin'; // Admin SDK for new functions
 import { doc, setDoc, getDoc, serverTimestamp, type DocumentData, type Timestamp } from 'firebase/firestore';
 import type { UserData } from '@/types';
-
-const USERS_COLLECTION = 'users';
 
 /**
  * Creates a user profile document in Firestore.
@@ -14,7 +13,7 @@ const USERS_COLLECTION = 'users';
  * @param email - The email from the Firebase Auth user.
  */
 export async function createUserProfile(uid: string, email: string | null): Promise<void> {
-  const userRef = doc(db, USERS_COLLECTION, uid);
+  const userRef = doc(db, 'users', uid);
   const userProfile: Omit<UserData, 'createdAt'> & { createdAt: any } = {
     uid: uid,
     email: email || '',
@@ -37,7 +36,7 @@ export async function createUserProfile(uid: string, email: string | null): Prom
  * @returns The user's data or null if not found.
  */
 export async function getUserProfile(uid: string): Promise<UserData | null> {
-  const userRef = doc(db, USERS_COLLECTION, uid);
+  const userRef = doc(db, 'users', uid);
   try {
     const docSnap = await getDoc(userRef);
     if (docSnap.exists()) {
@@ -58,5 +57,52 @@ export async function getUserProfile(uid: string): Promise<UserData | null> {
   } catch (error) {
     console.error(`[userService] Error fetching user profile for UID ${uid}:`, error);
     throw new Error('Failed to fetch user profile.');
+  }
+}
+
+/**
+ * Fetches all user profiles from Firestore using the Admin SDK.
+ * @returns A promise that resolves to an array of all users' data.
+ */
+export async function getAllUsers(): Promise<UserData[]> {
+  try {
+    const usersRef = adminDb.collection('users');
+    const snapshot = await usersRef.orderBy('createdAt', 'desc').get();
+    
+    if (snapshot.empty) {
+      return [];
+    }
+    
+    const users: UserData[] = snapshot.docs.map(doc => {
+      const data = doc.data();
+      const createdAtTimestamp = data.createdAt as Timestamp;
+      return {
+        uid: data.uid,
+        email: data.email,
+        role: data.role,
+        createdAt: createdAtTimestamp.toDate().toISOString(),
+      };
+    });
+    
+    return users;
+  } catch (error) {
+    console.error('[userService.getAllUsers] Error fetching all user profiles:', error);
+    throw new Error('Failed to fetch user list.');
+  }
+}
+
+/**
+ * Updates a user's role in Firestore using the Admin SDK.
+ * @param uid The UID of the user to update.
+ * @param role The new role to assign ('user' or 'admin').
+ */
+export async function updateUserRole(uid: string, role: 'user' | 'admin'): Promise<void> {
+  try {
+    const userRef = adminDb.collection('users').doc(uid);
+    await userRef.update({ role });
+    console.log(`[userService.updateUserRole] Successfully updated role for user ${uid} to ${role}.`);
+  } catch (error) {
+    console.error(`[userService.updateUserRole] Error updating role for user ${uid}:`, error);
+    throw new Error('Failed to update user role.');
   }
 }
