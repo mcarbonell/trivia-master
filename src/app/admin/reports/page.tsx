@@ -59,6 +59,7 @@ export default function AdminReportsPage() {
   const [isValidating, setIsValidating] = useState(false);
   const [validationResult, setValidationResult] = useState<ValidateSingleQuestionOutput | null>(null);
   const [currentReportForValidation, setCurrentReportForValidation] = useState<ReportData | null>(null);
+  const [questionForValidation, setQuestionForValidation] = useState<QuestionData | null>(null);
 
 
   const dateLocale = currentLocale === 'es' ? esLocale : enLocale;
@@ -246,6 +247,7 @@ export default function AdminReportsPage() {
     setIsValidating(true);
     setValidationResult(null);
     setCurrentReportForValidation(report);
+    setQuestionForValidation(null); // Reset
     setIsValidationDialogOpen(true);
 
     try {
@@ -254,6 +256,7 @@ export default function AdminReportsPage() {
             setValidationResult({ validationStatus: 'Reject', reasoning: t('errorQuestionNotFoundForAction', { questionId: report.questionId }) });
             return;
         }
+        setQuestionForValidation(questionData);
         const result = await validateSingleTriviaQuestion({ questionData });
         setValidationResult(result);
     } catch (error: any) {
@@ -520,14 +523,14 @@ export default function AdminReportsPage() {
                                     <p className="mt-2 text-sm">{validationResult.reasoning}</p>
                                 </div>
                             )}
-                            {validationResult.validationStatus === 'Fix' && currentReportForValidation && (
+                            {validationResult.validationStatus === 'Fix' && questionForValidation && (
                                 <>
                                 <div className="p-4 rounded-md bg-blue-50 border border-blue-200 text-blue-800">
                                     <div className="flex items-center gap-2 font-bold text-lg"><Wand2 /> {t('validationStatus.Fix')}</div>
                                     <p className="mt-2 text-sm">{validationResult.reasoning}</p>
                                 </div>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-                                     {renderQuestionForDialog(currentReportForValidation.originalQuestionDataForValidation!, t('originalQuestion'))}
+                                     {renderQuestionForDialog(questionForValidation, t('originalQuestion'))}
                                      {validationResult.fixedQuestionData && renderQuestionForDialog(validationResult.fixedQuestionData, t('aiSuggestedFix'))}
                                 </div>
                                 </>
