@@ -2,7 +2,7 @@
 'use server';
 
 import { db } from '@/lib/firebase';
-import { collection, query, where, getDocs, limit, DocumentData, orderBy, Timestamp, doc, deleteDoc, updateDoc } from 'firebase/firestore';
+import { collection, query, where, getDocs, limit, DocumentData, orderBy, Timestamp, doc, deleteDoc, updateDoc, getDoc } from 'firebase/firestore';
 import type { GenerateTriviaQuestionOutput, DifficultyLevel, BilingualText } from '@/ai/flows/generate-trivia-question';
 
 export interface PredefinedQuestion extends GenerateTriviaQuestionOutput {

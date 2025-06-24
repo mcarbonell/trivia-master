@@ -9,9 +9,11 @@ import { es as esLocale, enUS as enLocale } from 'date-fns/locale';
 import { getReportedQuestions, updateReportStatus, deleteReport } from '@/services/reportService';
 import { deletePredefinedQuestion, updatePredefinedQuestion, getNormalizedQuestionById } from '@/services/triviaService';
 import { getAppCategories } from '@/services/categoryService';
+import { validateSingleTriviaQuestion, type ValidateSingleQuestionOutput, type QuestionData } from '@/ai/flows/validate-single-trivia-question';
 import type { ReportData, ReportStatus, CategoryDefinition, DifficultyLevel, PredefinedQuestion } from '@/types';
 import type { AppLocale } from '@/lib/i18n-config';
 import type { GenerateTriviaQuestionOutput } from '@/ai/flows/generate-trivia-question';
+import { questionFormSchema, type QuestionFormData } from '@/app/admin/questions/page';
 
 import { useTranslations, useLocale } from 'next-intl';
 import { Button } from '@/components/ui/button';
@@ -25,9 +27,9 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Loader2, AlertTriangle, RefreshCw, Trash2, ClipboardCopy, Edit, Ban } from 'lucide-react';
+import { Loader2, AlertTriangle, RefreshCw, Trash2, ClipboardCopy, Edit, Ban, ShieldCheck, CheckCircle, AlertCircle, Wand2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import { questionFormSchema, type QuestionFormData } from '@/app/admin/questions/page';
+import { cn } from '@/lib/utils';
 
 const ITEMS_PER_PAGE = 10;
 const REPORT_STATUSES: ReportStatus[] = ['new', 'reviewed', 'resolved', 'ignored'];
@@ -47,9 +49,17 @@ export default function AdminReportsPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [activeFilters, setActiveFilters] = useState<{ status: ReportStatus | 'all' }>({ status: 'new' });
 
+  // For editing a question
   const [isEditQuestionDialogOpen, setIsEditQuestionDialogOpen] = useState(false);
   const [questionToEditData, setQuestionToEditData] = useState<PredefinedQuestion | null>(null);
   const [isSubmittingEditQuestion, setIsSubmittingEditQuestion] = useState(false);
+  
+  // For AI Validation
+  const [isValidationDialogOpen, setIsValidationDialogOpen] = useState(false);
+  const [isValidating, setIsValidating] = useState(false);
+  const [validationResult, setValidationResult] = useState<ValidateSingleQuestionOutput | null>(null);
+  const [currentReportForValidation, setCurrentReportForValidation] = useState<ReportData | null>(null);
+
 
   const dateLocale = currentLocale === 'es' ? esLocale : enLocale;
 
@@ -128,19 +138,10 @@ export default function AdminReportsPage() {
     }
   };
   
-  const handleDeletePredefinedQuestion = async (report: ReportData) => {
-    if (!report.questionId) {
-        toast({ variant: "destructive", title: tCommon('toastErrorTitle') as string, description: t('errorNoQuestionIdForDelete') });
-        return;
-    }
+  const handleDeletePredefinedQuestion = async (questionId: string) => {
     try {
-      const questionData = await getNormalizedQuestionById(report.questionId);
-      if (!questionData) {
-        toast({ variant: "destructive", title: t('errorQuestionNotFoundForDeleteTitle') as string, description: t('errorQuestionNotFoundForAction', { questionId: report.questionId }) });
-        return;
-      }
-      await deletePredefinedQuestion(report.questionId);
-      toast({ title: tCommon('toastSuccessTitle') as string, description: t('toastPredefinedQuestionDeleteSuccess', { question: truncateText(getQuestionTextForLocale(report), 30) }) });
+      await deletePredefinedQuestion(questionId);
+      toast({ title: tCommon('toastSuccessTitle') as string, description: t('toastPredefinedQuestionDeleteSuccess') });
       fetchAllData(); 
     } catch (err) {
       console.error("Error deleting predefined question:", err);
@@ -237,6 +238,63 @@ export default function AdminReportsPage() {
     }
   };
 
+  const handleValidateWithAI = async (report: ReportData) => {
+    if (!report.questionId) {
+        toast({ variant: "destructive", title: t('errorNoQuestionIdToValidate') });
+        return;
+    }
+    setIsValidating(true);
+    setValidationResult(null);
+    setCurrentReportForValidation(report);
+    setIsValidationDialogOpen(true);
+
+    try {
+        const questionData = await getNormalizedQuestionById(report.questionId);
+        if (!questionData) {
+            setValidationResult({ validationStatus: 'Reject', reasoning: t('errorQuestionNotFoundForAction', { questionId: report.questionId }) });
+            return;
+        }
+        const result = await validateSingleTriviaQuestion({ questionData });
+        setValidationResult(result);
+    } catch (error: any) {
+        console.error("AI Validation failed:", error);
+        setValidationResult({ validationStatus: 'Reject', reasoning: t('errorValidationAI', { error: error.message || 'Unknown error' }) });
+    } finally {
+        setIsValidating(false);
+    }
+  };
+
+  const handleApplyFix = async () => {
+    if (!validationResult || validationResult.validationStatus !== 'Fix' || !validationResult.fixedQuestionData || !currentReportForValidation?.questionId) {
+        return;
+    }
+    setIsValidating(true);
+    try {
+        const dataToUpdate = { ...validationResult.fixedQuestionData, status: 'fixed' as const };
+        await updatePredefinedQuestion(currentReportForValidation.questionId, dataToUpdate);
+        toast({ title: t('toastFixAppliedSuccess') });
+        setIsValidationDialogOpen(false);
+    } catch (error) {
+        console.error("Error applying AI fix:", error);
+        toast({ variant: 'destructive', title: t('toastFixAppliedError') });
+    } finally {
+        setIsValidating(false);
+    }
+  };
+
+  const handleDeleteFromValidation = async () => {
+    if (!currentReportForValidation?.questionId) return;
+    setIsValidating(true);
+    try {
+      await handleDeletePredefinedQuestion(currentReportForValidation.questionId);
+      setIsValidationDialogOpen(false);
+    } catch (error) {
+        toast({ variant: 'destructive', title: t('toastPredefinedQuestionDeleteError') });
+    } finally {
+      setIsValidating(false);
+    }
+  };
+
 
   if (loading) {
     return <div className="flex items-center justify-center py-10"><Loader2 className="h-12 w-12 animate-spin text-primary" /></div>;
@@ -251,6 +309,24 @@ export default function AdminReportsPage() {
       </Card>
     );
   }
+
+  const renderQuestionForDialog = (q: QuestionData | Omit<QuestionData, 'id' | 'topicValue' | 'source' | 'createdAt' | 'status'>, title: string) => (
+    <div>
+      <h3 className="font-semibold text-lg mb-2">{title}</h3>
+      <div className="space-y-3 text-sm p-3 border rounded-md bg-muted/50">
+        <p><strong>{tForm('questionLabel')}:</strong> {q.question.en}</p>
+        <p><strong>{tForm('correctAnswerLabel')}:</strong> <span className="text-green-600">{q.correctAnswer.en}</span></p>
+        <div>
+          <strong>{tForm('distractorLabel', {number: ''}).replace('#', 's')}:</strong>
+          <ul className="list-disc pl-5">
+            {q.distractors.map((d, i) => <li key={i}>{d.en}</li>)}
+          </ul>
+        </div>
+        <p><strong>{tForm('explanationLabel')}:</strong> {q.explanation.en}</p>
+        <p><strong>{tForm('difficultyLabel')}:</strong> {q.difficulty}</p>
+      </div>
+    </div>
+  );
 
   return (
     <div className="space-y-6">
@@ -345,6 +421,15 @@ export default function AdminReportsPage() {
                       <TableCell className="text-right space-x-1">
                         <Tooltip>
                             <TooltipTrigger asChild>
+                                <Button variant="outline" size="icon" className="h-8 w-8" onClick={() => handleValidateWithAI(report)} disabled={!report.questionId}>
+                                    <ShieldCheck className="h-4 w-4" />
+                                    <span className="sr-only">{t('validateWithAIButton')}</span>
+                                </Button>
+                            </TooltipTrigger>
+                            <TooltipContent><p>{report.questionId ? t('validateWithAITooltip') : t('editQuestionDisabledTooltip')}</p></TooltipContent>
+                        </Tooltip>
+                        <Tooltip>
+                            <TooltipTrigger asChild>
                                 <Button variant="outline" size="icon" className="h-8 w-8" onClick={() => handleOpenEditQuestionDialog(report)} disabled={!report.questionId}>
                                     <Edit className="h-4 w-4" />
                                     <span className="sr-only">{t('editReportedQuestionButton')}</span>
@@ -361,28 +446,6 @@ export default function AdminReportsPage() {
                             </TooltipTrigger>
                             <TooltipContent><p>{report.questionId ? t('copyQuestionIdButton') : t('editQuestionDisabledTooltip')}</p></TooltipContent>
                         </Tooltip>
-                        <Tooltip>
-                          <AlertDialog>
-                            <TooltipTrigger asChild>
-                              <AlertDialogTrigger asChild>
-                                <Button variant="ghost" size="icon" className="h-8 w-8 hover:bg-destructive hover:text-destructive-foreground" disabled={!report.questionId}>
-                                    <Trash2 className="h-4 w-4" />
-                                </Button>
-                              </AlertDialogTrigger>
-                            </TooltipTrigger>
-                            <TooltipContent><p>{report.questionId ? t('deleteReportedQuestionButton') : t('editQuestionDisabledTooltip')}</p></TooltipContent>
-                            <AlertDialogContent>
-                            <AlertDialogHeader>
-                                <AlertDialogTitle>{t('deletePredefinedQuestionConfirmTitle')}</AlertDialogTitle>
-                                <AlertDialogDescription>{t('deletePredefinedQuestionConfirmDescription', { question: truncateText(getQuestionTextForLocale(report), 50) })}</AlertDialogDescription>
-                            </AlertDialogHeader>
-                            <AlertDialogFooter>
-                                <AlertDialogCancel>{tCommon('cancel')}</AlertDialogCancel>
-                                <AlertDialogAction onClick={() => handleDeletePredefinedQuestion(report)} className="bg-destructive hover:bg-destructive/90">{tCommon('deleteButton')}</AlertDialogAction>
-                            </AlertDialogFooter>
-                            </AlertDialogContent>
-                        </AlertDialog>
-                      </Tooltip>
                       <Tooltip>
                         <AlertDialog>
                             <TooltipTrigger asChild>
@@ -429,6 +492,78 @@ export default function AdminReportsPage() {
           </CardFooter>
         )}
       </Card>
+
+      {/* Dialog for AI Validation Result */}
+        <Dialog open={isValidationDialogOpen} onOpenChange={setIsValidationDialogOpen}>
+            <DialogContent className="sm:max-w-4xl max-h-[90vh]">
+                <DialogHeader>
+                    <DialogTitle>{t('validationResultTitle')}</DialogTitle>
+                    <DialogDescription>{t('validationResultDescription', { questionId: currentReportForValidation?.questionId || '...' })}</DialogDescription>
+                </DialogHeader>
+                {isValidating ? (
+                    <div className="flex flex-col items-center justify-center p-8 space-y-4">
+                        <Loader2 className="h-12 w-12 animate-spin text-primary" />
+                        <p className="text-lg text-muted-foreground">{t('validatingInProgress')}</p>
+                    </div>
+                ) : validationResult && (
+                    <ScrollArea className="max-h-[calc(90vh-200px)]">
+                        <div className="p-4 space-y-4">
+                            {validationResult.validationStatus === 'Accept' && (
+                                <div className="p-4 rounded-md bg-green-50 border border-green-200 text-green-800">
+                                    <div className="flex items-center gap-2 font-bold text-lg"><CheckCircle /> {t('validationStatus.Accept')}</div>
+                                    <p className="mt-2 text-sm">{validationResult.reasoning}</p>
+                                </div>
+                            )}
+                             {validationResult.validationStatus === 'Reject' && (
+                                <div className="p-4 rounded-md bg-red-50 border border-red-200 text-red-800">
+                                    <div className="flex items-center gap-2 font-bold text-lg"><AlertCircle /> {t('validationStatus.Reject')}</div>
+                                    <p className="mt-2 text-sm">{validationResult.reasoning}</p>
+                                </div>
+                            )}
+                            {validationResult.validationStatus === 'Fix' && currentReportForValidation && (
+                                <>
+                                <div className="p-4 rounded-md bg-blue-50 border border-blue-200 text-blue-800">
+                                    <div className="flex items-center gap-2 font-bold text-lg"><Wand2 /> {t('validationStatus.Fix')}</div>
+                                    <p className="mt-2 text-sm">{validationResult.reasoning}</p>
+                                </div>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                                     {renderQuestionForDialog(currentReportForValidation.originalQuestionDataForValidation!, t('originalQuestion'))}
+                                     {validationResult.fixedQuestionData && renderQuestionForDialog(validationResult.fixedQuestionData, t('aiSuggestedFix'))}
+                                </div>
+                                </>
+                            )}
+                        </div>
+                    </ScrollArea>
+                )}
+                 <DialogFooter>
+                    <DialogClose asChild><Button variant="outline">{tCommon('close')}</Button></DialogClose>
+                    {validationResult?.validationStatus === 'Fix' && (
+                        <Button onClick={handleApplyFix} disabled={isValidating}>
+                            {isValidating && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                            {t('applyFixButton')}
+                        </Button>
+                    )}
+                    {validationResult?.validationStatus === 'Reject' && (
+                         <AlertDialog>
+                            <AlertDialogTrigger asChild>
+                                <Button variant="destructive" disabled={isValidating}>{t('deleteQuestionButton')}</Button>
+                            </AlertDialogTrigger>
+                            <AlertDialogContent>
+                                <AlertDialogHeader>
+                                    <AlertDialogTitle>{t('deletePredefinedQuestionConfirmTitle')}</AlertDialogTitle>
+                                    <AlertDialogDescription>{t('deletePredefinedQuestionConfirmDescriptionAI')}</AlertDialogDescription>
+                                </AlertDialogHeader>
+                                <AlertDialogFooter>
+                                    <AlertDialogCancel>{tCommon('cancel')}</AlertDialogCancel>
+                                    <AlertDialogAction onClick={handleDeleteFromValidation} className="bg-destructive hover:bg-destructive/90">{tCommon('deleteButton')}</AlertDialogAction>
+                                </AlertDialogFooter>
+                            </AlertDialogContent>
+                        </AlertDialog>
+                    )}
+                </DialogFooter>
+            </DialogContent>
+        </Dialog>
+
 
       {/* Dialog for Editing Question */}
       <Dialog open={isEditQuestionDialogOpen} onOpenChange={setIsEditQuestionDialogOpen}>

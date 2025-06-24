@@ -125,7 +125,6 @@
   "customTopicDeletedSuccess": "Tema personalizado eliminado correctamente.",
   "customTopicDeletedError": "No se pudo eliminar el tema personalizado. Por favor, inténtalo de nuevo.",
   "deleteCustomTopicButtonTooltip": "Eliminar este tema personalizado",
-
   "ProfilePage": {
     "title": "Mi Perfil",
     "backToGame": "Volver al Juego",
@@ -153,7 +152,6 @@
     "notEnoughDataForHighlights": "Juega al menos {count} preguntas en una categoría para ver destacados.",
     "chartYAxisLabel": "Precisión (%)"
   },
-
   "AboutPage": {
     "title": "Acerca de / Contacto",
     "backToGame": "Volver al Juego",
@@ -182,7 +180,6 @@
       "submitError": "Error al enviar la sugerencia. Por favor, inténtalo de nuevo."
     }
   },
-
   "LoginPage": {
     "title": "Acceso de Admin y Usuario",
     "titleSignUp": "Crear una Cuenta",
@@ -405,11 +402,10 @@
     "toastStatusUpdateError": "No se pudo actualizar el estado del reporte.",
     "toastReportDeleteSuccess": "Reporte eliminado correctamente.",
     "toastReportDeleteError": "No se pudo eliminar el reporte.",
-    "toastPredefinedQuestionDeleteSuccess": "Pregunta predefinida \"{question}\" eliminada correctamente.",
+    "toastPredefinedQuestionDeleteSuccess": "Pregunta predefinida eliminada correctamente.",
     "toastPredefinedQuestionDeleteError": "No se pudo eliminar la pregunta predefinida.",
     "errorNoQuestionIdForDelete": "Este reporte no está vinculado a un ID de pregunta predefinida específico, por lo que la pregunta no se puede eliminar directamente desde aquí.",
     "errorNoQuestionIdToEdit": "Este reporte no está vinculado a un ID de pregunta predefinida específico, por lo que la pregunta no se puede editar desde aquí.",
-    "errorQuestionNotFoundForEdit": "La pregunta asociada a este reporte (ID: {questionId}) no fue encontrada en la base de datos. Podría haber sido eliminada.",
     "errorQuestionNotFoundForEditTitle": "Pregunta no Encontrada",
     "errorQuestionNotFoundForAction": "La pregunta con ID '{questionId}' no fue encontrada. Puede que haya sido eliminada.",
     "errorQuestionNotFoundForDeleteTitle": "No se puede Eliminar la Pregunta",
@@ -422,6 +418,7 @@
     "deleteReportConfirmDescription": "¿Estás seguro de que quieres eliminar este reporte? Esta acción solo elimina el reporte, no la pregunta en sí.",
     "deletePredefinedQuestionConfirmTitle": "¿Eliminar Pregunta Predefinida?",
     "deletePredefinedQuestionConfirmDescription": "¿Estás seguro de que quieres eliminar la pregunta predefinida: \"{question}\"? Esto la eliminará del juego y no se puede deshacer.",
+    "deletePredefinedQuestionConfirmDescriptionAI": "La IA recomienda eliminar esta pregunta. ¿Estás seguro de que quieres proceder? Esto la eliminará del juego y no se puede deshacer.",
     "editQuestionDialogTitle": "Editar Pregunta Reportada",
     "editQuestionDialogDescription": "Editando pregunta ID: {questionId} de la categoría \"{topic}\".",
     "reasons": {
@@ -431,7 +428,25 @@
       "duplicate_question": "Pregunta Duplicada",
       "offensive_content": "Contenido Ofensivo",
       "other": "Otro"
-    }
+    },
+    "validateWithAIButton": "Validar con IA",
+    "validateWithAITooltip": "Usar IA para validar la exactitud y calidad de esta pregunta",
+    "errorNoQuestionIdToValidate": "Acción deshabilitada: El reporte no está vinculado a un ID de pregunta.",
+    "validatingInProgress": "Validando con IA, por favor espera...",
+    "validationResultTitle": "Resultado de Validación IA",
+    "validationResultDescription": "Análisis de IA para la pregunta ID: {questionId}",
+    "validationStatus": {
+      "Accept": "Aceptada",
+      "Reject": "Rechazada",
+      "Fix": "Corrección Sugerida"
+    },
+    "originalQuestion": "Pregunta Original",
+    "aiSuggestedFix": "Sugerencia de la IA",
+    "applyFixButton": "Aplicar Corrección",
+    "deleteQuestionButton": "Eliminar Pregunta",
+    "toastFixAppliedSuccess": "¡Corrección sugerida por la IA aplicada correctamente!",
+    "toastFixAppliedError": "Error al aplicar la corrección sugerida por la IA.",
+    "errorValidationAI": "El proceso de validación con IA falló: {error}"
   },
   "AdminSuggestionsPage": {
     "title": "Sugerencias de Usuarios",

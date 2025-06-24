@@ -125,7 +125,6 @@
   "customTopicDeletedSuccess": "Custom topic deleted successfully.",
   "customTopicDeletedError": "Could not delete the custom topic. Please try again.",
   "deleteCustomTopicButtonTooltip": "Delete this custom topic",
-
   "ProfilePage": {
     "title": "My Profile",
     "backToGame": "Back to Game",
@@ -153,7 +152,6 @@
     "notEnoughDataForHighlights": "Play at least {count} questions in a category to see highlights.",
     "chartYAxisLabel": "Accuracy (%)"
   },
-
   "AboutPage": {
     "title": "About / Contact",
     "backToGame": "Back to Game",
@@ -182,7 +180,6 @@
       "submitError": "Failed to send suggestion. Please try again."
     }
   },
-
   "LoginPage": {
     "title": "Admin & User Login",
     "titleSignUp": "Create an Account",
@@ -405,11 +402,10 @@
     "toastStatusUpdateError": "Could not update report status.",
     "toastReportDeleteSuccess": "Report deleted successfully.",
     "toastReportDeleteError": "Could not delete report.",
-    "toastPredefinedQuestionDeleteSuccess": "Predefined question \"{question}\" deleted successfully.",
+    "toastPredefinedQuestionDeleteSuccess": "Predefined question deleted successfully.",
     "toastPredefinedQuestionDeleteError": "Could not delete the predefined question.",
     "errorNoQuestionIdForDelete": "This report is not linked to a specific predefined question ID, so the question cannot be deleted directly from here.",
     "errorNoQuestionIdToEdit": "This report is not linked to a specific predefined question ID, so the question cannot be edited from here.",
-    "errorQuestionNotFoundForEdit": "The question associated with this report (ID: {questionId}) was not found in the database. It might have been deleted.",
     "errorQuestionNotFoundForEditTitle": "Question Not Found",
     "errorQuestionNotFoundForAction": "The question with ID '{questionId}' was not found. It may have been deleted.",
     "errorQuestionNotFoundForDeleteTitle": "Cannot Delete Question",
@@ -422,6 +418,7 @@
     "deleteReportConfirmDescription": "Are you sure you want to delete this report? This action only removes the report, not the question in itself.",
     "deletePredefinedQuestionConfirmTitle": "Delete Predefined Question?",
     "deletePredefinedQuestionConfirmDescription": "Are you sure you want to delete the predefined question: \"{question}\"? This will remove it from the game and cannot be undone.",
+    "deletePredefinedQuestionConfirmDescriptionAI": "The AI recommends deleting this question. Are you sure you want to proceed? This will remove it from the game and cannot be undone.",
     "editQuestionDialogTitle": "Edit Reported Question",
     "editQuestionDialogDescription": "Editing question ID: {questionId} from category \"{topic}\".",
     "reasons": {
@@ -431,7 +428,25 @@
       "duplicate_question": "Duplicate Question",
       "offensive_content": "Offensive Content",
       "other": "Other"
-    }
+    },
+    "validateWithAIButton": "Validate with AI",
+    "validateWithAITooltip": "Use AI to validate this question for accuracy and quality",
+    "errorNoQuestionIdToValidate": "Action disabled: Report is not linked to a question ID.",
+    "validatingInProgress": "Validating with AI, please wait...",
+    "validationResultTitle": "AI Validation Result",
+    "validationResultDescription": "AI analysis for question ID: {questionId}",
+    "validationStatus": {
+      "Accept": "Accepted",
+      "Reject": "Rejected",
+      "Fix": "Fix Suggested"
+    },
+    "originalQuestion": "Original Question",
+    "aiSuggestedFix": "AI's Suggested Fix",
+    "applyFixButton": "Apply Fix",
+    "deleteQuestionButton": "Delete Question",
+    "toastFixAppliedSuccess": "AI-suggested fix applied successfully!",
+    "toastFixAppliedError": "Failed to apply AI-suggested fix.",
+    "errorValidationAI": "The AI validation process failed: {error}"
   },
   "AdminSuggestionsPage": {
     "title": "User Suggestions",
