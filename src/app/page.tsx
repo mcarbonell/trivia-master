@@ -24,6 +24,17 @@ import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { useTranslations, useLocale } from "next-intl";
 import type { AppLocale } from '@/lib/i18n-config';
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/contexts/AuthContext";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import Link from 'next/link';
 import {
   Loader2,
   AlertTriangle,
@@ -41,7 +52,10 @@ import {
   Sparkles,
   ThumbsDown,
   ScrollText,
-  ListChecks
+  ListChecks,
+  LogIn,
+  LogOut,
+  UserCircle
 } from "lucide-react";
 import { logEvent as logEventFromLib, analytics } from "@/lib/firebase";
 
@@ -95,6 +109,7 @@ export default function TriviaPage() {
   const t = useTranslations();
   const locale = useLocale() as AppLocale;
   const { toast } = useToast();
+  const { user, loading: authLoading, signOut } = useAuth();
 
   const [allAppCategories, setAllAppCategories] = useState<CategoryDefinition[]>([]);
   const [topLevelCategories, setTopLevelCategories] = useState<CategoryDefinition[]>([]);
@@ -954,12 +969,51 @@ export default function TriviaPage() {
 
 
   return (
-    <div className="container mx-auto p-4 flex flex-col items-center min-h-screen text-foreground ">
+    <div className="container mx-auto p-4 flex flex-col items-center min-h-screen text-foreground">
       <header className="my-6 sm:my-8 text-center w-full max-w-2xl">
         <div className="flex justify-between items-center w-full mb-2 sm:mb-4">
           <LanguageSwitcher />
           <h1 className="text-3xl sm:text-5xl font-headline font-bold text-primary">{t('pageTitle')}</h1>
-          <div className="w-10 h-10" />
+          <div className="w-32 h-10 flex items-center justify-end">
+            {authLoading ? (
+              <Loader2 className="h-6 w-6 animate-spin" />
+            ) : user ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" className="relative h-10 w-10 rounded-full">
+                    <Avatar className="h-10 w-10">
+                      <AvatarImage src={user.photoURL || ''} alt={user.email || 'User'} />
+                      <AvatarFallback>
+                        <UserCircle className="h-8 w-8" />
+                      </AvatarFallback>
+                    </Avatar>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="w-56" align="end" forceMount>
+                  <DropdownMenuLabel className="font-normal">
+                    <div className="flex flex-col space-y-1">
+                      <p className="text-sm font-medium leading-none">{t('loggedInAs')}</p>
+                      <p className="text-xs leading-none text-muted-foreground">
+                        {user.email}
+                      </p>
+                    </div>
+                  </DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={signOut} className="cursor-pointer">
+                    <LogOut className="mr-2 h-4 w-4" />
+                    <span>{t('logoutButton')}</span>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <Link href="/login">
+                <Button variant="outline">
+                  <LogIn className="mr-2 h-4 w-4" />
+                  {t('loginButton')}
+                </Button>
+              </Link>
+            )}
+          </div>
         </div>
         <p className="text-muted-foreground mt-1 text-sm sm:text-base">{t('pageDescription')}</p>
       </header>

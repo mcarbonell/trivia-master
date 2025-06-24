@@ -164,10 +164,6 @@ export default function AboutPage() {
           </CardContent>
         </Card>
       </main>
-
-      <footer className="mt-auto pt-8 pb-4 text-center text-sm text-muted-foreground">
-        <p>{tCommon('footerText', { year: currentYear })}</p>
-      </footer>
     </div>
   );
 }

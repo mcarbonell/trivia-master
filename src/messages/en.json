@@ -115,9 +115,12 @@
   "savedCustomTopicsTitle": "Your Saved Custom Topics",
   "customTopicPlaySaved": "Play this topic",
   "viewAllCustomTopicsButton": "View all your custom topics",
+  "loginButton": "Login / Sign Up",
+  "logoutButton": "Logout",
+  "loggedInAs": "Logged In As",
 
   "AboutPage": {
-    "title": "About & Contact",
+    "title": "About / Contact",
     "backToGame": "Back to Game",
     "aboutSection": {
       "title": "About AI Trivia Master",
@@ -146,16 +149,26 @@
   },
 
   "LoginPage": {
-    "title": "Admin Login",
-    "description": "Please enter your credentials to access the admin panel.",
+    "title": "Admin & User Login",
+    "titleSignUp": "Create an Account",
+    "description": "Please enter your credentials to log in.",
+    "descriptionSignUp": "Create a new account to save your progress.",
     "emailLabel": "Email",
-    "emailPlaceholder": "admin@example.com",
+    "emailPlaceholder": "you@example.com",
     "passwordLabel": "Password",
-    "passwordPlaceholder": "••••••••",
     "submitButton": "Login",
+    "submitButtonSignUp": "Sign Up",
     "errorInvalidCredentials": "Invalid email or password. Please try again.",
     "errorGeneric": "An unexpected error occurred. Please try again later.",
-    "adminOnly": "This area is for administrators only."
+    "adminOnlyNote": "Admin login provides access to the management panel.",
+    "toggleToSignUp": "Don't have an account? Sign Up",
+    "toggleToLogin": "Already have an account? Login",
+    "confirmPasswordLabel": "Confirm Password",
+    "errorPasswordsDoNotMatch": "Passwords do not match.",
+    "errorEmailInUse": "This email is already in use. Please log in or use a different email.",
+    "errorWeakPassword": "Password should be at least 6 characters.",
+    "errorInvalidEmail": "Please enter a valid email address.",
+    "backToHome": "Back to Home"
   },
   "AdminLayout": {
     "adminPanelTitle": "Admin Panel",

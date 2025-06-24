@@ -5,12 +5,13 @@ import { NextIntlClientProvider } from 'next-intl';
 import { getLocale, getMessages } from 'next-intl/server';
 import { ClientLocaleInitializer } from '@/components/ClientLocaleInitializer';
 import { AuthProvider } from '@/contexts/AuthContext';
-import Link from 'next/link'; // Added Link import
+import Link from 'next/link';
 
 // Define metadata function to allow dynamic title based on locale
 export async function generateMetadata(): Promise<Metadata> {
   const locale = await getLocale();
-  const pageTitle = locale === 'es' ? 'Maestro de Trivia IA' : 'AI Trivia Master';
+  const messages = await getMessages();
+  const pageTitle = messages.pageTitle as string || (locale === 'es' ? 'Maestro de Trivia IA' : 'AI Trivia Master');
 
   return {
     title: pageTitle,
@@ -49,7 +50,7 @@ export default async function RootLayout({
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
       </head>
-      <body className="font-body antialiased text-foreground">
+      <body className="font-body antialiased text-foreground bg-background">
         <NextIntlClientProvider locale={locale} messages={messages}>
           <AuthProvider>
             <ClientLocaleInitializer />
@@ -57,7 +58,7 @@ export default async function RootLayout({
             <Toaster />
             <footer className="py-4 text-center text-xs text-muted-foreground">
               <Link href="/about" className="hover:text-primary underline underline-offset-2">
-                {locale === 'es' ? 'Acerca de / Contactar' : 'Aboutor / Contact'}
+                {messages.AboutPage?.title ?? (locale === 'es' ? 'Acerca de / Contactar' : 'About / Contact')}
               </Link>
             </footer>
           </AuthProvider>

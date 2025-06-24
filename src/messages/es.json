@@ -115,9 +115,12 @@
   "savedCustomTopicsTitle": "Tus Temas Personalizados Guardados",
   "customTopicPlaySaved": "Jugar este tema",
   "viewAllCustomTopicsButton": "Ver todos tus temas personalizados",
+  "loginButton": "Iniciar Sesión / Registrarse",
+  "logoutButton": "Cerrar Sesión",
+  "loggedInAs": "Sesión Iniciada Como",
 
   "AboutPage": {
-    "title": "Acerca de y Contacto",
+    "title": "Acerca de / Contacto",
     "backToGame": "Volver al Juego",
     "aboutSection": {
       "title": "Acerca de Maestro de Trivia IA",
@@ -146,16 +149,26 @@
   },
 
   "LoginPage": {
-    "title": "Acceso de Administrador",
-    "description": "Por favor, ingresa tus credenciales para acceder al panel de administración.",
+    "title": "Acceso de Admin y Usuario",
+    "titleSignUp": "Crear una Cuenta",
+    "description": "Por favor, ingresa tus credenciales para iniciar sesión.",
+    "descriptionSignUp": "Crea una cuenta nueva para guardar tu progreso.",
     "emailLabel": "Correo Electrónico",
-    "emailPlaceholder": "admin@ejemplo.com",
+    "emailPlaceholder": "tu@ejemplo.com",
     "passwordLabel": "Contraseña",
-    "passwordPlaceholder": "••••••••",
-    "submitButton": "Ingresar",
-    "errorInvalidCredentials": "Correo electrónico o contraseña incorrectos. Por favor, inténtalo de nuevo.",
+    "submitButton": "Iniciar Sesión",
+    "submitButtonSignUp": "Registrarse",
+    "errorInvalidCredentials": "Correo o contraseña incorrectos. Por favor, inténtalo de nuevo.",
     "errorGeneric": "Ocurrió un error inesperado. Por favor, inténtalo más tarde.",
-    "adminOnly": "Esta área es solo para administradores."
+    "adminOnlyNote": "El inicio de sesión de admin da acceso al panel de gestión.",
+    "toggleToSignUp": "¿No tienes cuenta? Regístrate",
+    "toggleToLogin": "¿Ya tienes una cuenta? Inicia sesión",
+    "confirmPasswordLabel": "Confirmar Contraseña",
+    "errorPasswordsDoNotMatch": "Las contraseñas no coinciden.",
+    "errorEmailInUse": "Este correo ya está en uso. Por favor, inicia sesión o usa un correo diferente.",
+    "errorWeakPassword": "La contraseña debe tener al menos 6 caracteres.",
+    "errorInvalidEmail": "Por favor, introduce una dirección de correo válida.",
+    "backToHome": "Volver al Inicio"
   },
   "AdminLayout": {
     "adminPanelTitle": "Panel de Admin",

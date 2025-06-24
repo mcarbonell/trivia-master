@@ -9,33 +9,66 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { useTranslations } from 'next-intl';
-import { Loader2, LogIn } from 'lucide-react';
+import { Loader2, LogIn, UserPlus } from 'lucide-react';
+import Link from 'next/link';
 
 export default function LoginPage() {
   const t = useTranslations('LoginPage');
-  const { signIn, loading: authLoading, user } = useAuth();
+  const { signIn, signUp, loading: authLoading, user } = useAuth();
   const router = useRouter();
+
+  const [isSignUp, setIsSignUp] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
+    // If the user is logged in, redirect them away from the login page to the home page.
     if (!authLoading && user) {
-      router.replace('/admin/dashboard');
+      router.replace('/'); 
     }
   }, [authLoading, user, router]);
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError(null);
+
+    if (isSignUp && password !== confirmPassword) {
+      setError(t('errorPasswordsDoNotMatch'));
+      return;
+    }
+    
     setIsSubmitting(true);
     try {
-      await signIn(email, password);
-      // Successful sign-in will trigger useEffect to redirect
+      if (isSignUp) {
+        await signUp(email, password);
+      } else {
+        await signIn(email, password);
+      }
+      // On success, useEffect will redirect.
     } catch (err: any) {
-      if (err.code === 'auth/invalid-credential' || err.code === 'auth/user-not-found' || err.code === 'auth/wrong-password' || err.code === 'auth/invalid-email') {
-        setError(t('errorInvalidCredentials'));
+      if (err.code) {
+          switch (err.code) {
+              case 'auth/invalid-credential':
+              case 'auth/user-not-found':
+              case 'auth/wrong-password':
+                  setError(t('errorInvalidCredentials'));
+                  break;
+              case 'auth/email-already-in-use':
+                  setError(t('errorEmailInUse'));
+                  break;
+              case 'auth/weak-password':
+                  setError(t('errorWeakPassword'));
+                  break;
+              case 'auth/invalid-email':
+                  setError(t('errorInvalidEmail'));
+                  break;
+              default:
+                  setError(t('errorGeneric'));
+                  break;
+          }
       } else {
         setError(t('errorGeneric'));
       }
@@ -45,8 +78,7 @@ export default function LoginPage() {
     }
   };
   
-  // If user is already logged in (and effect hasn't redirected yet), show loader or null
-  if (!authLoading && user) {
+  if (authLoading || user) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-background">
         <Loader2 className="h-16 w-16 animate-spin text-primary" />
@@ -54,13 +86,15 @@ export default function LoginPage() {
     );
   }
 
-
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-background p-4">
+        <Link href="/" className="absolute top-4 left-4">
+            <Button variant="outline">{t('backToHome')}</Button>
+        </Link>
       <Card className="w-full max-w-md shadow-xl">
         <CardHeader className="text-center">
-          <CardTitle className="text-3xl font-headline text-primary">{t('title')}</CardTitle>
-          <CardDescription>{t('description')}</CardDescription>
+          <CardTitle className="text-3xl font-headline text-primary">{isSignUp ? t('titleSignUp') : t('title')}</CardTitle>
+          <CardDescription>{isSignUp ? t('descriptionSignUp') : t('description')}</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-6">
@@ -83,24 +117,43 @@ export default function LoginPage() {
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder={t('passwordPlaceholder')}
+                placeholder="••••••••"
                 required
                 disabled={isSubmitting || authLoading}
               />
             </div>
+            {isSignUp && (
+              <div className="space-y-2">
+                <Label htmlFor="confirmPassword">{t('confirmPasswordLabel')}</Label>
+                <Input
+                  id="confirmPassword"
+                  type="password"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  placeholder="••••••••"
+                  required
+                  disabled={isSubmitting || authLoading}
+                />
+              </div>
+            )}
             {error && <p className="text-sm text-destructive">{error}</p>}
             <Button type="submit" className="w-full bg-primary hover:bg-primary/90 text-primary-foreground" disabled={isSubmitting || authLoading}>
               {isSubmitting || authLoading ? (
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              ) : isSignUp ? (
+                <UserPlus className="mr-2 h-4 w-4" />
               ) : (
                 <LogIn className="mr-2 h-4 w-4" />
               )}
-              {t('submitButton')}
+              {isSignUp ? t('submitButtonSignUp') : t('submitButton')}
             </Button>
           </form>
         </CardContent>
-         <CardFooter className="text-center text-xs text-muted-foreground mt-4">
-          <p>{t('adminOnly')}</p>
+         <CardFooter className="flex flex-col items-center justify-center text-sm text-muted-foreground mt-4 gap-2">
+            <button onClick={() => setIsSignUp(!isSignUp)} className="hover:text-primary hover:underline">
+                {isSignUp ? t('toggleToLogin') : t('toggleToSignUp')}
+            </button>
+            <p className="text-xs">{t('adminOnlyNote')}</p>
         </CardFooter>
       </Card>
     </div>
