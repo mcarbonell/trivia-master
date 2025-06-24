@@ -364,6 +364,7 @@
       "answerPlaceholder": "Enter answer text...",
       "correctAnswerLabel": "Correct Answer",
       "distractorLabel": "Distractor #{number}",
+      "distractorsLabel": "Distractors",
       "explanationLabel": "Explanation Text",
       "explanationPlaceholder": "Enter the explanation text...",
       "hintLabelOptional": "Hint Text (Optional)",

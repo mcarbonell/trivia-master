@@ -254,6 +254,7 @@ export default function AdminReportsPage() {
         const questionData = await getNormalizedQuestionById(report.questionId);
         if (!questionData) {
             setValidationResult({ validationStatus: 'Reject', reasoning: t('errorQuestionNotFoundForAction', { questionId: report.questionId }) });
+            setQuestionForValidation(null);
             return;
         }
         setQuestionForValidation(questionData);
@@ -320,7 +321,7 @@ export default function AdminReportsPage() {
         <p><strong>{tForm('questionLabel')}:</strong> {q.question.en}</p>
         <p><strong>{tForm('correctAnswerLabel')}:</strong> <span className="text-green-600">{q.correctAnswer.en}</span></p>
         <div>
-          <strong>{tForm('distractorLabel', {number: ''}).replace('#', 's')}:</strong>
+          <strong>{tForm('distractorsLabel')}:</strong>
           <ul className="list-disc pl-5">
             {q.distractors.map((d, i) => <li key={i}>{d.en}</li>)}
           </ul>

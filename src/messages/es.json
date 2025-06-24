@@ -364,6 +364,7 @@
       "answerPlaceholder": "Ingresa el texto de la respuesta...",
       "correctAnswerLabel": "Respuesta Correcta",
       "distractorLabel": "Distractor #{number}",
+      "distractorsLabel": "Distractores",
       "explanationLabel": "Texto de la Explicación",
       "explanationPlaceholder": "Ingresa el texto de la explicación...",
       "hintLabelOptional": "Texto de la Pista (Opcional)",
