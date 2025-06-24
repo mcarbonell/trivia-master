@@ -66,7 +66,7 @@ export default function AboutPage() {
   };
 
   return (
-    <div className="container mx-auto p-4 flex flex-col items-center min-h-screen text-foreground">
+    <div className="container mx-auto p-4 flex flex-col items-center min-h-screen text-foreground bg-background">
       <header className="my-6 sm:my-8 text-center w-full max-w-3xl">
         <div className="flex justify-between items-center mb-2 sm:mb-4">
           <Button variant="outline" asChild>

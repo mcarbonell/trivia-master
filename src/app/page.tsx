@@ -954,7 +954,7 @@ export default function TriviaPage() {
 
 
   return (
-    <div className="container mx-auto p-4 flex flex-col items-center min-h-screen text-foreground">
+    <div className="container mx-auto p-4 flex flex-col items-center min-h-screen text-foreground bg-background">
       <header className="my-6 sm:my-8 text-center w-full max-w-2xl">
         <div className="flex justify-between items-center w-full mb-2 sm:mb-4">
           <LanguageSwitcher />
