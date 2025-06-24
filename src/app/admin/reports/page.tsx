@@ -25,7 +25,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Loader2, AlertTriangle, RefreshCw, Trash2, ClipboardCopy, Edit } from 'lucide-react';
+import { Loader2, AlertTriangle, RefreshCw, Trash2, ClipboardCopy, Edit, Ban } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { db } from '@/lib/firebase';
 import { doc, getDoc } from 'firebase/firestore';
@@ -131,14 +131,21 @@ export default function AdminReportsPage() {
     }
   };
   
-  const handleDeletePredefinedQuestion = async (questionId: string | undefined, questionText: string) => {
-    if (!questionId) {
+  const handleDeletePredefinedQuestion = async (report: ReportData) => {
+    if (!report.questionId) {
         toast({ variant: "destructive", title: tCommon('toastErrorTitle') as string, description: t('errorNoQuestionIdForDelete') });
         return;
     }
     try {
-      await deletePredefinedQuestion(questionId);
-      toast({ title: tCommon('toastSuccessTitle') as string, description: t('toastPredefinedQuestionDeleteSuccess', { question: truncateText(questionText, 30) }) });
+      // First, verify the question exists before attempting deletion
+      const questionRef = doc(db, PREDEFINED_QUESTIONS_COLLECTION, report.questionId);
+      const docSnap = await getDoc(questionRef);
+      if (!docSnap.exists()) {
+        toast({ variant: "destructive", title: t('errorQuestionNotFoundForDeleteTitle') as string, description: t('errorQuestionNotFoundForAction', { questionId: report.questionId }) });
+        return;
+      }
+      await deletePredefinedQuestion(report.questionId);
+      toast({ title: tCommon('toastSuccessTitle') as string, description: t('toastPredefinedQuestionDeleteSuccess', { question: truncateText(getQuestionTextForLocale(report), 30) }) });
       fetchAllData(); 
     } catch (err) {
       console.error("Error deleting predefined question:", err);
@@ -201,7 +208,7 @@ export default function AdminReportsPage() {
         });
         setIsEditQuestionDialogOpen(true);
       } else {
-        toast({ variant: "destructive", title: tCommon('toastErrorTitle') as string, description: t('errorQuestionNotFoundForEdit', {questionId: report.questionId}) });
+        toast({ variant: "destructive", title: t('errorQuestionNotFoundForEditTitle') as string, description: t('errorQuestionNotFoundForAction', { questionId: report.questionId }) });
       }
     } catch (err) {
       console.error("Error fetching question for edit:", err);
@@ -347,54 +354,50 @@ export default function AdminReportsPage() {
                         </Select>
                       </TableCell>
                       <TableCell className="text-right space-x-1">
-                        {report.questionId && (
-                           <>
-                            <Tooltip>
-                                <TooltipTrigger asChild>
-                                    <Button variant="outline" size="icon" className="h-8 w-8" onClick={() => handleOpenEditQuestionDialog(report)}>
-                                        <Edit className="h-4 w-4" />
-                                        <span className="sr-only">{t('editReportedQuestionButton')}</span>
-                                    </Button>
-                                </TooltipTrigger>
-                                <TooltipContent><p>{t('editReportedQuestionButtonTooltip')}</p></TooltipContent>
-                            </Tooltip>
-                            <Tooltip>
-                                <TooltipTrigger asChild>
-                                    <Button variant="outline" size="icon" className="h-8 w-8" onClick={() => copyToClipboard(report.questionId)}>
-                                        <ClipboardCopy className="h-4 w-4" />
-                                        <span className="sr-only">{t('copyQuestionIdButton')}</span>
-                                    </Button>
-                                </TooltipTrigger>
-                                <TooltipContent><p>{t('copyQuestionIdButton')}</p></TooltipContent>
-                            </Tooltip>
-                            <Tooltip>
-                             <AlertDialog>
-                                <TooltipTrigger asChild={true}>
-                                  <AlertDialogTrigger asChild={true}>
-                                    <Button variant="ghost" size="icon" className="h-8 w-8 hover:bg-destructive hover:text-destructive-foreground">
-                                        <Trash2 className="h-4 w-4" />
-                                    </Button>
-                                  </AlertDialogTrigger>
-                                </TooltipTrigger>
-                                <TooltipContent><p>{t('deleteReportedQuestionButton')}</p></TooltipContent>
-                                <AlertDialogContent>
-                                <AlertDialogHeader>
-                                    <AlertDialogTitle>{t('deletePredefinedQuestionConfirmTitle')}</AlertDialogTitle>
-                                    <AlertDialogDescription>{t('deletePredefinedQuestionConfirmDescription', { question: truncateText(getQuestionTextForLocale(report), 50) })}</AlertDialogDescription>
-                                </AlertDialogHeader>
-                                <AlertDialogFooter>
-                                    <AlertDialogCancel>{tCommon('cancel')}</AlertDialogCancel>
-                                    <AlertDialogAction onClick={() => handleDeletePredefinedQuestion(report.questionId, getQuestionTextForLocale(report))} className="bg-destructive hover:bg-destructive/90">{tCommon('deleteButton')}</AlertDialogAction>
-                                </AlertDialogFooter>
-                                </AlertDialogContent>
-                            </AlertDialog>
-                          </Tooltip>
-                           </>
-                        )}
                         <Tooltip>
+                            <TooltipTrigger asChild>
+                                <Button variant="outline" size="icon" className="h-8 w-8" onClick={() => handleOpenEditQuestionDialog(report)} disabled={!report.questionId}>
+                                    <Edit className="h-4 w-4" />
+                                    <span className="sr-only">{t('editReportedQuestionButton')}</span>
+                                </Button>
+                            </TooltipTrigger>
+                            <TooltipContent><p>{report.questionId ? t('editReportedQuestionButtonTooltip') : t('editQuestionDisabledTooltip')}</p></TooltipContent>
+                        </Tooltip>
+                        <Tooltip>
+                            <TooltipTrigger asChild>
+                                <Button variant="outline" size="icon" className="h-8 w-8" onClick={() => copyToClipboard(report.questionId)} disabled={!report.questionId}>
+                                    <ClipboardCopy className="h-4 w-4" />
+                                    <span className="sr-only">{t('copyQuestionIdButton')}</span>
+                                </Button>
+                            </TooltipTrigger>
+                            <TooltipContent><p>{report.questionId ? t('copyQuestionIdButton') : t('editQuestionDisabledTooltip')}</p></TooltipContent>
+                        </Tooltip>
+                        <Tooltip>
+                          <AlertDialog>
+                            <TooltipTrigger asChild>
+                              <AlertDialogTrigger asChild>
+                                <Button variant="ghost" size="icon" className="h-8 w-8 hover:bg-destructive hover:text-destructive-foreground" disabled={!report.questionId}>
+                                    <Trash2 className="h-4 w-4" />
+                                </Button>
+                              </AlertDialogTrigger>
+                            </TooltipTrigger>
+                            <TooltipContent><p>{report.questionId ? t('deleteReportedQuestionButton') : t('editQuestionDisabledTooltip')}</p></TooltipContent>
+                            <AlertDialogContent>
+                            <AlertDialogHeader>
+                                <AlertDialogTitle>{t('deletePredefinedQuestionConfirmTitle')}</AlertDialogTitle>
+                                <AlertDialogDescription>{t('deletePredefinedQuestionConfirmDescription', { question: truncateText(getQuestionTextForLocale(report), 50) })}</AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                                <AlertDialogCancel>{tCommon('cancel')}</AlertDialogCancel>
+                                <AlertDialogAction onClick={() => handleDeletePredefinedQuestion(report)} className="bg-destructive hover:bg-destructive/90">{tCommon('deleteButton')}</AlertDialogAction>
+                            </AlertDialogFooter>
+                            </AlertDialogContent>
+                        </AlertDialog>
+                      </Tooltip>
+                      <Tooltip>
                         <AlertDialog>
-                            <TooltipTrigger asChild={true}>
-                              <AlertDialogTrigger asChild={true}>
+                            <TooltipTrigger asChild>
+                              <AlertDialogTrigger asChild>
                                 <Button variant="ghost" size="icon" className="h-8 w-8 hover:bg-destructive hover:text-destructive-foreground">
                                 <Trash2 className="h-4 w-4" />
                                 </Button>
