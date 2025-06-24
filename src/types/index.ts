@@ -1,5 +1,5 @@
 // src/types/index.ts
-import type { FieldValue } from 'firebase/firestore'; 
+
 import type { AppLocale } from '@/lib/i18n-config';
 
 export type DifficultyLevel = "easy" | "medium" | "hard";
@@ -64,5 +64,5 @@ export interface UserData {
   uid: string;
   email: string;
   role: 'user' | 'admin';
-  createdAt: FieldValue; 
+  createdAt: string; 
 }

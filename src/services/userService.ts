@@ -2,7 +2,7 @@
 'use server';
 
 import { db } from '@/lib/firebase';
-import { doc, setDoc, getDoc, serverTimestamp, type DocumentData } from 'firebase/firestore';
+import { doc, setDoc, getDoc, serverTimestamp, type DocumentData, type Timestamp } from 'firebase/firestore';
 import type { UserData } from '@/types';
 
 const USERS_COLLECTION = 'users';
@@ -41,7 +41,16 @@ export async function getUserProfile(uid: string): Promise<UserData | null> {
   try {
     const docSnap = await getDoc(userRef);
     if (docSnap.exists()) {
-      return docSnap.data() as UserData;
+      const data = docSnap.data();
+      const createdAtTimestamp = data.createdAt as Timestamp;
+
+      const profile: UserData = {
+        uid: data.uid,
+        email: data.email,
+        role: data.role,
+        createdAt: createdAtTimestamp.toDate().toISOString(), // Convert Timestamp to ISO string
+      };
+      return profile;
     } else {
       console.warn(`[userService] No user profile found for UID: ${uid}`);
       return null;
