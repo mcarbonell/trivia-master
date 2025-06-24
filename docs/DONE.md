@@ -1,4 +1,3 @@
-
 # AI Trivia Master - Implemented Features & Progress
 
 This document outlines the key features and improvements implemented in the AI Trivia Master application.
@@ -6,13 +5,13 @@ This document outlines the key features and improvements implemented in the AI T
 ## Core Gameplay & AI
 
 *   **AI-Powered Question Generation**:
-    *   Utilizes Genkit and Google AI (Gemini model) to dynamically generate trivia questions, four multiple-choice answers, and an explanation for the correct answer.
+    *   Utilizes Genkit and Google AI (Gemini model) to dynamically generate trivia questions, a correct answer, three incorrect distractors, and an explanation.
     *   Handles user-provided custom topics for on-the-fly question generation.
 *   **Bilingual Content Generation**:
     *   AI generates all textual content (questions, answers, explanations, hints) simultaneously in both English and Spanish within a single API call.
 *   **Controlled Difficulty Levels**:
     *   The application requests questions of a specific difficulty level from the AI ("easy", "medium", "hard").
-    *   AI is guided by detailed definitions for each difficulty level (e.g., "easy" = primary/secundary school, "hard" = university level).
+    *   AI is guided by detailed definitions for each difficulty level (e.g., "easy" = primary/secondary school, "hard" = university level).
     *   The application implements adaptive difficulty: the difficulty of the next question is adjusted based on whether the user answered the previous question correctly or incorrectly.
 *   **Hints**:
     *   The AI generates a concise, bilingual hint for each question.
@@ -24,6 +23,16 @@ This document outlines the key features and improvements implemented in the AI T
 *   **Fixed Game Length**:
     *   Implemented a fixed number of questions per game session (currently 10 questions).
     *   Includes a "Game Over" screen displaying the final score and offering options to play again (same topic/difficulty) or start a completely new game.
+
+## Data Model & Question Integrity
+
+*   **Robust Data Model Refactoring**:
+    *   The core data structure for questions has been significantly improved.
+    *   **Old model**: An array of 4 answers (`answers`) and a pointer to the correct one (`correctAnswerIndex`).
+    *   **New model**: A dedicated `correctAnswer` object and an array of three incorrect `distractors`.
+    *   **Benefits**: This eliminates positional bias in the AI-generated data, simplifies the cognitive load for the AI (improving generation quality), and makes the data structure more semantic and robust.
+*   **Data Migration**:
+    *   A dedicated script (`migrate:questions`) was created and run to successfully migrate the entire Firestore database of tens of thousands of questions to the new data model without data loss.
 
 ## Categories & Content Management
 
@@ -46,7 +55,7 @@ This document outlines the key features and improvements implemented in the AI T
     *   A collection in Firestore (`predefinedTriviaQuestions`) stores pre-generated bilingual trivia questions.
     *   This reduces reliance on real-time AI generation for common categories, improving speed and reducing API costs.
 *   **Batch Population Script (`scripts/populate-firestore-questions.ts`)**:
-    *   Generates and stores a target number of questions for each predefined category and for each difficulty level, using the detailed category instructions from Firestore.
+    *   Generates and stores a target number of questions for each predefined category and for each difficulty level, using the detailed category instructions from Firestore and the new data model.
     *   Includes logic to avoid conceptual duplication by passing existing content as context to the AI.
     *   Respects API rate limits with configurable delays.
     *   Validates each question individually from AI batch responses, discarding malformed ones while keeping valid ones.
@@ -56,6 +65,8 @@ This document outlines the key features and improvements implemented in the AI T
 
 ## User Interface & Experience
 
+*   **Client-Side Answer Shuffling**:
+    *   To ensure fairness and prevent users from memorizing answer positions, the application now shuffles the correct answer and distractors on the client-side before displaying them. This completely mitigates any potential positional bias from the AI.
 *   **Category Selection**:
     *   Users can choose from a list of predefined categories (fetched from Firestore) with associated icons.
     *   Users can input a custom topic.
@@ -73,7 +84,7 @@ This document outlines the key features and improvements implemented in the AI T
 *   **Responsive Design**:
     *   Interface adapts to various screen sizes.
 *   **PWA (Progressive Web App)**:
-    *   Configured with `@ducanh2912/next-pwa` for improved caching, offline capabilities (for app shell), and "add to home screen" functionality.
+    *   Configured with `@ducanh2912/next-pwa` for improved caching, offline capabilities (for app shell), and "add to home screen" functionality. PWA is now enabled in development mode to improve stability.
 *   **Visual Difficulty Indicator**:
     *   Displays the current adaptive difficulty level to the user.
 *   **Question Reporting**:
@@ -116,11 +127,12 @@ This document outlines the key features and improvements implemented in the AI T
         *   **Delete**: Remove categories with confirmation.
     *   **Question Counts**: Displays the number of predefined questions available for each difficulty level (easy, medium, hard) per category.
 *   **Predefined Question Management (`/admin/questions`)**:
+    *   **Updated for New Data Model**: The editor now has distinct fields for "Correct Answer" and three "Distractors", making manual editing more intuitive and aligned with the new data model.
     *   **List Questions**: View all predefined questions in a paginated table.
     *   **Filter**: Filter questions by category and/or difficulty.
     *   **Search**: Search questions by ID, question text, or answer text.
     *   **Delete**: Remove specific predefined questions with confirmation.
-    *   **Update**: Edit the content of existing predefined questions (bilingual question, answers, explanation, hint, difficulty, correct answer).
+    *   **Update**: Edit the content of existing predefined questions.
     *   Table displays question text (truncated with tooltip for full view), category name, difficulty, and correct answer.
 *   **Report Management (`/admin/reports`)**:
     *   **View Reports**: Lists all user-submitted question reports, sortable and filterable by status.

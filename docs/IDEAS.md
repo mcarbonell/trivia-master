@@ -1,42 +1,33 @@
-
 # Ideas para Mejorar AI Trivia Master y Estrategias para Android
 
 Este documento recopila ideas para futuras mejoras de la aplicación AI Trivia Master y explora diferentes enfomas para convertirla en una aplicación de Android.
 
 ## Ideas para Mejorar la App "AI Trivia Master"
 
-1.  **Límite de Tiempo por Pregunta:**
-    *   Añadir un temporizador para cada pregunta podría aumentar la emoción y el desafío. Se podría usar un estado en React para el temporizador y mostrar una barra de progreso visual.
-    *   Si el tiempo se agota, se consideraría una respuesta incorrecta.
-
-2.  **Sistema de Puntuación Avanzado:**
+1.  **Sistema de Puntuación Avanzado:**
     *   **Rachas (Streaks):** Otorgar puntos extra por respuestas correctas consecutivas.
     *   **Bonificación por Tiempo:** Dar más puntos si se responde correctamente y rápido.
 
-3.  **Historial de Partidas y Estadísticas del Usuario:**
+2.  **Historial de Partidas y Estadísticas del Usuario:**
     *   Guardar los resultados de las partidas (si se implementan cuentas de usuario).
     *   Mostrar estadísticas como porcentaje de aciertos por categoría, mejor racha, etc. Esto podría usar `localStorage` para una solución sencilla o una base de datos (como Firestore) si hay usuarios.
 
-4.  **Perfiles de Usuario (Opcional, más complejo):**
+3.  **Perfiles de Usuario (Opcional, más complejo):**
     *   Permitir a los usuarios crear cuentas (quizás con Firebase Authentication).
     *   Esto permitiría guardar el progreso y las estadísticas de forma persistente entre dispositivos.
 
-5.  **Más Tipos de Preguntas (requeriría ajustes en el prompt de Genkit):**
+4.  **Más Tipos de Preguntas (requeriría ajustes en el prompt de Genkit):**
     *   Actualmente son de opción múltiple. Se podría explorar "Verdadero/Falso" o incluso preguntas donde el usuario tenga que escribir una respuesta corta (aunque la validación sería más compleja).
 
-6.  **Mejoras Visuales y de Audio:**
+5.  **Mejoras Visuales y de Audio:**
     *   **Sonidos:** Efectos de sonido opcionales para respuestas correctas/incorrectas, inicio de juego, etc.
     *   **Animaciones más Pulidas:** Aunque ya hay algunas, se podrían refinar las transiciones entre estados del juego.
     *   **Temas Visuales:** Permitir al usuario elegir entre diferentes paletas de colores (más allá del claro/oscuro actual).
 
-7.  **Función de "Pista" (Hint):**
-    *   Añadir un botón para obtener una pista sobre la pregunta actual.
-    *   Esto podría ser otro flujo de Genkit que, dada la pregunta y las opciones, genere una pista sutil.
-
-8.  **Modo "Revisión":**
+6.  **Modo "Revisión":**
     *   Al final de una partida, permitir al usuario revisar las preguntas que falló, junto con las explicaciones.
 
-9.  **Imágenes Ilustrativas para Preguntas:**
+7.  **Imágenes Ilustrativas para Preguntas:**
     *   **Concepto:** Mostrar una imagen relevante junto a cada pregunta para hacer la experiencia más visual y atractiva.
     *   **Generación de Imágenes:**
         *   **Opción A (IA de texto genera prompt):** La misma IA que genera la pregunta podría también generar un prompt descriptivo para una IA de generación de imágenes (ej. "Una foto de un astronauta en la luna para una pregunta sobre el Apollo 11").
@@ -60,7 +51,7 @@ Este documento recopila ideas para futuras mejoras de la aplicación AI Trivia M
         *   Necesidad de prompts de buena calidad para las IAs de arte.
         *   Aumento del espacio de almacenamiento requerido.
 
-10. **Trivia Visual: Identificación de Ciudades desde Imágenes Generadas por IA:**
+8.  **Trivia Visual: Identificación de Ciudades desde Imágenes Generadas por IA:**
     *   **Concepto Principal:** Un modo de juego donde el usuario ve una imagen y debe identificar la ciudad correspondiente.
     *   **Generación de Imágenes Automatizada:**
         *   Utilizar IA generativa de imágenes (ej. Gemini 2.0 Flash experimental a través de Genkit) para crear las fotografías de las ciudades.
