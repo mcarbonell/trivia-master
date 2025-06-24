@@ -34,12 +34,9 @@ export async function addGameSession(
 export async function getUserGameSessions(userId: string): Promise<GameSession[]> {
   try {
     const sessionsRef = collection(db, GAME_SESSIONS_COLLECTION);
-    // The query was changed to remove orderBy to prevent a missing-index error in Firestore.
-    // Sorting is now handled in the application code after fetching.
     const q = query(
       sessionsRef,
       where('userId', '==', userId)
-      // orderBy('completedAt', 'desc') // This requires a composite index in Firestore.
     );
     const querySnapshot = await getDocs(q);
 
@@ -47,15 +44,28 @@ export async function getUserGameSessions(userId: string): Promise<GameSession[]
     querySnapshot.forEach((doc) => {
       const data = doc.data();
       const completedAtTimestamp = data.completedAt as Timestamp | null;
-      // Handle cases where completedAt might not be set yet if using serverTimestamp
       const completedAtString = completedAtTimestamp ? completedAtTimestamp.toDate().toISOString() : new Date().toISOString();
+
+      // Validate categoryName format to ensure it's a BilingualText object
+      const categoryNameFromDb = data.categoryName;
+      let validatedCategoryName: BilingualText = { 
+        en: data.categoryTopicValue || 'Unknown Category', 
+        es: data.categoryTopicValue || 'Categoría Desconocida' 
+      };
+
+      if (typeof categoryNameFromDb === 'object' && categoryNameFromDb !== null && categoryNameFromDb.en && categoryNameFromDb.es) {
+        validatedCategoryName = categoryNameFromDb as BilingualText;
+      } else if (typeof categoryNameFromDb === 'string') {
+        // Fallback if for some reason a string was saved
+        validatedCategoryName = { en: categoryNameFromDb, es: categoryNameFromDb };
+      }
 
       sessions.push({
         id: doc.id,
         userId: data.userId,
         completedAt: completedAtString,
         categoryTopicValue: data.categoryTopicValue,
-        categoryName: data.categoryName,
+        categoryName: validatedCategoryName,
         difficultyMode: data.difficultyMode,
         finalScoreCorrect: data.finalScoreCorrect,
         finalScoreIncorrect: data.finalScoreIncorrect,
