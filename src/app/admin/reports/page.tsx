@@ -7,7 +7,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { format } from 'date-fns';
 import { es as esLocale, enUS as enLocale } from 'date-fns/locale';
 import { getReportedQuestions, updateReportStatus, deleteReport } from '@/services/reportService';
-import { deletePredefinedQuestion, updatePredefinedQuestion, normalizeQuestionData as normalizeFirestoreQuestion } from '@/services/triviaService';
+import { deletePredefinedQuestion, updatePredefinedQuestion, getNormalizedQuestionById } from '@/services/triviaService';
 import { getAppCategories } from '@/services/categoryService';
 import type { ReportData, ReportStatus, CategoryDefinition, DifficultyLevel, PredefinedQuestion } from '@/types';
 import type { AppLocale } from '@/lib/i18n-config';
@@ -27,14 +27,11 @@ import { Textarea } from '@/components/ui/textarea';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Loader2, AlertTriangle, RefreshCw, Trash2, ClipboardCopy, Edit, Ban } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import { db } from '@/lib/firebase';
-import { doc, getDoc } from 'firebase/firestore';
 import { questionFormSchema, type QuestionFormData } from '@/app/admin/questions/page';
 
 const ITEMS_PER_PAGE = 10;
 const REPORT_STATUSES: ReportStatus[] = ['new', 'reviewed', 'resolved', 'ignored'];
 const ALL_DIFFICULTY_LEVELS_CONST: DifficultyLevel[] = ["easy", "medium", "hard"];
-const PREDEFINED_QUESTIONS_COLLECTION = 'predefinedTriviaQuestions';
 
 export default function AdminReportsPage() {
   const t = useTranslations('AdminReportsPage');
@@ -137,10 +134,8 @@ export default function AdminReportsPage() {
         return;
     }
     try {
-      // First, verify the question exists before attempting deletion
-      const questionRef = doc(db, PREDEFINED_QUESTIONS_COLLECTION, report.questionId);
-      const docSnap = await getDoc(questionRef);
-      if (!docSnap.exists()) {
+      const questionData = await getNormalizedQuestionById(report.questionId);
+      if (!questionData) {
         toast({ variant: "destructive", title: t('errorQuestionNotFoundForDeleteTitle') as string, description: t('errorQuestionNotFoundForAction', { questionId: report.questionId }) });
         return;
       }
@@ -179,15 +174,9 @@ export default function AdminReportsPage() {
       return;
     }
     try {
-      const questionRef = doc(db, PREDEFINED_QUESTIONS_COLLECTION, report.questionId);
-      const docSnap = await getDoc(questionRef);
-      if (docSnap.exists()) {
-        const questionData = await normalizeFirestoreQuestion(docSnap.id, docSnap.data());
-        if (!questionData) {
-            toast({ variant: "destructive", title: tCommon('toastErrorTitle') as string, description: t('errorQuestionNotFoundForEdit', {questionId: report.questionId}) });
-            return;
-        }
-
+      const questionData = await getNormalizedQuestionById(report.questionId);
+      
+      if (questionData) {
         setQuestionToEditData(questionData);
         questionEditForm.reset({
           questionEn: questionData.question.en,

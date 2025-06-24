@@ -192,3 +192,27 @@ export async function updatePredefinedQuestion(questionId: string, data: Partial
     throw error; 
   }
 }
+
+/**
+ * Fetches and normalizes a single question by its ID.
+ * This is a server action to be called from client components to avoid passing non-plain objects.
+ * @param questionId The Firestore document ID of the question.
+ * @returns A promise that resolves to a normalized PredefinedQuestion or null if not found.
+ */
+export async function getNormalizedQuestionById(questionId: string): Promise<PredefinedQuestion | null> {
+  try {
+    const questionRef = doc(db, PREDEFINED_QUESTIONS_COLLECTION, questionId);
+    const docSnap = await getDoc(questionRef);
+
+    if (docSnap.exists()) {
+      return normalizeQuestionData(docSnap.id, docSnap.data());
+    }
+    
+    console.warn(`[getNormalizedQuestionById] Question with ID "${questionId}" not found.`);
+    return null;
+
+  } catch (error) {
+    console.error(`[getNormalizedQuestionById] Error fetching question ${questionId}:`, error);
+    throw error;
+  }
+}
