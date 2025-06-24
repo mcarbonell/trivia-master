@@ -34,10 +34,12 @@ export async function addGameSession(
 export async function getUserGameSessions(userId: string): Promise<GameSession[]> {
   try {
     const sessionsRef = collection(db, GAME_SESSIONS_COLLECTION);
+    // The query was changed to remove orderBy to prevent a missing-index error in Firestore.
+    // Sorting is now handled in the application code after fetching.
     const q = query(
       sessionsRef,
-      where('userId', '==', userId),
-      orderBy('completedAt', 'desc')
+      where('userId', '==', userId)
+      // orderBy('completedAt', 'desc') // This requires a composite index in Firestore.
     );
     const querySnapshot = await getDocs(q);
 
@@ -45,6 +47,7 @@ export async function getUserGameSessions(userId: string): Promise<GameSession[]
     querySnapshot.forEach((doc) => {
       const data = doc.data();
       const completedAtTimestamp = data.completedAt as Timestamp | null;
+      // Handle cases where completedAt might not be set yet if using serverTimestamp
       const completedAtString = completedAtTimestamp ? completedAtTimestamp.toDate().toISOString() : new Date().toISOString();
 
       sessions.push({
@@ -60,6 +63,10 @@ export async function getUserGameSessions(userId: string): Promise<GameSession[]
         isCustomTopic: data.isCustomTopic,
       });
     });
+    
+    // Sort the sessions by completion date descending in the application code.
+    sessions.sort((a, b) => new Date(b.completedAt).getTime() - new Date(a.completedAt).getTime());
+    
     return sessions;
   } catch (error) {
     console.error(`[gameSessionService] Error fetching game sessions for user ${userId}:`, error);
