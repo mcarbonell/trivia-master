@@ -419,7 +419,7 @@ export default function TriviaPage() {
         setCurrentQuestionNumberInGame(prev => Math.max(0, prev - 1));
       }
     }
-  }, [askedQuestionIdsFromDB, askedQuestionTextsForAI, askedCorrectAnswerTexts, locale, logAnalyticsEvent, prepareAndSetQuestion, t]);
+  }, [askedQuestionIdsFromDB, askedQuestionTextsForAI, askedCorrectAnswerTexts, locale, prepareAndSetQuestion, t]);
 
 
   const handleTimeout = useCallback(() => {
@@ -441,7 +441,7 @@ export default function TriviaPage() {
 
     logAnalyticsEvent('answer_question', {
       category_topic_value: currentTopicValue,
-      category_name: currentCategoryDetails?.name[locale] || currentTopicValue,
+      category_name: currentCategoryDetails?.name.en || currentTopicValue,
       question_difficulty: questionData.difficulty,
       is_correct: false,
       timed_out: true,
@@ -479,13 +479,13 @@ export default function TriviaPage() {
     if (isHintVisible && questionData && gameState === 'playing') {
       logAnalyticsEvent('use_hint', {
         category_topic_value: currentTopicValue,
-        category_name: currentCategoryDetails?.name[locale] || currentTopicValue,
+        category_name: currentCategoryDetails?.name.en || currentTopicValue,
         question_difficulty: questionData.difficulty,
         question_id: questionData.id,
         is_custom_topic: currentCategoryDetails?.isCustomActive || false,
       });
     }
-  }, [isHintVisible, questionData, gameState, currentTopicValue, currentCategoryDetails, locale, logAnalyticsEvent]);
+  }, [isHintVisible, questionData, gameState, currentTopicValue, currentCategoryDetails, logAnalyticsEvent]);
 
 
   const handleCategoryClick = async (category: CategoryDefinition) => {
@@ -532,7 +532,7 @@ export default function TriviaPage() {
         setGameState('difficulty_selection');
         logAnalyticsEvent('select_category', {
             category_topic_value: categoryToPlay.topicValue,
-            category_name: categoryToPlay.name[locale],
+            category_name: categoryToPlay.name.en,
             is_custom_topic: false,
         });
     }
@@ -561,7 +561,7 @@ export default function TriviaPage() {
     setGameState('difficulty_selection');
     logAnalyticsEvent('select_category', {
         category_topic_value: customTopicMeta.customTopicValue,
-        category_name: customTopicMeta.name[locale],
+        category_name: customTopicMeta.name.en,
         is_custom_topic: true,
         is_saved_custom_topic: true,
     });
@@ -673,7 +673,7 @@ export default function TriviaPage() {
 
     logAnalyticsEvent('select_category', {
         category_topic_value: newMeta.customTopicValue,
-        category_name: newMeta.name[locale],
+        category_name: newMeta.name.en,
         is_custom_topic: true,
         is_newly_created_custom_topic: true,
         original_user_input: customTopicToConfirm.originalInput
@@ -716,7 +716,7 @@ export default function TriviaPage() {
         setGameState('difficulty_selection');
         logAnalyticsEvent('select_category', {
             category_topic_value: parentCategory.topicValue,
-            category_name: parentCategory.name[locale],
+            category_name: parentCategory.name.en,
             is_custom_topic: false,
             played_as_parent: true
         });
@@ -759,7 +759,7 @@ export default function TriviaPage() {
 
     logAnalyticsEvent('start_game_with_difficulty', {
       category_topic_value: currentTopicValue,
-      category_name: currentCategoryDetails?.name[locale] || currentTopicValue,
+      category_name: currentCategoryDetails?.name.en || currentTopicValue,
       difficulty_mode_selected: mode,
       initial_difficulty_level: initialDifficulty,
       is_custom_topic: isCustom,
@@ -826,7 +826,7 @@ export default function TriviaPage() {
 
     logAnalyticsEvent('answer_question', {
       category_topic_value: currentTopicValue,
-      category_name: currentCategoryDetails?.name[locale] || currentTopicValue,
+      category_name: currentCategoryDetails?.name.en || currentTopicValue,
       question_difficulty: questionData.difficulty,
       is_correct: isCorrect,
       timed_out: false,
@@ -872,7 +872,7 @@ export default function TriviaPage() {
 
       logAnalyticsEvent('game_over', {
         category_topic_value: currentTopicValue,
-        category_name: currentCategoryDetails?.name[locale] || currentTopicValue,
+        category_name: currentCategoryDetails?.name.en || currentTopicValue,
         final_score_correct: score.correct,
         final_score_incorrect: score.incorrect,
         difficulty_mode: selectedDifficultyMode,
