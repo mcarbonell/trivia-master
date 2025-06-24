@@ -60,7 +60,7 @@ const QuestionDataSchema = z.object({
 });
 export type QuestionData = z.infer<typeof QuestionDataSchema>;
 
-export const ValidateSingleQuestionInputSchema = z.object({
+const ValidateSingleQuestionInputSchema = z.object({
   questionData: QuestionDataSchema.describe('The full data of the trivia question to validate.'),
   modelName: z.string().optional().describe('Optional Genkit model name to use for validation (e.g., googleai/gemini-1.5-flash).')
 });
@@ -69,7 +69,7 @@ export type ValidateSingleQuestionInput = z.infer<typeof ValidateSingleQuestionI
 const ValidationStatusSchema = z.enum(["Accept", "Reject", "Fix"])
   .describe('Status of the validation: "Accept" if correct, "Reject" if unfixable, "Fix" if correctable.');
 
-export const ValidateSingleQuestionOutputSchema = z.object({
+const ValidateSingleQuestionOutputSchema = z.object({
   validationStatus: ValidationStatusSchema,
   reasoning: z.string().describe('AI\'s reasoning for the validation status. If "Fix", should explain what was fixed.'),
   fixedQuestionData: QuestionDataSchema.omit({id: true, topicValue: true, source: true, createdAt: true, status: true }).optional()
