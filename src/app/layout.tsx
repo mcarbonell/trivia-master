@@ -49,7 +49,7 @@ export default async function RootLayout({
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
       </head>
-      <body className="font-body antialiased">
+      <body className="font-body antialiased text-foreground">
         <NextIntlClientProvider locale={locale} messages={messages}>
           <AuthProvider>
             <ClientLocaleInitializer />
@@ -57,7 +57,7 @@ export default async function RootLayout({
             <Toaster />
             <footer className="py-4 text-center text-xs text-muted-foreground">
               <Link href="/about" className="hover:text-primary underline underline-offset-2">
-                {locale === 'es' ? 'Acerca de / Contactar' : 'About / Contact'}
+                {locale === 'es' ? 'Acerca de / Contactar' : 'Aboutor / Contact'}
               </Link>
             </footer>
           </AuthProvider>
