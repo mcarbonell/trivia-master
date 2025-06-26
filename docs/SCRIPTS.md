@@ -71,7 +71,24 @@ These scripts leverage Genkit and AI models to generate or validate content. Rem
   npm run populate:questions
   ```
 
-### 4. Check for Duplicate Questions (`check:questions`)
+### 4. Populate Images (`populate:images`)
+
+- **Purpose:** Finds questions with an `imagePrompt` but no `imageUrl`, generates an image using AI, uploads it to Firebase Storage, and updates the question with the public URL.
+- **Command:** `npm run populate:images -- [options]`
+- **Arguments:**
+    - `-c, --category <topicValue>`: Optional. Process only the category with this specific `topicValue`. If omitted, processes all categories.
+    - `-l, --limit <number>`: Optional. The maximum number of images to generate in a single run. Default: `10`.
+    - `-d, --delay <milliseconds>`: Optional. The delay in milliseconds between each image generation API call to respect rate limits. Default: `2000`.
+- **Usage Examples:**
+  ```bash
+  # Generate up to 5 images for the 'WorldCapitals' category
+  npm run populate:images -- --category WorldCapitals --limit 5
+
+  # Generate 1 image from any category
+  npm run populate:images -l 1
+  ```
+
+### 5. Check for Duplicate Questions (`check:questions`)
 
 - **Purpose:** Uses AI to analyze all questions within a category (and optionally a specific difficulty) to find conceptual duplicates, even if they are worded differently. It now considers both the question text and the correct answer for a more accurate check. It then gives an interactive prompt to delete the identified duplicates.
 - **Command:** `npm run check:questions -- --topicValue <topicValue> [options]`
@@ -86,7 +103,7 @@ These scripts leverage Genkit and AI models to generate or validate content. Rem
   ```
 - **Interaction:** The script will list the duplicate pairs found by the AI and then ask for confirmation (`Y/n`) before deleting the questions marked as duplicates.
 
-### 5. Validate a Single Question (`validate:question`)
+### 6. Validate a Single Question (`validate:question`)
 
 - **Purpose:** Uses AI to perform a detailed quality check on a single question from Firestore. The AI can accept it, reject it (and recommend deletion), or propose a fix. After validation, the question's `status` field in Firestore is updated to `'accepted'` or `'fixed'`.
 - **Command:** `npm run validate:question -- --id <firestore_id> [options]`
@@ -116,7 +133,7 @@ These scripts leverage Genkit and AI models to generate or validate content. Rem
         - Without these flags, it will always ask for confirmation to delete the question.
     - If the AI accepts the question, it will simply report that no action is needed and set the question's status to `'accepted'`.
 
-### 6. Validate Multiple Questions (`validate:questions`)
+### 7. Validate Multiple Questions (`validate:questions`)
 
 - **Purpose:** Runs the same AI quality check as `validate:question` but in bulk for all questions matching a given category and optional difficulty. By default, this script **only processes questions that have not been validated before** (i.e., do not have a `status` of 'accepted' or 'fixed').
 - **Command:** `npm run validate:questions -- --topicValue <topicValue> [options]`
@@ -150,7 +167,7 @@ These scripts leverage Genkit and AI models to generate or validate content. Rem
 
 ## Data Migration Scripts
 
-### 7. Migrate Questions Format (`migrate:questions`)
+### 8. Migrate Questions Format (`migrate:questions`)
 
 - **Purpose:** A one-time utility script to migrate all predefined questions in Firestore from the old data format (using `answers` array and `correctAnswerIndex`) to the new, more robust format (using a single `correctAnswer` object and a `distractors` array). This should be run after updating the application code to handle the new format.
 - **Command:** `npm run migrate:questions`
