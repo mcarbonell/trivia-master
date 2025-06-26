@@ -27,17 +27,16 @@ Este documento recopila ideas para futuras mejoras de la aplicación AI Trivia M
 6.  **Modo "Revisión":**
     *   Al final de una partida, permitir al usuario revisar las preguntas que falló, junto con las explicaciones.
 
-7.  **Imágenes Ilustrativas para Preguntas:**
+7.  **Imágenes Ilustrativas para Preguntas (¡Implementado!):**
     *   **Concepto:** Mostrar una imagen relevante junto a cada pregunta para hacer la experiencia más visual y atractiva.
     *   **Generación de Imágenes:**
-        *   **Opción A (IA de texto genera prompt):** La misma IA que genera la pregunta podría también generar un prompt descriptivo para una IA de generación de imágenes (ej. "Una foto de un astronauta en la luna para una pregunta sobre el Apollo 11").
-        *   **Opción B (IA de arte directa):** Utilizar la pregunta o elementos clave de ella como entrada directa para una IA generadora de imágenes.
-        *   Se podrían usar modelos de Genkit capaces de generar imágenes (como Gemini 2.0 Flash experimental).
+        *   **Opción A (IA de texto genera prompt):** La misma IA que genera la pregunta también genera un prompt descriptivo para una IA de generación de imágenes (ej. "Una foto de un astronauta en la luna para una pregunta sobre el Apollo 11"). Este es el enfoque implementado.
+        *   Se usan modelos de Genkit capaces de generar imágenes (como Gemini 2.0 Flash experimental).
     *   **Almacenamiento (para preguntas predefinidas):**
-        *   Las imágenes generadas para las categorías predefinidas se podrían almacenar en Firebase Storage.
-        *   La URL de la imagen se almacenaría junto con la pregunta en Firestore.
+        *   Las imágenes generadas para las categorías predefinidas se almacenan en **Firebase Storage**.
+        *   La URL de la imagen se almacena junto con la pregunta en Firestore.
     *   **Implementación en la UI:**
-        *   El componente `QuestionCard` mostraría la imagen.
+        *   El componente `QuestionCard` ya muestra la imagen si existe una `imageUrl`.
     *   **Consideraciones para Temas Personalizados:**
         *   La generación de imágenes en tiempo real para temas personalizados sería más costosa y lenta. Se podría optar por:
             *   Generarlas y que el usuario espere.
@@ -51,7 +50,14 @@ Este documento recopila ideas para futuras mejoras de la aplicación AI Trivia M
         *   Necesidad de prompts de buena calidad para las IAs de arte.
         *   Aumento del espacio de almacenamiento requerido.
 
-8.  **Trivia Visual: Identificación de Ciudades desde Imágenes Generadas por IA:**
+8.  **Nuevas Categorías Visuales (Ideas):**
+    *   **Identificar Animales (Implementado):** Mostrar una imagen y preguntar "¿Qué animal es?".
+    *   **Monumentos del Mundo:** Mostrar el Coliseo y preguntar "¿Qué monumento es este?" o "¿En qué ciudad se encuentra?".
+    *   **Banderas del Mundo:** Mostrar una bandera y preguntar por el país.
+    *   **Pinturas Famosas:** Mostrar "La Gioconda" y preguntar por el autor o el nombre de la obra.
+    *   **Platos de Comida:** Mostrar una paella y preguntar "¿Qué plato típico es?".
+
+9.  **Trivia Visual Avanzada: Identificación de Ciudades desde Imágenes Generadas por IA:**
     *   **Concepto Principal:** Un modo de juego donde el usuario ve una imagen y debe identificar la ciudad correspondiente.
     *   **Generación de Imágenes Automatizada:**
         *   Utilizar IA generativa de imágenes (ej. Gemini 2.0 Flash experimental a través de Genkit) para crear las fotografías de las ciudades.

@@ -18,11 +18,11 @@ These scripts are used to import content from local JSON files into Firestore.
 - **Purpose:** Imports or updates trivia categories from a specified JSON file into the `triviaCategories` collection in Firestore.
 - **Command:** `npm run import:categories -- --source <filename_prefix>`
 - **Arguments:**
-    - `--source <prefix>` (or `-s <prefix>`): **Required**. The prefix of the JSON file located in `src/data/`. For example, a source of `initial` will use the file `src/data/initial-categories.json`.
+    - `--source <prefix>` (or `-s <prefix>`): **Required**. The prefix of the JSON file located in `src/data/`. For example, a source of `initial` will use the file `src/data/initial-categories.json`. A source of `visual` will use `src/data/visual-categories.json`.
 - **Usage Example:**
   ```bash
-  # Import categories from src/data/sports-categories.json
-  npm run import:categories -- --source sports
+  # Import categories from src/data/visual-categories.json
+  npm run import:categories -- --source visual
   ```
 - **Notes:**
     - The document ID in Firestore will be the `topicValue` from the JSON.
@@ -183,5 +183,6 @@ These scripts leverage Genkit and AI models to generate or validate content. Rem
     - This script directly modifies your production data. It's recommended to have a backup of your Firestore data before running it, just in case.
     - It processes questions in batches to avoid overwhelming Firestore resources.
 
+---
 
 NOTE: To update the categories and questions on the client side, update CURRENT_CONTENT_VERSION  on src/services/indexedDBService.ts.

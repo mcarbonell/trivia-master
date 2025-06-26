@@ -29,7 +29,7 @@ const generateImageFlow = ai.defineFlow(
   },
   async (prompt) => {
     // Prompt Engineering: Prepend a hint about the desired aspect ratio.
-    const engineeredPrompt = `A widescreen, landscape-orientation image of: ${prompt}`;
+    const engineeredPrompt = `A widescreen, 16:9 aspect ratio, landscape-orientation image of: ${prompt}`;
     console.log(`[generateImageFlow] Generating image with engineered prompt: "${engineeredPrompt}"`);
 
     const { media, text } = await ai.generate({
