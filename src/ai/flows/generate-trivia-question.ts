@@ -57,7 +57,7 @@ const GenerateTriviaQuestionOutputSchema = z.object({
   hint: BilingualTextSchema.describe('A concise hint (1 short sentence) to help the user deduce the answer without revealing it directly, in English and Spanish.'),
   difficulty: DifficultyLevelSchema,
   imagePrompt: z.string().optional().describe('A detailed, English-only prompt for a text-to-image model to generate a relevant image.'),
-  imageUrl: z.string().url().optional().describe('The URL of the generated image. Should be left empty by this flow.')
+  imageUrl: z.string().optional().describe('The URL of the generated image. Should be left empty by this flow.')
 });
 export type GenerateTriviaQuestionOutput = z.infer<typeof GenerateTriviaQuestionOutputSchema>;
 
