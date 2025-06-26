@@ -1,3 +1,4 @@
+
 'use server';
 /**
  * @fileOverview A Genkit flow to validate a single trivia question.
@@ -10,7 +11,7 @@
 
 import { ai } from '@/ai/genkit';
 import { z } from 'genkit';
-import type { GenerateTriviaQuestionOutput } from '@/ai/flows/generate-trivia-question';
+import { GenerateTriviaQuestionOutputSchema } from '@/types';
 import admin from 'firebase-admin';
 
 // Initialize Firebase Admin SDK
@@ -31,36 +32,16 @@ const CATEGORIES_COLLECTION = 'triviaCategories';
 
 // --- Zod Schemas ---
 
-const BilingualAnswerSchema = z.object({
-    en: z.string().describe('English version of the answer text.'),
-    es: z.string().describe('Spanish version of the answer text.'),
-});
-
-const QuestionDataSchema = z.object({
+export const QuestionDataSchema = GenerateTriviaQuestionOutputSchema.extend({
   id: z.string().describe("The Firestore ID of the question being validated."),
   topicValue: z.string().describe("The topic value associated with the question."),
-  question: z.object({
-    en: z.string().describe('English version of the question text.'),
-    es: z.string().describe('Spanish version of the question text.'),
-  }),
-  correctAnswer: BilingualAnswerSchema.describe('The single correct answer.'),
-  distractors: z.array(BilingualAnswerSchema).length(3).describe('An array of three incorrect answers (distractors).'),
-  explanation: z.object({
-    en: z.string().describe('English version of the explanation.'),
-    es: z.string().describe('Spanish version of the explanation.'),
-  }),
-  hint: z.object({
-    en: z.string().describe('English version of the hint.'),
-    es: z.string().describe('Spanish version of the hint.'),
-  }).optional(),
-  difficulty: z.enum(["easy", "medium", "hard"]),
   status: z.string().optional().describe("Validation status of the question, if any (e.g., 'accepted', 'fixed')."),
   source: z.string().optional().describe("Source information for the question, if available."),
   createdAt: z.string().optional().describe("Creation timestamp, if available.")
 });
 export type QuestionData = z.infer<typeof QuestionDataSchema>;
 
-const ValidateSingleQuestionInputSchema = z.object({
+export const ValidateSingleQuestionInputSchema = z.object({
   questionData: QuestionDataSchema.describe('The full data of the trivia question to validate.'),
   modelName: z.string().optional().describe('Optional Genkit model name to use for validation (e.g., googleai/gemini-1.5-flash).')
 });
@@ -69,11 +50,11 @@ export type ValidateSingleQuestionInput = z.infer<typeof ValidateSingleQuestionI
 const ValidationStatusSchema = z.enum(["Accept", "Reject", "Fix"])
   .describe('Status of the validation: "Accept" if correct, "Reject" if unfixable, "Fix" if correctable.');
 
-const ValidateSingleQuestionOutputSchema = z.object({
+export const ValidateSingleQuestionOutputSchema = z.object({
   validationStatus: ValidationStatusSchema,
   reasoning: z.string().describe('AI\'s reasoning for the validation status. If "Fix", should explain what was fixed.'),
-  fixedQuestionData: QuestionDataSchema.omit({id: true, topicValue: true, source: true, createdAt: true, status: true }).optional()
-    .describe('The corrected question data if validationStatus is "Fix". Structure should match GenerateTriviaQuestionOutputSchema but without id, topicValue, source, createdAt.'),
+  fixedQuestionData: GenerateTriviaQuestionOutputSchema.optional()
+    .describe('The corrected question data if validationStatus is "Fix". This must include all necessary fields like question, correctAnswer, distractors, explanation, difficulty, and imagePrompt if applicable.'),
 });
 export type ValidateSingleQuestionOutput = z.infer<typeof ValidateSingleQuestionOutputSchema>;
 
@@ -127,17 +108,22 @@ For example, if the category is about the English language, the answers should b
 6.  **Bilingual Consistency**:
     *   Are all textual fields (question, answers, explanation, hint) provided and accurately translated/localized between English and Spanish?
 
+7.  **Visual Category Check (if applicable)**:
+    *   If the category is visual (instructions will mention this), an \`imagePrompt\` is **MANDATORY**.
+    *   The \`imagePrompt\` should be a detailed, English-only description suitable for a text-to-image AI. It MUST include the name of the subject to ensure accuracy.
+    *   If a question in a visual category is missing an \`imagePrompt\`, you MUST generate an appropriate one based on the question and correct answer, then choose the "Fix" status.
+
 Based on your evaluation, determine a \`validationStatus\`:
 
 *   \`"Accept"\`: If the question and all its parts are excellent and meet all criteria.
 *   \`"Reject"\`: If the question has significant flaws (e.g., factually incorrect, unsolvable, offensive) and you cannot confidently fix it.
-*   \`"Fix"\`: If the question has minor to moderate issues that YOU CAN CORRECT. This includes typos, grammar, improving a distractor, adjusting difficulty, or enhancing an explanation. IF YOU CHOOSE "Fix", YOU MUST PROVIDE THE ENTIRE CORRECTED QUESTION DATA IN THE \`fixedQuestionData\` field.
+*   \`"Fix"\`: If the question has minor to moderate issues that YOU CAN CORRECT. This includes typos, grammar, improving a distractor, adjusting difficulty, enhancing an explanation, or adding/improving an \`imagePrompt\`. IF YOU CHOOSE "Fix", YOU MUST PROVIDE THE ENTIRE CORRECTED QUESTION DATA IN THE \`fixedQuestionData\` field.
 
 **Output Format Rules:**
 
 *   Your response MUST be a single, valid JSON object.
 *   If \`validationStatus\` is \`"Fix"\`, the \`fixedQuestionData\` field is MANDATORY.
-    *   In \`fixedQuestionData\`, provide the COMPLETE, corrected question data. It must include: \`question\`, \`correctAnswer\`, \`distractors\` (as an array of 3 bilingual objects), \`explanation\`, \`hint\` (optional), and \`difficulty\`.
+    *   In \`fixedQuestionData\`, provide the COMPLETE, corrected question data. It must include all relevant fields like \`question\`, \`correctAnswer\`, \`distractors\`, \`explanation\`, \`difficulty\`, and \`imagePrompt\` if applicable.
 *   If \`validationStatus\` is \`"Accept"\` or \`"Reject"\`, the \`fixedQuestionData\` field MUST be omitted.
 *   Your \`reasoning\` field should clearly explain your decision. If fixing, detail WHAT you fixed and WHY.
 

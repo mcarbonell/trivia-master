@@ -472,4 +472,4 @@ if (typeof window !== 'undefined') {
 // --- Constants for page.tsx ---
 export const CONTENT_VERSION_STORAGE_KEY = 'downloadedContentVersion';
 export const DOWNLOADED_TOPICS_STORAGE_KEY = 'downloadedTopicValues_v1'; // For predefined categories download status
-export const CURRENT_CONTENT_VERSION = "v1.0.51";
+export const CURRENT_CONTENT_VERSION = "v1.0.53";

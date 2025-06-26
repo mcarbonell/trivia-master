@@ -3,7 +3,7 @@
 
 import { db } from '@/lib/firebase';
 import { collection, query, where, getDocs, limit, DocumentData, orderBy, Timestamp, doc, deleteDoc, updateDoc, getDoc } from 'firebase/firestore';
-import type { GenerateTriviaQuestionOutput, DifficultyLevel, BilingualText } from '@/ai/flows/generate-trivia-question';
+import type { GenerateTriviaQuestionOutput, DifficultyLevel, BilingualText } from '@/types';
 
 export interface PredefinedQuestion extends GenerateTriviaQuestionOutput {
   id: string;
