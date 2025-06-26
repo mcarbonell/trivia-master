@@ -94,9 +94,9 @@ These difficulty-specific instructions are very important for tailoring the ques
 This is a VISUAL category. For each question, you MUST also generate an 'imagePrompt'.
 IMAGE PROMPT GUIDELINES:
 - The 'imagePrompt' MUST be a detailed, descriptive, and unambiguous prompt in ENGLISH for a text-to-image AI model (like DALL-E or Midjourney).
-- It should describe a photorealistic or artistic image that visually represents the subject of the question without giving away the answer.
-- Example for a question "Which city is home to the Colosseum?": A good imagePrompt would be "A photorealistic, wide-angle shot of the ancient Colosseum in Rome, Italy, under a clear blue sky during the day."
-- Do NOT include the answer in the image prompt.
+- It should describe a photorealistic or artistic image that visually represents the subject of the question without giving away the answer in the image itself.
+- For accuracy, the prompt can and should contain the name of the subject. Example for 'Lion': 'A photorealistic, close-up shot of an African Lion, resting on a rock under the African sun.'
+- The image itself should not contain text.
 - The 'imageUrl' field should be left empty.
 {{/if}}
 
