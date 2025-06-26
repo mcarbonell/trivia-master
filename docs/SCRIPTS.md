@@ -85,7 +85,7 @@ These scripts leverage Genkit and AI models to generate or validate content. Rem
   npm run populate:images -- --category WorldCapitals --limit 5
 
   # Generate 1 image from any category
-  npm run populate:images -l 1
+  npm run populate:imagesnpm run populate:questions -- -c AnimalIdentification  -m 25 -l 1
   ```
 
 ### 5. Check for Duplicate Questions (`check:questions`)
