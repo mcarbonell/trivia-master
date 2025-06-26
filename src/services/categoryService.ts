@@ -32,7 +32,7 @@ export async function getAppCategories(): Promise<CategoryDefinition[]> {
           icon: data.icon,
           detailedPromptInstructions: data.detailedPromptInstructions,
           parentTopicValue: data.parentTopicValue || undefined,
-          // isPredefined removed
+          isVisual: data.isVisual,
         };
 
         if (data.difficultySpecificGuidelines) {
@@ -81,7 +81,6 @@ export async function addCategory(categoryData: Omit<CategoryDefinition, 'id'>):
   if (dataForFirestore.parentTopicValue === undefined) {
     delete dataForFirestore.parentTopicValue; 
   }
-  // isPredefined logic removed
   
   await setDoc(categoryRef, dataForFirestore); 
 }
@@ -105,7 +104,6 @@ export async function updateCategory(categoryId: string, categoryData: Partial<O
       dataForFirestore.parentTopicValue = deleteField(); 
     }
   }
-  // isPredefined logic removed
 
   const categoryRef = doc(db, CATEGORIES_COLLECTION, categoryId);
   await updateDoc(categoryRef, dataForFirestore);
@@ -120,4 +118,3 @@ export async function deleteCategory(categoryId: string): Promise<void> {
   const categoryRef = doc(db, CATEGORIES_COLLECTION, categoryId);
   await deleteDoc(categoryRef);
 }
-

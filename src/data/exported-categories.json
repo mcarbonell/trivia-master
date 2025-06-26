@@ -1,0 +1,1158 @@
+[
+  {
+    "topicValue": "NatureGeneral",
+    "name": {
+      "es": "Naturaleza",
+      "en": "Nature"
+    },
+    "icon": "Leaf",
+    "detailedPromptInstructions": "Generate diverse trivia questions about the natural world. This should include topics related to the animal kingdom (species, behaviors, habitats, classifications), the plant kingdom (types of plants, trees, flowers, photosynthesis, plant anatomy), human anatomy and physiology (organs, systems, basic functions, senses), basic concepts of medicine and health (common illnesses if widely known, nutrition, hygiene, not deep medical diagnostics), ecosystems (biomes, food chains, environmental concepts), and general biology that pertains to living organisms and their interactions. Differentiate from pure physics, chemistry or technology.",
+    "difficultySpecificGuidelines": {
+      "hard": "Delve into detailed biological processes, specific adaptations of organisms, complex ecosystem dynamics, or the history of significant biological discoveries. Example: 'Explain the process of cellular respiration.' or 'What is the difference between a marsupial and a placental mammal?'",
+      "easy": "Focus on widely known animals, common plants, basic human body parts or functions, and simple environmental facts. Example: 'What is the largest mammal on Earth?' or 'What do bees primarily collect from flowers?'",
+      "medium": "Cover specific animal/plant classifications, functions of human organs, basic ecological concepts, or common health knowledge. Example: 'What are the main parts of a flower?' or 'What is the function of the lungs?'"
+    }
+  },
+  {
+    "topicValue": "Biology",
+    "name": {
+      "en": "Biology",
+      "es": "Biología"
+    },
+    "icon": "Dna",
+    "detailedPromptInstructions": "Generate questions on cell biology, genetics, evolution, ecology, botany, zoology, human anatomy, and physiology. Include key biological processes, classifications, and significant biologists. Examples: 'What is photosynthesis?' or 'Who proposed the theory of evolution by natural selection?'",
+    "parentTopicValue": "NatureGeneral",
+    "difficultySpecificGuidelines": {
+      "hard": "University-level topics like molecular genetics, complex physiological systems, advanced evolutionary theory, or detailed ecological modeling. Example: 'Describe the process of protein synthesis, including transcription and translation.' or 'What is the role of CRISPR-Cas9 in gene editing?'",
+      "easy": "Basic life processes, common animal/plant types, or major human body parts. Example: 'What do plants need to grow?' or 'Are humans mammals?'",
+      "medium": "High school biology concepts like Mendelian genetics, cell structures, or ecological relationships. Example: 'What are mitochondria?' or 'Explain natural selection in simple terms.'"
+    }
+  },
+  {
+    "topicValue": "Animals",
+    "name": {
+      "es": "Animales",
+      "en": "Animals"
+    },
+    "icon": "PawPrint",
+    "detailedPromptInstructions": "Generate questions about different animal species, their habitats, behaviors, classifications (mammals, reptiles, insects, etc.), endangered species, and unique animal facts. Examples: 'What is the largest land animal?' or 'Which bird is known for its ability to mimic human speech?'",
+    "parentTopicValue": "NatureGeneral",
+    "difficultySpecificGuidelines": {
+      "easy": "Identifying common animals, basic animal facts, or well-known animal characteristics. Example: 'What sound does a dog make?'",
+      "hard": "Detailed knowledge of zoology, specific scientific names, or complex animal behaviors/adaptations. Example: 'What is echolocation and which animals use it?'",
+      "medium": "Questions about specific animal classifications, habitats, or unique behaviors. Example: 'Are dolphins mammals or fish?'"
+    }
+  },
+  {
+    "topicValue": "Dinosaurs",
+    "name": {
+      "en": "Dinosaurs",
+      "es": "Dinosaurios"
+    },
+    "icon": "Footprints",
+    "detailedPromptInstructions": "Generate questions about various dinosaur species (e.g., T-Rex, Triceratops, Stegosaurus), their characteristics, the periods they lived in (Triassic, Jurassic, Cretaceous), and paleontology related to dinosaurs.",
+    "parentTopicValue": "NatureGeneral"
+  },
+  {
+    "topicValue": "HumanAnatomy",
+    "name": {
+      "es": "Anatomía Humana",
+      "en": "Human Anatomy"
+    },
+    "icon": "HeartPulse",
+    "detailedPromptInstructions": "Generate questions about the organs, systems (e.g., circulatory, nervous, respiratory), bones, and basic physiological functions of the human body. Focus on generally known anatomical terms and functions.",
+    "parentTopicValue": "NatureGeneral"
+  },
+  {
+    "topicValue": "Art_Literature",
+    "name": {
+      "es": "Arte y Literatura",
+      "en": "Art & Literature"
+    },
+    "icon": "Palette",
+    "detailedPromptInstructions": "Generate questions about famous painters, sculptors, artistic movements (e.g., Impressionism, Surrealism), classic and contemporary authors, famous novels, poems, and literary periods. Examples: 'Who painted the Mona Lisa?' or 'Which novel begins with the line \"Call me Ishmael\"?'",
+    "difficultySpecificGuidelines": {
+      "hard": "Questions about literary theory, specific artistic techniques, or less mainstream authors/works. Example: 'What is meant by 'stream of consciousness' in literature?'",
+      "easy": "Recognizing very famous artists/authors or their most iconic works. Example: 'Who wrote Romeo and Juliet?'",
+      "medium": "Identifying specific art movements, literary genres, or characters from well-known books/plays. Example: 'What art movement is Salvador Dalí associated with?'"
+    }
+  },
+  {
+    "topicValue": "ArchitecturalStyles",
+    "name": {
+      "es": "Estilos Arquitectónicos",
+      "en": "Architectural Styles"
+    },
+    "icon": "Landmark",
+    "detailedPromptInstructions": "Generate questions about different architectural styles (e.g., Gothic, Baroque, Modernist, Art Deco), their key characteristics, famous architects associated with them, and iconic buildings representing these styles.",
+    "parentTopicValue": "Art_Literature"
+  },
+  {
+    "topicValue": "WorldLiterature",
+    "name": {
+      "en": "World Literature",
+      "es": "Literatura Mundial"
+    },
+    "icon": "BookOpenText",
+    "detailedPromptInstructions": "Generate questions about major authors, classic and influential literary works, literary movements (e.g., Romanticism, Modernism), genres, and key literary terms from around the world. Examples: 'Who wrote \"One Hundred Years of Solitude\"?' or 'What is an epic poem?'",
+    "parentTopicValue": "Art_Literature",
+    "difficultySpecificGuidelines": {
+      "easy": "Very famous authors or titles of globally recognized books. Example: 'Who wrote the Harry Potter series?' or 'Is Hamlet a play or a novel?'",
+      "medium": "Characters from well-known novels, major literary periods, or authors of significant classics. Example: 'Who is the protagonist of \"Pride and Prejudice\"?' or 'What literary movement is associated with authors like Virginia Woolf and James Joyce?'",
+      "hard": "University-level analysis of literary themes, specific literary theories, obscure but critically acclaimed authors, or detailed knowledge of literary history. Example: 'Discuss the concept of the 'unreliable narrator' in postmodern literature.' or 'What are the key tenets of Russian Formalism?'"
+    }
+  },
+  {
+    "topicValue": "General_Knowledge",
+    "name": {
+      "es": "Conocimiento General",
+      "en": "General Knowledge"
+    },
+    "icon": "Brain",
+    "detailedPromptInstructions": "Generate questions covering a wide array of topics not strictly fitting into other categories. This can include current events, miscellaneous facts, common sense questions, basic world knowledge, recognizing symbols or logos, or general awareness. Aim for questions that are interesting and test broad awareness. Examples: 'How many colors are there in a rainbow?' or 'What is the currency of the United Kingdom?'",
+    "difficultySpecificGuidelines": {
+      "hard": "Less common facts or those requiring connections between different pieces of information. Example: 'What do the five Olympic rings represent?'",
+      "easy": "Very common knowledge facts that most people would know. Example: 'How many days are in a week?'",
+      "medium": "Facts that are generally known but may require a moment of thought. Example: 'What is the capital of Australia?'"
+    }
+  },
+  {
+    "topicValue": "FamousQuotes",
+    "name": {
+      "en": "Famous Quotes",
+      "es": "Citas Célebres"
+    },
+    "icon": "Quote",
+    "detailedPromptInstructions": "Generate questions asking to identify the person who said a famous quote, or to complete a well-known quote. Quotes can be from historical figures, literature, movies, or speeches.",
+    "parentTopicValue": "General_Knowledge"
+  },
+  {
+    "topicValue": "Food_Drink",
+    "name": {
+      "en": "Food & Drink",
+      "es": "Comida y Bebida"
+    },
+    "icon": "CookingPot",
+    "detailedPromptInstructions": "Generate questions about international cuisines, famous dishes, ingredients, cooking techniques, types of beverages (alcoholic and non-alcoholic), and culinary history. Examples: 'What is the main ingredient in guacamole?' or 'Which country is famous for originating sushi?'",
+    "parentTopicValue": "General_Knowledge",
+    "difficultySpecificGuidelines": {
+      "medium": "Questions about specific cooking methods, regional specialties, or origins of particular dishes. Example: 'What does 'al dente' mean in cooking?'",
+      "hard": "Detailed knowledge of gastronomy, rare ingredients, oenology, or historical food origins. Example: 'What are the five 'mother sauces' of French cuisine?'",
+      "easy": "Identifying common foods, famous national dishes, or basic ingredients. Example: 'What type of pasta is typically used in lasagna?'"
+    }
+  },
+  {
+    "topicValue": "EntertainmentGeneral",
+    "name": {
+      "es": "Entretenimiento",
+      "en": "Entertainment"
+    },
+    "icon": "Clapperboard",
+    "detailedPromptInstructions": "Generate diverse trivia questions about various forms of entertainment. This can include movies (genres, actors, directors, awards, famous quotes, classic and modern films), music (artists, bands, albums, songs, genres like pop, rock, jazz, classical, hip-hop, music history, instruments), video games (popular titles, characters, consoles, genres, history), television series (popular shows, actors, characters, streaming hits, classic TV), theater (famous plays, musicals, playwrights), and general pop culture events or figures related to entertainment. Aim for a broad appeal.",
+    "difficultySpecificGuidelines": {
+      "medium": "Cover award-winning films/shows, specific music album details, well-known video game mechanics, or directors of popular works. Example: 'Which movie won the Best Picture Oscar in 2023?' or 'Name the lead singer of the band Queen.'",
+      "easy": "Focus on widely known movies, globally famous music artists, iconic video game characters, or TV shows that are household names. Example: 'Who played the character Harry Potter in the movies?' or 'What band sang \"Bohemian Rhapsody\"?'",
+      "hard": "Delve into classic cinema, niche music genres, specific details from video game lore, influential playwrights, or critical analysis of entertainment media. Example: 'What is the Kuleshov Effect in filmmaking?' or 'Which composer is known for the film scores of Star Wars and Jurassic Park?'"
+    }
+  },
+  {
+    "topicValue": "BoardGames",
+    "name": {
+      "es": "Juegos de Mesa",
+      "en": "Board Games"
+    },
+    "icon": "Dice5",
+    "detailedPromptInstructions": "Generate questions about classic and modern board games, including their rules, objectives, origins, famous designers, or iconic game pieces/mechanics. Examples: Chess, Monopoly, Scrabble, Settlers of Catan.",
+    "parentTopicValue": "EntertainmentGeneral"
+  },
+  {
+    "topicValue": "VideoGames",
+    "name": {
+      "es": "Videojuegos",
+      "en": "Video Games"
+    },
+    "icon": "Gamepad2",
+    "detailedPromptInstructions": "Generate questions about popular video games (classic and modern), iconic characters, game consoles, genres (e.g., RPG, FPS, Platformer), and significant events in video game history.",
+    "parentTopicValue": "EntertainmentGeneral",
+    "difficultySpecificGuidelines": {
+      "easy": "Focus on extremely popular game franchises (e.g., Mario, Zelda, Pokemon) or very common gaming terms.",
+      "hard": "Questions about specific game mechanics, development history, influential indie games, or niche genres.",
+      "medium": "Cover well-known games from various genres, identify characters or main plot points."
+    }
+  },
+  {
+    "topicValue": "Movies",
+    "name": {
+      "es": "Películas",
+      "en": "Movies"
+    },
+    "icon": "Film",
+    "detailedPromptInstructions": "Generate questions about famous movies, directors, actors, awards (e.g., Oscars), genres, and memorable quotes or scenes. Cover a range from classic cinema to contemporary films. Examples: 'Which movie won the Best Picture Oscar in 2020?' or 'Who directed the movie Pulp Fiction?'",
+    "parentTopicValue": "EntertainmentGeneral",
+    "difficultySpecificGuidelines": {
+      "medium": "Cover well-known films from various genres, significant awards for specific roles/films, or identifying directors of popular movies. Example: 'Which film won the Palme d'Or at the Cannes Film Festival in 1994?' or 'Name three movies directed by Steven Spielberg.'",
+      "easy": "Focus on iconic movies, very famous actors/directors, or major awards. Example: 'Which movie features the line, \"Here's looking at you, kid\"?' or 'Who played Jack Dawson in the movie Titanic?'",
+      "hard": "Questions about influential classic films, specific cinematic techniques used in a film, or identifying supporting actors or crew members from famous movies. Example: 'What is a MacGuffin in filmmaking, a term popularized by Alfred Hitchcock?' or 'Who composed the score for the movie \"The Good, the Bad and the Ugly\"?'"
+    }
+  },
+  {
+    "topicValue": "Music",
+    "name": {
+      "en": "Music",
+      "es": "Música"
+    },
+    "icon": "Music2",
+    "detailedPromptInstructions": "Generate questions about various music genres, famous artists, bands, albums, songs, musical instruments, and music history. Cover classical, pop, rock, jazz, hip-hop, etc. Examples: 'Who is known as the \"King of Pop\"?' or 'What instrument did Jimi Hendrix famously play?'",
+    "parentTopicValue": "EntertainmentGeneral",
+    "difficultySpecificGuidelines": {
+      "easy": "Identify iconic artists, major music genres, or very popular songs/albums. Example: 'Which band released the album \"Dark Side of the Moon\"?' or 'What genre of music is typically associated with artists like Louis Armstrong and Duke Ellington?'",
+      "hard": "Knowledge of music theory, influential albums from niche genres, or details about music history. Example: 'What is a common time signature for a waltz?' or 'Which artist is credited with pioneering the \"Wall of Sound\" production technique?'",
+      "medium": "Questions about specific song lyrics, band members (other than lead singer), or identifying instruments in a less common context. Example: 'Complete the lyric: \"Yesterday, all my troubles seemed so...\"' or 'Who was the drummer for the band Led Zeppelin?'"
+    }
+  },
+  {
+    "topicValue": "MusicTheory",
+    "name": {
+      "en": "Music Theory",
+      "es": "Teoría Musical"
+    },
+    "icon": "Music3",
+    "detailedPromptInstructions": "Generate questions about musical notation, scales, chords, harmony, melody, rhythm, time signatures, key signatures, musical forms, and basic analysis. Examples: 'What are the notes in a C major scale?' or 'What does a sharp symbol (#) do to a note?'",
+    "parentTopicValue": "Music",
+    "difficultySpecificGuidelines": {
+      "medium": "Major and minor scales, basic chord types, or common time signatures. Example: 'How many beats are in a measure of 4/4 time?' or 'What is a triad?'",
+      "easy": "Basic musical symbols like notes or rests, or common instrument families. Example: 'What is a staff in music?' or 'Is a piano a string or percussion instrument?' (can be both, focus on primary).",
+      "hard": "University-level harmony, counterpoint, musical form analysis, or advanced notation concepts. Example: 'Explain the function of a Neapolitan chord.' or 'What is a fugue?'"
+    }
+  },
+  {
+    "topicValue": "ScienceAndTechnologyGeneral",
+    "name": {
+      "en": "Science & Technology",
+      "es": "Ciencia y Tecnología"
+    },
+    "icon": "Atom",
+    "detailedPromptInstructions": "Generate diverse trivia questions covering both Science and Technology. For Science, include questions on physics, chemistry, biology, astronomy, earth sciences, fundamental concepts, historical discoveries, and important figures. For Technology, include questions on the history of technology, famous inventors, breakthroughs in computing, the internet, software, hardware, engineering principles, and emerging technologies. Encourage questions that might bridge both fields, such as the scientific principles behind technological advancements or the technological tools used for scientific discovery. Aim for questions that are verifiable and broadly interesting.",
+    "difficultySpecificGuidelines": {
+      "easy": "Focus on widely known scientific facts (e.g., 'What gas do plants absorb from the atmosphere?') or very common technological terms/devices (e.g., 'What does 'www' stand for in a website address?'). Questions should be answerable with general public knowledge.",
+      "medium": "Cover core scientific concepts from secondary education or key technological innovations and their inventors. Example: 'What is the difference between nuclear fission and fusion?' or 'Who is credited with inventing the telephone?'",
+      "hard": "Delve into specific scientific theories, complex technological processes, details of significant inventions, or the impact of technology on scientific research. Example: 'Explain the basic principles of quantum computing.' or 'What role did Bell Labs play in the development of the transistor?'"
+    }
+  },
+  {
+    "topicValue": "Science",
+    "name": {
+      "es": "Ciencia",
+      "en": "Science"
+    },
+    "icon": "Microscope",
+    "detailedPromptInstructions": "Generate questions covering various branches of science including physics, chemistry, biology, astronomy, and earth sciences. Questions should test knowledge of fundamental concepts, historical discoveries, important figures, and recent advancements. Examples: 'What is the process by which plants convert light energy into chemical energy?' or 'Who developed the theory of general relativity?'",
+    "parentTopicValue": "ScienceAndTechnologyGeneral",
+    "difficultySpecificGuidelines": {
+      "easy": "Target general science knowledge typically covered in late primary or early secondary school. Example: 'What is the chemical symbol for water?' or 'What force pulls objects towards the Earth?'",
+      "hard": "Focus on specific theories, complex biological processes, advanced physics concepts not typically covered in high school, or detailed chemical reactions. Example: 'Explain the significance of the Hubble constant in cosmology.'",
+      "medium": "Cover concepts from standard secondary school science curricula. Example: 'What is photosynthesis?' or 'Name the planets in our solar system in order from the Sun.'"
+    }
+  },
+  {
+    "topicValue": "Astronomy",
+    "name": {
+      "es": "Astronomía",
+      "en": "Astronomy"
+    },
+    "icon": "Telescope",
+    "detailedPromptInstructions": "Generate questions about planets, stars, galaxies, black holes, nebulae, comets, asteroids, telescopes, space missions, and cosmological theories. Examples: 'Which planet is known as the Red Planet?' or 'What is a supernova?'",
+    "parentTopicValue": "ScienceAndTechnologyGeneral",
+    "difficultySpecificGuidelines": {
+      "easy": "Names of planets, moon, sun, or very basic space concepts. Example: 'What is the name of Earth's moon?' or 'Is the Sun a star or a planet?'",
+      "hard": "University-level astrophysics, detailed stellar evolution, cosmological models, or specifics of astronomical observation techniques. Example: 'Explain the Hertzsprung-Russell diagram.' or 'What is dark matter and what is the evidence for it?'",
+      "medium": "Basic characteristics of celestial bodies, types of galaxies, or famous astronomers. Example: 'What is the Kuiper Belt?' or 'Who developed the laws of planetary motion?'"
+    }
+  },
+  {
+    "topicValue": "SpaceExploration",
+    "name": {
+      "en": "Space Exploration",
+      "es": "Exploración Espacial"
+    },
+    "icon": "Rocket",
+    "detailedPromptInstructions": "Generate questions about the history of space exploration, famous astronauts/cosmonauts, space missions (e.g., Apollo, Voyager), space agencies, celestial bodies explored, and technological advancements in space travel.",
+    "parentTopicValue": "ScienceAndTechnologyGeneral",
+    "difficultySpecificGuidelines": {
+      "medium": "Cover specific missions, key figures beyond the most famous, or basic concepts of space travel.",
+      "hard": "Delve into technical details of spacecraft, specific objectives of lesser-known missions, or scientific discoveries made through space exploration.",
+      "easy": "Focus on well-known facts like the first man on the moon or major space agencies."
+    }
+  },
+  {
+    "topicValue": "Chemistry",
+    "name": {
+      "en": "Chemistry",
+      "es": "Química"
+    },
+    "icon": "FlaskConical",
+    "detailedPromptInstructions": "Generate questions about the periodic table, chemical bonds, reactions, stoichiometry, acids and bases, organic chemistry, inorganic chemistry, and biochemistry. Include nomenclature, properties of elements/compounds, and important chemists. Examples: 'What is the chemical symbol for Gold?' or 'What is a covalent bond?'",
+    "parentTopicValue": "ScienceAndTechnologyGeneral",
+    "difficultySpecificGuidelines": {
+      "medium": "High school chemistry concepts, balancing simple equations, types of bonds, or basic organic functional groups. Example: 'What is the pH scale?' or 'Name a noble gas.'",
+      "easy": "Basic chemical elements, common compounds, or simple states of matter changes. Example: 'What is H2O?' or 'What gas do humans breathe out?'",
+      "hard": "University-level topics like quantum chemistry, advanced organic reaction mechanisms, spectroscopy, or complex inorganic chemistry. Example: 'Describe the mechanism of an SN2 reaction.' or 'What are the principles of NMR spectroscopy?'"
+    }
+  },
+  {
+    "topicValue": "Mathematics",
+    "name": {
+      "es": "Matemáticas",
+      "en": "Mathematics"
+    },
+    "icon": "Sigma",
+    "detailedPromptInstructions": "Generate questions covering various branches of mathematics including arithmetic, algebra, geometry, trigonometry, calculus, and statistics. Questions should test knowledge of fundamental concepts, theorems, important figures, and problem-solving. Examples: 'What is the Pythagorean theorem?' or 'Who is considered the father of calculus?'",
+    "parentTopicValue": "ScienceAndTechnologyGeneral",
+    "difficultySpecificGuidelines": {
+      "easy": "Basic arithmetic operations, simple geometric shapes, or very common mathematical terms. Example: 'What is 2 + 2?' or 'How many sides does a triangle have?'",
+      "hard": "University-level concepts in calculus, linear algebra, abstract algebra, number theory, or advanced statistics. Example: 'What is a Taylor series expansion?' or 'Define a Group in abstract algebra.'",
+      "medium": "High school level algebra, geometry concepts, basic probability. Example: 'Solve for x: 2x + 5 = 11' or 'What is the area of a circle with radius r?'"
+    }
+  },
+  {
+    "topicValue": "Physics",
+    "name": {
+      "es": "Física",
+      "en": "Physics"
+    },
+    "icon": "Atom",
+    "detailedPromptInstructions": "Generate questions on classical mechanics, thermodynamics, electromagnetism, optics, relativity, quantum mechanics, and nuclear physics. Include laws, principles, historical figures, and units of measurement. Examples: 'What are Newton's three laws of motion?' or 'What is the speed of light in a vacuum?'",
+    "parentTopicValue": "ScienceAndTechnologyGeneral",
+    "difficultySpecificGuidelines": {
+      "easy": "Very basic concepts like gravity, light, or common states of matter. Example: 'What makes things fall to the ground?' or 'Is light a wave or a particle?' (accept simple answers).",
+      "hard": "University-level concepts such as quantum field theory, special/general relativity paradoxes, advanced thermodynamics, or specific experiments/theorists. Example: 'Explain the significance of Maxwell's equations.' or 'What is Hawking radiation?'",
+      "medium": "High school physics concepts, including basic formulas and laws. Example: 'What is Ohm's Law?' or 'Explain the difference between kinetic and potential energy.'"
+    }
+  },
+  {
+    "topicValue": "Geology",
+    "name": {
+      "en": "Geology",
+      "es": "Geología"
+    },
+    "icon": "MountainSnow",
+    "detailedPromptInstructions": "Generate questions about rock types (igneous, sedimentary, metamorphic), plate tectonics, volcanoes, earthquakes, minerals, fossils, geological time scale, and Earth's structure. Examples: 'What are the three main types of rocks?' or 'What is the theory of plate tectonics?'",
+    "parentTopicValue": "ScienceAndTechnologyGeneral",
+    "difficultySpecificGuidelines": {
+      "hard": "University-level mineralogy, petrology, structural geology, or detailed geochronology. Example: 'Explain Bowen's reaction series.' or 'What are the different types of seismic waves and how are they used to study Earth's interior?'",
+      "easy": "Common geological features like mountains or rivers, or basic rock types. Example: 'What is a volcano?' or 'Is sand a rock?'",
+      "medium": "The rock cycle, types of plate boundaries, or major geological eras. Example: 'What is the Mohs scale of hardness used for?' or 'Describe how mountains are formed.'"
+    }
+  },
+  {
+    "topicValue": "Technology",
+    "name": {
+      "es": "Tecnología",
+      "en": "Technology"
+    },
+    "icon": "Cpu",
+    "detailedPromptInstructions": "Generate questions about the history of technology, famous inventors, breakthroughs in computing, the internet, software, hardware, and emerging technologies. Examples: 'Who is considered one of the co-founders of Apple Inc.?' or 'What does CPU stand for?'",
+    "parentTopicValue": "ScienceAndTechnologyGeneral",
+    "difficultySpecificGuidelines": {
+      "hard": "Detailed knowledge of programming concepts, specific hardware architectures, or the history of niche technologies. Example: 'Explain the difference between TCP and UDP protocols.'",
+      "medium": "Understanding specific technological concepts, historical milestones, or key figures in tech development. Example: 'What is Moore's Law?'",
+      "easy": "Basic tech terms, very famous inventors, or widely used technologies. Example: 'What company developed the Windows operating system?'"
+    }
+  },
+  {
+    "topicValue": "FamousInventions",
+    "name": {
+      "es": "Inventos Famosos",
+      "en": "Famous Inventions"
+    },
+    "icon": "Lightbulb",
+    "detailedPromptInstructions": "Generate questions about significant inventions throughout history, their inventors, the year/period of invention, and their impact on society. Cover a range of fields like communication, transport, medicine, etc.",
+    "parentTopicValue": "Technology"
+  },
+  {
+    "topicValue": "ComputerScience",
+    "name": {
+      "en": "Computer Science",
+      "es": "Informática"
+    },
+    "icon": "Laptop",
+    "detailedPromptInstructions": "Generate questions about algorithms, data structures, programming languages (concepts, not specific syntax unless very famous), operating systems, computer networks, databases, software engineering, and artificial intelligence. Examples: 'What does CPU stand for?' or 'Who is considered a pioneer of artificial intelligence?'",
+    "parentTopicValue": "Technology",
+    "difficultySpecificGuidelines": {
+      "medium": "Common programming concepts, types of software, or basic hardware components. Example: 'What is an algorithm?' or 'What is the difference between RAM and ROM?'",
+      "hard": "University-level topics like computational complexity theory, advanced algorithms, distributed systems, or specific AI paradigms. Example: 'Explain the P vs NP problem.' or 'Describe the CAP theorem in distributed database systems.'",
+      "easy": "Very basic computer terms or functions. Example: 'What is a mouse used for with a computer?' or 'What is the internet?'"
+    }
+  },
+  {
+    "topicValue": "InternetCulture",
+    "name": {
+      "en": "Internet Culture",
+      "es": "Cultura de Internet"
+    },
+    "icon": "Wifi",
+    "detailedPromptInstructions": "Generate questions about famous memes, viral trends, influential websites/platforms, historical internet events, and key figures in internet history. Focus on widely recognizable phenomena.",
+    "parentTopicValue": "Technology"
+  },
+  {
+    "topicValue": "GeographyAndHistoryGeneral",
+    "name": {
+      "es": "Geografía e Historia",
+      "en": "Geography & History"
+    },
+    "icon": "Library",
+    "detailedPromptInstructions": "Generate diverse trivia questions that cover both Geography and History. For Geography, include questions about countries, capitals, continents, oceans, major rivers, mountain ranges, deserts, climate zones, famous landmarks, and physical geography. For History, include questions about significant world events, historical periods (ancient, medieval, modern), influential figures (leaders, inventors, artists, explorers), civilizations, empires, wars, revolutions, and social movements. Encourage questions that may link geographical features or locations to historical events (e.g., 'Which mountain range did Hannibal cross with elephants to invade Italy?' or 'The ancient city of Babylon was located near which modern-day river?'). Aim for a global perspective.",
+    "difficultySpecificGuidelines": {
+      "medium": "Cover specific details about countries or regions, important historical treaties or battles, and the significance of certain geographical features. Example: 'What is the Ring of Fire and where is it located?' or 'What were the main causes of World War I?'",
+      "easy": "Focus on very well-known geographical facts (e.g., largest oceans, continents) and major historical figures or events (e.g., 'Who was the first U.S. President?', 'What is the longest river in the world?'). Questions should be answerable with common general knowledge.",
+      "hard": "Delve into questions requiring deeper knowledge of historical causality, geopolitical changes, specific geographical processes, or the history of exploration and cartography. Example: 'Explain the historical significance of the Silk Road on cultural exchange between East and West.' or 'Describe the formation of the Himalayan mountain range.'"
+    }
+  },
+  {
+    "topicValue": "Geography",
+    "name": {
+      "en": "Geography",
+      "es": "Geografía"
+    },
+    "icon": "Map",
+    "detailedPromptInstructions": "Generate questions about countries, capitals, flags, famous landmarks, continents, oceans, mountains, rivers, and general geographical concepts. Examples: 'What is the capital of Japan?' or 'Which is the longest river in the world?'",
+    "parentTopicValue": "GeographyAndHistoryGeneral",
+    "difficultySpecificGuidelines": {
+      "medium": "Questions about specific geographical features, climate zones, less common capitals, or locations of specific landmarks. Example: 'Mount Kilimanjaro is located in which African country?' or 'What is the Ring of Fire?'",
+      "hard": "Detailed knowledge of topography, specific international borders, demographic geography, or smaller countries and their capitals. Example: 'What is the term for a body of land completely surrounded by water but smaller than a continent?' or 'Name the two countries that share the longest continuous international border.'",
+      "easy": "Capitals of well-known countries, major rivers or mountains, or identifying flags of prominent nations. Example: 'What is the largest desert in the world?' or 'Which ocean is between Europe and North America?'"
+    }
+  },
+  {
+    "topicValue": "FlagsOfTheWorld",
+    "name": {
+      "en": "Flags of the World",
+      "es": "Banderas del Mundo"
+    },
+    "icon": "Flag",
+    "detailedPromptInstructions": "Generate questions that require identifying a country based on a description of its flag, or vice versa. Questions can also be about the symbolism or history of specific flags. Focus on flags of well-known countries.",
+    "parentTopicValue": "GeographyAndHistoryGeneral"
+  },
+  {
+    "topicValue": "WorldCapitals",
+    "name": {
+      "en": "World Capitals",
+      "es": "Capitales del Mundo"
+    },
+    "icon": "Building2",
+    "detailedPromptInstructions": "Generate questions about the capital cities of countries worldwide. Questions can involve identifying the capital of a given country, the country of a given capital, or interesting facts about capital cities. Ensure a global spread.",
+    "parentTopicValue": "GeographyAndHistoryGeneral"
+  },
+  {
+    "topicValue": "CountriesOfTheWorld",
+    "name": {
+      "es": "Países del Mundo",
+      "en": "Countries of the World"
+    },
+    "icon": "Globe",
+    "detailedPromptInstructions": "Generate diverse trivia questions about countries from all continents. Questions should cover a wide range of topics including: capitals, major cities, famous geographical landmarks (mountains, rivers, deserts, lakes), historical events and periods, influential historical and contemporary figures (leaders, artists, scientists, athletes), cultural aspects (traditions, music, art, literature, festivals), national symbols (flags, emblems - describe them if visual), official languages, currencies, and significant contributions or characteristics of various nations. Aim for a global balance, not focusing excessively on one region. Avoid questions that are too obscure unless specifically targeting 'hard' difficulty. Ensure questions are verifiable and broadly interesting.",
+    "parentTopicValue": "GeographyAndHistoryGeneral",
+    "difficultySpecificGuidelines": {
+      "medium": "Cover important facts about a broader range of countries, including lesser-known capitals, significant cultural contributions, or important historical events. Examples: 'The Andes mountain range runs along the western edge of which continent?', 'What currency is used in Japan?', 'Name the longest river in Africa.'",
+      "hard": "Delve into specific historical details, lesser-known geographical features, unique cultural traditions of smaller nations, or comparative questions about different countries. Examples: 'Which European country is a constitutional monarchy ruled by a Grand Duke?', 'What is the significance of the Treaty of Tordesillas in shaping global territories?', 'Compare the primary exports of Brazil and Australia.'",
+      "easy": "Focus on widely known facts about major or populous countries. Examples: 'What is the capital of France?', 'Which country is known for the pyramids of Giza?', 'What is the most spoken language in the world?'"
+    }
+  },
+  {
+    "topicValue": "Country_Argentina",
+    "name": {
+      "en": "Argentina",
+      "es": "Argentina"
+    },
+    "icon": "MapPin",
+    "detailedPromptInstructions": "Generate diverse trivia questions about Argentina. Topics should include its history (e.g., independence, Peronism, Falklands/Malvinas War), geography (e.g., Patagonia, Andes, Pampas, Buenos Aires, Iguazu Falls), culture (e.g., tango, gaucho tradition, famous writers like Borges or Cortázar, film, gastronomy like asado or mate), famous personalities (e.g., Eva Perón, Maradona, Messi), and significant events.",
+    "parentTopicValue": "CountriesOfTheWorld",
+    "difficultySpecificGuidelines": {
+      "hard": "Delve into specific historical events, literary movements, regional cultures, or influential figures in Argentine politics or arts. Ex: 'What is 'asado' in Argentina?' or 'Name a famous Argentine writer.' or 'Which mountain range forms the western border of Argentina?'",
+      "medium": "Cover important historical periods, well-known geographical regions, or significant cultural aspects. Ex: 'What is the main ingredient in the Argentine drink 'mate'?' or 'What region is known for its glaciers and mountains in southern Argentina?' or 'Who was Eva Perón?'",
+      "easy": "Focus on widely known facts. Ex: 'What is the capital of Argentina?' or 'What is the name of the famous Argentine dance?' or 'Which Argentine soccer player is considered one of the greatest of all time?'"
+    }
+  },
+  {
+    "topicValue": "Country_Australia",
+    "name": {
+      "en": "Australia",
+      "es": "Australia"
+    },
+    "icon": "MapPin",
+    "detailedPromptInstructions": "Generate diverse trivia questions about Australia. Topics should include its indigenous history and culture, European colonization, Federation, geography (e.g., states and territories, Canberra, Sydney Opera House, Uluru/Ayers Rock, Great Barrier Reef, Outback), unique wildlife (e.g., kangaroos, koalas), culture (e.g., sports like cricket and Aussie Rules football, slang, famous actors and musicians), famous personalities, and significant events.",
+    "parentTopicValue": "CountriesOfTheWorld",
+    "difficultySpecificGuidelines": {
+      "easy": "Focus on widely known facts. Ex: 'What is the capital of Australia?' or 'Name an animal native to Australia that carries its young in a pouch.' or 'What is a famous natural landmark in the center of Australia?'",
+      "medium": "Cover important historical events, well-known geographical regions, or significant cultural aspects. Ex: 'What is the Great Barrier Reef famous for?' or 'Which Australian city is known for its Opera House?' or 'What is the term for Australia's indigenous people?'",
+      "hard": "Delve into specific details of its political system, unique ecosystems, history of European settlement, or influential figures in Australian arts and culture. Ex: 'What does ANZAC Day commemorate?' or 'Explain the concept of 'Dreamtime' in Aboriginal culture.' or 'Name the largest desert in Australia.'"
+    }
+  },
+  {
+    "topicValue": "Country_Brazil",
+    "name": {
+      "es": "Brasil",
+      "en": "Brazil"
+    },
+    "icon": "MapPin",
+    "detailedPromptInstructions": "Generate diverse trivia questions about Brazil. Topics should include its history (e.g., Portuguese colonization, empire, independence, modern history), geography (e.g., Amazon rainforest, major cities like Rio de Janeiro or São Paulo, Iguazu Falls, beaches), culture (e.g., Carnival, samba, bossa nova, capoeira, famous writers, gastronomy like feijoada), famous personalities (e.g., Pelé), and significant events.",
+    "parentTopicValue": "CountriesOfTheWorld",
+    "difficultySpecificGuidelines": {
+      "medium": "Cover important historical periods, well-known cultural traditions, or significant geographical features. Ex: 'What language is spoken in Brazil?' or 'Name a famous Brazilian soccer player.' or 'What is the name of the iconic statue in Rio de Janeiro?'",
+      "easy": "Focus on widely known facts. Ex: 'What is the capital of Brazil?' or 'What is the most famous festival in Brazil?' or 'What is the largest rainforest in Brazil?'",
+      "hard": "Delve into specific historical details, regional cultures, biodiversity of the Amazon, or influential figures in Brazilian arts or politics. Ex: 'What is 'feijoada'?' or 'Who was the last Emperor of Brazil?' or 'Explain the origins of Samba music.'"
+    }
+  },
+  {
+    "topicValue": "Country_Canada",
+    "name": {
+      "en": "Canada",
+      "es": "Canadá"
+    },
+    "icon": "MapPin",
+    "detailedPromptInstructions": "Generate diverse trivia questions about Canada. Topics should include its history (e.g., indigenous peoples, French and British colonization, Confederation, modern history), geography (e.g., provinces and territories, Ottawa, Rocky Mountains, Great Lakes, Niagara Falls, national parks), culture (e.g., bilingualism, ice hockey, maple syrup, multiculturalism, famous musicians and actors), famous personalities (e.g., prime ministers, inventors), and significant events.",
+    "parentTopicValue": "CountriesOfTheWorld",
+    "difficultySpecificGuidelines": {
+      "hard": "Delve into specific details of indigenous history, provincial governance, contributions to arts and sciences, or significant political figures. Ex: 'What is the significance of Nunavut in Canada?' or 'Who was Louis Riel?' or 'Name a famous Canadian author.'",
+      "medium": "Cover important historical events like Confederation, well-known geographical features, or significant cultural aspects. Ex: 'Name two official languages of Canada.' or 'Which Canadian city hosted the 1976 Summer Olympics?' or 'What is a 'toonie' in Canadian currency?'",
+      "easy": "Focus on widely known facts. Ex: 'What is the capital of Canada?' or 'What is a famous Canadian symbol found on its flag?' or 'What is Canada's national winter sport?'"
+    }
+  },
+  {
+    "topicValue": "Country_China",
+    "name": {
+      "en": "China",
+      "es": "China"
+    },
+    "icon": "MapPin",
+    "detailedPromptInstructions": "Generate diverse trivia questions about China. Topics should include its ancient dynasties (e.g., Han, Tang, Ming, Qing), inventions (e.g., paper, gunpowder, compass, printing), Great Wall, Forbidden City, modern history (e.g., Communist Revolution, economic reforms), geography (e.g., Beijing, Shanghai, Yangtze River, Himalayas), culture (e.g., calligraphy, traditional medicine, festivals, cuisine, martial arts like Kung Fu), famous personalities (e.g., Confucius, Mao Zedong), and significant events.",
+    "parentTopicValue": "CountriesOfTheWorld",
+    "difficultySpecificGuidelines": {
+      "easy": "Focus on widely known facts. Ex: 'What is the capital of China?' or 'What famous landmark was built to protect China from invaders?' or 'Name a famous Chinese invention.'",
+      "medium": "Cover important historical dynasties, well-known philosophical concepts, or significant cultural traditions. Ex: 'Who was Confucius?' or 'What is the longest river in China?' or 'What is the Chinese New Year also known as?'",
+      "hard": "Delve into specific historical details of different dynasties, artistic styles, regional cuisines, or influential figures in Chinese philosophy or politics. Ex: 'What was the purpose of the Terracotta Army?' or 'Explain the concept of Yin and Yang.' or 'Name a major Chinese dialect group other than Mandarin.'"
+    }
+  },
+  {
+    "topicValue": "Country_France",
+    "name": {
+      "es": "Francia",
+      "en": "France"
+    },
+    "icon": "MapPin",
+    "detailedPromptInstructions": "Generate diverse trivia questions about France. Topics should include its history (e.g., Gaul, French Revolution, Napoleonic era, World Wars, Fifth Republic), geography (e.g., Paris, Alps, Riviera, major rivers like the Seine or Loire, famous landmarks like the Eiffel Tower or Louvre Museum), culture (e.g., cuisine - cheese, wine, pastries; fashion, art movements - Impressionism; literature - Victor Hugo, Albert Camus; philosophy), famous personalities (e.g., Napoleon Bonaparte, Joan of Arc, Marie Curie), and significant events.",
+    "parentTopicValue": "CountriesOfTheWorld",
+    "difficultySpecificGuidelines": {
+      "medium": "Cover important historical events, well-known landmarks, or significant cultural aspects. Ex: 'What was the French Revolution?' or 'Which French general became Emperor?' or 'What famous art museum is located in Paris?'",
+      "easy": "Focus on widely known facts. Ex: 'What is the capital of France?' or 'What is a famous tower in Paris?' or 'Name a famous French cheese.'",
+      "hard": "Delve into specific historical details, philosophical movements, regional cuisines, or influential figures in French arts and politics. Ex: 'Explain the motto of the French Republic.' or 'Who wrote \"Les Misérables\"?' or 'What region of France is famous for its sparkling wine?'"
+    }
+  },
+  {
+    "topicValue": "Country_Germany",
+    "name": {
+      "en": "Germany",
+      "es": "Alemania"
+    },
+    "icon": "MapPin",
+    "detailedPromptInstructions": "Generate diverse trivia questions about Germany. Topics should include its history (e.g., Holy Roman Empire, Prussia, unification, World Wars, Cold War and reunification, modern Germany), geography (e.g., Berlin, Bavarian Alps, Rhine river, Black Forest, famous landmarks like the Brandenburg Gate), culture (e.g., Oktoberfest, classical composers like Bach or Beethoven, philosophers like Kant or Nietzsche, literature, engineering, automotive industry), famous personalities (e.g., Albert Einstein, Angela Merkel), and significant events.",
+    "parentTopicValue": "CountriesOfTheWorld",
+    "difficultySpecificGuidelines": {
+      "easy": "Focus on widely known facts. Ex: 'What is the capital of Germany?' or 'What is a famous German festival involving beer?' or 'Which German physicist developed the theory of relativity?'",
+      "hard": "Delve into specific historical details of German unification, philosophical concepts, regional traditions, or influential figures in German science and politics. Ex: 'Who was the first Chancellor of a unified Germany in 1871?' or 'Explain the concept of \"Sturm und Drang\" in German literature.' or 'What is the significance of the Treaty of Versailles for Germany?'",
+      "medium": "Cover important historical periods, well-known landmarks, or significant cultural aspects. Ex: 'What structure famously divided Berlin during the Cold War?' or 'Name a famous German car brand.' or 'Which German composer wrote \"Für Elise\"?'"
+    }
+  },
+  {
+    "topicValue": "Country_India",
+    "name": {
+      "en": "India",
+      "es": "India"
+    },
+    "icon": "MapPin",
+    "detailedPromptInstructions": "Generate diverse trivia questions about India. Topics should include its ancient civilizations (e.g., Indus Valley), history (e.g., Mauryan Empire, Mughal Empire, British Raj, independence movement), geography (e.g., New Delhi, Himalayas, Ganges River, Taj Mahal), culture (e.g., Bollywood, classical dance forms, festivals like Diwali or Holi, religions - Hinduism, Buddhism, Sikhism, Jainism; cuisine, yoga), famous personalities (e.g., Mahatma Gandhi, Jawaharlal Nehru), and significant events.",
+    "parentTopicValue": "CountriesOfTheWorld",
+    "difficultySpecificGuidelines": {
+      "easy": "Focus on widely known facts. Ex: 'What is the capital of India?' or 'What is a famous monument in India built for love?' or 'Which major religion originated in India?'",
+      "medium": "Cover important historical periods, well-known cultural practices, or significant geographical features. Ex: 'Who was Mahatma Gandhi?' or 'What is the name of the Indian film industry based in Mumbai?' or 'What currency is used in India?'",
+      "hard": "Delve into specific historical details of various empires, philosophical concepts from Indian religions, regional diversity, or influential figures in India's independence movement or arts. Ex: 'What was the Green Revolution in India?' or 'Explain the concept of Dharma in Hinduism.' or 'Name a classical Indian dance form.'"
+    }
+  },
+  {
+    "topicValue": "Country_Italy",
+    "name": {
+      "es": "Italia",
+      "en": "Italy"
+    },
+    "icon": "MapPin",
+    "detailedPromptInstructions": "Generate diverse trivia questions about Italy. Topics should include its history (e.g., Roman Empire, Renaissance, unification, World Wars, modern Italy), geography (e.g., Rome, Venice, Florence, Alps, Mount Vesuvius, Sicily, Sardinia, famous landmarks like the Colosseum or Leaning Tower of Pisa), culture (e.g., cuisine - pizza, pasta; art - Michelangelo, Leonardo da Vinci; opera, fashion, cinema), famous personalities (e.g., Julius Caesar, Galileo Galilei), and significant events.",
+    "parentTopicValue": "CountriesOfTheWorld",
+    "difficultySpecificGuidelines": {
+      "medium": "Cover important historical periods like the Renaissance, well-known artists or landmarks, or significant cultural aspects. Ex: 'Who painted the ceiling of the Sistine Chapel?' or 'What volcano destroyed Pompeii?' or 'Name an Italian luxury sports car brand.'",
+      "hard": "Delve into specific historical details of the Roman Republic/Empire, artistic techniques of the Renaissance, regional cuisines, or influential figures in Italian politics or arts. Ex: 'What was the Risorgimento in Italian history?' or 'Explain the architectural style of the Florence Cathedral.' or 'Who is considered the father of the Italian language?'",
+      "easy": "Focus on widely known facts. Ex: 'What is the capital of Italy?' or 'What is a famous Italian food?' or 'Which Italian city is known for its canals?'"
+    }
+  },
+  {
+    "topicValue": "Country_Japan",
+    "name": {
+      "en": "Japan",
+      "es": "Japón"
+    },
+    "icon": "MapPin",
+    "detailedPromptInstructions": "Generate diverse trivia questions about Japan. Topics should include its history (e.g., feudal period, shogunate, Meiji Restoration, World War II, modern Japan), geography (e.g., Tokyo, Mount Fuji, Hokkaido, Okinawa, famous temples and shrines), culture (e.g., samurai, geisha, anime, manga, sumo wrestling, tea ceremony, cuisine - sushi, ramen; technology, traditional arts like ikebana or origami), famous personalities, and significant events.",
+    "parentTopicValue": "CountriesOfTheWorld",
+    "difficultySpecificGuidelines": {
+      "hard": "Delve into specific historical details of different eras, religious/philosophical concepts (Shinto, Zen Buddhism), traditional art forms, or influential figures in Japanese arts and technology. Ex: 'What is the significance of the Meiji Restoration?' or 'Explain the concept of 'wabi-sabi'.' or 'Who wrote \"The Tale of Genji\"?'",
+      "easy": "Focus on widely known facts. Ex: 'What is the capital of Japan?' or 'What is a famous Japanese martial art?' or 'What is the name of the highest mountain in Japan?'",
+      "medium": "Cover important historical periods, well-known cultural traditions (e.g., cherry blossoms), or significant technological contributions. Ex: 'What was a samurai?' or 'Name a popular Japanese animation style.' or 'What currency is used in Japan?'"
+    }
+  },
+  {
+    "topicValue": "Country_Mexico",
+    "name": {
+      "es": "México",
+      "en": "Mexico"
+    },
+    "icon": "MapPin",
+    "detailedPromptInstructions": "Generate diverse trivia questions about Mexico. Topics should include its pre-Columbian civilizations (e.g., Maya, Aztec), colonial history, independence, modern history, geography (e.g., states, major cities, landmarks like Chichen Itza, beaches, mountain ranges), culture (e.g., Day of the Dead, mariachi music, artists like Frida Kahlo or Diego Rivera, influential writers, gastronomy like tacos or mole), famous personalities, and significant events.",
+    "parentTopicValue": "CountriesOfTheWorld",
+    "difficultySpecificGuidelines": {
+      "hard": "Delve into specific historical details of pre-Columbian cultures, regional traditions, or influential figures in Mexican arts and politics. Ex: 'What was the name of the Aztec capital city, now Mexico City?' or 'Explain the significance of Cinco de Mayo.' or 'Name a traditional Mexican spirit made from agave.'",
+      "medium": "Cover important historical events, well-known cultural traditions, or significant geographical features. Ex: 'What is the official language of Mexico?' or 'Who is a famous Mexican painter known for self-portraits?' or 'What currency is used in Mexico?'",
+      "easy": "Focus on widely known facts. Ex: 'What is the capital of Mexico?' or 'What ancient civilization built Chichen Itza?' or 'Name a famous Mexican food.'"
+    }
+  },
+  {
+    "topicValue": "Country_Spain",
+    "name": {
+      "es": "España",
+      "en": "Spain"
+    },
+    "icon": "MapPin",
+    "detailedPromptInstructions": "Generate diverse trivia questions about Spain. Topics should include its history (e.g., Roman Hispania, Al-Andalus, Reconquista, Spanish Empire, Civil War), geography (e.g., regions, major cities like Madrid or Barcelona, famous landmarks like the Sagrada Familia or Alhambra, islands, mountain ranges like the Pyrenees), culture (e.g., flamenco, bullfighting, festivals like La Tomatina, famous artists like Picasso or Dalí, influential writers like Cervantes, gastronomy like paella or tapas), famous personalities, and significant events.",
+    "parentTopicValue": "CountriesOfTheWorld",
+    "difficultySpecificGuidelines": {
+      "hard": "Delve into specific historical details, regional cultures, lesser-known influential figures, or artistic movements. Ex: 'What was the Spanish Reconquista?' or 'Name three autonomous communities of Spain and their capitals.' or 'Who wrote \"Don Quixote\"?'",
+      "medium": "Cover important historical periods, well-known landmarks, or significant cultural aspects. Ex: 'What currency is used in Spain?' or 'Name a famous Spanish dish.' or 'Which Spanish explorer is known for his voyages to the Americas?'",
+      "easy": "Focus on widely known facts. Ex: 'What is the capital of Spain?' or 'What is a famous Spanish dance?' or 'Which famous Spanish artist painted \"Guernica\"?'"
+    }
+  },
+  {
+    "topicValue": "Country_USA",
+    "name": {
+      "es": "Estados Unidos",
+      "en": "United States"
+    },
+    "icon": "MapPin",
+    "detailedPromptInstructions": "Generate diverse trivia questions about the United States of America. Topics should include its history (e.g., founding, Civil War, major presidents, key amendments), geography (e.g., states, capitals, famous landmarks like the Grand Canyon or Mount Rushmore, national parks, major rivers and mountain ranges), culture (e.g., music genres like jazz or blues, iconic movies and filmmakers, influential literature, traditions, holidays), famous personalities (e.g., inventors, artists, political figures, athletes), and significant national events. Questions should be verifiable and broadly interesting.",
+    "parentTopicValue": "CountriesOfTheWorld",
+    "difficultySpecificGuidelines": {
+      "medium": "Cover important historical events, well-known landmarks, or significant cultural aspects. Ex: 'What was the main cause of the American Civil War?' or 'Name the longest river in the USA.' or 'Which US city is famous for its Golden Gate Bridge?'",
+      "hard": "Delve into specific historical details, lesser-known influential figures, constitutional aspects, or significant cultural movements. Ex: 'Explain the significance of the Louisiana Purchase.' or 'Which constitutional amendment abolished slavery?' or 'Name the author of \"The Great Gatsby\".'",
+      "easy": "Focus on widely known facts. Ex: 'What is the capital of the USA?' or 'Who was the first US president?' or 'What are the colors of the US flag?'"
+    }
+  },
+  {
+    "topicValue": "Country_UnitedKingdom",
+    "name": {
+      "en": "United Kingdom",
+      "es": "Reino Unido"
+    },
+    "icon": "MapPin",
+    "detailedPromptInstructions": "Generate diverse trivia questions about the United Kingdom (England, Scotland, Wales, Northern Ireland). Topics should include its history (e.g., Roman Britain, Norman Conquest, Tudor period, British Empire, World Wars), geography (e.g., capital cities, famous landmarks like Stonehenge or Big Ben, major rivers, mountain ranges), culture (e.g., monarchy, literature - Shakespeare, Dickens; music - The Beatles, Queen; traditions, sports like cricket or rugby), famous personalities (e.g., Winston Churchill, Queen Elizabeth II), and significant events.",
+    "parentTopicValue": "CountriesOfTheWorld",
+    "difficultySpecificGuidelines": {
+      "easy": "Focus on widely known facts. Ex: 'What is the capital of the United Kingdom?' or 'Who is the current monarch of the UK?' or 'What is a famous British band from the 1960s?'",
+      "hard": "Delve into specific historical details, parliamentary procedures, regional identities, or influential figures in British arts and sciences. Ex: 'What was the significance of the Battle of Hastings?' or 'Explain the difference between the House of Commons and the House of Lords.' or 'Which British scientist developed the theory of evolution by natural selection?'",
+      "medium": "Cover important historical events, well-known landmarks within the constituent countries, or significant cultural aspects. Ex: 'Which river flows through London?' or 'Name the constituent countries of the United Kingdom.' or 'Who wrote \"Hamlet\"?'"
+    }
+  },
+  {
+    "topicValue": "History",
+    "name": {
+      "en": "History",
+      "es": "Historia"
+    },
+    "icon": "ScrollText",
+    "detailedPromptInstructions": "Generate questions about significant historical events, periods, figures, and civilizations from around the world. Include ancient, medieval, and modern history. Examples: 'Who was the first Roman Emperor?' or 'What event is considered the start of World War II?'",
+    "parentTopicValue": "GeographyAndHistoryGeneral",
+    "difficultySpecificGuidelines": {
+      "hard": "Questions requiring deeper knowledge of specific historical contexts, lesser-known events or figures, or analysis of historical trends. Example: 'Discuss the socio-economic impact of the Black Death in 14th century Europe.'",
+      "easy": "Focus on major historical events or figures generally known by those with basic secondary education. Example: 'What was the Renaissance?' or 'Who was Martin Luther King Jr.?'",
+      "medium": "Cover specific details of major historical periods, causes/effects of significant events, or notable but not universally known figures. Example: 'What were the main causes of the French Revolution?' or 'Who was Genghis Khan?'"
+    }
+  },
+  {
+    "topicValue": "LanguagesGeneral",
+    "name": {
+      "en": "Languages",
+      "es": "Idiomas"
+    },
+    "icon": "Languages",
+    "detailedPromptInstructions": "Generate trivia questions about different world languages. Questions can cover: vocabulary (e.g., 'What is the word for 'cat' in French?'), common phrases and expressions (e.g., 'What does the German phrase 'Guten Tag' mean?'), basic grammar concepts (e.g., 'Is 'el agua' feminine or masculine in Spanish?'), identifying the language of a given word/phrase, cultural nuances related to language, or interesting facts about language origins or families. Specify the language(s) involved clearly in the question. For translation questions, ensure the target language is also clear.",
+    "difficultySpecificGuidelines": {
+      "easy": "Focus on very common words (numbers, colors, animals, basic greetings) in widely spoken languages (e.g., English, Spanish, French). Simple identification of very distinct languages. Example: 'How do you say 'hello' in Spanish?'",
+      "hard": "Delve into idiomatic expressions, more complex grammatical structures, nuanced vocabulary differences, or etymology/history of specific words or language features. Example: 'Explain the meaning of the French idiom 'poser un lapin'.' or 'What is the difference between 'ser' and 'estar' in Spanish?'",
+      "medium": "Cover common conversational phrases, basic grammatical rules (e.g., simple verb conjugations, gendered nouns), or vocabulary for everyday objects and actions. Example: 'What is the past tense of the verb 'to be' in English for the first person singular?' or 'Translate 'thank you very much' into German.'"
+    }
+  },
+  {
+    "topicValue": "Lang_English",
+    "name": {
+      "es": "Inglés",
+      "en": "English"
+    },
+    "icon": "MessageSquare",
+    "detailedPromptInstructions": "Generate trivia questions about the English language, focusing on vocabulary, common phrases, basic grammar (e.g., tenses, plurals, articles), and interesting facts about English words or expressions. Questions can be for learners or native speakers. Examples: 'What is an antonym for 'happy'?' or 'What does the idiom 'to bite the bullet' mean?'",
+    "parentTopicValue": "LanguagesGeneral",
+    "difficultySpecificGuidelines": {
+      "easy": "Basic vocabulary (colors, numbers, common objects), simple greetings. Example: 'What is the plural of 'mouse'?'",
+      "hard": "Nuances of grammar, obscure vocabulary, etymology, or complex idiomatic expressions. Example: 'Explain the use of the subjunctive mood in English.'",
+      "medium": "Common idioms, verb tenses, or comparative/superlative adjectives. Example: 'What is the difference between 'its' and 'it's'?'"
+    }
+  },
+  {
+    "topicValue": "Lang_French",
+    "name": {
+      "es": "Francés",
+      "en": "French"
+    },
+    "icon": "MessageSquare",
+    "detailedPromptInstructions": "Generate trivia questions about the French language, focusing on vocabulary, common phrases, basic grammar (e.g., verb conjugations - être/avoir, gender of nouns, articles), and cultural expressions. Examples: 'How do you say 'thank you' in French?' or 'What is the feminine form of the adjective 'beau' (handsome)?'",
+    "parentTopicValue": "LanguagesGeneral",
+    "difficultySpecificGuidelines": {
+      "medium": "Common verb conjugations, basic sentence structure. Example: 'How do you form the negative in French with 'ne...pas'?'",
+      "hard": "Subjunctive mood, complex idiomatic expressions, or nuances of pronunciation. Example: 'Explain the use of the 'passé composé' versus the 'imparfait'.'",
+      "easy": "Basic vocabulary, simple greetings. Example: 'What is 'bonjour' in English?'"
+    }
+  },
+  {
+    "topicValue": "Lang_German",
+    "name": {
+      "es": "Alemán",
+      "en": "German"
+    },
+    "icon": "MessageSquare",
+    "detailedPromptInstructions": "Generate trivia questions about the German language, focusing on vocabulary, common phrases, basic grammar (e.g., cases - nominative, accusative, dative; verb conjugations, gender of nouns), and cultural expressions. Examples: 'How do you say 'goodbye' in German (formal)?' or 'What are the three genders for nouns in German?'",
+    "parentTopicValue": "LanguagesGeneral",
+    "difficultySpecificGuidelines": {
+      "easy": "Basic vocabulary, simple greetings. Example: 'Translate 'yes' to German.'",
+      "medium": "Basic case system, common verb conjugations. Example: 'What is the dative case used for in German?'",
+      "hard": "Complex sentence structures (e.g., subordinate clauses), strong vs. weak verbs, or specific uses of modal verbs. Example: 'Explain the word order in a German subordinate clause.'"
+    }
+  },
+  {
+    "topicValue": "Lang_Italian",
+    "name": {
+      "en": "Italian",
+      "es": "Italiano"
+    },
+    "icon": "MessageSquare",
+    "detailedPromptInstructions": "Generate trivia questions about the Italian language, focusing on vocabulary, common phrases, basic grammar (e.g., verb conjugations, gender and number agreement, articles), and cultural expressions. Examples: 'How do you say 'please' in Italian?' or 'What is the plural of 'libro' (book)?'",
+    "parentTopicValue": "LanguagesGeneral",
+    "difficultySpecificGuidelines": {
+      "medium": "Common verb conjugations, use of articles. Example: 'When do you use 'lo' versus 'il' as a definite article?'",
+      "easy": "Basic vocabulary, simple greetings. Example: 'What does 'ciao' mean?'",
+      "hard": "Use of prepositions, subjunctive mood, or idiomatic expressions. Example: 'Explain the difference between 'passato prossimo' and 'imperfetto'.'"
+    }
+  },
+  {
+    "topicValue": "Lang_Portuguese",
+    "name": {
+      "en": "Portuguese",
+      "es": "Portugués"
+    },
+    "icon": "MessageSquare",
+    "detailedPromptInstructions": "Generate trivia questions about the Portuguese language (covering both European and Brazilian variants where appropriate, or specifying if necessary), focusing on vocabulary, common phrases, basic grammar (e.g., verb conjugations - ser/estar, gender of nouns), and cultural expressions. Examples: 'How do you say 'hello' in Portuguese?' or 'What is the word for 'water' in Portuguese?'",
+    "parentTopicValue": "LanguagesGeneral",
+    "difficultySpecificGuidelines": {
+      "hard": "Subjunctive mood, differences between European and Brazilian Portuguese, or specific idiomatic expressions. Example: 'Explain a key difference in pronunciation between European and Brazilian Portuguese.'",
+      "easy": "Basic vocabulary, simple greetings. Example: 'Translate 'thank you' (male speaker) to Portuguese.'",
+      "medium": "Common verb conjugations, differences between ser/estar. Example: 'Conjugate the verb 'estar' for 'eu' (I) in the present tense.'"
+    }
+  },
+  {
+    "topicValue": "Lang_Spanish",
+    "name": {
+      "es": "Español",
+      "en": "Spanish"
+    },
+    "icon": "MessageSquare",
+    "detailedPromptInstructions": "Generate trivia questions about the Spanish language, focusing on vocabulary, common phrases, basic grammar (e.g., verb conjugations - ser/estar, gender of nouns, tenses), and cultural expressions. Questions can be for learners or native speakers. Examples: 'How do you say 'good morning' in Spanish?' or 'What is the difference between 'por' and 'para' in many contexts?'",
+    "parentTopicValue": "LanguagesGeneral",
+    "difficultySpecificGuidelines": {
+      "medium": "Common verb conjugations (present tense), gender agreement, or widely used phrases. Example: 'Conjugate the verb 'ser' for 'yo' (I) in the present tense.'",
+      "easy": "Basic vocabulary (colors, numbers, common objects), simple greetings. Example: 'Translate 'cat' to Spanish.'",
+      "hard": "Subjunctive mood, complex idiomatic expressions, regional variations in vocabulary, or etymology. Example: 'When is the subjunctive used after 'cuando' in Spanish?'"
+    }
+  },
+  {
+    "topicValue": "HumanitiesSocialSciencesGeneral",
+    "name": {
+      "es": "Humanidades y C. Sociales",
+      "en": "Humanities & Social Sciences"
+    },
+    "icon": "Users2",
+    "detailedPromptInstructions": "Generate diverse trivia questions covering a broad range of Humanities and Social Sciences. This includes: Philosophy (major thinkers, concepts, ethics, logic), Psychology (theories, famous psychologists, human behavior), Sociology (social structures, culture, social issues), Political Science (government types, ideologies, international relations), Economics (basic principles, micro/macro concepts, economic history), Linguistics (language structure, history, families), Anthropology (human cultures, evolution, archaeology), and significant works or figures within these fields. Questions should encourage critical thinking and awareness of human society and thought.",
+    "difficultySpecificGuidelines": {
+      "hard": "Delve into complex theoretical debates, influential but less mainstream thinkers, or detailed aspects of research methodologies within these disciplines. Example: 'Explain Max Weber's concept of 'verstehen'.' or 'What are the main arguments of John Rawls' theory of justice?'",
+      "easy": "Focus on very well-known figures (e.g., 'Who was Plato?'), basic concepts (e.g., 'What is a democracy?'), or common human experiences related to these fields (e.g., 'What is an emotion?').",
+      "medium": "Cover core theories, important historical developments in these fields, or specific terms. Example: 'What is the difference between microeconomics and macroeconomics?' or 'Who wrote \"The Interpretation of Dreams\"?'"
+    }
+  },
+  {
+    "topicValue": "Economics",
+    "name": {
+      "es": "Economía",
+      "en": "Economics"
+    },
+    "icon": "LineChart",
+    "detailedPromptInstructions": "Generate questions about microeconomics, macroeconomics, fundamental economic principles (supply and demand, scarcity), market structures, economic indicators (GDP, inflation), and famous economists. Examples: 'What is the law of supply and demand?' or 'Who wrote \"The Wealth of Nations\"?'",
+    "parentTopicValue": "HumanitiesSocialSciencesGeneral",
+    "difficultySpecificGuidelines": {
+      "medium": "Core economic concepts like inflation, unemployment, or types of markets. Example: 'What is GDP?' or 'Explain the difference between a monopoly and perfect competition.'",
+      "easy": "Basic economic terms like 'money', 'price', or 'trade'. Example: 'What is a budget?' or 'Why do people work?'",
+      "hard": "University-level economic theories, econometric models, or international economic policies. Example: 'Explain the IS-LM model.' or 'What is comparative advantage and how does it relate to international trade?'"
+    }
+  },
+  {
+    "topicValue": "Linguistics",
+    "name": {
+      "es": "Lingüística",
+      "en": "Linguistics"
+    },
+    "icon": "Languages",
+    "detailedPromptInstructions": "Generate questions about phonetics, phonology, morphology, syntax, semantics, pragmatics, historical linguistics, language families, and famous linguists. Examples: 'What is a phoneme?' or 'Who is known for the theory of Universal Grammar?'",
+    "parentTopicValue": "HumanitiesSocialSciencesGeneral",
+    "difficultySpecificGuidelines": {
+      "medium": "Core branches of linguistics, parts of speech, or basic language change concepts. Example: 'What is the difference between syntax and semantics?' or 'What is a morpheme?'",
+      "easy": "Basic concepts like 'word', 'sentence', or different languages. Example: 'What is a verb?' or 'How many letters are in the English alphabet?'",
+      "hard": "University-level linguistic theories, detailed phonological rules, comparative linguistics, or sociolinguistic phenomena. Example: 'Explain Chomsky's concept of 'generative grammar'.' or 'What is Grimm's Law in historical linguistics?'"
+    }
+  },
+  {
+    "topicValue": "Mythology",
+    "name": {
+      "en": "Mythology",
+      "es": "Mitología"
+    },
+    "icon": "Swords",
+    "detailedPromptInstructions": "Generate questions about gods, goddesses, heroes, mythical creatures, and epic tales from various mythologies (e.g., Greek, Roman, Norse, Egyptian, Celtic). Examples: 'Who is the Greek god of the sea?' or 'What creature in Norse mythology is a giant wolf destined to kill Odin during Ragnarök?'",
+    "parentTopicValue": "HumanitiesSocialSciencesGeneral",
+    "difficultySpecificGuidelines": {
+      "medium": "Questions about specific myths, relationships between mythological figures, or attributes of lesser-known deities. Example: 'Who was Persephone in Greek mythology?'",
+      "easy": "Identifying major gods/goddesses or very famous mythical figures/stories. Example: 'Zeus is the king of the gods in which mythology?'",
+      "hard": "Detailed knowledge of specific epic poems, comparative mythology, or obscure mythological figures. Example: 'What are the Twelve Labours of Heracles?'"
+    }
+  },
+  {
+    "topicValue": "MythicalCreatures",
+    "name": {
+      "es": "Criaturas Míticas",
+      "en": "Mythical Creatures"
+    },
+    "icon": "Ghost",
+    "detailedPromptInstructions": "Generate questions about legendary creatures from various mythologies and folklore around the world (e.g., griffins, unicorns, dragons, krakens, etc.). Questions can cover their characteristics, origins, and associated stories.",
+    "parentTopicValue": "Mythology"
+  },
+  {
+    "topicValue": "Philosophy",
+    "name": {
+      "es": "Filosofía",
+      "en": "Philosophy"
+    },
+    "icon": "BrainCircuit",
+    "detailedPromptInstructions": "Generate questions about major philosophers (e.g., Plato, Aristotle, Kant, Descartes), branches of philosophy (ethics, metaphysics, epistemology, logic), key philosophical concepts, and schools of thought. Examples: 'What is Plato's Allegory of the Cave about?' or 'What is existentialism?'",
+    "parentTopicValue": "HumanitiesSocialSciencesGeneral",
+    "difficultySpecificGuidelines": {
+      "hard": "University-level philosophical arguments, detailed critiques of philosophical theories, or concepts from less mainstream philosophers. Example: 'Explain Kant's categorical imperative and one common criticism of it.' or 'What is the Gettier problem in epistemology?'",
+      "easy": "Very famous philosophers or basic philosophical questions. Example: 'Who said \"I think, therefore I am\"?' or 'What is a common ethical dilemma?'",
+      "medium": "Key concepts from major philosophers or branches of philosophy. Example: 'What is utilitarianism?' or 'Briefly explain Cartesian dualism.'"
+    }
+  },
+  {
+    "topicValue": "PoliticalScience",
+    "name": {
+      "en": "Political Science",
+      "es": "Ciencia Política"
+    },
+    "icon": "Landmark",
+    "detailedPromptInstructions": "Generate questions about types of government, political ideologies, international relations, electoral systems, important political figures, and fundamental concepts of political theory. Examples: 'What is a democracy?' or 'Who wrote \"The Prince\"?'",
+    "parentTopicValue": "HumanitiesSocialSciencesGeneral",
+    "difficultySpecificGuidelines": {
+      "hard": "University-level political theory, comparative politics, international relations theories, or detailed analysis of political systems. Example: 'Explain John Rawls' concept of the 'veil of ignorance'.' or 'Discuss the core tenets of realism in international relations theory.'",
+      "medium": "Key political ideologies, branches of government, or significant international organizations. Example: 'What is the difference between a parliamentary and presidential system?' or 'What is the United Nations?'",
+      "easy": "Basic forms of government or very well-known political concepts/figures. Example: 'What is a president?' or 'What is the main purpose of laws?'"
+    }
+  },
+  {
+    "topicValue": "Psychology",
+    "name": {
+      "en": "Psychology",
+      "es": "Psicología"
+    },
+    "icon": "Brain",
+    "detailedPromptInstructions": "Generate questions about major psychological theories, schools of thought (e.g., behaviorism, psychoanalysis, cognitive psychology), famous psychologists, common psychological disorders, and fundamental concepts in social, developmental, and cognitive psychology. Examples: 'Who is known for his work on classical conditioning with dogs?' or 'What is cognitive dissonance?'",
+    "parentTopicValue": "HumanitiesSocialSciencesGeneral",
+    "difficultySpecificGuidelines": {
+      "hard": "University-level topics like advanced neuropsychology, specific therapeutic techniques, complex statistical methods in psychological research, or critiques of major theories. Example: 'Explain the diathesis-stress model of psychological disorders.' or 'What are the main criticisms of Kohlberg's stages of moral development?'",
+      "easy": "Basic emotions, common human behaviors, or very famous psychologists. Example: 'What is an emotion?' or 'Who is Sigmund Freud?'",
+      "medium": "Key psychological concepts, stages of development, or common research methods. Example: 'What is the difference between classical and operant conditioning?' or 'Describe one of Maslow's hierarchy of needs.'"
+    }
+  },
+  {
+    "topicValue": "Sociology",
+    "name": {
+      "es": "Sociología",
+      "en": "Sociology"
+    },
+    "icon": "Users2",
+    "detailedPromptInstructions": "Generate questions about sociological theories (e.g., functionalism, conflict theory), social structures, culture, socialization, social stratification, deviance, and major sociological thinkers. Examples: 'What is social stratification?' or 'Who is considered one of the founding fathers of sociology, known for his work on suicide?'",
+    "parentTopicValue": "HumanitiesSocialSciencesGeneral",
+    "difficultySpecificGuidelines": {
+      "easy": "Basic social concepts like 'family', 'community', or 'rules'. Example: 'What is a group of people living together called?'",
+      "medium": "Key sociological terms, concepts of social inequality, or major social institutions. Example: 'What is culture?' or 'Explain the concept of social mobility.'",
+      "hard": "University-level sociological theories, research methodologies, or in-depth analysis of social phenomena. Example: 'Compare and contrast Marx's and Weber's views on social class.' or 'What is anomie, according to Durkheim?'"
+    }
+  },
+  {
+    "topicValue": "Sports",
+    "name": {
+      "es": "Deportes",
+      "en": "Sports"
+    },
+    "icon": "Goal",
+    "detailedPromptInstructions": "Generate questions about various sports including rules, famous athletes, major tournaments, and historical moments in sports like soccer, basketball, tennis, olympics, etc. Examples: 'Which country won the FIFA World Cup in 2022?' or 'How many points is a touchdown worth in American football?'",
+    "difficultySpecificGuidelines": {
+      "easy": "Well-known athletes, popular sports rules, or major international competitions. Example: 'Who is considered one of the greatest basketball players of all time, known for playing for the Chicago Bulls?' or 'How often are the Summer Olympics held?'",
+      "medium": "Specific records, details about less globally popular sports, or notable achievements by athletes. Example: 'Which tennis player holds the record for the most Grand Slam singles titles (male or female)?' or 'What is a hat-trick in soccer?'",
+      "hard": "Questions about historical sports figures, specific rules nuances, or details from past major tournaments. Example: 'In what year did Roger Bannister break the four-minute mile barrier?' or 'Explain the offside rule in soccer.'"
+    }
+  },
+  {
+    "topicValue": "Sport_AmericanFootball",
+    "name": {
+      "es": "Fútbol Americano",
+      "en": "American Football"
+    },
+    "icon": "Shield",
+    "detailedPromptInstructions": "Generate questions about American Football, focusing on the NFL. Include teams, Super Bowl history, famous players (e.g., Tom Brady, Joe Montana, Jerry Rice), positions, rules (e.g., scoring, penalties), and college football.",
+    "parentTopicValue": "Sports",
+    "difficultySpecificGuidelines": {
+      "easy": "Basic scoring methods, famous NFL teams, or very well-known players. Ex: 'How many points is a touchdown worth in American football?' or 'Which NFL team is known as America's Team?'",
+      "medium": "Player positions, specific Super Bowl results, or common penalties. Ex: 'What is the role of a quarterback?' or 'Which team won the first Super Bowl?'",
+      "hard": "Historical NFL records, college football awards, or specific rule interpretations. Ex: 'Who is the Heisman Trophy awarded to?' or 'Explain the 'Hail Mary' pass.'"
+    }
+  },
+  {
+    "topicValue": "Sport_Athletics_TrackAndField",
+    "name": {
+      "es": "Atletismo",
+      "en": "Athletics (Track & Field)"
+    },
+    "icon": "PersonStanding",
+    "detailedPromptInstructions": "Generate questions about track and field athletics. Include Olympic events (running, jumping, throwing), world records, famous athletes (e.g., Usain Bolt, Carl Lewis, Jesse Owens), techniques, and the history of athletics.",
+    "parentTopicValue": "Sports",
+    "difficultySpecificGuidelines": {
+      "hard": "Historical Olympic champions, details of specific techniques, or records from less common events. Ex: 'Who broke the world record in the long jump at the 1968 Mexico City Olympics with a jump that stood for almost 23 years?' or 'What is the decathlon?'",
+      "medium": "Specific world records, types of throwing events, or rules of jumping events. Ex: 'What is the current men's world record for the marathon (approximate time)?' or 'Name three throwing events in athletics.'",
+      "easy": "Famous Olympic events or very well-known athletes. Ex: 'What is the 100-meter dash?' or 'Who is known as the fastest man in the world for his sprinting records?'"
+    }
+  },
+  {
+    "topicValue": "Sport_Baseball",
+    "name": {
+      "es": "Béisbol",
+      "en": "Baseball"
+    },
+    "icon": "UserPen",
+    "detailedPromptInstructions": "Generate questions about Major League Baseball (MLB). Include teams, World Series history, famous players (e.g., Babe Ruth, Jackie Robinson, Hank Aaron), positions, rules (e.g., strikes, balls, outs), and baseball terminology.",
+    "parentTopicValue": "Sports",
+    "difficultySpecificGuidelines": {
+      "medium": "Player positions, specific World Series results, or common baseball statistics. Ex: 'What is a 'home run'?' or 'Who broke the color barrier in Major League Baseball?'",
+      "hard": "Historical baseball records, specific rules (e.g., infield fly rule), or details about baseball's early history. Ex: 'What is a 'perfect game' in baseball?' or 'Which player holds the MLB record for most career home runs?'",
+      "easy": "Basic baseball terms, famous MLB teams, or legendary players. Ex: 'How many strikes does a batter get before they are out?' or 'Which MLB team is nicknamed the 'Bronx Bombers'?'"
+    }
+  },
+  {
+    "topicValue": "Sport_Basketball",
+    "name": {
+      "en": "Basketball",
+      "es": "Baloncesto"
+    },
+    "icon": "Dribbble",
+    "detailedPromptInstructions": "Generate trivia questions about basketball. Include NBA history, famous players (e.g., Michael Jordan, LeBron James, Kareem Abdul-Jabbar), teams, championships, rules (e.g., types of fouls, shot clock), international basketball (FIBA World Cup, Olympics), and significant moments in the sport.",
+    "parentTopicValue": "Sports",
+    "difficultySpecificGuidelines": {
+      "medium": "Specific NBA records, college basketball facts, or details about international competitions. Ex: 'Who is the NBA's all-time leading scorer?' or 'What does 'March Madness' refer to in US college basketball?'",
+      "hard": "Historical details, specific draft information, or tactical nuances. Ex: 'Which player was the first pick in the 1996 NBA draft?' or 'Explain the triangle offense in basketball.'",
+      "easy": "Widely known players, basic rules, or famous NBA teams. Ex: 'Which NBA team did Michael Jordan play for during most of his career?' or 'How many points is a free throw worth?'"
+    }
+  },
+  {
+    "topicValue": "Sport_Boxing",
+    "name": {
+      "es": "Boxeo",
+      "en": "Boxing"
+    },
+    "icon": "Hand",
+    "detailedPromptInstructions": "Generate questions about professional boxing. Include weight classes, famous boxers (e.g., Muhammad Ali, Mike Tyson, Floyd Mayweather), championship belts, scoring, types of punches, and historic fights.",
+    "parentTopicValue": "Sports",
+    "difficultySpecificGuidelines": {
+      "hard": "Historical champions in specific weight classes, details of famous fights, or boxing judging criteria. Ex: 'What was the 'Rumble in the Jungle'?' or 'How many rounds are typically in a professional men's championship boxing match?'",
+      "easy": "Very famous boxers or basic boxing actions. Ex: 'Who is known as 'The Greatest' in boxing history?' or 'What is a knockout in boxing?'",
+      "medium": "Different weight divisions, types of boxing punches, or major boxing organizations. Ex: 'Name three common boxing punches.' or 'What does 'WBC' stand for in boxing?'"
+    }
+  },
+  {
+    "topicValue": "Sport_Chess",
+    "name": {
+      "es": "Ajedrez",
+      "en": "Chess"
+    },
+    "icon": "Crown",
+    "detailedPromptInstructions": "Generate trivia questions about chess. Topics should include: names of chess pieces and how they move, basic chess rules (check, checkmate, stalemate, castling, en passant), famous world champions (e.g., Bobby Fischer, Garry Kasparov, Magnus Carlsen), common opening names (e.g., Sicilian Defense, Ruy Lopez), basic tactics (fork, pin, skewer), and historical aspects of the game.",
+    "parentTopicValue": "Sports",
+    "difficultySpecificGuidelines": {
+      "easy": "Names of pieces or very basic rules. Ex: 'Which chess piece can only move diagonally?' or 'What is the goal of chess?'",
+      "medium": "How specific pieces move, special moves like castling, or names of famous world champions. Ex: 'How does a Knight move in chess?' or 'Who was Bobby Fischer?'",
+      "hard": "Specific opening lines, complex tactical motifs, or historical details about chess championships. Ex: 'What is the name of the chess opening that starts with 1. e4 c5?' or 'Explain the concept of 'zugzwang' in chess.'"
+    }
+  },
+  {
+    "topicValue": "Sport_Cycling",
+    "name": {
+      "en": "Cycling",
+      "es": "Ciclismo"
+    },
+    "icon": "Bike",
+    "detailedPromptInstructions": "Generate questions about professional road cycling, track cycling, and mountain biking. Include major tours (Tour de France, Giro d'Italia, Vuelta a España), famous cyclists (e.g., Eddy Merckx, Lance Armstrong, Chris Froome), types of races, and cycling terminology.",
+    "parentTopicValue": "Sports",
+    "difficultySpecificGuidelines": {
+      "medium": "Jerseys in major tours, types of cycling events, or notable cycling teams. Ex: 'What does the yellow jersey signify in the Tour de France?' or 'What is a peloton?'",
+      "hard": "Historical winners of major tours, specific mountain passes, or details about cycling equipment and tactics. Ex: 'Which cyclist has won the Tour de France a record five times (shared record)?' or 'What is a 'col' in cycling terminology?'",
+      "easy": "The most famous cycling race or well-known cyclists. Ex: 'What is the most famous annual multiple stage bicycle race primarily held in France?'"
+    }
+  },
+  {
+    "topicValue": "Sport_Football_Soccer",
+    "name": {
+      "es": "Fútbol (Soccer)",
+      "en": "Football (Soccer)"
+    },
+    "icon": "Volleyball",
+    "detailedPromptInstructions": "Generate diverse trivia questions about Football (Soccer). Topics should include: major international tournaments (FIFA World Cup, UEFA European Championship, Copa América), prominent club competitions (UEFA Champions League, Premier League, La Liga, Serie A, Bundesliga, etc.), famous players (past and present, e.g., Pelé, Maradona, Messi, Ronaldo), iconic teams, rules of the game (e.g., offside, fouls, penalties), historical moments, and significant records. Questions should be verifiable and broadly interesting to football fans.",
+    "parentTopicValue": "Sports",
+    "difficultySpecificGuidelines": {
+      "easy": "Focus on widely known players, major tournaments, or basic rules. Ex: 'Which country has won the most FIFA World Cups?' or 'How many players are on a standard football team?'",
+      "medium": "Cover specific details of major tournaments, notable club achievements, or tactical aspects. Ex: 'Who won the Ballon d'Or in 2003?' or 'What is a 'false nine' in football tactics?'",
+      "hard": "Delve into historical details of early tournaments, specific records from lesser-known leagues, or nuances of football history and regulations. Ex: 'Which team won the first ever FIFA World Cup in 1930?' or 'Explain the Bosman ruling and its impact on European football.'"
+    }
+  },
+  {
+    "topicValue": "Sport_Formula1",
+    "name": {
+      "en": "Formula 1",
+      "es": "Fórmula 1"
+    },
+    "icon": "Car",
+    "detailedPromptInstructions": "Generate questions about Formula 1 racing. Include famous drivers (e.g., Michael Schumacher, Lewis Hamilton, Ayrton Senna), teams (e.g., Ferrari, Mercedes, Red Bull Racing), World Championships, iconic race tracks, F1 terminology, and technological aspects.",
+    "parentTopicValue": "Sports",
+    "difficultySpecificGuidelines": {
+      "easy": "Very famous F1 drivers or well-known F1 teams. Ex: 'Which German driver won seven Formula 1 World Championships?' or 'Which Italian team is famous for its red racing cars?'",
+      "medium": "Names of famous F1 circuits, F1 terminology (e.g., pit stop, DRS), or recent champions. Ex: 'What does 'DRS' stand for in Formula 1?' or 'Which country hosts the Monaco Grand Prix?'",
+      "hard": "Historical F1 champions from earlier eras, specific technical regulations, or details about F1 car design. Ex: 'Who won the first Formula 1 World Championship in 1950?' or 'What is 'ground effect' in F1 car aerodynamics?'"
+    }
+  },
+  {
+    "topicValue": "Sport_Golf",
+    "name": {
+      "es": "Golf",
+      "en": "Golf"
+    },
+    "icon": "Flag",
+    "detailedPromptInstructions": "Generate questions about professional golf. Include major championships (The Masters, US Open, The Open Championship, PGA Championship), famous golfers (e.g., Tiger Woods, Jack Nicklaus, Arnold Palmer), golf terminology, types of clubs, and course features.",
+    "parentTopicValue": "Sports",
+    "difficultySpecificGuidelines": {
+      "easy": "Basic golf terms or very famous golfers/tournaments. Ex: 'What is the main objective in golf?' or 'Which major golf tournament awards a green jacket to the winner?'",
+      "hard": "Historical major winners, specific golf course architects, or nuances of golf rules. Ex: 'Who designed Augusta National Golf Club, home of The Masters?' or 'What is the Ryder Cup?'",
+      "medium": "Names of major championships, types of golf shots, or scoring terms. Ex: 'What is a 'birdie' in golf?' or 'Name the four major championships in men's professional golf.'"
+    }
+  },
+  {
+    "topicValue": "Sport_IceHockey",
+    "name": {
+      "en": "Ice Hockey",
+      "es": "Hockey sobre Hielo"
+    },
+    "icon": "CandyCane",
+    "detailedPromptInstructions": "Generate trivia questions about ice hockey, focusing on the NHL and international competitions. Topics should include famous teams (e.g., Montreal Canadiens, Toronto Maple Leafs), the Stanley Cup, legendary players (e.g., Wayne Gretzky, Mario Lemieux, Bobby Orr), player positions, rules (e.g., icing, offside, penalties like tripping or hooking), and major tournaments like the Winter Olympics or IIHF World Championships.",
+    "parentTopicValue": "Sports",
+    "difficultySpecificGuidelines": {
+      "hard": "Historical NHL records, details about specific international tournaments, or original six teams. Ex: 'What is the Art Ross Trophy awarded for?' or 'Name three of the 'Original Six' NHL teams.'",
+      "easy": "Very famous players, common penalties, or the name of the NHL championship trophy. Ex: 'Who is nicknamed 'The Great One' in ice hockey?' or 'What is the championship trophy of the NHL called?'",
+      "medium": "Player positions, specific rules like icing, or teams with many Stanley Cup wins. Ex: 'What is a 'power play' in ice hockey?' or 'Which NHL team has won the most Stanley Cups?'"
+    }
+  },
+  {
+    "topicValue": "Sport_Rugby",
+    "name": {
+      "en": "Rugby",
+      "es": "Rugby"
+    },
+    "icon": "BicepsFlexed",
+    "detailedPromptInstructions": "Generate trivia questions about Rugby Union and Rugby League. Topics should include basic rules (e.g., how a try is scored, conversions, knock-ons), player positions, major international tournaments (Rugby World Cup, Six Nations Championship, The Rugby Championship), famous national teams (e.g., New Zealand All Blacks, South Africa Springboks, England), and key concepts like scrums and line-outs.",
+    "parentTopicValue": "Sports",
+    "difficultySpecificGuidelines": {
+      "hard": "Historical Rugby World Cup winners, specific laws of the game, or differences between Rugby Union and Rugby League. Ex: 'Who won the first Rugby World Cup in 1987?' or 'Explain the difference between a 'ruck' and a 'maul'.'",
+      "medium": "Player positions, major tournaments, or specific rules. Ex: 'What is a 'scrum' in rugby?' or 'Which tournament is contested annually by England, France, Ireland, Italy, Scotland, and Wales?'",
+      "easy": "Basic scoring, famous national teams, or the shape of a rugby ball. Ex: 'How many points is a try worth in Rugby Union?' or 'Which national team is known for performing the 'Haka' before matches?'"
+    }
+  },
+  {
+    "topicValue": "Sport_Swimming",
+    "name": {
+      "es": "Natación",
+      "en": "Swimming"
+    },
+    "icon": "Waves",
+    "detailedPromptInstructions": "Generate questions about competitive swimming. Include Olympic swimming events, different strokes (freestyle, breaststroke, butterfly, backstroke), famous swimmers (e.g., Michael Phelps), world records, and relay events.",
+    "parentTopicValue": "Sports",
+    "difficultySpecificGuidelines": {
+      "medium": "Specific Olympic event distances, rules for different strokes, or details about relay races. Ex: 'How long is an Olympic swimming pool?' or 'What is an individual medley in swimming?'",
+      "easy": "Basic swimming strokes or very famous Olympic swimmers. Ex: 'Which swimming stroke involves moving both arms simultaneously over the head?' or 'Which American swimmer has won the most Olympic gold medals?'",
+      "hard": "Historical records, details of specific techniques, or world records for less common strokes/distances. Ex: 'Who was Mark Spitz?' or 'What is the FINA World Aquatics Championships?'"
+    }
+  },
+  {
+    "topicValue": "Sport_Tennis",
+    "name": {
+      "en": "Tennis",
+      "es": "Tenis"
+    },
+    "icon": "Eclipse",
+    "detailedPromptInstructions": "Generate questions about professional tennis. Topics should cover Grand Slam tournaments (Australian Open, French Open, Wimbledon, US Open), famous players (e.g., Roger Federer, Serena Williams, Rafael Nadal, Novak Djokovic), ranking systems, types of shots, rules, and historical moments.",
+    "parentTopicValue": "Sports",
+    "difficultySpecificGuidelines": {
+      "medium": "Records related to Grand Slams, specific tennis terms, or historical champions. Ex: 'Who has won the most men's singles Grand Slam titles?' or 'What is a 'deuce' in tennis scoring?'",
+      "easy": "Well-known Grand Slam tournaments or famous contemporary players. Ex: 'Which Grand Slam tournament is played on grass?' or 'Name one of the Williams sisters famous in tennis.'",
+      "hard": "Details about early tennis history, specific tournament results from past decades, or nuances of playing surfaces. Ex: 'Who was the first woman to win a calendar-year Grand Slam in the Open Era?' or 'What is the Davis Cup?'"
+    }
+  },
+  {
+    "topicValue": "Sport_Volleyball",
+    "name": {
+      "es": "Voleibol",
+      "en": "Volleyball"
+    },
+    "icon": "Users",
+    "detailedPromptInstructions": "Generate trivia questions about volleyball (both indoor and beach). Topics should cover basic rules (e.g., scoring, rotations, number of hits), player positions, famous international competitions (Olympics, World Championships), common techniques (spike, block, set, dig), and notable national teams or players.",
+    "parentTopicValue": "Sports",
+    "difficultySpecificGuidelines": {
+      "hard": "Specific rotational rules, historical Olympic results, or advanced tactical concepts. Ex: 'Explain the rules for a 'double touch' fault.' or 'Which country has won the most Olympic gold medals in men's indoor volleyball?'",
+      "medium": "Player positions, scoring rules, or major international tournaments. Ex: 'What is the role of the 'libero' in volleyball?' or 'How many points are needed to win a standard volleyball set (excluding deciding set)?'",
+      "easy": "Basic actions or number of players. Ex: 'How many players are on one side of the court in indoor volleyball?' or 'What is it called when a player jumps and hits the ball forcefully over the net?'"
+    }
+  }
+]

@@ -270,6 +270,8 @@
     "formNameEsPlaceholder": "Ej: Películas de Ciencia Ficción",
     "formIcon": "Nombre del Icono (Lucide)",
     "formIconPlaceholder": "Ej: Rocket, Film",
+    "formIsVisual": "Categoría Visual",
+    "formIsVisualDescription": "Activar si esta categoría contiene preguntas basadas en imágenes.",
     "formParentCategoryLabel": "Categoría Padre (Opcional)",
     "formParentCategoryPlaceholder": "Seleccionar categoría padre",
     "noParent": "Sin Padre / Nivel Superior",
@@ -289,7 +291,8 @@
     "toastDeleteError": "No se pudo eliminar la categoría. Por favor, inténtalo de nuevo.",
     "errorTopicValueExists": "Ya existe una categoría con el Valor de Tema \"{topicValue}\". Por favor, usa un Valor de Tema único.",
     "deleteConfirmTitle": "¿Estás seguro?",
-    "deleteConfirmDescription": "¿Estás seguro de que quieres eliminar la categoría \"{name}\"? Esta acción no se puede deshacer."
+    "deleteConfirmDescription": "¿Estás seguro de que quieres eliminar la categoría \"{name}\"? Esta acción no se puede deshacer.",
+    "visualCategoryTooltip": "Esta es una categoría visual"
   },
   "AdminQuestionsPage": {
     "title": "Gestionar Preguntas",
@@ -370,7 +373,12 @@
       "explanationLabel": "Texto de la Explicación",
       "explanationPlaceholder": "Ingresa el texto de la explicación...",
       "hintLabelOptional": "Texto de la Pista (Opcional)",
-      "hintPlaceholder": "Ingresa el texto de la pista..."
+      "hintPlaceholder": "Ingresa el texto de la pista...",
+      "visualsLabel": "Visuales",
+      "imagePromptLabel": "Prompt de Imagen (para IA)",
+      "imagePromptPlaceholder": "Ingresa un prompt detallado en inglés para la IA de texto a imagen...",
+      "imageUrlLabel": "URL de la Imagen",
+      "imageUrlPlaceholder": "Ingresa la URL pública de la imagen generada..."
     }
   },
   "AdminReportsPage": {

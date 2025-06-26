@@ -43,6 +43,7 @@ const GenerateTriviaQuestionsInputSchema = z.object({
   categoryInstructions: z.string().optional().describe('Detailed English-only instructions for the AI on how to generate questions for this specific category.'),
   difficultySpecificInstruction: z.string().optional().describe('More granular English-only instructions for the AI, specific to the target difficulty level within this category.'),
   count: z.number().min(1).max(1000).optional().default(1).describe('Number of distinct trivia questions to generate. Max 1000. Defaults to 1.'),
+  isVisual: z.boolean().optional().describe('Whether the questions should be visual, requiring an image prompt.'),
   modelName: z.string().optional().describe('Optional Genkit model name to use for generation (e.g., googleai/gemini-1.5-pro).')
 });
 export type GenerateTriviaQuestionsInput = z.infer<typeof GenerateTriviaQuestionsInputSchema>;
@@ -55,6 +56,8 @@ const GenerateTriviaQuestionOutputSchema = z.object({
   explanation: BilingualTextSchema.describe('A brief explanation (1-2 sentences) of why the correct answer is correct, in English and Spanish.'),
   hint: BilingualTextSchema.describe('A concise hint (1 short sentence) to help the user deduce the answer without revealing it directly, in English and Spanish.'),
   difficulty: DifficultyLevelSchema,
+  imagePrompt: z.string().optional().describe('A detailed, English-only prompt for a text-to-image model to generate a relevant image.'),
+  imageUrl: z.string().url().optional().describe('The URL of the generated image. Should be left empty by this flow.')
 });
 export type GenerateTriviaQuestionOutput = z.infer<typeof GenerateTriviaQuestionOutputSchema>;
 
@@ -86,6 +89,17 @@ SPECIFIC INSTRUCTIONS FOR THE TARGETED DIFFICULTY LEVEL:
 {{{difficultySpecificInstruction}}}
 These difficulty-specific instructions are very important for tailoring the questions appropriately.
 {{/if}}
+
+{{#if isVisual}}
+This is a VISUAL category. For each question, you MUST also generate an 'imagePrompt'.
+IMAGE PROMPT GUIDELINES:
+- The 'imagePrompt' MUST be a detailed, descriptive, and unambiguous prompt in ENGLISH for a text-to-image AI model (like DALL-E or Midjourney).
+- It should describe a photorealistic or artistic image that visually represents the subject of the question without giving away the answer.
+- Example for a question "Which city is home to the Colosseum?": A good imagePrompt would be "A photorealistic, wide-angle shot of the ancient Colosseum in Rome, Italy, under a clear blue sky during the day."
+- Do NOT include the answer in the image prompt.
+- The 'imageUrl' field should be left empty.
+{{/if}}
+
 
 IMPORTANT INSTRUCTIONS FOR QUESTION VARIETY:
 1. ALL questions generated in this batch MUST be SIGNIFICANTLY DIFFERENT from each other, exploring unique facts or aspects of the topic.
@@ -135,8 +149,9 @@ Each question object in the array must conform to the following structure:
     { "en": "Distractor C en", "es": "Distractor C es" }
   ],
   "explanation": { "en": "English Explanation", "es": "Spanish Explanation" },
-  "hint": { "en": "English Hint", "es": "Spanish Hint (optional)" },
-  "difficulty": "easy"
+  "hint": { "en": "English Hint", "es": "Spanish Hint" },
+  "difficulty": "easy",
+  "imagePrompt": "A detailed English prompt for an image AI. (Omit if not a visual category)"
 }
 Ensure the entire response is a single JSON string like: "[ {question1_object}, {question2_object}, ... ]"
 

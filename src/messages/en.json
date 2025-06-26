@@ -270,6 +270,8 @@
     "formNameEsPlaceholder": "e.g., Películas de Ciencia Ficción",
     "formIcon": "Icon Name (Lucide)",
     "formIconPlaceholder": "e.g., Rocket, Film",
+    "formIsVisual": "Visual Category",
+    "formIsVisualDescription": "Enable if this category contains image-based questions.",
     "formParentCategoryLabel": "Parent Category (Optional)",
     "formParentCategoryPlaceholder": "Select parent category",
     "noParent": "No Parent / Top Level",
@@ -289,7 +291,8 @@
     "toastDeleteError": "Could not delete category. Please try again.",
     "errorTopicValueExists": "A category with Topic Value \"{topicValue}\" already exists. Please use a unique Topic Value.",
     "deleteConfirmTitle": "Are you sure?",
-    "deleteConfirmDescription": "Are you sure you want to delete the category \"{name}\"? This action cannot be undone."
+    "deleteConfirmDescription": "Are you sure you want to delete the category \"{name}\"? This action cannot be undone.",
+    "visualCategoryTooltip": "This is a visual category"
   },
   "AdminQuestionsPage": {
     "title": "Manage Questions",
@@ -370,7 +373,12 @@
       "explanationLabel": "Explanation Text",
       "explanationPlaceholder": "Enter the explanation text...",
       "hintLabelOptional": "Hint Text (Optional)",
-      "hintPlaceholder": "Enter the hint text..."
+      "hintPlaceholder": "Enter the hint text...",
+      "visualsLabel": "Visuals",
+      "imagePromptLabel": "Image Prompt (for AI)",
+      "imagePromptPlaceholder": "Enter a detailed, English prompt for text-to-image AI...",
+      "imageUrlLabel": "Image URL",
+      "imageUrlPlaceholder": "Enter the public URL of the generated image..."
     }
   },
   "AdminReportsPage": {

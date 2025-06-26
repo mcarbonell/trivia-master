@@ -103,8 +103,7 @@ async function fetchCategoriesWithAdminSDK(): Promise<CategoryDefinition[]> {
         data.topicValue && typeof data.topicValue === 'string' &&
         data.name && typeof data.name.en === 'string' && typeof data.name.es === 'string' &&
         data.icon && typeof data.icon === 'string' &&
-        data.detailedPromptInstructions && typeof data.detailedPromptInstructions === 'string' &&
-        (data.hasOwnProperty('isPredefined') ? typeof data.isPredefined === 'boolean' : true)
+        data.detailedPromptInstructions && typeof data.detailedPromptInstructions === 'string'
       ) {
         const categoryToAdd: CategoryDefinition = {
           id: doc.id,
@@ -112,6 +111,7 @@ async function fetchCategoriesWithAdminSDK(): Promise<CategoryDefinition[]> {
           name: data.name as BilingualText,
           icon: data.icon,
           detailedPromptInstructions: data.detailedPromptInstructions,
+          isVisual: data.isVisual,
         };
         if (data.difficultySpecificGuidelines) {
           const validatedGuidelines: { [key: string]: string } = {};
@@ -305,6 +305,7 @@ async function populateQuestions() {
             targetDifficulty: difficulty,
             categoryInstructions: category.detailedPromptInstructions,
             count: questionsToRequestInThisAPICall,
+            isVisual: category.isVisual,
             modelName: MODEL_TO_USE, // Pass model name to the flow
           };
 

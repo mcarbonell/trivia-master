@@ -8,7 +8,6 @@ import * as z from 'zod';
 import { getAllPredefinedQuestionsForAdmin, deletePredefinedQuestion, updatePredefinedQuestion, type PredefinedQuestion } from '@/services/triviaService';
 import { getAppCategories } from '@/services/categoryService';
 import type { CategoryDefinition, DifficultyLevel, BilingualText } from '@/types';
-import type { GenerateTriviaQuestionOutput } from '@/ai/flows/generate-trivia-question';
 import type { AppLocale } from '@/lib/i18n-config';
 import { useTranslations, useLocale } from 'next-intl';
 import { Button } from '@/components/ui/button';
@@ -50,6 +49,8 @@ export const questionFormSchema = z.object({
   hintEn: z.string().optional(),
   hintEs: z.string().optional(),
   difficulty: z.enum(ALL_DIFFICULTY_LEVELS, { required_error: "Difficulty is required." }),
+  imagePrompt: z.string().optional(),
+  imageUrl: z.string().optional(),
 });
 export type QuestionFormData = z.infer<typeof questionFormSchema>;
 
@@ -264,6 +265,8 @@ export default function AdminQuestionsPage() {
       hintEn: question.hint?.en || '',
       hintEs: question.hint?.es || '',
       difficulty: question.difficulty,
+      imagePrompt: question.imagePrompt || '',
+      imageUrl: question.imageUrl || '',
     });
     setIsQuestionDialogOpen(true);
   };
@@ -295,7 +298,7 @@ export default function AdminQuestionsPage() {
     if (!currentQuestionToEdit) return;
     setIsSubmittingQuestion(true);
 
-    const updatedQuestionData: Partial<GenerateTriviaQuestionOutput> = {
+    const updatedQuestionData: Partial<PredefinedQuestion> = {
       question: { en: data.questionEn, es: data.questionEs },
       correctAnswer: { en: data.correctAnswerEn, es: data.correctAnswerEs },
       distractors: [
@@ -306,6 +309,8 @@ export default function AdminQuestionsPage() {
       explanation: { en: data.explanationEn, es: data.explanationEs },
       hint: (data.hintEn || data.hintEs) ? { en: data.hintEn || '', es: data.hintEs || '' } : undefined,
       difficulty: data.difficulty,
+      imagePrompt: data.imagePrompt || undefined,
+      imageUrl: data.imageUrl || undefined,
     };
      if (!updatedQuestionData.hint?.en && !updatedQuestionData.hint?.es) {
         delete updatedQuestionData.hint;
@@ -780,6 +785,24 @@ export default function AdminQuestionsPage() {
                     </CardContent>
                   </Card>
                 )}
+
+                {currentQuestionToView.imagePrompt && (
+                   <Card>
+                    <CardHeader><CardTitle className="text-base">{tForm('imagePromptLabel')}</CardTitle></CardHeader>
+                    <CardContent>
+                       <p className="font-mono text-xs bg-muted p-2 rounded-md">{currentQuestionToView.imagePrompt}</p>
+                    </CardContent>
+                  </Card>
+                )}
+
+                 {currentQuestionToView.imageUrl && (
+                   <Card>
+                    <CardHeader><CardTitle className="text-base">{tForm('imageUrlLabel')}</CardTitle></CardHeader>
+                    <CardContent>
+                       <p className="font-mono text-xs bg-muted p-2 rounded-md break-all">{currentQuestionToView.imageUrl}</p>
+                    </CardContent>
+                  </Card>
+                )}
               </div>
             )}
           </ScrollArea>
@@ -862,6 +885,14 @@ export default function AdminQuestionsPage() {
                   <CardContent className="space-y-4">
                     <FormField control={form.control} name="hintEn" render={({ field }) => ( <FormItem> <FormLabel>{tCommon('english')}</FormLabel> <FormControl><Textarea placeholder={tForm('hintPlaceholder')} {...field} rows={2} /></FormControl> <FormMessage /> </FormItem> )}/>
                     <FormField control={form.control} name="hintEs" render={({ field }) => ( <FormItem> <FormLabel>{tCommon('spanish')}</FormLabel> <FormControl><Textarea placeholder={tForm('hintPlaceholder')} {...field} rows={2} /></FormControl> <FormMessage /> </FormItem> )}/>
+                  </CardContent>
+                </Card>
+
+                 <Card>
+                  <CardHeader><CardTitle className="text-lg">{tForm('visualsLabel')}</CardTitle></CardHeader>
+                  <CardContent className="space-y-4">
+                    <FormField control={form.control} name="imagePrompt" render={({ field }) => ( <FormItem> <FormLabel>{tForm('imagePromptLabel')}</FormLabel> <FormControl><Textarea placeholder={tForm('imagePromptPlaceholder')} {...field} rows={3} /></FormControl> <FormMessage /> </FormItem> )}/>
+                    <FormField control={form.control} name="imageUrl" render={({ field }) => ( <FormItem> <FormLabel>{tForm('imageUrlLabel')}</FormLabel> <FormControl><Input placeholder={tForm('imageUrlPlaceholder')} {...field} /></FormControl> <FormMessage /> </FormItem> )}/>
                   </CardContent>
                 </Card>
 

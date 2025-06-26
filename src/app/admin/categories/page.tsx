@@ -15,8 +15,9 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
+import { Checkbox } from '@/components/ui/checkbox';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Loader2, PlusCircle, Edit, Trash2, AlertTriangle, RefreshCw, Indent, Pilcrow, Download } from 'lucide-react';
+import { Loader2, PlusCircle, Edit, Trash2, AlertTriangle, RefreshCw, Indent, Pilcrow, Download, Camera } from 'lucide-react';
 import { useTranslations, useLocale } from 'next-intl';
 import type { AppLocale } from '@/lib/i18n-config';
 import { useToast } from '@/hooks/use-toast';
@@ -28,6 +29,7 @@ const categoryFormSchema = z.object({
   nameEn: z.string().min(1, { message: "English name is required." }),
   nameEs: z.string().min(1, { message: "Spanish name is required." }),
   icon: z.string().min(1, { message: "Icon name is required." }).max(50, { message: "Icon name must be 50 characters or less." }),
+  isVisual: z.boolean().default(false),
   detailedPromptInstructions: z.string().min(1, { message: "Detailed prompt instructions are required." }),
   parentTopicValue: z.string().optional(),
   difficultyEasy: z.string().optional(),
@@ -72,6 +74,7 @@ export default function AdminCategoriesPage() {
       nameEn: '',
       nameEs: '',
       icon: '',
+      isVisual: false,
       detailedPromptInstructions: '',
       parentTopicValue: '', 
       difficultyEasy: '',
@@ -132,6 +135,7 @@ export default function AdminCategoriesPage() {
       nameEn: category.name.en,
       nameEs: category.name.es,
       icon: category.icon,
+      isVisual: category.isVisual || false,
       detailedPromptInstructions: category.detailedPromptInstructions,
       parentTopicValue: category.parentTopicValue || '', 
       difficultyEasy: category.difficultySpecificGuidelines?.easy || '',
@@ -142,6 +146,7 @@ export default function AdminCategoriesPage() {
       nameEn: '',
       nameEs: '',
       icon: '',
+      isVisual: false,
       detailedPromptInstructions: '',
       parentTopicValue: '', 
       difficultyEasy: '',
@@ -157,6 +162,7 @@ export default function AdminCategoriesPage() {
       topicValue: data.topicValue,
       name: { en: data.nameEn, es: data.nameEs },
       icon: data.icon,
+      isVisual: data.isVisual,
       detailedPromptInstructions: data.detailedPromptInstructions,
       parentTopicValue: (data.parentTopicValue === NO_PARENT_SELECT_VALUE || data.parentTopicValue === '') ? undefined : data.parentTopicValue,
       difficultySpecificGuidelines: {
@@ -302,8 +308,11 @@ export default function AdminCategoriesPage() {
                   return (
                     <TableRow key={category.id}>
                       <TableCell className="font-medium">
-                        {parentCategory ? <Indent className="inline-block mr-2 h-4 w-4 text-muted-foreground" /> : <Pilcrow className="inline-block mr-2 h-4 w-4 text-muted-foreground/50" />}
-                        {category.name[locale]}
+                        <div className="flex items-center gap-2">
+                           {parentCategory ? <Indent className="inline-block h-4 w-4 text-muted-foreground" /> : <Pilcrow className="inline-block h-4 w-4 text-muted-foreground/50" />}
+                           <span>{category.name[locale]}</span>
+                           {category.isVisual && <Camera className="h-4 w-4 text-primary" title={t('visualCategoryTooltip')} />}
+                        </div>
                       </TableCell>
                       <TableCell className="hidden sm:table-cell text-xs">
                         {parentCategory ? parentCategory.name[locale] : <span className="text-muted-foreground italic">{t('noParent')}</span>}
@@ -411,6 +420,43 @@ export default function AdminCategoriesPage() {
                   )}
                 />
               </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-center">
+                <FormField
+                  control={form.control}
+                  name="icon"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>{t('formIcon')}</FormLabel>
+                      <FormControl>
+                        <Input placeholder={t('formIconPlaceholder')} {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="isVisual"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-row items-center justify-start space-x-3 space-y-0 rounded-md border p-4">
+                      <FormControl>
+                        <Checkbox
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                        />
+                      </FormControl>
+                      <div className="space-y-1 leading-none">
+                        <FormLabel>
+                          {t('formIsVisual')}
+                        </FormLabel>
+                        <p className="text-sm text-muted-foreground">
+                          {t('formIsVisualDescription')}
+                        </p>
+                      </div>
+                    </FormItem>
+                  )}
+                />
+              </div>
               <FormField
                 control={form.control}
                 name="parentTopicValue"
@@ -437,19 +483,6 @@ export default function AdminCategoriesPage() {
                         ))}
                       </SelectContent>
                     </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="icon"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{t('formIcon')}</FormLabel>
-                    <FormControl>
-                      <Input placeholder={t('formIconPlaceholder')} {...field} />
-                    </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -532,4 +565,3 @@ export default function AdminCategoriesPage() {
     </div>
   );
 }
-

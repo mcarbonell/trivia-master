@@ -18,6 +18,7 @@ export interface CategoryDefinition {
   icon: string; 
   detailedPromptInstructions: string; 
   parentTopicValue?: string; 
+  isVisual?: boolean;
   difficultySpecificGuidelines?: { 
     "easy"?: CategoryDifficultyGuideline;
     "medium"?: CategoryDifficultyGuideline;

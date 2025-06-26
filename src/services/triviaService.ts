@@ -10,6 +10,8 @@ export interface PredefinedQuestion extends GenerateTriviaQuestionOutput {
   topicValue: string;
   createdAt?: string; 
   status?: 'accepted' | 'fixed';
+  imagePrompt?: string;
+  imageUrl?: string;
 }
 
 const PREDEFINED_QUESTIONS_COLLECTION = 'predefinedTriviaQuestions';
@@ -36,7 +38,9 @@ export async function normalizeQuestionData(docId: string, data: DocumentData): 
     topicValue: data.topicValue as string,
     hint: data.hint as BilingualText | undefined,
     status: data.status as 'accepted' | 'fixed' | undefined,
-    createdAt: data.createdAt ? (data.createdAt as Timestamp).toDate().toISOString() : undefined
+    createdAt: data.createdAt ? (data.createdAt as Timestamp).toDate().toISOString() : undefined,
+    imagePrompt: data.imagePrompt,
+    imageUrl: data.imageUrl,
   };
 
   // Check for new format (correctAnswer + distractors)
@@ -183,7 +187,7 @@ export async function deletePredefinedQuestion(questionId: string): Promise<void
   }
 }
 
-export async function updatePredefinedQuestion(questionId: string, data: Partial<GenerateTriviaQuestionOutput> & { status?: 'accepted' | 'fixed' }): Promise<void> {
+export async function updatePredefinedQuestion(questionId: string, data: Partial<PredefinedQuestion>): Promise<void> {
   try {
     const questionRef = doc(db, PREDEFINED_QUESTIONS_COLLECTION, questionId);
     await updateDoc(questionRef, data as any);
