@@ -1,0 +1,13 @@
+
+[
+  {
+    "topicValue": "AnimalIdentification",
+    "name": {
+      "en": "Identify the Animal",
+      "es": "Identifica el Animal"
+    },
+    "icon": "PawPrint",
+    "isVisual": true,
+    "detailedPromptInstructions": "Generate visual trivia questions where the user must identify an animal from an image. For each item: 1. The 'question' text should be simple, like 'What animal is shown in the image?' or 'Identify this animal.'. 2. The 'correctAnswer' must be the common name of a specific animal (e.g., 'African Elephant', 'Siberian Tiger', 'Red Panda'). 3. The 'distractors' must be three other plausible but incorrect animal names, preferably from a similar class or habitat. 4. The 'explanation' should provide a brief, interesting fact about the correct animal. 5. CRUCIAL: The 'imagePrompt' MUST be a detailed, photorealistic description of the correct animal in its natural habitat. DO NOT mention the animal's name in the image prompt. For example, for 'Lion', a good prompt would be: 'A photorealistic, close-up shot of a large, male feline with a magnificent golden mane, resting on a rock under the African sun.' The 'imageUrl' field should be left empty."
+  }
+]
