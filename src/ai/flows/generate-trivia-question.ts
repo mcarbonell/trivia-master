@@ -15,7 +15,7 @@
 
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
-import { GenerateTriviaQuestionOutputSchema, DifficultyLevelSchema, type GenerateTriviaQuestionOutput, type BilingualText } from '@/types';
+import { GenerateTriviaQuestionOutputSchema, DifficultyLevelSchema, type GenerateTriviaQuestionOutput } from '@/types';
 
 const GenerateTriviaQuestionsInputSchema = z.object({
   topic: z.string().describe('The topic for the trivia question. This will be the general theme, e.g., "Science", "Movies".'),
@@ -60,10 +60,10 @@ These difficulty-specific instructions are very important for tailoring the ques
 {{/if}}
 
 {{#if isVisual}}
-This is a VISUAL category. For each question, you MUST follow the image-related instructions in the category guidelines.
-This might require you to generate an 'imagePrompt' for an AI, OR to provide 'artworkTitle' and 'artworkAuthor' for a real artwork search.
-- For 'imagePrompt', the image itself should not contain text. The 'imageUrl' field should be left empty.
-- For 'artworkTitle' and 'artworkAuthor', be as precise as possible.
+This is a VISUAL category. The image generation method depends on the specific Category Instructions. You MUST follow them strictly.
+- If the instructions ask for an 'imagePrompt' (for AI image generation), you MUST provide a detailed, photorealistic prompt in that field. The 'artworkTitle' and 'artworkAuthor' fields MUST be omitted.
+- If the instructions ask for an 'artworkTitle' and 'artworkAuthor' (for real artwork lookup), you MUST provide those exact details. The 'imagePrompt' field MUST be omitted in this case.
+These fields are mutually exclusive.
 {{/if}}
 
 IMPORTANT INSTRUCTIONS FOR QUESTION VARIETY:
@@ -116,9 +116,9 @@ Each question object in the array must conform to the following structure:
   "explanation": { "en": "English Explanation", "es": "Spanish Explanation" },
   "hint": { "en": "English Hint", "es": "Spanish Hint" },
   "difficulty": "easy",
-  "imagePrompt": "(Omit if not applicable)",
-  "artworkTitle": "(Omit if not applicable)",
-  "artworkAuthor": "(Omit if not applicable)"
+  "imagePrompt": "(Provide ONLY for AI-generated images, otherwise omit)",
+  "artworkTitle": "(Provide ONLY for real artwork lookup, otherwise omit)",
+  "artworkAuthor": "(Provide ONLY for real artwork lookup, otherwise omit)"
 }
 Ensure the entire response is a single JSON string like: "[ {question1_object}, {question2_object}, ... ]"
 
