@@ -57,7 +57,7 @@ const GenerateTriviaQuestionOutputSchema = z.object({
   hint: BilingualTextSchema.describe('A concise hint (1 short sentence) to help the user deduce the answer without revealing it directly, in English and Spanish.'),
   difficulty: DifficultyLevelSchema,
   imagePrompt: z.string().optional().describe('A detailed, English-only prompt for a text-to-image model to generate a relevant image.'),
-  imageUrl: z.string().optional().describe('The URL of the generated image. Should be left empty by this flow.')
+  imageUrl: z.string().optional().describe('The URL of the generated image. Should be left empty by this flow.'),
 });
 export type GenerateTriviaQuestionOutput = z.infer<typeof GenerateTriviaQuestionOutputSchema>;
 
@@ -93,9 +93,9 @@ These difficulty-specific instructions are very important for tailoring the ques
 {{#if isVisual}}
 This is a VISUAL category. For each question, you MUST also generate an 'imagePrompt'.
 IMAGE PROMPT GUIDELINES:
-- The 'imagePrompt' MUST be a detailed, descriptive, and unambiguous prompt in ENGLISH for a text-to-image AI model (like DALL-E or Midjourney).
+- The 'imagePrompt' MUST be a detailed, descriptive, and unambiguous prompt in ENGLISH for a text-to-image AI model (like DALL-E or Midjourney). It should imply a **widescreen, landscape orientation**.
 - It should describe a photorealistic or artistic image that visually represents the subject of the question without giving away the answer in the image itself.
-- For accuracy, the prompt can and should contain the name of the subject. Example for 'Lion': 'A photorealistic, close-up shot of an African Lion, resting on a rock under the African sun.'
+- For accuracy, the prompt can and should contain the name of the subject. Example for 'Lion': 'A photorealistic, close-up shot of an African Lion, resting on a rock under the African sun, landscape orientation.'
 - The image itself should not contain text.
 - The 'imageUrl' field should be left empty.
 {{/if}}

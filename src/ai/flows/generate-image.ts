@@ -28,14 +28,15 @@ const generateImageFlow = ai.defineFlow(
     outputSchema: GenerateImageOutputSchema,
   },
   async (prompt) => {
-    console.log(`[generateImageFlow] Generating image for prompt: "${prompt}"`);
+    // Prompt Engineering: Prepend a hint about the desired aspect ratio.
+    const engineeredPrompt = `A widescreen, landscape-orientation image of: ${prompt}`;
+    console.log(`[generateImageFlow] Generating image with engineered prompt: "${engineeredPrompt}"`);
 
     const { media, text } = await ai.generate({
       model: 'googleai/gemini-2.0-flash-preview-image-generation',
-      prompt: prompt,
+      prompt: engineeredPrompt,
       config: {
         responseModalities: ['TEXT', 'IMAGE'],
-        aspectRatio: 'LANDSCAPE',
       },
     });
     
