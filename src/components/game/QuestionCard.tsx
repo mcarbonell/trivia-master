@@ -82,13 +82,13 @@ export function QuestionCard({
     <>
       <Card className="w-full shadow-xl animate-fadeIn group">
         {imageUrl && (
-          <div className="relative w-full h-48 md:h-64 rounded-t-lg overflow-hidden">
+          <div className="relative w-full aspect-video rounded-t-lg overflow-hidden bg-black/10">
             <Image
               src={imageUrl}
               alt={question}
               fill
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-              className="object-cover transition-transform duration-300 group-hover:scale-105"
+              className="object-contain transition-transform duration-300 group-hover:scale-105"
               priority={true}
               data-ai-hint="trivia image"
             />
