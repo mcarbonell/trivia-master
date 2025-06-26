@@ -73,19 +73,20 @@ These scripts leverage Genkit and AI models to generate or validate content. Rem
 
 ### 4. Populate Images (`populate:images`)
 
-- **Purpose:** Finds questions with an `imagePrompt` but no `imageUrl`, generates an image using AI, uploads it to Firebase Storage, and updates the question with the public URL.
+- **Purpose:** Finds questions with an `imagePrompt`, generates an image using AI, uploads it to Firebase Storage, and updates the question with the public URL. By default, it only processes questions that do not already have an `imageUrl`.
 - **Command:** `npm run populate:images -- [options]`
 - **Arguments:**
     - `-c, --category <topicValue>`: Optional. Process only the category with this specific `topicValue`. If omitted, processes all categories.
     - `-l, --limit <number>`: Optional. The maximum number of images to generate in a single run. Default: `10`.
     - `-d, --delay <milliseconds>`: Optional. The delay in milliseconds between each image generation API call to respect rate limits. Default: `2000`.
+    - `-f, --force`: Optional. If passed, forces regeneration of images for all matching questions, even those that already have an `imageUrl`.
 - **Usage Examples:**
   ```bash
   # Generate up to 5 images for the 'WorldCapitals' category
   npm run populate:images -- --category WorldCapitals --limit 5
 
-  # Generate 1 image from any category
-  npm run populate:imagesnpm run populate:questions -- -c AnimalIdentification  -m 25 -l 1
+  # Force regeneration of 2 images for the 'AnimalIdentification' category
+  npm run populate:images -- --category AnimalIdentification --limit 2 --force
   ```
 
 ### 5. Check for Duplicate Questions (`check:questions`)
@@ -181,3 +182,6 @@ These scripts leverage Genkit and AI models to generate or validate content. Rem
     - The script is idempotent; it will only modify questions that are in the old format. Running it multiple times is safe and will have no effect after the first successful run.
     - This script directly modifies your production data. It's recommended to have a backup of your Firestore data before running it, just in case.
     - It processes questions in batches to avoid overwhelming Firestore resources.
+
+
+NOTE: To update the categories and questions on the client side, update CURRENT_CONTENT_VERSION  on src/services/indexedDBService.ts.

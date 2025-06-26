@@ -44,19 +44,26 @@ const argv = yargs(hideBin(process.argv))
     default: 2000,
     description: 'Delay in milliseconds between API calls.',
   })
+  .option('force', {
+    alias: 'f',
+    type: 'boolean',
+    default: false,
+    description: 'Force regeneration of images even if they already exist.',
+  })
   .help()
   .alias('help', 'h')
   .parseSync();
 
 
 async function populateImages() {
-  const { category, limit, delay } = argv;
+  const { category, limit, delay, force } = argv;
 
   console.log(`Starting image population script...`);
   console.log(`--- Configuration ---`);
   console.log(`Target Category: ${category || 'All Categories'}`);
   console.log(`Max Images to Generate: ${limit}`);
   console.log(`Delay between calls: ${delay}ms`);
+  console.log(`Force Regeneration: ${force}`);
   console.log(`---------------------`);
 
   try {
@@ -69,17 +76,18 @@ async function populateImages() {
     
     const snapshot = await query.get();
     
-    // Filter in code for documents that do not have an imageUrl
-    const questionsToProcess = snapshot.docs
-      .map(doc => ({ id: doc.id, ...doc.data() } as any))
-      .filter(q => q.imagePrompt && !q.imageUrl);
+    const allQuestionsWithPrompt = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as any));
+
+    const questionsToProcess = force
+      ? allQuestionsWithPrompt.filter(q => q.imagePrompt) // All questions with a prompt
+      : allQuestionsWithPrompt.filter(q => q.imagePrompt && !q.imageUrl); // Only those missing an image
 
     if (questionsToProcess.length === 0) {
       console.log("No questions found needing image generation for the selected criteria.");
       return;
     }
 
-    console.log(`Found ${questionsToProcess.length} questions with prompts but no images.`);
+    console.log(`Found ${questionsToProcess.length} questions to potentially process.`);
     const limitedQuestions = questionsToProcess.slice(0, limit);
     console.log(`Processing up to ${limitedQuestions.length} questions in this run.`);
 
