@@ -23,9 +23,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Badge } from '@/components/ui/badge';
-import { Loader2, AlertTriangle, PlusCircle, Eye, Edit, Trash2, RefreshCw, Search, ArrowUpDown, Download, ClipboardCopy } from 'lucide-react';
+import { Loader2, AlertTriangle, PlusCircle, Eye, Edit, Trash2, RefreshCw, Search, ArrowUpDown, Download, ClipboardCopy, Image as ImageIcon } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
+import Image from 'next/image';
 
 const ITEMS_PER_PAGE = 10;
 const ALL_DIFFICULTY_LEVELS: DifficultyLevel[] = ["easy", "medium", "hard"];
@@ -401,12 +402,14 @@ export default function AdminQuestionsPage() {
     }
 
     const questionsToExport = displayQuestions.map(q => {
-      const { id, topicValue, question, correctAnswer, distractors, explanation, difficulty, hint, source, createdAt, status } = q;
+      const { id, topicValue, question, correctAnswer, distractors, explanation, difficulty, hint, source, createdAt, status, imagePrompt, imageUrl } = q;
       const exportableQuestion: any = { id, topicValue, question, correctAnswer, distractors, explanation, difficulty };
       if (hint) exportableQuestion.hint = hint;
       if (source) exportableQuestion.source = source;
       if (createdAt) exportableQuestion.createdAt = createdAt;
       if (status) exportableQuestion.status = status;
+      if (imagePrompt) exportableQuestion.imagePrompt = imagePrompt;
+      if (imageUrl) exportableQuestion.imageUrl = imageUrl;
       return exportableQuestion;
     });
 
@@ -621,6 +624,16 @@ export default function AdminQuestionsPage() {
                       </TableCell>
                       <TableCell className="font-medium">
                         <div className="flex items-center gap-2">
+                          {question.imageUrl && (
+                            <Tooltip>
+                              <TooltipTrigger>
+                                <ImageIcon className="h-4 w-4 text-primary shrink-0" />
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                <p>{t('imageAvailableTooltip')}</p>
+                              </TooltipContent>
+                            </Tooltip>
+                          )}
                           <Tooltip>
                             <TooltipTrigger asChild>
                               <span id={`question-label-${question.id}`} className="block break-words cursor-default">
@@ -728,6 +741,16 @@ export default function AdminQuestionsPage() {
           <ScrollArea className="max-h-[calc(90vh-200px)] pr-6">
             {currentQuestionToView && (
               <div className="space-y-4 py-4 text-sm">
+                {currentQuestionToView.imageUrl && (
+                  <div className="relative mb-4 w-full aspect-video">
+                    <Image
+                      src={currentQuestionToView.imageUrl}
+                      alt={t('imageAlt', { question: truncateText(currentQuestionToView.question[locale] || '', 50) })}
+                      fill
+                      className="rounded-lg object-contain"
+                    />
+                  </div>
+                )}
                 <div className="flex items-center gap-4">
                   <p><span className="font-semibold">{tForm('difficultyLabel')}:</span> {tCommon(`difficultyLevels.${currentQuestionToView.difficulty}` as any)}</p>
                   {currentQuestionToView.status && (

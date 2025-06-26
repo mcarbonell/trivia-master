@@ -326,6 +326,8 @@
     "editButton": "Editar",
     "deleteButton": "Eliminar",
     "copyIdButton": "Copiar ID",
+    "imageAvailableTooltip": "Esta pregunta tiene una imagen asociada.",
+    "imageAlt": "Imagen para la pregunta: {question}",
     "errorLoading": "Error al cargar las preguntas. Por favor, inténtalo de nuevo.",
     "paginationInfo": "{totalItems, plural, one {# pregunta} other {# preguntas}} | Página {currentPage} de {totalPages}",
     "previousPage": "Anterior",

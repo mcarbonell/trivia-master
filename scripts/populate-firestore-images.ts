@@ -6,7 +6,6 @@ import admin from 'firebase-admin';
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
 import { generateImage } from '../src/ai/flows/generate-image';
-import { updatePredefinedQuestion } from '../src/services/triviaService';
 
 // Initialize Firebase Admin SDK
 try {
@@ -114,8 +113,8 @@ async function populateImages() {
         const publicUrl = file.publicUrl();
         console.log(`  -> Image uploaded to: ${publicUrl}`);
 
-        // 5. Update Firestore document with the new URL
-        await updatePredefinedQuestion(question.id, { imageUrl: publicUrl });
+        // 5. Update Firestore document with the new URL using the admin SDK
+        await db.collection(PREDEFINED_QUESTIONS_COLLECTION).doc(question.id).update({ imageUrl: publicUrl });
         console.log(`  -> Firestore updated for question ${question.id}.`);
         successCount++;
 

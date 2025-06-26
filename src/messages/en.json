@@ -326,6 +326,8 @@
     "editButton": "Edit",
     "deleteButton": "Delete",
     "copyIdButton": "Copy ID",
+    "imageAvailableTooltip": "This question has an associated image.",
+    "imageAlt": "Image for question: {question}",
     "errorLoading": "Error loading questions. Please try again.",
     "paginationInfo": "{totalItems, plural, one {# question} other {# questions}} | Page {currentPage} of {totalPages}",
     "previousPage": "Previous",
@@ -519,12 +521,12 @@
     "reportSubmittedSuccess": "Reporte enviado correctamente. ¡Gracias!",
     "reportSubmittedError": "Error al enviar el reporte. Por favor, inténtalo de nuevo.",
     "reasons": {
-      "incorrect_info": "Información Incorrecta",
-      "poorly_worded": "Mal Redactada / Confusa",
-      "typo_grammar": "Error Tipográfico / Gramatical",
-      "duplicate_question": "Pregunta Duplicada",
-      "offensive_content": "Contenido Ofensivo",
-      "other": "Otro"
+      "incorrect_info": "Incorrect Information",
+      "poorly_worded": "Poorly Worded / Confusing",
+      "typo_grammar": "Typo / Grammatical Error",
+      "duplicate_question": "Duplicate Question",
+      "offensive_content": "Offensive Content",
+      "other": "Other"
     }
   }
 }
