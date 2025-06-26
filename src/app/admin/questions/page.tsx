@@ -402,14 +402,7 @@ export default function AdminQuestionsPage() {
     }
 
     const questionsToExport = displayQuestions.map(q => {
-      const { id, topicValue, question, correctAnswer, distractors, explanation, difficulty, hint, source, createdAt, status, imagePrompt, imageUrl } = q;
-      const exportableQuestion: any = { id, topicValue, question, correctAnswer, distractors, explanation, difficulty };
-      if (hint) exportableQuestion.hint = hint;
-      if (source) exportableQuestion.source = source;
-      if (createdAt) exportableQuestion.createdAt = createdAt;
-      if (status) exportableQuestion.status = status;
-      if (imagePrompt) exportableQuestion.imagePrompt = imagePrompt;
-      if (imageUrl) exportableQuestion.imageUrl = imageUrl;
+      const { categoryName, ...exportableQuestion } = q;
       return exportableQuestion;
     });
 

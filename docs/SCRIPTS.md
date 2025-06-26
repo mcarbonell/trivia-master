@@ -30,18 +30,18 @@ These scripts are used to import content from local JSON files into Firestore.
 
 ### 2. Import Questions (`import:questions`)
 
-- **Purpose:** Imports or updates predefined trivia questions from a specified JSON file into the `predefinedTriviaQuestions` collection in Firestore. This script now automatically converts questions from the old format (`answers`, `correctAnswerIndex`) to the new format (`correctAnswer`, `distractors`).
+- **Purpose:** Imports or updates predefined trivia questions from a specified JSON file into the `predefinedTriviaQuestions` collection in Firestore. This is useful for bulk-editing questions, such as adding `imageUrl`s.
 - **Command:** `npm run import:questions -- --source <filename_prefix>`
 - **Arguments:**
     - `--source <prefix>` (or `-s <prefix>`): **Required**. The prefix of the JSON file located in `src/data/`. For example, a source of `history-set1` will use `src/data/history-set1-questions.json`.
 - **Usage Example:**
   ```bash
-  # Import questions from src/data/science-questions.json
-  npm run import:questions -- --source science
+  # Import questions from a file you edited, e.g., src/data/famous-paintings-with-urls-questions.json
+  npm run import:questions -- --source famous-paintings-with-urls
   ```
 - **Notes:**
     - The JSON file must be an array of question objects. Each object must have a unique `id` which will be used as the document ID in Firestore.
-    - If a question with the same `id` already exists, it will be updated (`{ merge: true }`), which is useful for correcting questions exported from the admin panel.
+    - If a question with the same `id` already exists, its data will be updated/merged with the content from the file.
 
 ---
 
