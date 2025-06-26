@@ -11,7 +11,7 @@ import { Label } from "@/components/ui/label";
 import { useTranslations } from "next-intl";
 import type { CategoryDefinition } from "@/types";
 import type { AppLocale } from '@/lib/i18n-config';
-import { ArrowLeft, Loader2, Sparkles, ListChecks, Trash2 } from 'lucide-react';
+import { ArrowLeft, Loader2, Sparkles, ListChecks, Trash2, Camera } from 'lucide-react';
 import type { CustomTopicMeta } from '@/services/indexedDBService';
 import {
   AlertDialog,
@@ -117,20 +117,35 @@ export function CategorySelector({
             {t('playAllFromParentButton', { parentName: currentParent.name[currentLocale] })}
           </Button>
         )}
+        <TooltipProvider delayDuration={100}>
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
           {categoryItems.map((category) => (
-            <Button
-              key={category.topicValue}
-              variant="outline"
-              className="flex flex-col items-center justify-center h-28 p-4 hover:bg-accent hover:text-accent-foreground transition-all duration-200 group [&_svg]:h-8 [&_svg]:w-8"
-              onClick={() => onSelectCategory(category)}
-            >
-              <category.ResolvedIcon className="mb-2 text-primary group-hover:text-accent-foreground transition-colors h-8 w-8" />
-              <span className="text-sm font-medium text-center">{category.name[currentLocale]}</span>
-            </Button>
+            <div key={category.topicValue} className="relative">
+              <Button
+                variant="outline"
+                className="flex flex-col items-center justify-center h-28 p-4 hover:bg-accent hover:text-accent-foreground transition-all duration-200 group [&_svg]:h-8 [&_svg]:w-8 w-full"
+                onClick={() => onSelectCategory(category)}
+              >
+                <category.ResolvedIcon className="mb-2 text-primary group-hover:text-accent-foreground transition-colors h-8 w-8" />
+                <span className="text-sm font-medium text-center">{category.name[currentLocale]}</span>
+              </Button>
+              {category.isVisual && (
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <div className="absolute top-2 right-2 p-1 bg-primary/80 text-primary-foreground rounded-full pointer-events-none">
+                        <Camera className="h-4 w-4" />
+                      </div>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>{t('visualCategoryTooltip')}</p>
+                    </TooltipContent>
+                  </Tooltip>
+                )}
+            </div>
           ))}
         </div>
-
+        </TooltipProvider>
+        
         {!currentParent && userGeneratedCustomTopics && userGeneratedCustomTopics.length > 0 && (
           <div className="pt-4 border-t">
             <h3 className="font-semibold mb-3 text-lg text-center">{t('savedCustomTopicsTitle')}</h3>

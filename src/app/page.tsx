@@ -87,6 +87,7 @@ interface ActiveCategoryDetails {
       [key in DifficultyLevel]?: string;
   };
   isCustomActive: boolean;
+  isVisual?: boolean;
 }
 
 // Combined question type to handle both predefined and custom questions from DB
@@ -387,6 +388,7 @@ export default function TriviaPage() {
         count: 1,
         modelName: DEFAULT_MODEL_FOR_GAME,
         categoryInstructions: instructions,
+        isVisual: activeCatDetails.isVisual,
       };
       if (diffInstruction) inputForAI.difficultySpecificInstruction = diffInstruction;
 
@@ -971,10 +973,11 @@ export default function TriviaPage() {
   const localizedQuestionCardData = questionData ? {
     question: questionData.question[locale],
     answers: shuffledAnswers.map(ans => ans[locale]),
-    correctAnswerIndex: currentCorrectShuffledIndex ?? 0, // Fallback, should not happen in practice
+    correctAnswerIndex: currentCorrectShuffledIndex ?? 0, 
     explanation: questionData.explanation[locale],
     difficulty: questionData.difficulty,
     hint: questionData.hint?.[locale],
+    imageUrl: questionData.imageUrl,
   } : null;
 
 

@@ -10,6 +10,7 @@ import { cn } from "@/lib/utils";
 import { CheckCircle2, XCircle, ChevronRight, Info, Lightbulb, Clock, Flag, BarChart3 } from "lucide-react"; 
 import { useTranslations } from "next-intl";
 import { ReportQuestionDialog } from "./ReportQuestionDialog"; 
+import Image from "next/image";
 
 interface LocalizedQuestionData {
   question: string;
@@ -18,6 +19,7 @@ interface LocalizedQuestionData {
   explanation: string;
   difficulty: DifficultyLevel; 
   hint?: string;
+  imageUrl?: string;
 }
 
 interface QuestionCardProps {
@@ -56,7 +58,7 @@ export function QuestionCard({
   totalQuestionsInGame,
 }: QuestionCardProps) {
   const t = useTranslations();
-  const { question, answers, correctAnswerIndex, explanation, hint } = questionData;
+  const { question, answers, correctAnswerIndex, explanation, hint, imageUrl } = questionData;
 
   const [isHintVisible, setIsHintVisible] = useState(false);
   const [isReportDialogOpen, setIsReportDialogOpen] = useState(false);
@@ -78,7 +80,20 @@ export function QuestionCard({
 
   return (
     <>
-      <Card className="w-full shadow-xl animate-fadeIn">
+      <Card className="w-full shadow-xl animate-fadeIn group">
+        {imageUrl && (
+          <div className="relative w-full h-48 md:h-64 rounded-t-lg overflow-hidden">
+            <Image
+              src={imageUrl}
+              alt={question}
+              fill
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+              className="object-cover transition-transform duration-300 group-hover:scale-105"
+              priority={true}
+              data-ai-hint="trivia image"
+            />
+          </div>
+        )}
         <CardHeader>
           <div className="flex justify-between items-start">
             <CardTitle className="font-headline text-2xl md:text-3xl text-center text-primary flex-grow">{question}</CardTitle>
