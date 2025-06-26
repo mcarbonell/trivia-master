@@ -26,8 +26,10 @@ export const GenerateTriviaQuestionOutputSchema = z.object({
   explanation: BilingualTextSchema.describe('A brief explanation (1-2 sentences) of why the correct answer is correct, in English and Spanish.'),
   hint: BilingualTextSchema.describe('A concise hint (1 short sentence) to help the user deduce the answer without revealing it directly, in English and Spanish.'),
   difficulty: DifficultyLevelSchema,
-  imagePrompt: z.string().optional().describe('A detailed, English-only prompt for a text-to-image model to generate a relevant image.'),
-  imageUrl: z.string().optional().describe('The URL of the generated image. Should be left empty by this flow.'),
+  imagePrompt: z.string().optional().describe('For AI-generated images: A detailed, English-only prompt for a text-to-image model.'),
+  artworkTitle: z.string().optional().describe("For real artwork: The specific title of the artwork to search for (e.g., 'Mona Lisa')."),
+  artworkAuthor: z.string().optional().describe("For real artwork: The name of the artist to refine the search (e.g., 'Leonardo da Vinci')."),
+  imageUrl: z.string().optional().describe('The URL of the final image. Should be left empty by this flow.'),
 });
 
 

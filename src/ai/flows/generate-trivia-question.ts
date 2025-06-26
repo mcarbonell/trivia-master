@@ -15,7 +15,7 @@
 
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
-import { GenerateTriviaQuestionOutputSchema, DifficultyLevelSchema, type GenerateTriviaQuestionOutput } from '@/types';
+import { GenerateTriviaQuestionOutputSchema, DifficultyLevelSchema, type GenerateTriviaQuestionOutput, type BilingualText } from '@/types';
 
 const GenerateTriviaQuestionsInputSchema = z.object({
   topic: z.string().describe('The topic for the trivia question. This will be the general theme, e.g., "Science", "Movies".'),
@@ -60,15 +60,11 @@ These difficulty-specific instructions are very important for tailoring the ques
 {{/if}}
 
 {{#if isVisual}}
-This is a VISUAL category. For each question, you MUST also generate an 'imagePrompt'.
-IMAGE PROMPT GUIDELINES:
-- The 'imagePrompt' MUST be a detailed, descriptive, and unambiguous prompt in ENGLISH for a text-to-image AI model (like DALL-E or Midjourney). It should imply a **widescreen, 16:9 aspect ratio, landscape orientation**.
-- It should describe a photorealistic or artistic image that visually represents the subject of the question without giving away the answer in the image itself.
-- For accuracy, the prompt can and should contain the name of the subject. Example for 'Lion': 'A photorealistic, close-up shot of an African Lion, resting on a rock under the African sun, landscape orientation.'
-- The image itself should not contain text.
-- The 'imageUrl' field should be left empty.
+This is a VISUAL category. For each question, you MUST follow the image-related instructions in the category guidelines.
+This might require you to generate an 'imagePrompt' for an AI, OR to provide 'artworkTitle' and 'artworkAuthor' for a real artwork search.
+- For 'imagePrompt', the image itself should not contain text. The 'imageUrl' field should be left empty.
+- For 'artworkTitle' and 'artworkAuthor', be as precise as possible.
 {{/if}}
-
 
 IMPORTANT INSTRUCTIONS FOR QUESTION VARIETY:
 1. ALL questions generated in this batch MUST be SIGNIFICANTLY DIFFERENT from each other, exploring unique facts or aspects of the topic.
@@ -120,7 +116,9 @@ Each question object in the array must conform to the following structure:
   "explanation": { "en": "English Explanation", "es": "Spanish Explanation" },
   "hint": { "en": "English Hint", "es": "Spanish Hint" },
   "difficulty": "easy",
-  "imagePrompt": "A detailed English prompt for an image AI. (Omit if not a visual category)"
+  "imagePrompt": "(Omit if not applicable)",
+  "artworkTitle": "(Omit if not applicable)",
+  "artworkAuthor": "(Omit if not applicable)"
 }
 Ensure the entire response is a single JSON string like: "[ {question1_object}, {question2_object}, ... ]"
 

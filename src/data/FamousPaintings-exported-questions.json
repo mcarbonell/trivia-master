@@ -1,0 +1,2966 @@
+[
+  {
+    "id": "ErLp6BnhGHIZ1BHzzK0q",
+    "question": {
+      "es": "¿Cuál es el nombre de esta expresiva pintura de Edvard Munch, que muestra una figura gritando?",
+      "en": "What is the name of this expressive painting by Edvard Munch, showing a figure crying out?"
+    },
+    "explanation": {
+      "en": "Edvard Munch's iconic painting depicts a figure with an agonizing expression against a tumultuous sky, symbolizing modern anxiety.",
+      "es": "La icónica pintura de Edvard Munch representa una figura con una expresión de agonía contra un cielo tumultuoso, simbolizando la ansiedad moderna."
+    },
+    "difficulty": "easy",
+    "topicValue": "FamousPaintings",
+    "hint": {
+      "en": "This masterpiece by Edvard Munch is famous for its depiction of existential anguish.",
+      "es": "Esta obra maestra de Edvard Munch es famosa por su representación de la angustia existencial."
+    },
+    "createdAt": "2025-06-26T22:05:31.949Z",
+    "imagePrompt": "A high-quality, clear image of the painting \"The Scream\" by Edvard Munch.",
+    "imageUrl": "https://storage.googleapis.com/ai-trivia-master.firebasestorage.app/trivia_images%2FErLp6BnhGHIZ1BHzzK0q.png",
+    "correctAnswer": {
+      "es": "El Grito",
+      "en": "The Scream"
+    },
+    "distractors": [
+      {
+        "es": "El Beso",
+        "en": "The Kiss"
+      },
+      {
+        "es": "Guernica",
+        "en": "Guernica"
+      },
+      {
+        "en": "Composition VII",
+        "es": "Composición VII"
+      }
+    ]
+  },
+  {
+    "id": "JUEpyjzaD0S8NsiSVow5",
+    "question": {
+      "es": "¿Cuál es el nombre de esta famosa pintura de Vincent van Gogh, que representa un cielo nocturno arremolinado?",
+      "en": "What is the name of this famous painting by Vincent van Gogh, depicting a swirling night sky?"
+    },
+    "explanation": {
+      "es": "Esta obra maestra postimpresionista de Van Gogh presenta un cielo nocturno dramático y arremolinado sobre un pueblo dormido.",
+      "en": "This post-impressionist masterpiece by Van Gogh features a dramatic, swirling night sky above a sleepy village."
+    },
+    "difficulty": "easy",
+    "topicValue": "FamousPaintings",
+    "hint": {
+      "en": "It is one of Vincent van Gogh's most recognizable works, depicting a vibrant nocturnal landscape.",
+      "es": "Es una de las obras más reconocibles de Vincent van Gogh, que representa un vibrante paisaje nocturno."
+    },
+    "createdAt": "2025-06-26T22:05:31.822Z",
+    "imagePrompt": "A high-quality, clear image of the painting \"The Starry Night\" by Vincent van Gogh.",
+    "imageUrl": "https://storage.googleapis.com/ai-trivia-master.firebasestorage.app/trivia_images%2FJUEpyjzaD0S8NsiSVow5.png",
+    "correctAnswer": {
+      "es": "La Noche Estrellada",
+      "en": "The Starry Night"
+    },
+    "distractors": [
+      {
+        "en": "Café Terrace at Night",
+        "es": "Terraza de café por la noche"
+      },
+      {
+        "es": "Los Girasoles",
+        "en": "Sunflowers"
+      },
+      {
+        "es": "Lirios",
+        "en": "Irises"
+      }
+    ]
+  },
+  {
+    "id": "cCb771iCBmS5vtwpmT4C",
+    "question": {
+      "en": "What is the name of this famous landscape painting by John Constable, depicting a rural scene with a wagon?",
+      "es": "¿Cuál es el nombre de esta famosa pintura paisajística de John Constable, que representa una escena rural con un carro?"
+    },
+    "explanation": {
+      "en": "John Constable's 'The Haywain' is a celebrated English landscape painting, capturing an idyllic rural scene.",
+      "es": "'El carro de heno' de John Constable es una célebre pintura de paisaje inglesa, que captura una idílica escena rural."
+    },
+    "difficulty": "easy",
+    "topicValue": "FamousPaintings",
+    "hint": {
+      "en": "This English Romantic painter is famous for his landscapes of the English countryside, especially the Stour Valley.",
+      "es": "Este pintor romántico inglés es famoso por sus paisajes de la campiña inglesa, especialmente del valle de Stour."
+    },
+    "createdAt": "2025-06-26T22:05:33.060Z",
+    "imagePrompt": "A high-quality, clear image of the painting \"The Haywain\" by John Constable.",
+    "imageUrl": "https://storage.googleapis.com/ai-trivia-master.firebasestorage.app/trivia_images%2FcCb771iCBmS5vtwpmT4C.png",
+    "correctAnswer": {
+      "es": "El carro de heno",
+      "en": "The Haywain"
+    },
+    "distractors": [
+      {
+        "en": "The Fighting Temeraire",
+        "es": "El Temerario luchador"
+      },
+      {
+        "es": "Lluvia, vapor y velocidad – El gran ferrocarril occidental",
+        "en": "Rain, Steam and Speed – The Great Western Railway"
+      },
+      {
+        "es": "El castillo de Norham, amanecer",
+        "en": "Norham Castle, Sunrise"
+      }
+    ]
+  },
+  {
+    "id": "Adjw9QUGwwTYKnlOsUhL",
+    "question": {
+      "en": "What is the name of this famous fresco by Michelangelo on the Sistine Chapel ceiling, showing God's hand touching Adam's?",
+      "es": "¿Cuál es el nombre de este famoso fresco de Miguel Ángel en el techo de la Capilla Sixtina, que muestra la mano de Dios tocando la de Adán?"
+    },
+    "explanation": {
+      "en": "This iconic fresco by Michelangelo, found on the ceiling of the Sistine Chapel, depicts God giving life to Adam.",
+      "es": "Este icónico fresco de Miguel Ángel, que se encuentra en el techo de la Capilla Sixtina, representa a Dios dando vida a Adán."
+    },
+    "difficulty": "easy",
+    "topicValue": "FamousPaintings",
+    "hint": {
+      "en": "This renowned fresco is part of the Sistine Chapel ceiling, painted by a famous Renaissance sculptor.",
+      "es": "Este renombrado fresco forma parte del techo de la Capilla Sixtina, pintado por un famoso escultor del Renacimiento."
+    },
+    "createdAt": "2025-06-26T22:05:32.678Z",
+    "imagePrompt": "A high-quality, clear image of the painting \"The Creation of Adam\" by Michelangelo, specifically focusing on the hands.",
+    "imageUrl": "https://storage.googleapis.com/ai-trivia-master.firebasestorage.app/trivia_images%2FAdjw9QUGwwTYKnlOsUhL.png",
+    "correctAnswer": {
+      "es": "La Creación de Adán",
+      "en": "The Creation of Adam"
+    },
+    "distractors": [
+      {
+        "en": "The Last Judgment",
+        "es": "El Juicio Final"
+      },
+      {
+        "en": "The Holy Family",
+        "es": "La Sagrada Familia"
+      },
+      {
+        "en": "Pieta",
+        "es": "La Piedad"
+      }
+    ]
+  },
+  {
+    "id": "lk46oKWXpqZQw8VP1xS6",
+    "question": {
+      "en": "What is the name of this famous mural by Leonardo da Vinci depicting Jesus and his disciples?",
+      "es": "¿Cuál es el nombre de este famoso mural de Leonardo da Vinci que representa a Jesús y sus discípulos?"
+    },
+    "explanation": {
+      "es": "'La Última Cena' de Leonardo da Vinci es un mural monumental que representa la última comida de Jesús con sus apóstoles.",
+      "en": "Leonardo da Vinci's 'The Last Supper' is a monumental mural depicting Jesus's final meal with his apostles."
+    },
+    "difficulty": "easy",
+    "topicValue": "FamousPaintings",
+    "hint": {
+      "en": "This famous mural by Leonardo da Vinci is located in Milan and depicts a pivotal biblical event.",
+      "es": "Este famoso mural de Leonardo da Vinci se encuentra en Milán y representa un evento bíblico fundamental."
+    },
+    "createdAt": "2025-06-26T22:05:32.549Z",
+    "imagePrompt": "A high-quality, clear image of the painting \"The Last Supper\" by Leonardo da Vinci.",
+    "imageUrl": "https://storage.googleapis.com/ai-trivia-master.firebasestorage.app/trivia_images%2Flk46oKWXpqZQw8VP1xS6.png",
+    "correctAnswer": {
+      "es": "La Última Cena",
+      "en": "The Last Supper"
+    },
+    "distractors": [
+      {
+        "es": "La Creación de Adán",
+        "en": "The Creation of Adam"
+      },
+      {
+        "en": "Mona Lisa",
+        "es": "Mona Lisa"
+      },
+      {
+        "en": "Annunciation",
+        "es": "La Anunciación"
+      }
+    ]
+  },
+  {
+    "id": "PJcs7dK96OXie2fWJ2xD",
+    "question": {
+      "es": "¿Cuál es el nombre de la famosa pintura de Edvard Munch que muestra una figura con una expresión de agonía contra un cielo arremolinado y de color rojo sangre?",
+      "en": "What is the name of the famous Edvard Munch painting that shows a figure with an agonized expression against a swirling, blood-red sky?"
+    },
+    "explanation": {
+      "es": "'El Grito' de Edvard Munch es una imagen icónica de la angustia existencial, con cuatro versiones creadas por el artista.",
+      "en": "Edvard Munch's 'The Scream' is an iconic image of existential anguish, with four versions created by the artist."
+    },
+    "difficulty": "medium",
+    "topicValue": "FamousPaintings",
+    "hint": {
+      "es": "Esta pintura expresionista de un artista noruego representa vívidamente la ansiedad humana.",
+      "en": "This expressionist painting by a Norwegian artist vividly depicts human anxiety."
+    },
+    "createdAt": "2025-06-26T22:06:27.610Z",
+    "imagePrompt": "A high-quality, clear image of the painting 'The Scream' by Edvard Munch, in widescreen 16:9 aspect ratio.",
+    "imageUrl": "https://storage.googleapis.com/ai-trivia-master.firebasestorage.app/trivia_images%2FPJcs7dK96OXie2fWJ2xD.png",
+    "correctAnswer": {
+      "en": "The Scream",
+      "es": "El Grito"
+    },
+    "distractors": [
+      {
+        "es": "El Beso",
+        "en": "The Kiss"
+      },
+      {
+        "es": "Guernica",
+        "en": "Guernica"
+      },
+      {
+        "es": "La Noche Estrellada",
+        "en": "Starry Night"
+      }
+    ]
+  },
+  {
+    "id": "9SzC7Q8Fw5pQTiIIr7k0",
+    "question": {
+      "es": "¿Cuál es el nombre de la pintura mural de Leonardo da Vinci, alojada en el convento de Santa Maria delle Grazie en Milán, que representa a Jesús y sus discípulos?",
+      "en": "What is the name of the mural painting by Leonardo da Vinci, housed in the Santa Maria delle Grazie convent in Milan, depicting Jesus and his disciples?"
+    },
+    "explanation": {
+      "en": "Leonardo da Vinci's 'The Last Supper' is a mural painting depicting the final meal that Jesus shared with his apostles.",
+      "es": "'La Última Cena' de Leonardo da Vinci es una pintura mural que representa la última comida que Jesús compartió con sus apóstoles."
+    },
+    "difficulty": "medium",
+    "topicValue": "FamousPaintings",
+    "hint": {
+      "en": "This massive mural by Leonardo da Vinci portrays a famous biblical meal.",
+      "es": "Este enorme mural de Leonardo da Vinci retrata una famosa comida bíblica."
+    },
+    "createdAt": "2025-06-26T22:06:28.658Z",
+    "imagePrompt": "A high-quality, clear image of the painting 'The Last Supper' by Leonardo da Vinci, in widescreen 16:9 aspect ratio.",
+    "imageUrl": "https://storage.googleapis.com/ai-trivia-master.firebasestorage.app/trivia_images%2F9SzC7Q8Fw5pQTiIIr7k0.png",
+    "correctAnswer": {
+      "en": "The Last Supper",
+      "es": "La Última Cena"
+    },
+    "distractors": [
+      {
+        "es": "Mona Lisa",
+        "en": "Mona Lisa"
+      },
+      {
+        "en": "Lady with an Ermine",
+        "es": "La Dama del Armiño"
+      },
+      {
+        "es": "Hombre de Vitruvio",
+        "en": "Vitruvian Man"
+      }
+    ]
+  },
+  {
+    "id": "jbVI6nwjvzYQSLbdfrCS",
+    "question": {
+      "es": "¿Cuál es el nombre de la serie de obras de Pop Art de Andy Warhol que consta de 32 lienzos, cada uno representando una variedad diferente de un producto alimenticio común?",
+      "en": "What is the name of the series of Pop Art works by Andy Warhol featuring 32 canvases, each depicting a different variety of a common food product?"
+    },
+    "explanation": {
+      "en": "This series of silkscreen prints depicts all 32 varieties of Campbell's Soup then sold, marking a significant moment in the Pop Art movement.",
+      "es": "Esta serie de serigrafías representa las 32 variedades de sopa Campbell que se vendían entonces, marcando un momento significativo en el movimiento Pop Art."
+    },
+    "difficulty": "hard",
+    "topicValue": "FamousPaintings",
+    "hint": {
+      "en": "This iconic Pop Art series features repeated images of a ubiquitous household product.",
+      "es": "Esta icónica serie de Pop Art presenta imágenes repetidas de un producto doméstico omnipresente."
+    },
+    "createdAt": "2025-06-26T22:07:30.166Z",
+    "imagePrompt": "A high-quality, clear image of the series of paintings \"Campbell's Soup Cans\" by Andy Warhol, showing multiple cans, widescreen, 16:9 aspect ratio, landscape orientation.",
+    "imageUrl": "https://storage.googleapis.com/ai-trivia-master.firebasestorage.app/trivia_images%2FjbVI6nwjvzYQSLbdfrCS.png",
+    "correctAnswer": {
+      "en": "Campbell's Soup Cans",
+      "es": "Latas de sopa Campbell"
+    },
+    "distractors": [
+      {
+        "es": "Díptico de Marilyn",
+        "en": "Marilyn Diptych"
+      },
+      {
+        "en": "Eight Elvises",
+        "es": "Ocho Elvises"
+      },
+      {
+        "es": "Mao",
+        "en": "Mao"
+      }
+    ]
+  },
+  {
+    "id": "J19Wvr7cAmOIvAk6sA8w",
+    "question": {
+      "es": "¿Cuál es el título colectivo de la serie de pinturas serigrafiadas de Andy Warhol de 1962, que representa 32 lienzos de un popular producto alimenticio enlatado?",
+      "en": "What is the collective title of Andy Warhol's 1962 series of silkscreen paintings, depicting 32 canvases of a popular canned food product?"
+    },
+    "explanation": {
+      "en": "Andy Warhol's 'Campbell's Soup Cans' series consists of 32 canvases, each depicting a different flavor of Campbell's soup.",
+      "es": "La serie 'Latas de sopa Campbell' de Andy Warhol consta de 32 lienzos, cada uno representando un sabor diferente de sopa Campbell."
+    },
+    "difficulty": "medium",
+    "topicValue": "FamousPaintings",
+    "hint": {
+      "es": "Esta serie de Arte Pop de Andy Warhol convirtió un producto de consumo diario en alta cultura.",
+      "en": "This Pop Art series by Andy Warhol turned an everyday consumer product into high art."
+    },
+    "createdAt": "2025-06-26T22:06:28.695Z",
+    "imagePrompt": "A high-quality, clear image of the painting 'Campbell's Soup Cans' by Andy Warhol, in widescreen 16:9 aspect ratio.",
+    "imageUrl": "https://storage.googleapis.com/ai-trivia-master.firebasestorage.app/trivia_images%2FJ19Wvr7cAmOIvAk6sA8w.png",
+    "correctAnswer": {
+      "es": "Latas de sopa Campbell",
+      "en": "Campbell's Soup Cans"
+    },
+    "distractors": [
+      {
+        "en": "Marilyn Diptych",
+        "es": "Díptico de Marilyn"
+      },
+      {
+        "es": "Arte Pop",
+        "en": "Pop Art"
+      },
+      {
+        "es": "Treinta son mejor que uno",
+        "en": "Thirty Are Better Than One"
+      }
+    ]
+  },
+  {
+    "id": "yjBuoQ83DO2qJPYlRPXN",
+    "question": {
+      "es": "¿Cuál es el título común de la pintura de James McNeill Whistler de su madre sentada de perfil?",
+      "en": "What is the common title of James McNeill Whistler's painting of his mother sitting in profile?"
+    },
+    "explanation": {
+      "en": "James McNeill Whistler's 'Arrangement in Grey and Black No. 1,' commonly known as 'Whistler's Mother,' is an iconic portrait.",
+      "es": "'Arreglo en gris y negro n.º 1' de James McNeill Whistler, comúnmente conocida como 'La madre de Whistler', es un retrato icónico."
+    },
+    "difficulty": "easy",
+    "topicValue": "FamousPaintings",
+    "hint": {
+      "es": "La obra más famosa de este artista estadounidense expatriado es un retrato austero de su anciana madre.",
+      "en": "This American expatriate artist's most famous work is a stark portrait of his elderly mother."
+    },
+    "createdAt": "2025-06-26T22:05:32.904Z",
+    "imagePrompt": "A high-quality, clear image of the painting \"Arrangement in Grey and Black No. 1\" (Whistler's Mother) by James McNeill Whistler.",
+    "imageUrl": "https://storage.googleapis.com/ai-trivia-master.firebasestorage.app/trivia_images%2FyjBuoQ83DO2qJPYlRPXN.png",
+    "correctAnswer": {
+      "en": "Whistler's Mother",
+      "es": "La madre de Whistler"
+    },
+    "distractors": [
+      {
+        "en": "American Gothic",
+        "es": "Gótico americano"
+      },
+      {
+        "es": "El tres de mayo de 1808",
+        "en": "The Third of May 1808"
+      },
+      {
+        "es": "La joven de la perla",
+        "en": "Girl with a Pearl Earring"
+      }
+    ]
+  },
+  {
+    "id": "x9Cx6HVy8lwMWCiazfGo",
+    "question": {
+      "en": "What is the common title of James McNeill Whistler's famous portrait of his mother, formally known as 'Arrangement in Grey and Black No. 1'?",
+      "es": "¿Cuál es el título común del famoso retrato de James McNeill Whistler de su madre, formalmente conocido como 'Arreglo en gris y negro n.º 1'?"
+    },
+    "explanation": {
+      "es": "Formalmente titulado 'Arreglo en gris y negro n.º 1', 'La madre de Whistler' es un retrato icónico de la madre del artista James McNeill Whistler.",
+      "en": "Formally titled 'Arrangement in Grey and Black No. 1', 'Whistler's Mother' is an iconic portrait of artist James McNeill Whistler's mother."
+    },
+    "difficulty": "medium",
+    "topicValue": "FamousPaintings",
+    "hint": {
+      "es": "Esta icónica pintura estadounidense es un retrato de la anciana madre del artista.",
+      "en": "This iconic American painting is a portrait of the artist's elderly mother."
+    },
+    "createdAt": "2025-06-26T22:06:28.540Z",
+    "imagePrompt": "A high-quality, clear image of the painting 'Whistler's Mother' by James McNeill Whistler, in widescreen 16:9 aspect ratio.",
+    "imageUrl": "https://storage.googleapis.com/ai-trivia-master.firebasestorage.app/trivia_images%2Fx9Cx6HVy8lwMWCiazfGo.png",
+    "correctAnswer": {
+      "en": "Whistler's Mother",
+      "es": "La madre de Whistler"
+    },
+    "distractors": [
+      {
+        "en": "The Artist's Mother",
+        "es": "La madre del artista"
+      },
+      {
+        "en": "Arrangement in Grey and Red",
+        "es": "Arreglo en gris y rojo"
+      },
+      {
+        "es": "Mujer de blanco",
+        "en": "Woman in White"
+      }
+    ]
+  },
+  {
+    "id": "z1r8Dhr8qCdhEv7WXDTX",
+    "question": {
+      "en": "What is the title of this famous post-impressionist painting featuring a dramatic night sky with a prominent cypress tree?",
+      "es": "¿Cuál es el título de esta famosa pintura postimpresionista que presenta un cielo nocturno dramático con un ciprés prominente?"
+    },
+    "explanation": {
+      "es": "Pintada por Vincent van Gogh, 'La Noche Estrellada' representa la vista desde la ventana de su habitación en el manicomio de Saint-Rémy-de-Provence, justo antes del amanecer, con la adición de un pueblo imaginario.",
+      "en": "Painted by Vincent van Gogh, 'The Starry Night' depicts the view from his asylum room window at Saint-Rémy-de-Provence, just before sunrise, with the addition of an imaginary village."
+    },
+    "difficulty": "medium",
+    "topicValue": "FamousPaintings",
+    "hint": {
+      "en": "This painting by a Dutch artist is famous for its swirling sky and prominent cypress tree.",
+      "es": "Esta pintura de un artista holandés es famosa por su cielo arremolinado y su prominente ciprés."
+    },
+    "createdAt": "2025-06-26T22:06:27.483Z",
+    "imagePrompt": "A high-quality, clear image of the painting 'The Starry Night' by Vincent van Gogh, in widescreen 16:9 aspect ratio.",
+    "imageUrl": "https://storage.googleapis.com/ai-trivia-master.firebasestorage.app/trivia_images%2Fz1r8Dhr8qCdhEv7WXDTX.png",
+    "correctAnswer": {
+      "en": "The Starry Night",
+      "es": "La Noche Estrellada"
+    },
+    "distractors": [
+      {
+        "en": "Impression, Sunrise",
+        "es": "Impresión, Sol Naciente"
+      },
+      {
+        "en": "The Scream",
+        "es": "El Grito"
+      },
+      {
+        "es": "Terraza de café por la noche",
+        "en": "Café Terrace at Night"
+      }
+    ]
+  },
+  {
+    "id": "9tTQW1vp5UHVXvEkWi8V",
+    "question": {
+      "es": "¿Cuál es el título de la famosa escultura de mármol de Auguste Rodin que representa a una pareja en un apasionado abrazo, inspirada en el Infierno de Dante?",
+      "en": "What is the title of Auguste Rodin's famous marble sculpture depicting a couple locked in a passionate embrace, inspired by Dante's Inferno?"
+    },
+    "explanation": {
+      "es": "Francesca da Rimini y Paolo Malatesta son figuras del Infierno de Dante Alighieri, famosos por su trágica historia de amor.",
+      "en": "Francesca da Rimini and Paolo Malatesta are figures from Dante Alighieri's Inferno, famous for their tragic love affair."
+    },
+    "difficulty": "medium",
+    "topicValue": "FamousPaintings",
+    "hint": {
+      "en": "This famous sculpture by Auguste Rodin depicts a passionate embrace between two figures from Dante's Inferno.",
+      "es": "Esta famosa escultura de Auguste Rodin representa un abrazo apasionado entre dos figuras del Infierno de Dante."
+    },
+    "createdAt": "2025-06-26T22:06:28.624Z",
+    "imagePrompt": "A high-quality, clear image of the sculpture 'The Kiss' by Auguste Rodin, in widescreen 16:9 aspect ratio.",
+    "imageUrl": "https://storage.googleapis.com/ai-trivia-master.firebasestorage.app/trivia_images%2F9tTQW1vp5UHVXvEkWi8V.png",
+    "correctAnswer": {
+      "en": "The Kiss",
+      "es": "El Beso"
+    },
+    "distractors": [
+      {
+        "es": "La Noche Estrellada",
+        "en": "The Starry Night"
+      },
+      {
+        "en": "The Scream",
+        "es": "El Grito"
+      },
+      {
+        "en": "The Persistence of Memory",
+        "es": "La Persistencia de la Memoria"
+      }
+    ]
+  },
+  {
+    "id": "T25mIHJlHUdKI1IVaxuP",
+    "question": {
+      "es": "¿Cuál es el título de la famosa pintura a gran escala de Georges Seurat, un ejemplo destacado del Puntillismo, que representa a personas relajándose en un parque?",
+      "en": "What is the title of Georges Seurat's famous large-scale painting, a leading example of Pointillism, depicting people relaxing in a park?"
+    },
+    "explanation": {
+      "es": "La obra maestra de Georges Seurat es un ejemplo principal del Puntillismo, una técnica de pintura que utiliza pequeños y distintos puntos de color.",
+      "en": "Georges Seurat's masterpiece is a leading example of Pointillism, a technique of painting using small, distinct dots of color."
+    },
+    "difficulty": "medium",
+    "topicValue": "FamousPaintings",
+    "hint": {
+      "es": "Esta famosa pintura de Georges Seurat representa a parisinos relajándose junto al Sena utilizando una técnica única basada en puntos.",
+      "en": "This famous painting by Georges Seurat depicts Parisians relaxing by the Seine using a unique dot-based technique."
+    },
+    "createdAt": "2025-06-26T22:06:27.921Z",
+    "imagePrompt": "A high-quality, clear image of the painting 'A Sunday Afternoon on the Island of La Grande Jatte' by Georges Seurat, in widescreen 16:9 aspect ratio.",
+    "imageUrl": "https://storage.googleapis.com/ai-trivia-master.firebasestorage.app/trivia_images%2FT25mIHJlHUdKI1IVaxuP.png",
+    "correctAnswer": {
+      "es": "Tarde de domingo en la isla de la Grande Jatte",
+      "en": "A Sunday Afternoon on the Island of La Grande Jatte"
+    },
+    "distractors": [
+      {
+        "es": "Baile en el Moulin de la Galette",
+        "en": "Bal du moulin de la Galette"
+      },
+      {
+        "es": "Las Bañistas",
+        "en": "The Bathers"
+      },
+      {
+        "es": "Desayuno sobre la hierba",
+        "en": "Breakfast in the Grass"
+      }
+    ]
+  },
+  {
+    "id": "oaJPCNLn4cOfnGhPkA4n",
+    "question": {
+      "es": "¿Cuál es el título de la famosa pintura al temple de Sandro Botticelli que representa a la diosa Venus emergiendo del mar?",
+      "en": "What is the title of Sandro Botticelli's famous tempera painting depicting the goddess Venus emerging from the sea?"
+    },
+    "explanation": {
+      "es": "'El Nacimiento de Venus' de Sandro Botticelli representa a la diosa Venus llegando a la orilla después de su nacimiento, emergiendo del mar completamente desarrollada.",
+      "en": "Sandro Botticelli's 'The Birth of Venus' depicts the goddess Venus arriving at shore after her birth, emerging from the sea fully grown."
+    },
+    "difficulty": "medium",
+    "topicValue": "FamousPaintings",
+    "hint": {
+      "en": "This large-scale Renaissance painting depicts a mythical scene of a goddess emerging from the sea.",
+      "es": "Esta pintura renacentista de gran escala representa una escena mítica de una diosa emergiendo del mar."
+    },
+    "createdAt": "2025-06-26T22:06:27.779Z",
+    "imagePrompt": "A high-quality, clear image of the painting 'The Birth of Venus' by Sandro Botticelli, in widescreen 16:9 aspect ratio.",
+    "imageUrl": "",
+    "correctAnswer": {
+      "en": "The Birth of Venus",
+      "es": "El Nacimiento de Venus"
+    },
+    "distractors": [
+      {
+        "es": "Primavera",
+        "en": "Primavera"
+      },
+      {
+        "es": "La Primavera",
+        "en": "La Primavera"
+      },
+      {
+        "es": "Venus y Marte",
+        "en": "Venus and Mars"
+      }
+    ]
+  },
+  {
+    "id": "79ae6OfK1RNzFvrjVNwo",
+    "question": {
+      "es": "¿Cuál es el título de la famosa pintura de Edvard Munch que representa a una figura sujetándose la cabeza y gritando?",
+      "en": "What is the title of the famous painting by Edvard Munch depicting a figure holding their head and screaming?"
+    },
+    "explanation": {
+      "en": "Edvard Munch's iconic painting exists in several versions and depicts a figure with an agonizing expression against a tumultuous sky.",
+      "es": "La icónica pintura de Edvard Munch existe en varias versiones y representa una figura con una expresión de agonía contra un cielo tumultuoso."
+    },
+    "difficulty": "easy",
+    "topicValue": "FamousPaintings",
+    "hint": {
+      "en": "This famous Expressionist painting by Edvard Munch evokes a feeling of anxiety and despair.",
+      "es": "Esta famosa pintura expresionista de Edvard Munch evoca una sensación de ansiedad y desesperación."
+    },
+    "createdAt": "2025-06-26T22:05:32.789Z",
+    "imagePrompt": "A high-quality, clear image of the painting \"The Scream\" by Edvard Munch, a version showing the bridge and two figures.",
+    "imageUrl": "https://storage.googleapis.com/ai-trivia-master.firebasestorage.app/trivia_images%2F79ae6OfK1RNzFvrjVNwo.png",
+    "correctAnswer": {
+      "en": "The Scream",
+      "es": "El Grito"
+    },
+    "distractors": [
+      {
+        "en": "The Wanderer Above the Sea of Fog",
+        "es": "El caminante sobre el mar de nubes"
+      },
+      {
+        "es": "El Beso",
+        "en": "The Kiss"
+      },
+      {
+        "es": "Noche estrellada sobre el Ródano",
+        "en": "Starry Night Over the Rhone"
+      }
+    ]
+  },
+  {
+    "id": "BRBxlXCQBKTINWftHBQX",
+    "question": {
+      "es": "¿Cuál es el título de la famosa pintura de Eugène Delacroix que simboliza la Revolución de Julio de 1830?",
+      "en": "What is the title of Eugène Delacroix's famous painting symbolizing the July Revolution of 1830?"
+    },
+    "explanation": {
+      "es": "'La Libertad guiando al pueblo' de Eugène Delacroix conmemora la Revolución de Julio de 1830 en Francia, un símbolo de libertad.",
+      "en": "Eugène Delacroix's 'Liberty Leading the People' commemorates the July Revolution of 1830 in France, a symbol of freedom."
+    },
+    "difficulty": "easy",
+    "topicValue": "FamousPaintings",
+    "hint": {
+      "es": "Esta icónica pintura romántica francesa presenta a una mujer con el pecho desnudo sosteniendo una bandera y liderando a los revolucionarios.",
+      "en": "This iconic French Romantic painting features a bare-breasted woman holding a flag and leading revolutionaries."
+    },
+    "createdAt": "2025-06-26T22:05:33.119Z",
+    "imagePrompt": "A high-quality, clear image of the painting \"Liberty Leading the People\" by Eugène Delacroix.",
+    "imageUrl": "",
+    "correctAnswer": {
+      "en": "Liberty Leading the People",
+      "es": "La Libertad guiando al pueblo"
+    },
+    "distractors": [
+      {
+        "es": "La balsa de la Medusa",
+        "en": "The Raft of the Medusa"
+      },
+      {
+        "es": "La muerte de Sardanápalo",
+        "en": "The Death of Sardanapalus"
+      },
+      {
+        "es": "Napoleón cruzando los Alpes",
+        "en": "Napoleon Crossing the Alps"
+      }
+    ]
+  },
+  {
+    "id": "rGoDI96znEV1Iw9rjMkF",
+    "question": {
+      "es": "¿Cuál es el título de la famosa pintura de Sandro Botticelli que representa a una diosa llegando en una concha de mar?",
+      "en": "What is the title of Sandro Botticelli's famous painting depicting a goddess arriving on a seashell?"
+    },
+    "explanation": {
+      "es": "'El nacimiento de Venus' de Sandro Botticelli es una obra maestra del Renacimiento temprano, que representa a la diosa Venus llegando a la orilla.",
+      "en": "Sandro Botticelli's 'The Birth of Venus' is a masterpiece of the early Renaissance, depicting the goddess Venus arriving on shore."
+    },
+    "difficulty": "easy",
+    "topicValue": "FamousPaintings",
+    "hint": {
+      "es": "Esta obra icónica de Botticelli muestra a una diosa emergiendo del mar sobre una concha.",
+      "en": "This iconic work by Botticelli shows a goddess emerging from the sea on a shell."
+    },
+    "createdAt": "2025-06-26T22:05:32.205Z",
+    "imagePrompt": "A high-quality, clear image of the painting \"The Birth of Venus\" by Sandro Botticelli.",
+    "imageUrl": "",
+    "correctAnswer": {
+      "es": "El nacimiento de Venus",
+      "en": "The Birth of Venus"
+    },
+    "distractors": [
+      {
+        "en": "Primavera",
+        "es": "La Primavera"
+      },
+      {
+        "en": "Annunciation",
+        "es": "La Anunciación"
+      },
+      {
+        "es": "Adoración de los Magos",
+        "en": "Adoration of the Magi"
+      }
+    ]
+  },
+  {
+    "id": "n3p0bfrW7wvxWZnjwMlQ",
+    "question": {
+      "es": "¿Cuál es el título de la famosa pintura realista de Andrew Wyeth de 1948 que representa a una mujer tendida en un campo árido mirando hacia una granja distante?",
+      "en": "What is the title of Andrew Wyeth's famous 1948 realist painting depicting a woman lying in a parched field looking up at a distant farm house?"
+    },
+    "explanation": {
+      "es": "'El mundo de Christina' de Andrew Wyeth es una pintura realista que muestra a una joven, afectada por la polio, mirando una granja distante, encarnando temas de anhelo y resiliencia.",
+      "en": "Andrew Wyeth's 'Christina's World' is a realist painting showing a young woman, afflicted by polio, gazing at a distant farmhouse, embodying themes of longing and resilience."
+    },
+    "difficulty": "medium",
+    "topicValue": "FamousPaintings",
+    "hint": {
+      "es": "Esta pintura realista estadounidense representa a una mujer tumbada en un campo mirando hacia una casa distante.",
+      "en": "This American realist painting depicts a woman lying in a field looking towards a distant house."
+    },
+    "createdAt": "2025-06-26T22:06:28.313Z",
+    "imagePrompt": "A high-quality, clear image of the painting 'Christina's World' by Andrew Wyeth, in widescreen 16:9 aspect ratio.",
+    "imageUrl": "https://storage.googleapis.com/ai-trivia-master.firebasestorage.app/trivia_images%2Fn3p0bfrW7wvxWZnjwMlQ.png",
+    "correctAnswer": {
+      "en": "Christina's World",
+      "es": "El mundo de Christina"
+    },
+    "distractors": [
+      {
+        "en": "Office at Night",
+        "es": "Oficina de noche"
+      },
+      {
+        "es": "Invierno",
+        "en": "Winter"
+      },
+      {
+        "en": "Light at Two Lights",
+        "es": "Luz en Two Lights"
+      }
+    ]
+  },
+  {
+    "id": "jX7xYawONDqPmdaY7Tbe",
+    "question": {
+      "es": "¿Cuál es el título de la famosa pintura romántica de Caspar David Friedrich que presenta a un hombre en un precipicio rocoso?",
+      "en": "What is the title of Caspar David Friedrich's famous Romantic painting featuring a man on a rocky precipice?"
+    },
+    "explanation": {
+      "es": "'El caminante sobre el mar de nubes' de Caspar David Friedrich es una obra icónica del Romanticismo alemán, que simboliza la contemplación.",
+      "en": "Caspar David Friedrich's 'Wanderer Above the Sea of Fog' is an iconic work of German Romanticism, symbolizing contemplation."
+    },
+    "difficulty": "easy",
+    "topicValue": "FamousPaintings",
+    "hint": {
+      "en": "This German Romantic painter is known for his atmospheric landscapes featuring lone figures facing grand natural vistas.",
+      "es": "Este pintor romántico alemán es conocido por sus paisajes atmosféricos que presentan figuras solitarias frente a grandes vistas naturales."
+    },
+    "createdAt": "2025-06-26T22:05:33.012Z",
+    "imagePrompt": "A high-quality, clear image of the painting \"Wanderer Above the Sea of Fog\" by Caspar David Friedrich.",
+    "imageUrl": "https://storage.googleapis.com/ai-trivia-master.firebasestorage.app/trivia_images%2FjX7xYawONDqPmdaY7Tbe.png",
+    "correctAnswer": {
+      "es": "El caminante sobre el mar de nubes",
+      "en": "Wanderer Above the Sea of Fog"
+    },
+    "distractors": [
+      {
+        "en": "The Monk by the Sea",
+        "es": "El monje a la orilla del mar"
+      },
+      {
+        "es": "Abadía en el robledal",
+        "en": "Abbey in the Oak Forest"
+      },
+      {
+        "en": "Chalk Cliffs on Rügen",
+        "es": "Acantilados blancos de Rügen"
+      }
+    ]
+  },
+  {
+    "id": "8a5gc4uToSD5m5HaeuOS",
+    "question": {
+      "en": "What is the title of Edward Hopper's iconic 1942 oil on canvas painting, depicting people in a downtown diner late at night?",
+      "es": "¿Cuál es el título de la icónica pintura al óleo sobre lienzo de Edward Hopper de 1942, que representa a personas en una cafetería del centro a altas horas de la noche?"
+    },
+    "explanation": {
+      "es": "'Nighthawks' de Edward Hopper representa una escena nocturna en una cafetería del centro, evocando sentimientos de aislamiento y soledad urbana.",
+      "en": "Edward Hopper's 'Nighthawks' depicts a late-night scene at a downtown diner, evoking feelings of isolation and urban loneliness."
+    },
+    "difficulty": "medium",
+    "topicValue": "FamousPaintings",
+    "hint": {
+      "es": "Esta pintura realista estadounidense retrata una desolada escena de cafetería nocturna, famosa por su atmósfera de aislamiento urbano.",
+      "en": "This American Realist painting portrays a desolate late-night diner scene, famous for its mood of urban isolation."
+    },
+    "createdAt": "2025-06-26T22:06:28.261Z",
+    "imagePrompt": "A high-quality, clear image of the painting 'Nighthawks' by Edward Hopper, in widescreen 16:9 aspect ratio.",
+    "imageUrl": "https://storage.googleapis.com/ai-trivia-master.firebasestorage.app/trivia_images%2F8a5gc4uToSD5m5HaeuOS.png",
+    "correctAnswer": {
+      "es": "Nighthawks",
+      "en": "Nighthawks"
+    },
+    "distractors": [
+      {
+        "en": "Automat",
+        "es": "Automat"
+      },
+      {
+        "en": "Gas",
+        "es": "Gas"
+      },
+      {
+        "en": "Chop Suey",
+        "es": "Chop Suey"
+      }
+    ]
+  },
+  {
+    "id": "FS1bMXfzcZ6udE7JqfJn",
+    "question": {
+      "es": "¿Cuál es el título de la icónica pintura de Eugène Delacroix que representa a Lady Libertad guiando a los revolucionarios sobre una barricada?",
+      "en": "What is the title of Eugène Delacroix's iconic painting depicting Lady Liberty leading revolutionaries over a barricade?"
+    },
+    "explanation": {
+      "en": "Eugène Delacroix's 'Liberty Leading the People' commemorates the July Revolution of 1830, which overthrew King Charles X of France.",
+      "es": "'La Libertad guiando al pueblo' de Eugène Delacroix conmemora la Revolución de Julio de 1830, que derrocó al Rey Carlos X de Francia."
+    },
+    "difficulty": "medium",
+    "topicValue": "FamousPaintings",
+    "hint": {
+      "en": "This Romantic painting by a French artist symbolizes the July Revolution and features a bare-breasted woman holding a flag.",
+      "es": "Esta pintura romántica de un artista francés simboliza la Revolución de Julio y presenta a una mujer con el pecho descubierto sosteniendo una bandera."
+    },
+    "createdAt": "2025-06-26T22:06:28.091Z",
+    "imagePrompt": "A high-quality, clear image of the painting 'Liberty Leading the People' by Eugène Delacroix, in widescreen 16:9 aspect ratio.",
+    "imageUrl": "https://storage.googleapis.com/ai-trivia-master.firebasestorage.app/trivia_images%2FFS1bMXfzcZ6udE7JqfJn.png",
+    "correctAnswer": {
+      "en": "Liberty Leading the People",
+      "es": "La Libertad guiando al pueblo"
+    },
+    "distractors": [
+      {
+        "en": "The Raft of the Medusa",
+        "es": "La balsa de la Medusa"
+      },
+      {
+        "en": "The Third of May 1808",
+        "es": "El tres de mayo de 1808"
+      },
+      {
+        "en": "The Barque of Dante",
+        "es": "La barca de Dante"
+      }
+    ]
+  },
+  {
+    "id": "VAykfCZoXLY7MKoCuaSr",
+    "question": {
+      "en": "What is the title of Grant Wood's iconic painting of a farmer and a woman in front of a house?",
+      "es": "¿Cuál es el título de la icónica pintura de Grant Wood de un granjero y una mujer frente a una casa?"
+    },
+    "explanation": {
+      "en": "Grant Wood's 'American Gothic' is a recognizable depiction of rural American life during the Great Depression.",
+      "es": "'Gótico americano' de Grant Wood es una representación reconocible de la vida rural estadounidense durante la Gran Depresión."
+    },
+    "difficulty": "easy",
+    "topicValue": "FamousPaintings",
+    "hint": {
+      "en": "This Grant Wood painting features a stern-faced farmer and a woman standing in front of a house.",
+      "es": "Esta pintura de Grant Wood presenta a un granjero y una mujer de semblante severo de pie frente a una casa."
+    },
+    "createdAt": "2025-06-26T22:05:32.260Z",
+    "imagePrompt": "A high-quality, clear image of the painting \"American Gothic\" by Grant Wood.",
+    "imageUrl": "https://storage.googleapis.com/ai-trivia-master.firebasestorage.app/trivia_images%2FVAykfCZoXLY7MKoCuaSr.png",
+    "correctAnswer": {
+      "en": "American Gothic",
+      "es": "Gótico americano"
+    },
+    "distractors": [
+      {
+        "en": "Nighthawks",
+        "es": "Noctámbulos"
+      },
+      {
+        "en": "Christina's World",
+        "es": "El mundo de Christina"
+      },
+      {
+        "es": "El hijo del hombre",
+        "en": "The Son of Man"
+      }
+    ]
+  },
+  {
+    "id": "rapMfgac0GIc7mLk9k4J",
+    "question": {
+      "en": "What is the title of Francisco Goya's disturbing 1819-1823 painting depicting the mythological god Cronus eating one of his offspring?",
+      "es": "¿Cuál es el título de la perturbadora pintura de Francisco Goya de 1819-1823 que representa al dios mitológico Cronos comiendo a uno de sus descendientes?"
+    },
+    "explanation": {
+      "en": "Part of Goya's 'Black Paintings' series, 'Saturn Devouring His Son' depicts the gruesome myth of the Titan god Cronus (Saturn) eating his children to prevent a prophecy.",
+      "es": "Parte de la serie 'Pinturas Negras' de Goya, 'Saturno devorando a su hijo' representa el macabro mito del dios Titán Cronos (Saturno) comiendo a sus hijos para evitar una profecía."
+    },
+    "difficulty": "medium",
+    "topicValue": "FamousPaintings",
+    "hint": {
+      "es": "Esta pintura mitológica oscura y perturbadora es una de las 'Pinturas Negras' de Francisco Goya.",
+      "en": "This dark and disturbing mythological painting is one of Francisco Goya's 'Black Paintings'."
+    },
+    "createdAt": "2025-06-26T22:06:28.453Z",
+    "imagePrompt": "A high-quality, clear image of the painting 'Saturn Devouring His Son' by Francisco Goya, in widescreen 16:9 aspect ratio.",
+    "imageUrl": "",
+    "correctAnswer": {
+      "es": "Saturno devorando a su hijo",
+      "en": "Saturn Devouring His Son"
+    },
+    "distractors": [
+      {
+        "es": "El sueño de la razón produce monstruos",
+        "en": "The Sleep of Reason Produces Monsters"
+      },
+      {
+        "es": "El Coloso",
+        "en": "The Colossus"
+      },
+      {
+        "en": "The Third of May 1808",
+        "es": "El tres de mayo de 1808"
+      }
+    ]
+  },
+  {
+    "id": "9LbVXEbKdnw2Ha6UsXhx",
+    "question": {
+      "es": "¿Cuál es el título de la pintura al óleo de Jan van Eyck de 1434, famosa por su realismo detallado y simbolismo, que representa a un rico mercader y su esposa?",
+      "en": "What is the title of Jan van Eyck's 1434 oil painting, famous for its detailed realism and symbolism, depicting a wealthy merchant and his wife?"
+    },
+    "explanation": {
+      "en": "Jan van Eyck's 'The Arnolfini Portrait' is a groundbreaking work of the Northern Renaissance, rich in symbolism and depicting a wealthy merchant and his wife.",
+      "es": "'El retrato de Giovanni Arnolfini y su esposa' de Jan van Eyck es una obra innovadora del Renacimiento del Norte, rica en simbolismo y que representa a un rico mercader y su esposa."
+    },
+    "difficulty": "medium",
+    "topicValue": "FamousPaintings",
+    "hint": {
+      "en": "This 15th-century Flemish oil painting by Jan van Eyck is notable for its intricate detail and hidden symbolism.",
+      "es": "Esta pintura flamenca al óleo del siglo XV de Jan van Eyck es notable por su intrincado detalle y simbolismo oculto."
+    },
+    "createdAt": "2025-06-26T22:06:28.170Z",
+    "imagePrompt": "A high-quality, clear image of the painting 'The Arnolfini Portrait' by Jan van Eyck, in widescreen 16:9 aspect ratio.",
+    "imageUrl": "https://storage.googleapis.com/ai-trivia-master.firebasestorage.app/trivia_images%2F9LbVXEbKdnw2Ha6UsXhx.png",
+    "correctAnswer": {
+      "en": "The Arnolfini Portrait",
+      "es": "El retrato de Giovanni Arnolfini y su esposa"
+    },
+    "distractors": [
+      {
+        "es": "Los Embajadores",
+        "en": "The Ambassadors"
+      },
+      {
+        "en": "Mérode Altarpiece",
+        "es": "Retablo de Mérode"
+      },
+      {
+        "en": "The Garden of Earthly Delights",
+        "es": "El jardín de las delicias"
+      }
+    ]
+  },
+  {
+    "id": "QULuoUxbJYya8edizjqj",
+    "question": {
+      "en": "What is the title of Gustav Klimt's most famous painting, depicting a couple locked in an embrace on a field of flowers?",
+      "es": "¿Cuál es el título de la pintura más famosa de Gustav Klimt, que representa a una pareja abrazándose en un campo de flores?"
+    },
+    "explanation": {
+      "es": "'El Beso' es una obra significativa del 'Período Dorado' de Klimt, notable por su uso de pan de oro y patrones intrincados.",
+      "en": "'The Kiss' is a significant work from Klimt's 'Golden Period', notable for its use of gold leaf and intricate patterns."
+    },
+    "difficulty": "medium",
+    "topicValue": "FamousPaintings",
+    "hint": {
+      "en": "This iconic painting by an Austrian Symbolist artist features a couple embracing, covered in gold leaf.",
+      "es": "Esta pintura icónica de un artista simbolista austriaco presenta a una pareja abrazándose, cubierta con pan de oro."
+    },
+    "createdAt": "2025-06-26T22:06:28.489Z",
+    "imagePrompt": "A high-quality, clear image of the painting 'The Kiss' by Gustav Klimt, in widescreen 16:9 aspect ratio.",
+    "imageUrl": "https://storage.googleapis.com/ai-trivia-master.firebasestorage.app/trivia_images%2FQULuoUxbJYya8edizjqj.png",
+    "correctAnswer": {
+      "en": "The Kiss",
+      "es": "El Beso"
+    },
+    "distractors": [
+      {
+        "es": "El Grito",
+        "en": "The Scream"
+      },
+      {
+        "es": "Judith y la cabeza de Holofernes",
+        "en": "Judith and the Head of Holofernes"
+      },
+      {
+        "es": "Adele Bloch-Bauer I",
+        "en": "Adele Bloch-Bauer I"
+      }
+    ]
+  },
+  {
+    "id": "jUH2bDR4VnhZMKqbWcS3",
+    "question": {
+      "es": "¿Cuál es el título popular de la icónica pintura de Rembrandt van Rijn de 1642, formalmente conocida como 'Compañía de milicia del Distrito II bajo el mando del Capitán Frans Banninck Cocq'?",
+      "en": "What is the popular title of Rembrandt van Rijn's iconic 1642 painting, formally known as 'Militia Company of District II under the Command of Captain Frans Banninck Cocq'?"
+    },
+    "explanation": {
+      "es": "'La ronda de noche' de Rembrandt van Rijn es celebrada por su uso dramático de la luz y la sombra, y su composición dinámica, representando a una compañía de milicia cívica.",
+      "en": "Rembrandt van Rijn's 'The Night Watch' is celebrated for its dramatic use of light and shadow, and its dynamic composition, depicting a civic militia company."
+    },
+    "difficulty": "medium",
+    "topicValue": "FamousPaintings",
+    "hint": {
+      "en": "This massive group portrait by a Dutch Master is famous for its lively depiction of a militia and dramatic lighting.",
+      "es": "Este enorme retrato de grupo de un Maestro holandés es famoso por su vívida representación de una milicia y su iluminación dramática."
+    },
+    "createdAt": "2025-06-26T22:06:27.954Z",
+    "imagePrompt": "A high-quality, clear image of the painting 'The Night Watch' by Rembrandt van Rijn, in widescreen 16:9 aspect ratio.",
+    "imageUrl": "https://storage.googleapis.com/ai-trivia-master.firebasestorage.app/trivia_images%2FjUH2bDR4VnhZMKqbWcS3.png",
+    "correctAnswer": {
+      "es": "La ronda de noche",
+      "en": "The Night Watch"
+    },
+    "distractors": [
+      {
+        "en": "The Anatomy Lesson of Dr. Nicolaes Tulp",
+        "es": "La lección de anatomía del Dr. Nicolaes Tulp"
+      },
+      {
+        "en": "Belshazzar's Feast",
+        "es": "El festín de Baltasar"
+      },
+      {
+        "es": "Los síndicos de los pañeros",
+        "en": "The Syndics of the Drapers' Guild"
+      }
+    ]
+  },
+  {
+    "id": "0WUNNVazWlHSnljIMgkH",
+    "question": {
+      "en": "Which artist created \"Broadway Boogie Woogie,\" a dynamic abstract painting inspired by the sights and sounds of New York City?",
+      "es": "¿Qué artista creó \"Broadway Boogie Woogie\", una dinámica pintura abstracta inspirada en las vistas y sonidos de la ciudad de Nueva York?"
+    },
+    "explanation": {
+      "es": "Esta pintura refleja la energía vibrante de la ciudad de Nueva York, particularmente su plano de calles en cuadrícula y la música jazz, dentro del marco de De Stijl.",
+      "en": "This painting reflects the vibrant energy of New York City, particularly its grid-like street plan and jazz music, within the De Stijl framework."
+    },
+    "difficulty": "hard",
+    "topicValue": "FamousPaintings",
+    "hint": {
+      "es": "Este artista abstracto holandés, conocido por sus colores primarios y cuadrículas, creó esta obra inspirada en el ritmo de una ciudad estadounidense.",
+      "en": "This Dutch abstract artist, known for his primary colors and grids, created this piece inspired by the rhythm of an American city."
+    },
+    "createdAt": "2025-06-26T22:07:30.231Z",
+    "imagePrompt": "A high-quality, clear image of the painting \"Broadway Boogie Woogie\" by Piet Mondrian, widescreen, 16:9 aspect ratio, landscape orientation.",
+    "imageUrl": "https://storage.googleapis.com/ai-trivia-master.firebasestorage.app/trivia_images%2F0WUNNVazWlHSnljIMgkH.png",
+    "correctAnswer": {
+      "es": "Piet Mondrian",
+      "en": "Piet Mondrian"
+    },
+    "distractors": [
+      {
+        "es": "Paul Klee",
+        "en": "Paul Klee"
+      },
+      {
+        "es": "Josef Albers",
+        "en": "Josef Albers"
+      },
+      {
+        "es": "Frank Stella",
+        "en": "Frank Stella"
+      }
+    ]
+  },
+  {
+    "id": "NSQa9TntemuVzn4kIYJr",
+    "question": {
+      "es": "¿Qué artista expresionista abstracto es famoso por su serie \"Mujer\", que incluye la pintura \"Mujer III\"?",
+      "en": "Which Abstract Expressionist artist is famous for his \"Woman\" series, including the painting \"Woman III\"?"
+    },
+    "explanation": {
+      "es": "Esta obra expresionista abstracta forma parte de una controvertida serie de pinturas que representan a mujeres, conocidas por sus pinceladas agresivas y formas distorsionadas.",
+      "en": "This abstract expressionist work is part of a controversial series of paintings depicting women, known for their aggressive brushstrokes and distorted forms."
+    },
+    "difficulty": "hard",
+    "topicValue": "FamousPaintings",
+    "hint": {
+      "es": "Este expresionista abstracto holandés-estadounidense es conocido por sus grandes pinturas gestuales y su serie 'Mujer'.",
+      "en": "This Dutch-American Abstract Expressionist is known for his large, gestural paintings and his 'Woman' series."
+    },
+    "createdAt": "2025-06-26T22:07:30.041Z",
+    "imagePrompt": "A high-quality, clear image of the painting \"Woman III\" by Willem de Kooning, widescreen, 16:9 aspect ratio, landscape orientation.",
+    "imageUrl": "https://storage.googleapis.com/ai-trivia-master.firebasestorage.app/trivia_images%2FNSQa9TntemuVzn4kIYJr.png",
+    "correctAnswer": {
+      "en": "Willem de Kooning",
+      "es": "Willem de Kooning"
+    },
+    "distractors": [
+      {
+        "es": "Jackson Pollock",
+        "en": "Jackson Pollock"
+      },
+      {
+        "en": "Mark Rothko",
+        "es": "Mark Rothko"
+      },
+      {
+        "es": "Franz Kline",
+        "en": "Franz Kline"
+      }
+    ]
+  },
+  {
+    "id": "wAp4h7DO0qZlPtIAXkTC",
+    "question": {
+      "es": "¿Qué artista expresionista noruego creó la icónica serie de pinturas titulada \"El Grito\"?",
+      "en": "Which Norwegian Expressionist artist created the iconic series of paintings titled \"The Scream\"?"
+    },
+    "explanation": {
+      "en": "This iconic Expressionist painting explores themes of anxiety and existential dread, with its swirling colors and distorted figures.",
+      "es": "Esta icónica pintura expresionista explora temas de ansiedad y angustia existencial, con sus colores arremolinados y figuras distorsionadas."
+    },
+    "difficulty": "hard",
+    "topicValue": "FamousPaintings",
+    "hint": {
+      "en": "This Norwegian Expressionist artist often explored themes of fear, loneliness, and death in his works.",
+      "es": "Este artista expresionista noruego a menudo exploró temas de miedo, soledad y muerte en sus obras."
+    },
+    "createdAt": "2025-06-26T22:07:29.986Z",
+    "imagePrompt": "A high-quality, clear image of the painting \"The Scream\" by Edvard Munch, widescreen, 16:9 aspect ratio, landscape orientation.",
+    "imageUrl": "https://storage.googleapis.com/ai-trivia-master.firebasestorage.app/trivia_images%2FwAp4h7DO0qZlPtIAXkTC.png",
+    "correctAnswer": {
+      "es": "Edvard Munch",
+      "en": "Edvard Munch"
+    },
+    "distractors": [
+      {
+        "es": "Ernst Ludwig Kirchner",
+        "en": "Ernst Ludwig Kirchner"
+      },
+      {
+        "es": "Emil Nolde",
+        "en": "Emil Nolde"
+      },
+      {
+        "en": "Franz Marc",
+        "es": "Franz Marc"
+      }
+    ]
+  },
+  {
+    "id": "n4Qd01Rcsrqs3NOEpewT",
+    "question": {
+      "en": "Which Early Renaissance Florentine artist painted \"The Birth of Venus\"?",
+      "es": "¿Qué artista florentino del Primer Renacimiento pintó \"El nacimiento de Venus\"?"
+    },
+    "explanation": {
+      "es": "Esta pintura mitológica del Primer Renacimiento representa a la diosa Venus emergiendo del mar sobre una concha de vieira gigante.",
+      "en": "This mythological painting from the Early Renaissance depicts the goddess Venus emerging from the sea upon a giant scallop shell."
+    },
+    "difficulty": "hard",
+    "topicValue": "FamousPaintings",
+    "hint": {
+      "es": "Este pintor florentino del Renacimiento es famoso por sus obras alegóricas y su grácil representación de figuras.",
+      "en": "This Florentine Renaissance painter is famous for his allegorical works and his graceful depiction of figures."
+    },
+    "createdAt": "2025-06-26T22:07:29.486Z",
+    "imagePrompt": "A high-quality, clear image of the painting \"The Birth of Venus\" by Sandro Botticelli, widescreen, 16:9 aspect ratio, landscape orientation.",
+    "imageUrl": "",
+    "correctAnswer": {
+      "en": "Sandro Botticelli",
+      "es": "Sandro Botticelli"
+    },
+    "distractors": [
+      {
+        "es": "Filippo Lippi",
+        "en": "Filippo Lippi"
+      },
+      {
+        "es": "Piero della Francesca",
+        "en": "Piero della Francesca"
+      },
+      {
+        "en": "Andrea Mantegna",
+        "es": "Andrea Mantegna"
+      }
+    ]
+  },
+  {
+    "id": "r9Pkqw8DYWUVhjzfUY4k",
+    "question": {
+      "en": "Which French artist, a pioneer of Realism, painted \"A Burial at Ornans\"?",
+      "es": "¿Qué artista francés, pionero del Realismo, pintó \"Un entierro en Ornans\"?"
+    },
+    "explanation": {
+      "es": "Esta pintura a gran escala, un manifiesto del Realismo, representa un funeral en la ciudad natal del pintor, desafiando la pintura histórica tradicional al elevar la vida cotidiana.",
+      "en": "This large-scale painting, a manifesto of Realism, depicts a funeral in the painter's hometown, challenging traditional historical painting by elevating everyday life."
+    },
+    "difficulty": "hard",
+    "topicValue": "FamousPaintings",
+    "hint": {
+      "es": "Este pintor francés fue una figura destacada del Realismo, afirmando que el arte debía representar la vida común y contemporánea.",
+      "en": "This French painter was a leading figure of Realism, asserting that art should represent common, contemporary life."
+    },
+    "createdAt": "2025-06-26T22:07:30.484Z",
+    "imagePrompt": "A high-quality, clear image of the painting \"A Burial at Ornans\" by Gustave Courbet, widescreen, 16:9 aspect ratio, landscape orientation.",
+    "imageUrl": "https://storage.googleapis.com/ai-trivia-master.firebasestorage.app/trivia_images%2Fr9Pkqw8DYWUVhjzfUY4k.png",
+    "correctAnswer": {
+      "en": "Gustave Courbet",
+      "es": "Gustave Courbet"
+    },
+    "distractors": [
+      {
+        "en": "Jean-François Millet",
+        "es": "Jean-François Millet"
+      },
+      {
+        "es": "Honoré Daumier",
+        "en": "Honoré Daumier"
+      },
+      {
+        "es": "Édouard Manet",
+        "en": "Édouard Manet"
+      }
+    ]
+  },
+  {
+    "id": "8y7hicFABc18PeNfYRi8",
+    "question": {
+      "es": "¿Qué artista holandés creó \"Composición con rojo, azul y amarillo\", una obra seminal del movimiento De Stijl?",
+      "en": "Which Dutch artist created \"Composition with Red, Blue, and Yellow,\" a seminal work of the De Stijl movement?"
+    },
+    "explanation": {
+      "es": "Esta obra abstracta es un ejemplo primordial de De Stijl, un movimiento artístico que aboga por la abstracción pura y la armonía universal a través de formas geométricas.",
+      "en": "This abstract work is a prime example of De Stijl, an art movement advocating pure abstraction and universal harmony through geometric forms."
+    },
+    "difficulty": "hard",
+    "topicValue": "FamousPaintings",
+    "hint": {
+      "es": "Este artista holandés fue un pionero del arte abstracto y una figura destacada en el movimiento De Stijl, conocido por sus cuadrículas y colores primarios.",
+      "en": "This Dutch artist was a pioneer of abstract art and a leading figure in the De Stijl movement, known for his grids and primary colors."
+    },
+    "createdAt": "2025-06-26T22:07:29.822Z",
+    "imagePrompt": "A high-quality, clear image of the painting \"Composition with Red, Blue, and Yellow\" by Piet Mondrian, widescreen, 16:9 aspect ratio, landscape orientation.",
+    "imageUrl": "https://storage.googleapis.com/ai-trivia-master.firebasestorage.app/trivia_images%2F8y7hicFABc18PeNfYRi8.png",
+    "correctAnswer": {
+      "es": "Piet Mondrian",
+      "en": "Piet Mondrian"
+    },
+    "distractors": [
+      {
+        "es": "Wassily Kandinsky",
+        "en": "Wassily Kandinsky"
+      },
+      {
+        "es": "Kazimir Malévich",
+        "en": "Kazimir Malevich"
+      },
+      {
+        "en": "Theo van Doesburg",
+        "es": "Theo van Doesburg"
+      }
+    ]
+  },
+  {
+    "id": "xyqDU1IGHtrpPnu50Cl7",
+    "question": {
+      "es": "¿Qué artista icónico es el responsable de la obra maestra cubista antibélica titulada \"Guernica\"?",
+      "en": "Which iconic artist is responsible for the Cubist anti-war masterpiece titled \"Guernica\"?"
+    },
+    "explanation": {
+      "es": "Este poderoso mural antibélico fue pintado en respuesta al bombardeo de Guernica, España, en 1937, por la Alemania nazi e Italia fascista.",
+      "en": "This powerful anti-war mural was painted in response to the 1937 bombing of Guernica, Spain, by Nazi Germany and Fascist Italy."
+    },
+    "difficulty": "hard",
+    "topicValue": "FamousPaintings",
+    "hint": {
+      "en": "This Spanish artist, co-founder of Cubism, created this work to protest a devastating wartime event in his homeland.",
+      "es": "Este artista español, cofundador del Cubismo, creó esta obra para protestar por un devastador evento bélico en su tierra natal."
+    },
+    "createdAt": "2025-06-26T22:07:29.270Z",
+    "imagePrompt": "A high-quality, clear image of the painting \"Guernica\" by Pablo Picasso, widescreen, 16:9 aspect ratio, landscape orientation.",
+    "imageUrl": "https://storage.googleapis.com/ai-trivia-master.firebasestorage.app/trivia_images%2FxyqDU1IGHtrpPnu50Cl7.png",
+    "correctAnswer": {
+      "es": "Pablo Picasso",
+      "en": "Pablo Picasso"
+    },
+    "distractors": [
+      {
+        "es": "Georges Braque",
+        "en": "Georges Braque"
+      },
+      {
+        "en": "Juan Gris",
+        "es": "Juan Gris"
+      },
+      {
+        "es": "Fernand Léger",
+        "en": "Fernand Léger"
+      }
+    ]
+  },
+  {
+    "id": "BrDFdsKvQbsJt3oPabjb",
+    "question": {
+      "en": "Which Post-Impressionist artist created the large-scale painting \"A Sunday Afternoon on the Island of La Grande Jatte\"?",
+      "es": "¿Qué artista Postimpresionista creó la pintura a gran escala \"Una tarde de domingo en la isla de la Grande Jatte\"?"
+    },
+    "explanation": {
+      "es": "Esta obra monumental es un ejemplo destacado del Puntillismo, una técnica que utiliza pequeños puntos distintos de color para formar una imagen.",
+      "en": "This monumental work is a leading example of Pointillism, a technique using small, distinct dots of color to form an image."
+    },
+    "difficulty": "hard",
+    "topicValue": "FamousPaintings",
+    "hint": {
+      "es": "Este artista desarrolló la técnica del Puntillismo, creando imágenes a partir de innumerables pequeños puntos de color.",
+      "en": "This artist developed the technique of Pointillism, creating images from countless tiny dots of color."
+    },
+    "createdAt": "2025-06-26T22:07:29.216Z",
+    "imagePrompt": "A high-quality, clear image of the painting \"A Sunday Afternoon on the Island of La Grande Jatte\" by Georges Seurat, widescreen, 16:9 aspect ratio, landscape orientation.",
+    "imageUrl": "https://storage.googleapis.com/ai-trivia-master.firebasestorage.app/trivia_images%2FBrDFdsKvQbsJt3oPabjb.png",
+    "correctAnswer": {
+      "es": "Georges Seurat",
+      "en": "Georges Seurat"
+    },
+    "distractors": [
+      {
+        "es": "Claude Monet",
+        "en": "Claude Monet"
+      },
+      {
+        "en": "Paul Cézanne",
+        "es": "Paul Cézanne"
+      },
+      {
+        "en": "Camille Pissarro",
+        "es": "Camille Pissarro"
+      }
+    ]
+  },
+  {
+    "id": "IouVIcG84d6D3pAa28pC",
+    "question": {
+      "en": "Which famous Surrealist artist is known for the painting \"The Persistence of Memory,\" featuring melting clocks?",
+      "es": "¿Qué famoso artista surrealista es conocido por la pintura \"La persistencia de la memoria\", que presenta relojes derretidos?"
+    },
+    "explanation": {
+      "es": "Esta pequeña pintura al óleo es una de las obras más reconocibles del Surrealismo, con relojes de bolsillo derritiéndose en un paisaje desolado.",
+      "en": "This small oil painting is one of the most recognizable works of Surrealism, featuring melting pocket watches in a desolate landscape."
+    },
+    "difficulty": "hard",
+    "topicValue": "FamousPaintings",
+    "hint": {
+      "en": "This flamboyant Spanish artist was a master of Surrealism, known for his dream-like and often bizarre imagery.",
+      "es": "Este extravagante artista español fue un maestro del Surrealismo, conocido por sus imágenes oníricas y a menudo extrañas."
+    },
+    "createdAt": "2025-06-26T22:07:29.384Z",
+    "imagePrompt": "A high-quality, clear image of the painting \"The Persistence of Memory\" by Salvador Dalí, widescreen, 16:9 aspect ratio, landscape orientation.",
+    "imageUrl": "https://storage.googleapis.com/ai-trivia-master.firebasestorage.app/trivia_images%2FIouVIcG84d6D3pAa28pC.png",
+    "correctAnswer": {
+      "en": "Salvador Dalí",
+      "es": "Salvador Dalí"
+    },
+    "distractors": [
+      {
+        "en": "René Magritte",
+        "es": "René Magritte"
+      },
+      {
+        "es": "Max Ernst",
+        "en": "Max Ernst"
+      },
+      {
+        "en": "Joan Miró",
+        "es": "Joan Miró"
+      }
+    ]
+  },
+  {
+    "id": "8zq7v0DZV3UyZZS7JUyE",
+    "question": {
+      "es": "¿Qué influyente artista del período neoclásico pintó \"El Juramento de los Horacios\"?",
+      "en": "Which influential artist of the Neoclassical period painted \"The Oath of the Horatii\"?"
+    },
+    "explanation": {
+      "es": "Esta obra maestra neoclásica se convirtió en un símbolo de la Revolución Francesa, enfatizando temas de patriotismo y deber cívico.",
+      "en": "This Neoclassical masterpiece became a symbol of the French Revolution, emphasizing themes of patriotism and civic duty."
+    },
+    "difficulty": "hard",
+    "topicValue": "FamousPaintings",
+    "hint": {
+      "en": "This artist was the preeminent painter of the Neoclassical style and a prominent figure in the French Revolution.",
+      "es": "Este artista fue el pintor preeminente del estilo neoclásico y una figura destacada en la Revolución Francesa."
+    },
+    "createdAt": "2025-06-26T22:07:29.054Z",
+    "imagePrompt": "A high-quality, clear image of the painting \"The Oath of the Horatii\" by Jacques-Louis David, widescreen, 16:9 aspect ratio, landscape orientation.",
+    "imageUrl": "https://storage.googleapis.com/ai-trivia-master.firebasestorage.app/trivia_images%2F8zq7v0DZV3UyZZS7JUyE.png",
+    "correctAnswer": {
+      "en": "Jacques-Louis David",
+      "es": "Jacques-Louis David"
+    },
+    "distractors": [
+      {
+        "en": "Jean-Honoré Fragonard",
+        "es": "Jean-Honoré Fragonard"
+      },
+      {
+        "es": "Antoine Watteau",
+        "en": "Antoine Watteau"
+      },
+      {
+        "en": "Jean-Baptiste Greuze",
+        "es": "Jean-Baptiste Greuze"
+      }
+    ]
+  },
+  {
+    "id": "CUkiA6wTn2qXbwtGn7Lq",
+    "question": {
+      "en": "Which Early Netherlandish painter created \"The Arnolfini Portrait\", known for its intricate detail and hidden symbolism?",
+      "es": "¿Qué pintor de los Primitivos Flamencos creó \"El retrato de Arnolfini\", conocido por sus intrincados detalles y simbolismo oculto?"
+    },
+    "explanation": {
+      "es": "Este retrato es famoso por su intrincado detalle y simbolismo, incluyendo la firma del artista reflejada en el espejo convexo.",
+      "en": "This portrait is renowned for its intricate detail and symbolism, including the artist's signature reflected in the convex mirror."
+    },
+    "difficulty": "hard",
+    "topicValue": "FamousPaintings",
+    "hint": {
+      "en": "This early Netherlandish master was a pioneer in oil painting techniques.",
+      "es": "Este maestro primitivo flamenco fue un pionero en las técnicas de pintura al óleo."
+    },
+    "createdAt": "2025-06-26T22:07:28.906Z",
+    "imagePrompt": "A high-quality, clear image of the painting \"The Arnolfini Portrait\" by Jan van Eyck, widescreen, 16:9 aspect ratio, landscape orientation.",
+    "imageUrl": "https://storage.googleapis.com/ai-trivia-master.firebasestorage.app/trivia_images%2FCUkiA6wTn2qXbwtGn7Lq.png",
+    "correctAnswer": {
+      "es": "Jan van Eyck",
+      "en": "Jan van Eyck"
+    },
+    "distractors": [
+      {
+        "es": "Rogier van der Weyden",
+        "en": "Rogier van der Weyden"
+      },
+      {
+        "en": "Hans Memling",
+        "es": "Hans Memling"
+      },
+      {
+        "es": "Robert Campin",
+        "en": "Robert Campin"
+      }
+    ]
+  },
+  {
+    "id": "Z1Kju3FDjVX6Hz41NzgQ",
+    "question": {
+      "es": "¿Qué pintor de paisajes romántico inglés es conocido por \"La carreta de heno\"?",
+      "en": "Which English Romantic landscape painter is known for \"The Hay Wain\"?"
+    },
+    "explanation": {
+      "es": "Esta pintura de paisaje pastoral, considerada una de las mayores pinturas inglesas, representa una escena rural en Suffolk, Inglaterra.",
+      "en": "This pastoral landscape painting, considered one of the greatest English paintings, depicts a rural scene in Suffolk, England."
+    },
+    "difficulty": "hard",
+    "topicValue": "FamousPaintings",
+    "hint": {
+      "es": "Este pintor romántico inglés es célebre por sus paisajes, especialmente los de la campiña de Suffolk.",
+      "en": "This English Romantic painter is celebrated for his landscapes, especially those of the Suffolk countryside."
+    },
+    "createdAt": "2025-06-26T22:07:29.678Z",
+    "imagePrompt": "A high-quality, clear image of the painting \"The Hay Wain\" by John Constable, widescreen, 16:9 aspect ratio, landscape orientation.",
+    "imageUrl": "https://storage.googleapis.com/ai-trivia-master.firebasestorage.app/trivia_images%2FZ1Kju3FDjVX6Hz41NzgQ.png",
+    "correctAnswer": {
+      "en": "John Constable",
+      "es": "John Constable"
+    },
+    "distractors": [
+      {
+        "es": "J.M.W. Turner",
+        "en": "J.M.W. Turner"
+      },
+      {
+        "en": "Thomas Gainsborough",
+        "es": "Thomas Gainsborough"
+      },
+      {
+        "es": "George Romney",
+        "en": "George Romney"
+      }
+    ]
+  },
+  {
+    "id": "s09WRvFCF6tsmVGsSxJF",
+    "question": {
+      "en": "Who created the famous 'Campbell's Soup Cans' series?",
+      "es": "¿Quién creó la famosa serie de 'Latas de sopa Campbell'?"
+    },
+    "explanation": {
+      "es": "Las 'Latas de sopa Campbell' de Warhol son un ejemplo distintivo del Pop Art, elevando los productos de consumo cotidianos al arte.",
+      "en": "Warhol's 'Campbell's Soup Cans' are a signature example of Pop Art, elevating everyday consumer products to art."
+    },
+    "difficulty": "easy",
+    "topicValue": "FamousPaintings",
+    "hint": {
+      "es": "Este artista estadounidense fue una figura destacada en el movimiento Pop Art, conocido por sus impresiones repetitivas de productos comerciales.",
+      "en": "This American artist was a leading figure in the Pop Art movement, known for his repetitive prints of commercial products."
+    },
+    "createdAt": "2025-06-26T22:05:33.253Z",
+    "imagePrompt": "A high-quality, clear image of the painting \"Campbell's Soup Cans\" by Andy Warhol, specifically the iconic grid of 32 canvases.",
+    "imageUrl": "https://storage.googleapis.com/ai-trivia-master.firebasestorage.app/trivia_images%2Fs09WRvFCF6tsmVGsSxJF.png",
+    "correctAnswer": {
+      "en": "Andy Warhol",
+      "es": "Andy Warhol"
+    },
+    "distractors": [
+      {
+        "es": "Roy Lichtenstein",
+        "en": "Roy Lichtenstein"
+      },
+      {
+        "en": "Keith Haring",
+        "es": "Keith Haring"
+      },
+      {
+        "en": "Jean-Michel Basquiat",
+        "es": "Jean-Michel Basquiat"
+      }
+    ]
+  },
+  {
+    "id": "ZrMUM6pUHEOzeXgIA07f",
+    "question": {
+      "en": "Who is the artist behind the abstract masterpiece \"No. 1A, 1948,\" created using a distinctive 'drip painting' method?",
+      "es": "¿Quién es el artista detrás de la obra maestra abstracta \"No. 1A, 1948\", creada utilizando un distintivo método de 'pintura por goteo'?"
+    },
+    "explanation": {
+      "es": "Esta obra es un ejemplo principal de la técnica de 'pintura por goteo' característica de Pollock, donde la pintura se vierte o gotea sobre un lienzo en el suelo.",
+      "en": "This work is a prime example of Pollock's signature 'drip painting' technique, where paint is poured or dripped onto a canvas on the floor."
+    },
+    "difficulty": "hard",
+    "topicValue": "FamousPaintings",
+    "hint": {
+      "es": "Este expresionista abstracto estadounidense fue pionero en la técnica del 'goteo', a menudo conocida como 'pintura de acción'.",
+      "en": "This American Abstract Expressionist pioneered the 'drip' technique, often referred to as 'Action Painting'."
+    },
+    "createdAt": "2025-06-26T22:07:30.091Z",
+    "imagePrompt": "A high-quality, clear image of the painting \"No. 1A, 1948\" by Jackson Pollock, widescreen, 16:9 aspect ratio, landscape orientation.",
+    "imageUrl": "https://storage.googleapis.com/ai-trivia-master.firebasestorage.app/trivia_images%2FZrMUM6pUHEOzeXgIA07f.png",
+    "correctAnswer": {
+      "en": "Jackson Pollock",
+      "es": "Jackson Pollock"
+    },
+    "distractors": [
+      {
+        "en": "Barnett Newman",
+        "es": "Barnett Newman"
+      },
+      {
+        "es": "Clyfford Still",
+        "en": "Clyfford Still"
+      },
+      {
+        "es": "Arshile Gorky",
+        "en": "Arshile Gorky"
+      }
+    ]
+  },
+  {
+    "id": "pnkiPf8la3mi5vO4gcHu",
+    "question": {
+      "es": "¿Quién es el artista detrás del tríptico altamente detallado y enigmático, \"El Jardín de las Delicias\"?",
+      "en": "Who is the artist behind the highly detailed and enigmatic triptych, \"The Garden of Earthly Delights\"?"
+    },
+    "explanation": {
+      "es": "Este tríptico es una compleja obra alegórica, llena de criaturas fantásticas e imágenes simbólicas, típicas del estilo único de El Bosco.",
+      "en": "This triptych is a complex allegorical work, filled with fantastic creatures and symbolic imagery, typical of Bosch's unique style."
+    },
+    "difficulty": "hard",
+    "topicValue": "FamousPaintings",
+    "hint": {
+      "es": "El apellido de este pintor comparte nombre con una famosa marca de electrodomésticos.",
+      "en": "This painter's surname shares a name with a famous brand of home appliances."
+    },
+    "createdAt": "2025-06-26T22:07:28.843Z",
+    "imagePrompt": "A high-quality, clear image of the painting \"The Garden of Earthly Delights\" by Hieronymus Bosch, widescreen, 16:9 aspect ratio, landscape orientation.",
+    "imageUrl": "https://storage.googleapis.com/ai-trivia-master.firebasestorage.app/trivia_images%2FpnkiPf8la3mi5vO4gcHu.png",
+    "correctAnswer": {
+      "es": "El Bosco",
+      "en": "Hieronymus Bosch"
+    },
+    "distractors": [
+      {
+        "es": "Pieter Bruegel el Viejo",
+        "en": "Pieter Bruegel the Elder"
+      },
+      {
+        "en": "Albrecht Dürer",
+        "es": "Alberto Durero"
+      },
+      {
+        "es": "Matthias Grünewald",
+        "en": "Matthias Grünewald"
+      }
+    ]
+  },
+  {
+    "id": "6ImriOlzf4jMdM99mdwU",
+    "question": {
+      "en": "Who painted 'American Gothic', the iconic portrait of a stern-faced couple standing in front of a farmhouse?",
+      "es": "¿Quién pintó 'American Gothic', el icónico retrato de una pareja de rostro severo de pie frente a una granja?"
+    },
+    "explanation": {
+      "en": "'American Gothic' is a seminal work of American Regionalism, depicting a farmer and a woman in front of a white house with a distinctive Gothic window.",
+      "es": "'American Gothic' es una obra fundamental del Regionalismo Americano, que representa a un granjero y una mujer frente a una casa blanca con una distintiva ventana gótica."
+    },
+    "difficulty": "medium",
+    "topicValue": "FamousPaintings",
+    "hint": {
+      "es": "Este pintor estadounidense capturó la vida rural, con su obra más famosa mostrando a una pareja con rostro severo.",
+      "en": "This American painter captured rural life, with his most famous work showing a stern-faced couple."
+    },
+    "createdAt": "2025-06-26T22:06:27.829Z",
+    "imagePrompt": "A high-quality, clear image of the painting 'American Gothic' by Grant Wood, in widescreen 16:9 aspect ratio.",
+    "imageUrl": "https://storage.googleapis.com/ai-trivia-master.firebasestorage.app/trivia_images%2F6ImriOlzf4jMdM99mdwU.png",
+    "correctAnswer": {
+      "es": "Grant Wood",
+      "en": "Grant Wood"
+    },
+    "distractors": [
+      {
+        "en": "Edward Hopper",
+        "es": "Edward Hopper"
+      },
+      {
+        "es": "Norman Rockwell",
+        "en": "Norman Rockwell"
+      },
+      {
+        "es": "Andrew Wyeth",
+        "en": "Andrew Wyeth"
+      }
+    ]
+  },
+  {
+    "id": "I0gpBz2vamMu6ziRWPuB",
+    "question": {
+      "en": "Who painted 'Drowning Girl', a well-known Pop Art piece that mimics the style of comic books?",
+      "es": "¿Quién pintó 'Chica ahogándose', una conocida obra de Pop Art que imita el estilo de los cómics?"
+    },
+    "explanation": {
+      "es": "'Chica ahogándose' es un ejemplo primordial del Pop Art, caracterizado por su uso de la estética de las tiras cómicas, incluyendo los puntos Ben-Day y una burbuja de pensamiento.",
+      "en": "'Drowning Girl' is a prime example of Pop Art, characterized by its use of comic strip aesthetics, including Ben-Day dots and a thought bubble."
+    },
+    "difficulty": "medium",
+    "topicValue": "FamousPaintings",
+    "hint": {
+      "en": "This American Pop artist is famous for his works inspired by comic strips, often using Benday dots.",
+      "es": "Este artista pop estadounidense es famoso por sus obras inspiradas en tiras cómicas, a menudo utilizando puntos Benday."
+    },
+    "createdAt": "2025-06-26T22:06:28.588Z",
+    "imagePrompt": "A high-quality, clear image of the painting 'Drowning Girl' by Roy Lichtenstein, in widescreen 16:9 aspect ratio.",
+    "imageUrl": "https://storage.googleapis.com/ai-trivia-master.firebasestorage.app/trivia_images%2FI0gpBz2vamMu6ziRWPuB.png",
+    "correctAnswer": {
+      "en": "Roy Lichtenstein",
+      "es": "Roy Lichtenstein"
+    },
+    "distractors": [
+      {
+        "es": "Andy Warhol",
+        "en": "Andy Warhol"
+      },
+      {
+        "en": "Keith Haring",
+        "es": "Keith Haring"
+      },
+      {
+        "es": "Jackson Pollock",
+        "en": "Jackson Pollock"
+      }
+    ]
+  },
+  {
+    "id": "pr6EnuaWzxB56na8U7HH",
+    "question": {
+      "en": "Who painted 'The Kiss', an iconic artwork featuring two figures intertwined in golden robes?",
+      "es": "¿Quién pintó 'El Beso', una icónica obra de arte que presenta dos figuras entrelazadas con túnicas doradas?"
+    },
+    "explanation": {
+      "en": "'The Kiss' is a famous symbolist painting by Klimt, showcasing his 'Golden Phase' and intricate patterns.",
+      "es": "'El Beso' es una famosa pintura simbolista de Klimt, que muestra su 'Fase Dorada' y patrones intrincados."
+    },
+    "difficulty": "easy",
+    "topicValue": "FamousPaintings",
+    "hint": {
+      "es": "Este pintor simbolista austriaco es conocido por sus obras ornamentadas y con pan de oro, que a menudo representan figuras en un abrazo.",
+      "en": "This Austrian Symbolist painter is known for his ornate, gold-leafed works, often depicting figures in embrace."
+    },
+    "createdAt": "2025-06-26T22:05:32.386Z",
+    "imagePrompt": "A high-quality, clear image of the painting \"The Kiss\" by Gustav Klimt.",
+    "imageUrl": "https://storage.googleapis.com/ai-trivia-master.firebasestorage.app/trivia_images%2Fpr6EnuaWzxB56na8U7HH.png",
+    "correctAnswer": {
+      "es": "Gustav Klimt",
+      "en": "Gustav Klimt"
+    },
+    "distractors": [
+      {
+        "en": "Egon Schiele",
+        "es": "Egon Schiele"
+      },
+      {
+        "es": "Alfons Mucha",
+        "en": "Alfons Mucha"
+      },
+      {
+        "es": "Henri Rousseau",
+        "en": "Henri Rousseau"
+      }
+    ]
+  },
+  {
+    "id": "MjOxKWur6YMboQALypB3",
+    "question": {
+      "en": "Who painted 'The Kiss', an iconic Symbolist painting featuring a couple embracing amidst shimmering gold?",
+      "es": "¿Quién pintó 'El Beso', una icónica pintura simbolista que presenta a una pareja abrazándose entre oro resplandeciente?"
+    },
+    "explanation": {
+      "en": "'The Kiss' is a highlight of Klimt's 'Golden Period,' characterized by opulent gold leaf and intricate patterns.",
+      "es": "'El Beso' es un punto culminante del 'Período Dorado' de Klimt, caracterizado por la opulenta lámina de oro y los intrincados patrones."
+    },
+    "difficulty": "medium",
+    "topicValue": "FamousPaintings",
+    "hint": {
+      "es": "Este pintor simbolista austriaco es famoso por sus deslumbrantes obras adornadas con oro, incluyendo 'El Beso'.",
+      "en": "This Austrian Symbolist painter is famous for his dazzling gold-adorned works, including 'The Kiss'."
+    },
+    "createdAt": "2025-06-26T22:06:28.137Z",
+    "imagePrompt": "A high-quality, clear image of the painting 'The Kiss' by Gustav Klimt, in widescreen 16:9 aspect ratio.",
+    "imageUrl": "https://storage.googleapis.com/ai-trivia-master.firebasestorage.app/trivia_images%2FMjOxKWur6YMboQALypB3.png",
+    "correctAnswer": {
+      "en": "Gustav Klimt",
+      "es": "Gustav Klimt"
+    },
+    "distractors": [
+      {
+        "en": "Egon Schiele",
+        "es": "Egon Schiele"
+      },
+      {
+        "es": "Alphonse Mucha",
+        "en": "Alphonse Mucha"
+      },
+      {
+        "es": "Vincent van Gogh",
+        "en": "Vincent van Gogh"
+      }
+    ]
+  },
+  {
+    "id": "bB5WIsvrPU1ovztpaDXV",
+    "question": {
+      "en": "Who painted 'The Garden of Earthly Delights', a famous triptych filled with symbolic and fantastical imagery?",
+      "es": "¿Quién pintó 'El jardín de las delicias', un famoso tríptico lleno de imágenes simbólicas y fantásticas?"
+    },
+    "explanation": {
+      "es": "'El jardín de las delicias' es un complejo tríptico lleno de criaturas fantásticas e imágenes simbólicas, que representa la historia del mundo desde la creación hasta la condenación.",
+      "en": "'The Garden of Earthly Delights' is a complex triptych filled with fantastical creatures and symbolic imagery, depicting the history of the world from creation to damnation."
+    },
+    "difficulty": "medium",
+    "topicValue": "FamousPaintings",
+    "hint": {
+      "en": "This early Netherlandish painter is known for his detailed allegorical works and bizarre, often hellish, landscapes.",
+      "es": "Este pintor neerlandés temprano es conocido por sus detalladas obras alegóricas y sus paisajes extraños, a menudo infernales."
+    },
+    "createdAt": "2025-06-26T22:06:28.206Z",
+    "imagePrompt": "A high-quality, clear image of the painting 'The Garden of Earthly Delights' by Hieronymus Bosch, in widescreen 16:9 aspect ratio.",
+    "imageUrl": "https://storage.googleapis.com/ai-trivia-master.firebasestorage.app/trivia_images%2FbB5WIsvrPU1ovztpaDXV.png",
+    "correctAnswer": {
+      "es": "El Bosco",
+      "en": "Hieronymus Bosch"
+    },
+    "distractors": [
+      {
+        "en": "Pieter Bruegel the Elder",
+        "es": "Pieter Bruegel el Viejo"
+      },
+      {
+        "es": "Jan van Eyck",
+        "en": "Jan van Eyck"
+      },
+      {
+        "es": "Alberto Durero",
+        "en": "Albrecht Dürer"
+      }
+    ]
+  },
+  {
+    "id": "EBk7MyM016pxTxBYLP2P",
+    "question": {
+      "en": "Who painted 'The Garden of Earthly Delights', a detailed and complex triptych?",
+      "es": "¿Quién pintó 'El jardín de las delicias', un tríptico detallado y complejo?"
+    },
+    "explanation": {
+      "en": "'The Garden of Earthly Delights' is a complex and highly symbolic triptych by Bosch, full of fantastical creatures and scenes.",
+      "es": "'El jardín de las delicias' es un tríptico complejo y altamente simbólico de El Bosco, lleno de criaturas y escenas fantásticas."
+    },
+    "difficulty": "easy",
+    "topicValue": "FamousPaintings",
+    "hint": {
+      "es": "Este pintor de los Países Bajos Tempranos es conocido por sus paisajes y figuras fantásticas altamente imaginativos y surrealistas.",
+      "en": "This Early Netherlandish painter is known for his highly imaginative and surreal fantastical landscapes and figures."
+    },
+    "createdAt": "2025-06-26T22:05:33.180Z",
+    "imagePrompt": "A high-quality, clear image of the painting \"The Garden of Earthly Delights\" by Hieronymus Bosch, focusing on the central panel.",
+    "imageUrl": "",
+    "correctAnswer": {
+      "en": "Hieronymus Bosch",
+      "es": "El Bosco"
+    },
+    "distractors": [
+      {
+        "en": "Pieter Bruegel the Elder",
+        "es": "Pieter Bruegel el Viejo"
+      },
+      {
+        "en": "Jan van Eyck",
+        "es": "Jan van Eyck"
+      },
+      {
+        "es": "Alberto Durero",
+        "en": "Albrecht Dürer"
+      }
+    ]
+  },
+  {
+    "id": "HGHFnICQHfKwJKIbWhFx",
+    "question": {
+      "en": "Who painted 'Guernica', the monumental anti-war mural inspired by the bombing of a Basque town during the Spanish Civil War?",
+      "es": "¿Quién pintó 'Guernica', el monumental mural antibélico inspirado en el bombardeo de una ciudad vasca durante la Guerra Civil Española?"
+    },
+    "explanation": {
+      "es": "'Guernica' es el potente mural antibélico de Picasso, que representa el sufrimiento infligido a personas y animales por la violencia y el caos durante la Guerra Civil Española.",
+      "en": "'Guernica' is Picasso's powerful anti-war mural, depicting the suffering inflicted upon people and animals by violence and chaos during the Spanish Civil War."
+    },
+    "difficulty": "medium",
+    "topicValue": "FamousPaintings",
+    "hint": {
+      "en": "This Spanish artist was a co-founder of the Cubist movement.",
+      "es": "Este artista español fue cofundador del movimiento cubista."
+    },
+    "createdAt": "2025-06-26T22:06:27.669Z",
+    "imagePrompt": "A high-quality, clear image of the painting 'Guernica' by Pablo Picasso, in widescreen 16:9 aspect ratio.",
+    "imageUrl": "https://storage.googleapis.com/ai-trivia-master.firebasestorage.app/trivia_images%2FHGHFnICQHfKwJKIbWhFx.png",
+    "correctAnswer": {
+      "en": "Pablo Picasso",
+      "es": "Pablo Picasso"
+    },
+    "distractors": [
+      {
+        "en": "Salvador Dalí",
+        "es": "Salvador Dalí"
+      },
+      {
+        "en": "Joan Miró",
+        "es": "Joan Miró"
+      },
+      {
+        "en": "Frida Kahlo",
+        "es": "Frida Kahlo"
+      }
+    ]
+  },
+  {
+    "id": "aoQUGXor9PwHrBn2fyCF",
+    "question": {
+      "en": "Who painted 'Guernica', a powerful anti-war statement?",
+      "es": "¿Quién pintó 'Guernica', una poderosa declaración contra la guerra?"
+    },
+    "explanation": {
+      "es": "'Guernica' es el poderoso mural antibélico de Picasso, que representa el sufrimiento infligido por la violencia y el caos.",
+      "en": "'Guernica' is Picasso's powerful anti-war mural, depicting the suffering inflicted by violence and chaos."
+    },
+    "difficulty": "easy",
+    "topicValue": "FamousPaintings",
+    "hint": {
+      "en": "This Spanish artist co-founded the Cubist movement and created this massive anti-war painting.",
+      "es": "Este artista español cofundó el movimiento cubista y creó esta enorme pintura antibélica."
+    },
+    "createdAt": "2025-06-26T22:05:32.136Z",
+    "imagePrompt": "A high-quality, clear image of the painting \"Guernica\" by Pablo Picasso.",
+    "imageUrl": "https://storage.googleapis.com/ai-trivia-master.firebasestorage.app/trivia_images%2FaoQUGXor9PwHrBn2fyCF.png",
+    "correctAnswer": {
+      "en": "Pablo Picasso",
+      "es": "Pablo Picasso"
+    },
+    "distractors": [
+      {
+        "en": "Henri Matisse",
+        "es": "Henri Matisse"
+      },
+      {
+        "en": "Georges Braque",
+        "es": "Georges Braque"
+      },
+      {
+        "en": "Marc Chagall",
+        "es": "Marc Chagall"
+      }
+    ]
+  },
+  {
+    "id": "594pMnManyglThvF9S5A",
+    "question": {
+      "es": "¿Quién pintó 'Impresión, sol naciente', la pintura que dio nombre al movimiento impresionista?",
+      "en": "Who painted 'Impression, Sunrise', the painting that gave the Impressionist movement its name?"
+    },
+    "explanation": {
+      "en": "Monet was a founder of French Impressionist painting, and his 'Impression, Sunrise' gave the movement its name.",
+      "es": "Monet fue un fundador de la pintura impresionista francesa, y su 'Impresión, sol naciente' dio nombre al movimiento."
+    },
+    "difficulty": "easy",
+    "topicValue": "FamousPaintings",
+    "hint": {
+      "en": "He is considered a key figure in the Impressionist movement, known for his series of water lilies.",
+      "es": "Es considerado una figura clave en el movimiento impresionista, conocido por su serie de nenúfares."
+    },
+    "createdAt": "2025-06-26T22:05:32.012Z",
+    "imagePrompt": "A high-quality, clear image of the painting \"Impression, Sunrise\" by Claude Monet.",
+    "imageUrl": "https://storage.googleapis.com/ai-trivia-master.firebasestorage.app/trivia_images%2F594pMnManyglThvF9S5A.png",
+    "correctAnswer": {
+      "en": "Claude Monet",
+      "es": "Claude Monet"
+    },
+    "distractors": [
+      {
+        "es": "Pierre-Auguste Renoir",
+        "en": "Pierre-Auguste Renoir"
+      },
+      {
+        "en": "Édouard Manet",
+        "es": "Édouard Manet"
+      },
+      {
+        "es": "Edgar Degas",
+        "en": "Edgar Degas"
+      }
+    ]
+  },
+  {
+    "id": "jNuj2iZvJaLbWF6N6BRV",
+    "question": {
+      "en": "Who painted 'Impression, Sunrise', the painting that famously gave the Impressionist movement its name?",
+      "es": "¿Quién pintó 'Impresión, Sol Naciente', la pintura que dio nombre al movimiento Impresionista?"
+    },
+    "explanation": {
+      "en": "'Impression, Sunrise' gave the Impressionist movement its name and captures a foggy morning in the port of Le Havre, France.",
+      "es": "'Impresión, Sol Naciente' dio nombre al movimiento Impresionista y captura una mañana brumosa en el puerto de Le Havre, Francia."
+    },
+    "difficulty": "medium",
+    "topicValue": "FamousPaintings",
+    "hint": {
+      "es": "Este artista francés es considerado el fundador del Impresionismo y a menudo pintaba nenúfares.",
+      "en": "This French artist is considered the founder of Impressionism and often painted water lilies."
+    },
+    "createdAt": "2025-06-26T22:06:27.871Z",
+    "imagePrompt": "A high-quality, clear image of the painting 'Impression, Sunrise' by Claude Monet, in widescreen 16:9 aspect ratio.",
+    "imageUrl": "https://storage.googleapis.com/ai-trivia-master.firebasestorage.app/trivia_images%2FjNuj2iZvJaLbWF6N6BRV.png",
+    "correctAnswer": {
+      "en": "Claude Monet",
+      "es": "Claude Monet"
+    },
+    "distractors": [
+      {
+        "en": "Pierre-Auguste Renoir",
+        "es": "Pierre-Auguste Renoir"
+      },
+      {
+        "en": "Edgar Degas",
+        "es": "Edgar Degas"
+      },
+      {
+        "es": "Édouard Manet",
+        "en": "Édouard Manet"
+      }
+    ]
+  },
+  {
+    "id": "cSGIzEcUn3dlSfvtMHz7",
+    "question": {
+      "en": "Who painted 'The Creation of Adam', a famous fresco panel on the ceiling of the Sistine Chapel?",
+      "es": "¿Quién pintó 'La Creación de Adán', un famoso panel de frescos en el techo de la Capilla Sixtina?"
+    },
+    "explanation": {
+      "en": "'The Creation of Adam' is a fresco painting on the ceiling of the Sistine Chapel, depicting God giving life to Adam.",
+      "es": "'La Creación de Adán' es una pintura al fresco en el techo de la Capilla Sixtina, que representa a Dios dando vida a Adán."
+    },
+    "difficulty": "medium",
+    "topicValue": "FamousPaintings",
+    "hint": {
+      "en": "This Renaissance master was a renowned sculptor and painter of the Sistine Chapel ceiling.",
+      "es": "Este maestro del Renacimiento fue un renombrado escultor y pintor del techo de la Capilla Sixtina."
+    },
+    "createdAt": "2025-06-26T22:06:28.002Z",
+    "imagePrompt": "A high-quality, clear image of the painting 'The Creation of Adam' by Michelangelo, in widescreen 16:9 aspect ratio.",
+    "imageUrl": "",
+    "correctAnswer": {
+      "en": "Michelangelo",
+      "es": "Miguel Ángel"
+    },
+    "distractors": [
+      {
+        "es": "Rafael",
+        "en": "Raphael"
+      },
+      {
+        "en": "Donatello",
+        "es": "Donatello"
+      },
+      {
+        "es": "Sandro Botticelli",
+        "en": "Sandro Botticelli"
+      }
+    ]
+  },
+  {
+    "id": "fbcEhrI2fJRgGehh9Hqw",
+    "question": {
+      "es": "¿Quién pintó 'La joven de la perla', a menudo llamada la 'Mona Lisa holandesa'?",
+      "en": "Who painted 'Girl with a Pearl Earring', often called the 'Dutch Mona Lisa'?"
+    },
+    "explanation": {
+      "en": "Known for his masterful use of light, Vermeer created this iconic tronie, or head study, featuring a young woman.",
+      "es": "Conocido por su uso magistral de la luz, Vermeer creó este icónico tronie, o estudio de cabeza, con una joven."
+    },
+    "difficulty": "easy",
+    "topicValue": "FamousPaintings",
+    "hint": {
+      "en": "This Dutch Golden Age painter is famous for his domestic scenes and luminous depictions of light.",
+      "es": "Este pintor de la Edad de Oro holandesa es famoso por sus escenas domésticas y sus luminosas representaciones de la luz."
+    },
+    "createdAt": "2025-06-26T22:05:31.888Z",
+    "imagePrompt": "A high-quality, clear image of the painting \"Girl with a Pearl Earring\" by Johannes Vermeer.",
+    "imageUrl": "https://storage.googleapis.com/ai-trivia-master.firebasestorage.app/trivia_images%2FfbcEhrI2fJRgGehh9Hqw.png",
+    "correctAnswer": {
+      "es": "Johannes Vermeer",
+      "en": "Johannes Vermeer"
+    },
+    "distractors": [
+      {
+        "en": "Rembrandt van Rijn",
+        "es": "Rembrandt van Rijn"
+      },
+      {
+        "en": "Frans Hals",
+        "es": "Frans Hals"
+      },
+      {
+        "es": "Jan van Eyck",
+        "en": "Jan van Eyck"
+      }
+    ]
+  },
+  {
+    "id": "UEZhF0tudEtL34SQgEMp",
+    "question": {
+      "en": "Who painted 'Girl with a Pearl Earring', a masterpiece of the Dutch Golden Age?",
+      "es": "¿Quién pintó 'La Joven de la Perla', una obra maestra de la Edad de Oro holandesa?"
+    },
+    "explanation": {
+      "es": "'La Joven de la Perla' a menudo es llamada la 'Mona Lisa del Norte' y es un tronie, un término holandés para una pintura de una cabeza que no pretende ser un retrato.",
+      "en": "'Girl with a Pearl Earring' is often called the 'Mona Lisa of the North' and is a tronie, a Dutch term for a painting of a head that is not intended to be a portrait."
+    },
+    "difficulty": "medium",
+    "topicValue": "FamousPaintings",
+    "hint": {
+      "en": "This Dutch Golden Age painter is known for his masterly use of light and domestic scenes.",
+      "es": "Este pintor de la Edad de Oro holandesa es conocido por su maestría en el uso de la luz y sus escenas domésticas."
+    },
+    "createdAt": "2025-06-26T22:06:27.559Z",
+    "imagePrompt": "A high-quality, clear image of the painting 'Girl with a Pearl Earring' by Johannes Vermeer, in widescreen 16:9 aspect ratio.",
+    "imageUrl": "https://storage.googleapis.com/ai-trivia-master.firebasestorage.app/trivia_images%2FUEZhF0tudEtL34SQgEMp.png",
+    "correctAnswer": {
+      "es": "Johannes Vermeer",
+      "en": "Johannes Vermeer"
+    },
+    "distractors": [
+      {
+        "en": "Rembrandt van Rijn",
+        "es": "Rembrandt van Rijn"
+      },
+      {
+        "en": "Frans Hals",
+        "es": "Frans Hals"
+      },
+      {
+        "en": "Jan van Eyck",
+        "es": "Jan van Eyck"
+      }
+    ]
+  },
+  {
+    "id": "8uRtUDMfrdgVfceZ4viI",
+    "question": {
+      "es": "¿Quién pintó 'La Persistencia de la Memoria', con relojes derritiéndose en un paisaje desolado?",
+      "en": "Who painted 'The Persistence of Memory', featuring melting clocks in a desolate landscape?"
+    },
+    "explanation": {
+      "en": "'The Persistence of Memory' is one of the most recognizable works of Surrealism, featuring melting clocks draped over objects in a desolate landscape.",
+      "es": "'La Persistencia de la Memoria' es una de las obras más reconocibles del Surrealismo, presentando relojes derritiéndose colgados sobre objetos en un paisaje desolado."
+    },
+    "difficulty": "medium",
+    "topicValue": "FamousPaintings",
+    "hint": {
+      "en": "This Spanish artist was a prominent figure in the Surrealist movement, known for his bizarre and dream-like imagery.",
+      "es": "Este artista español fue una figura prominente en el movimiento surrealista, conocido por sus imágenes extrañas y oníricas."
+    },
+    "createdAt": "2025-06-26T22:06:27.728Z",
+    "imagePrompt": "A high-quality, clear image of the painting 'The Persistence of Memory' by Salvador Dalí, in widescreen 16:9 aspect ratio.",
+    "imageUrl": "https://storage.googleapis.com/ai-trivia-master.firebasestorage.app/trivia_images%2F8uRtUDMfrdgVfceZ4viI.png",
+    "correctAnswer": {
+      "es": "Salvador Dalí",
+      "en": "Salvador Dalí"
+    },
+    "distractors": [
+      {
+        "es": "René Magritte",
+        "en": "René Magritte"
+      },
+      {
+        "en": "Max Ernst",
+        "es": "Max Ernst"
+      },
+      {
+        "es": "Joan Miró",
+        "en": "Joan Miró"
+      }
+    ]
+  },
+  {
+    "id": "svq3uljKYRZub14DpA5e",
+    "question": {
+      "en": "Who painted 'The Persistence of Memory', famous for its melting clocks?",
+      "es": "¿Quién pintó 'La Persistencia de la memoria', famosa por sus relojes derretidos?"
+    },
+    "explanation": {
+      "es": "La 'Persistencia de la memoria' de Dalí es una icónica obra surrealista que presenta relojes derretidos en un paisaje onírico.",
+      "en": "Dalí's 'The Persistence of Memory' is an iconic surrealist work featuring melting clocks in a dreamlike landscape."
+    },
+    "difficulty": "easy",
+    "topicValue": "FamousPaintings",
+    "hint": {
+      "en": "This Spanish artist was a leading figure of the Surrealist movement, known for his bizarre and imaginative works.",
+      "es": "Este artista español fue una figura destacada del movimiento surrealista, conocido por sus obras extrañas e imaginativas."
+    },
+    "createdAt": "2025-06-26T22:05:32.075Z",
+    "imagePrompt": "A high-quality, clear image of the painting \"The Persistence of Memory\" by Salvador Dalí.",
+    "imageUrl": "https://storage.googleapis.com/ai-trivia-master.firebasestorage.app/trivia_images%2Fsvq3uljKYRZub14DpA5e.png",
+    "correctAnswer": {
+      "en": "Salvador Dalí",
+      "es": "Salvador Dalí"
+    },
+    "distractors": [
+      {
+        "es": "René Magritte",
+        "en": "René Magritte"
+      },
+      {
+        "en": "Joan Miró",
+        "es": "Joan Miró"
+      },
+      {
+        "en": "Frida Kahlo",
+        "es": "Frida Kahlo"
+      }
+    ]
+  },
+  {
+    "id": "MjWyJqxPdyf9huMoFsnF",
+    "question": {
+      "es": "¿Quién pintó 'La ronda de noche', un enorme retrato de grupo de una compañía de la guardia cívica?",
+      "en": "Who painted 'The Night Watch', a massive group portrait of a civic guard company?"
+    },
+    "explanation": {
+      "es": "'La ronda de noche' es un famoso retrato de grupo de Rembrandt, reconocido por su dramático uso de la luz y la sombra.",
+      "en": "'The Night Watch' is a famous group portrait by Rembrandt, renowned for its dramatic use of light and shadow."
+    },
+    "difficulty": "easy",
+    "topicValue": "FamousPaintings",
+    "hint": {
+      "en": "This Dutch Golden Age painter is known for his masterful use of chiaroscuro and for painting many self-portraits.",
+      "es": "Este pintor de la Edad de Oro holandesa es conocido por su maestría en el claroscuro y por pintar muchos autorretratos."
+    },
+    "createdAt": "2025-06-26T22:05:32.327Z",
+    "imagePrompt": "A high-quality, clear image of the painting \"The Night Watch\" by Rembrandt van Rijn.",
+    "imageUrl": "https://storage.googleapis.com/ai-trivia-master.firebasestorage.app/trivia_images%2FMjWyJqxPdyf9huMoFsnF.png",
+    "correctAnswer": {
+      "es": "Rembrandt van Rijn",
+      "en": "Rembrandt van Rijn"
+    },
+    "distractors": [
+      {
+        "en": "Pieter Bruegel the Elder",
+        "es": "Pieter Bruegel el Viejo"
+      },
+      {
+        "es": "Jan Steen",
+        "en": "Jan Steen"
+      },
+      {
+        "es": "Anthony van Dyck",
+        "en": "Anthony van Dyck"
+      }
+    ]
+  },
+  {
+    "id": "HP2CFDzviQyG67iOn0vy",
+    "question": {
+      "en": "Who painted 'Las Meninas', a complex and widely analyzed 1656 portrait of the Spanish royal family?",
+      "es": "¿Quién pintó 'Las Meninas', un complejo y ampliamente analizado retrato de la familia real española de 1656?"
+    },
+    "explanation": {
+      "en": "'Las Meninas' is a complex and enigmatic painting by Velázquez, depicting a scene from daily life in the Spanish court, with the artist himself present.",
+      "es": "'Las Meninas' es una pintura compleja y enigmática de Velázquez, que representa una escena de la vida diaria en la corte española, con el propio artista presente."
+    },
+    "difficulty": "medium",
+    "topicValue": "FamousPaintings",
+    "hint": {
+      "es": "Este destacado artista del Siglo de Oro español sirvió como pintor de la corte del Rey Felipe IV.",
+      "en": "This leading artist of the Spanish Golden Age served as court painter to King Philip IV."
+    },
+    "createdAt": "2025-06-26T22:06:28.040Z",
+    "imagePrompt": "A high-quality, clear image of the painting 'Las Meninas' by Diego Velázquez, in widescreen 16:9 aspect ratio.",
+    "imageUrl": "https://storage.googleapis.com/ai-trivia-master.firebasestorage.app/trivia_images%2FHP2CFDzviQyG67iOn0vy.png",
+    "correctAnswer": {
+      "es": "Diego Velázquez",
+      "en": "Diego Velázquez"
+    },
+    "distractors": [
+      {
+        "en": "Francisco Goya",
+        "es": "Francisco Goya"
+      },
+      {
+        "es": "El Greco",
+        "en": "El Greco"
+      },
+      {
+        "en": "Bartolomé Esteban Murillo",
+        "es": "Bartolomé Esteban Murillo"
+      }
+    ]
+  },
+  {
+    "id": "1Og77CYeHSrTIKAntOR1",
+    "question": {
+      "en": "Who painted 'Nighthawks', a famous depiction of people in a late-night diner?",
+      "es": "¿Quién pintó 'Noctámbulos', una famosa representación de personas en un restaurante nocturno?"
+    },
+    "explanation": {
+      "es": "'Noctámbulos' de Hopper es una pintura realista estadounidense por excelencia, que captura la soledad de la vida urbana por la noche.",
+      "en": "Hopper's 'Nighthawks' is a quintessential American realist painting, capturing the solitude of urban life at night."
+    },
+    "difficulty": "easy",
+    "topicValue": "FamousPaintings",
+    "hint": {
+      "en": "This American realist painter is known for his stark, solitary urban and rural scenes.",
+      "es": "Este pintor realista estadounidense es conocido por sus escenas urbanas y rurales sobrias y solitarias."
+    },
+    "createdAt": "2025-06-26T22:05:32.608Z",
+    "imagePrompt": "A high-quality, clear image of the painting \"Nighthawks\" by Edward Hopper.",
+    "imageUrl": "https://storage.googleapis.com/ai-trivia-master.firebasestorage.app/trivia_images%2F1Og77CYeHSrTIKAntOR1.png",
+    "correctAnswer": {
+      "en": "Edward Hopper",
+      "es": "Edward Hopper"
+    },
+    "distractors": [
+      {
+        "en": "Jackson Pollock",
+        "es": "Jackson Pollock"
+      },
+      {
+        "en": "Mark Rothko",
+        "es": "Mark Rothko"
+      },
+      {
+        "en": "Georgia O'Keeffe",
+        "es": "Georgia O'Keeffe"
+      }
+    ]
+  },
+  {
+    "id": "kJ8KlSjl0Er6NnzlBoRi",
+    "question": {
+      "en": "Who painted 'A Sunday Afternoon on the Island of La Grande Jatte', a famous work of Pointillism?",
+      "es": "¿Quién pintó 'Un domingo por la tarde en la isla de la Grande Jatte', una famosa obra del Puntillismo?"
+    },
+    "explanation": {
+      "es": "'Un domingo por la tarde en la isla de la Grande Jatte' de Seurat es una obra maestra del Puntillismo, compuesta por innumerables puntos pequeños.",
+      "en": "Seurat's 'A Sunday Afternoon on the Island of La Grande Jatte' is a masterpiece of Pointillism, composed of countless tiny dots."
+    },
+    "difficulty": "easy",
+    "topicValue": "FamousPaintings",
+    "hint": {
+      "es": "Este artista francés desarrolló la técnica pictórica del Puntillismo, utilizando pequeños y distintos puntos de color.",
+      "en": "This French artist developed the painting technique of Pointillism, using small, distinct dots of color."
+    },
+    "createdAt": "2025-06-26T22:05:32.449Z",
+    "imagePrompt": "A high-quality, clear image of the painting \"A Sunday Afternoon on the Island of La Grande Jatte\" by Georges Seurat.",
+    "imageUrl": "https://storage.googleapis.com/ai-trivia-master.firebasestorage.app/trivia_images%2FkJ8KlSjl0Er6NnzlBoRi.png",
+    "correctAnswer": {
+      "es": "Georges Seurat",
+      "en": "Georges Seurat"
+    },
+    "distractors": [
+      {
+        "en": "Paul Signac",
+        "es": "Paul Signac"
+      },
+      {
+        "en": "Camille Pissarro",
+        "es": "Camille Pissarro"
+      },
+      {
+        "en": "Edouard Manet",
+        "es": "Édouard Manet"
+      }
+    ]
+  },
+  {
+    "id": "vlMwX85ZiLlHuJBGZK71",
+    "question": {
+      "en": "Who painted \"Christ of Saint John of the Cross,\" a striking and unconventional depiction of the crucifixion?",
+      "es": "¿Quién pintó \"Cristo de San Juan de la Cruz\", una impactante y poco convencional representación de la crucifixión?"
+    },
+    "explanation": {
+      "es": "Esta pintura religiosa es única por su perspectiva dramática, casi cinematográfica, que representa a Cristo desde arriba y desde atrás.",
+      "en": "This religious painting is unique for its dramatic, almost cinematic perspective, depicting Christ from above and behind."
+    },
+    "difficulty": "hard",
+    "topicValue": "FamousPaintings",
+    "hint": {
+      "es": "Este artista surrealista español, conocido por sus imágenes oníricas, también creó una obra religiosa poderosa y poco convencional.",
+      "en": "This Spanish Surrealist artist, known for his dream imagery, also created a powerful and unconventional religious work."
+    },
+    "createdAt": "2025-06-26T22:07:30.350Z",
+    "imagePrompt": "A high-quality, clear image of the painting \"Christ of Saint John of the Cross\" by Salvador Dalí, widescreen, 16:9 aspect ratio, landscape orientation.",
+    "imageUrl": "https://storage.googleapis.com/ai-trivia-master.firebasestorage.app/trivia_images%2FvlMwX85ZiLlHuJBGZK71.png",
+    "correctAnswer": {
+      "es": "Salvador Dalí",
+      "en": "Salvador Dalí"
+    },
+    "distractors": [
+      {
+        "es": "Pablo Picasso",
+        "en": "Pablo Picasso"
+      },
+      {
+        "es": "Frida Kahlo",
+        "en": "Frida Kahlo"
+      },
+      {
+        "en": "Diego Rivera",
+        "es": "Diego Rivera"
+      }
+    ]
+  },
+  {
+    "id": "Xd7K4j08dxSauAEVfqeS",
+    "question": {
+      "en": "Who painted \"The Kiss\", an iconic work characterized by its golden hues and elaborate patterns?",
+      "es": "¿Quién pintó \"El beso\", una obra icónica caracterizada por sus tonos dorados y elaborados patrones?"
+    },
+    "explanation": {
+      "es": "Esta obra maestra del Art Nouveau, parte de la 'Fase Dorada' de Klimt, representa a una pareja abrazándose, cubierta de pan de oro brillante.",
+      "en": "This Art Nouveau masterpiece, part of Klimt's 'Golden Phase', depicts a couple embracing, covered in shimmering gold leaf."
+    },
+    "difficulty": "hard",
+    "topicValue": "FamousPaintings",
+    "hint": {
+      "es": "Este pintor simbolista austriaco fue un miembro destacado del movimiento de la Secesión de Viena, conocido por su suntuoso uso de pan de oro.",
+      "en": "This Austrian Symbolist painter was a prominent member of the Vienna Secession movement, known for his lavish use of gold leaf."
+    },
+    "createdAt": "2025-06-26T22:07:29.902Z",
+    "imagePrompt": "A high-quality, clear image of the painting \"The Kiss\" by Gustav Klimt, widescreen, 16:9 aspect ratio, landscape orientation.",
+    "imageUrl": "https://storage.googleapis.com/ai-trivia-master.firebasestorage.app/trivia_images%2FXd7K4j08dxSauAEVfqeS.png",
+    "correctAnswer": {
+      "en": "Gustav Klimt",
+      "es": "Gustav Klimt"
+    },
+    "distractors": [
+      {
+        "es": "Egon Schiele",
+        "en": "Egon Schiele"
+      },
+      {
+        "en": "Vincent van Gogh",
+        "es": "Vincent van Gogh"
+      },
+      {
+        "en": "Auguste Rodin",
+        "es": "Auguste Rodin"
+      }
+    ]
+  },
+  {
+    "id": "1hP0lwa1eorUpvf8QYLK",
+    "question": {
+      "es": "¿Quién pintó \"El caminante sobre el mar de nubes\", una obra quintaesencial del Romanticismo alemán?",
+      "en": "Who painted \"Wanderer Above the Sea of Fog\", a quintessential work of German Romanticism?"
+    },
+    "explanation": {
+      "en": "This iconic Romantic landscape painting portrays a lone figure contemplating a vast, misty landscape, embodying the sublime in nature.",
+      "es": "Esta icónica pintura de paisaje romántico retrata una figura solitaria contemplando un vasto paisaje brumoso, encarnando lo sublime en la naturaleza."
+    },
+    "difficulty": "hard",
+    "topicValue": "FamousPaintings",
+    "hint": {
+      "es": "Este pintor de paisajes romántico alemán enfatizó las experiencias espirituales y contemplativas en la naturaleza.",
+      "en": "This German Romantic landscape painter emphasized spiritual and contemplative experiences in nature."
+    },
+    "createdAt": "2025-06-26T22:07:29.614Z",
+    "imagePrompt": "A high-quality, clear image of the painting \"Wanderer Above the Sea of Fog\" by Caspar David Friedrich, widescreen, 16:9 aspect ratio, landscape orientation.",
+    "imageUrl": "https://storage.googleapis.com/ai-trivia-master.firebasestorage.app/trivia_images%2F1hP0lwa1eorUpvf8QYLK.png",
+    "correctAnswer": {
+      "es": "Caspar David Friedrich",
+      "en": "Caspar David Friedrich"
+    },
+    "distractors": [
+      {
+        "en": "J.M.W. Turner",
+        "es": "J.M.W. Turner"
+      },
+      {
+        "es": "John Constable",
+        "en": "John Constable"
+      },
+      {
+        "es": "Théodore Géricault",
+        "en": "Théodore Géricault"
+      }
+    ]
+  },
+  {
+    "id": "aEDYFMYWvsPlmXc6JQqy",
+    "question": {
+      "es": "¿Quién pintó \"La Escuela de Atenas\", un célebre fresco en el Palacio Apostólico del Vaticano que representa a destacados filósofos antiguos?",
+      "en": "Who painted \"The School of Athens,\" a renowned fresco in the Vatican's Apostolic Palace featuring prominent ancient philosophers?"
+    },
+    "explanation": {
+      "en": "This fresco is a key work of the High Renaissance, depicting a gathering of ancient Greek philosophers and thinkers.",
+      "es": "Este fresco es una obra clave del Alto Renacimiento, que representa una reunión de filósofos y pensadores griegos antiguos."
+    },
+    "difficulty": "hard",
+    "topicValue": "FamousPaintings",
+    "hint": {
+      "en": "He was one of the three great masters of the High Renaissance, often associated with his frescoes in the Vatican's Apostolic Palace.",
+      "es": "Fue uno de los tres grandes maestros del Alto Renacimiento, a menudo asociado con sus frescos en el Palacio Apostólico del Vaticano."
+    },
+    "createdAt": "2025-06-26T22:07:28.976Z",
+    "imagePrompt": "A high-quality, clear image of the painting \"The School of Athens\" by Raphael, widescreen, 16:9 aspect ratio, landscape orientation.",
+    "imageUrl": "https://storage.googleapis.com/ai-trivia-master.firebasestorage.app/trivia_images%2FaEDYFMYWvsPlmXc6JQqy.png",
+    "correctAnswer": {
+      "en": "Raphael",
+      "es": "Rafael"
+    },
+    "distractors": [
+      {
+        "es": "Leonardo da Vinci",
+        "en": "Leonardo da Vinci"
+      },
+      {
+        "es": "Miguel Ángel",
+        "en": "Michelangelo"
+      },
+      {
+        "es": "Sandro Botticelli",
+        "en": "Sandro Botticelli"
+      }
+    ]
+  },
+  {
+    "id": "bE2QTcpjuVajMTPDUM1h",
+    "question": {
+      "en": "Who painted \"Liberty Leading the People\", a celebrated work of the Romantic movement depicting the 1830 July Revolution?",
+      "es": "¿Quién pintó \"La Libertad guiando al pueblo\", una célebre obra del movimiento romántico que representa la Revolución de Julio de 1830?"
+    },
+    "explanation": {
+      "en": "This iconic Romantic painting commemorates the July Revolution of 1830, depicting Liberty as a personified woman leading the people.",
+      "es": "Esta icónica pintura romántica conmemora la Revolución de Julio de 1830, representando a la Libertad como una mujer personificada que guía al pueblo."
+    },
+    "difficulty": "hard",
+    "topicValue": "FamousPaintings",
+    "hint": {
+      "es": "Este pintor romántico francés es conocido por sus colores vibrantes y escenas dramáticas.",
+      "en": "This French Romantic painter is known for his vibrant colors and dramatic scenes."
+    },
+    "createdAt": "2025-06-26T22:07:29.150Z",
+    "imagePrompt": "A high-quality, clear image of the painting \"Liberty Leading the People\" by Eugène Delacroix, widescreen, 16:9 aspect ratio, landscape orientation.",
+    "imageUrl": "https://storage.googleapis.com/ai-trivia-master.firebasestorage.app/trivia_images%2FbE2QTcpjuVajMTPDUM1h.png",
+    "correctAnswer": {
+      "en": "Eugène Delacroix",
+      "es": "Eugène Delacroix"
+    },
+    "distractors": [
+      {
+        "en": "Théodore Géricault",
+        "es": "Théodore Géricault"
+      },
+      {
+        "en": "Caspar David Friedrich",
+        "es": "Caspar David Friedrich"
+      },
+      {
+        "es": "J.M.W. Turner",
+        "en": "J.M.W. Turner"
+      }
+    ]
+  },
+  {
+    "id": "WXBDpF1ZVrbl47BPP4o1",
+    "question": {
+      "es": "¿Quién pintó \"La ronda de noche\", una monumental pintura holandesa del Siglo de Oro del siglo XVII conocida por su composición dinámica y claroscuro?",
+      "en": "Who painted \"The Night Watch,\" a monumental 17th-century Dutch Golden Age painting known for its dynamic composition and chiaroscuro?"
+    },
+    "explanation": {
+      "en": "This massive group portrait from the Dutch Golden Age is famous for its dramatic use of light and shadow, and its innovative composition.",
+      "es": "Este enorme retrato de grupo de la Edad de Oro holandesa es famoso por su dramático uso de la luz y la sombra, y su composición innovadora."
+    },
+    "difficulty": "hard",
+    "topicValue": "FamousPaintings",
+    "hint": {
+      "es": "Este maestro de la Edad de Oro holandesa es reconocido por su maestría en la luz y la sombra, particularmente en sus retratos y dramáticas escenas bíblicas.",
+      "en": "This Dutch Golden Age master is renowned for his mastery of light and shadow, particularly in his portraits and dramatic biblical scenes."
+    },
+    "createdAt": "2025-06-26T22:07:30.295Z",
+    "imagePrompt": "A high-quality, clear image of the painting \"The Night Watch\" by Rembrandt van Rijn, widescreen, 16:9 aspect ratio, landscape orientation.",
+    "imageUrl": "https://storage.googleapis.com/ai-trivia-master.firebasestorage.app/trivia_images%2FWXBDpF1ZVrbl47BPP4o1.png",
+    "correctAnswer": {
+      "es": "Rembrandt van Rijn",
+      "en": "Rembrandt van Rijn"
+    },
+    "distractors": [
+      {
+        "en": "Johannes Vermeer",
+        "es": "Johannes Vermeer"
+      },
+      {
+        "es": "Frans Hals",
+        "en": "Frans Hals"
+      },
+      {
+        "es": "Jan Steen",
+        "en": "Jan Steen"
+      }
+    ]
+  },
+  {
+    "id": "qP8Db8xlmOhmVg6I0vcK",
+    "question": {
+      "en": "Who painted \"The Potato Eaters,\" an early work depicting a humble peasant family's meal?",
+      "es": "¿Quién pintó \"Los comedores de patatas\", una obra temprana que representa la humilde comida de una familia campesina?"
+    },
+    "explanation": {
+      "en": "Painted in 1885, this early work shows Van Gogh's fascination with the lives of peasants and his use of dark, earthy tones before his more famous vibrant style.",
+      "es": "Pintada en 1885, esta obra temprana muestra la fascinación de Van Gogh por la vida de los campesinos y su uso de tonos oscuros y terrosos antes de su estilo vibrante más famoso."
+    },
+    "difficulty": "hard",
+    "topicValue": "FamousPaintings",
+    "hint": {
+      "es": "Las primeras obras de este maestro Postimpresionista a menudo representaban las duras realidades de la vida campesina en los Países Bajos.",
+      "en": "This Post-Impressionist master's early works often depicted the harsh realities of peasant life in the Netherlands."
+    },
+    "createdAt": "2025-06-26T22:07:30.419Z",
+    "imagePrompt": "A high-quality, clear image of the painting \"The Potato Eaters\" by Vincent van Gogh, widescreen, 16:9 aspect ratio, landscape orientation.",
+    "imageUrl": "https://storage.googleapis.com/ai-trivia-master.firebasestorage.app/trivia_images%2FqP8Db8xlmOhmVg6I0vcK.png",
+    "correctAnswer": {
+      "en": "Vincent van Gogh",
+      "es": "Vincent van Gogh"
+    },
+    "distractors": [
+      {
+        "en": "Paul Gauguin",
+        "es": "Paul Gauguin"
+      },
+      {
+        "es": "Paul Cézanne",
+        "en": "Paul Cézanne"
+      },
+      {
+        "en": "Edvard Munch",
+        "es": "Edvard Munch"
+      }
+    ]
+  },
+  {
+    "id": "yU4Cbhr9RmqTAKGNBM2S",
+    "question": {
+      "es": "¿Quién pintó \"Nighthawks\", una icónica obra realista estadounidense que representa una escena de una cafetería nocturna?",
+      "en": "Who painted \"Nighthawks,\" an iconic American Realist work depicting a late-night diner scene?"
+    },
+    "explanation": {
+      "en": "This iconic American Realist painting depicts four people in a downtown diner late at night, evoking feelings of isolation and urban loneliness.",
+      "es": "Esta icónica pintura realista estadounidense representa a cuatro personas en un restaurante del centro a altas horas de la noche, evocando sentimientos de aislamiento y soledad urbana."
+    },
+    "difficulty": "hard",
+    "topicValue": "FamousPaintings",
+    "hint": {
+      "es": "Este pintor realista estadounidense es reconocido por sus representaciones de la vida moderna, a menudo centrándose en temas de soledad y alienación.",
+      "en": "This American Realist painter is renowned for his depictions of modern life, often focusing on themes of solitude and alienation."
+    },
+    "createdAt": "2025-06-26T22:07:29.435Z",
+    "imagePrompt": "A high-quality, clear image of the painting \"Nighthawks\" by Edward Hopper, widescreen, 16:9 aspect ratio, landscape orientation.",
+    "imageUrl": "https://storage.googleapis.com/ai-trivia-master.firebasestorage.app/trivia_images%2FyU4Cbhr9RmqTAKGNBM2S.png",
+    "correctAnswer": {
+      "en": "Edward Hopper",
+      "es": "Edward Hopper"
+    },
+    "distractors": [
+      {
+        "en": "Norman Rockwell",
+        "es": "Norman Rockwell"
+      },
+      {
+        "es": "Georgia O'Keeffe",
+        "en": "Georgia O'Keeffe"
+      },
+      {
+        "es": "Charles Burchfield",
+        "en": "Charles Burchfield"
+      }
+    ]
+  },
+  {
+    "id": "NPfjS51Iz7gliPeZnJf1",
+    "question": {
+      "en": "Who painted \"Olympia,\" the groundbreaking work that shocked the Parisian art world in 1865?",
+      "es": "¿Quién pintó \"Olympia\", la obra innovadora que conmocionó el mundo del arte parisino en 1865?"
+    },
+    "explanation": {
+      "en": "This painting caused a scandal when first exhibited due to its frank depiction of a nude woman gazing directly at the viewer, challenging academic traditions.",
+      "es": "Esta pintura causó un escándalo cuando se exhibió por primera vez debido a su representación franca de una mujer desnuda mirando directamente al espectador, desafiando las tradiciones académicas."
+    },
+    "difficulty": "hard",
+    "topicValue": "FamousPaintings",
+    "hint": {
+      "es": "A menudo considerado un puente entre el Realismo y el Impresionismo, las obras de este pintor francés causaron controversia en su época.",
+      "en": "Often considered a bridge between Realism and Impressionism, this French painter's works sparked controversy in their time."
+    },
+    "createdAt": "2025-06-26T22:07:29.750Z",
+    "imagePrompt": "A high-quality, clear image of the painting \"Olympia\" by Édouard Manet, widescreen, 16:9 aspect ratio, landscape orientation.",
+    "imageUrl": "",
+    "correctAnswer": {
+      "es": "Édouard Manet",
+      "en": "Édouard Manet"
+    },
+    "distractors": [
+      {
+        "es": "Claude Monet",
+        "en": "Claude Monet"
+      },
+      {
+        "en": "Edgar Degas",
+        "es": "Edgar Degas"
+      },
+      {
+        "en": "Gustave Courbet",
+        "es": "Gustave Courbet"
+      }
+    ]
+  },
+  {
+    "id": "DZFs7nXFgONsTG3IwF9j",
+    "question": {
+      "es": "¿Quién pintó el 'Retrato de Arnolfini', una famosa pintura al óleo del Renacimiento temprano?",
+      "en": "Who painted the 'Arnolfini Portrait', a famous early Renaissance oil painting?"
+    },
+    "explanation": {
+      "en": "The 'Arnolfini Portrait' is a highly detailed oil painting by Jan van Eyck, known for its complex symbolism.",
+      "es": "El 'Retrato de Arnolfini' es una pintura al óleo muy detallada de Jan van Eyck, conocida por su complejo simbolismo."
+    },
+    "difficulty": "easy",
+    "topicValue": "FamousPaintings",
+    "hint": {
+      "en": "This Early Netherlandish painter is renowned for his meticulous realism and pioneering use of oil paint.",
+      "es": "Este pintor de los Países Bajos Tempranos es famoso por su realismo meticuloso y su uso pionero de la pintura al óleo."
+    },
+    "createdAt": "2025-06-26T22:05:32.965Z",
+    "imagePrompt": "A high-quality, clear image of the painting \"Arnolfini Portrait\" by Jan van Eyck.",
+    "imageUrl": "https://storage.googleapis.com/ai-trivia-master.firebasestorage.app/trivia_images%2FDZFs7nXFgONsTG3IwF9j.png",
+    "correctAnswer": {
+      "es": "Jan van Eyck",
+      "en": "Jan van Eyck"
+    },
+    "distractors": [
+      {
+        "en": "Rogier van der Weyden",
+        "es": "Rogier van der Weyden"
+      },
+      {
+        "en": "Hans Memling",
+        "es": "Hans Memling"
+      },
+      {
+        "es": "El Bosco",
+        "en": "Hieronymus Bosch"
+      }
+    ]
+  },
+  {
+    "id": "Yrr1koXLzz3EWIwWXdCx",
+    "question": {
+      "es": "¿Quién pintó el icónico retrato conocido como 'Mona Lisa'?",
+      "en": "Who painted the iconic portrait known as 'Mona Lisa'?"
+    },
+    "explanation": {
+      "es": "La Mona Lisa es uno de los retratos más famosos y enigmáticos de la historia del arte, conocido por su sutil sonrisa.",
+      "en": "The Mona Lisa is one of the most famous and enigmatic portraits in art history, known for its subtle smile."
+    },
+    "difficulty": "easy",
+    "topicValue": "FamousPaintings",
+    "hint": {
+      "en": "This Renaissance master was also a renowned inventor and scientist.",
+      "es": "Este maestro del Renacimiento fue también un célebre inventor y científico."
+    },
+    "createdAt": "2025-06-26T22:05:31.667Z",
+    "imagePrompt": "A high-quality, clear image of the painting \"Mona Lisa\" by Leonardo da Vinci.",
+    "imageUrl": "https://storage.googleapis.com/ai-trivia-master.firebasestorage.app/trivia_images%2FYrr1koXLzz3EWIwWXdCx.png",
+    "correctAnswer": {
+      "en": "Leonardo da Vinci",
+      "es": "Leonardo da Vinci"
+    },
+    "distractors": [
+      {
+        "en": "Michelangelo",
+        "es": "Miguel Ángel"
+      },
+      {
+        "es": "Rafael",
+        "en": "Raphael"
+      },
+      {
+        "es": "Sandro Botticelli",
+        "en": "Sandro Botticelli"
+      }
+    ]
+  },
+  {
+    "id": "3HWMdZexDpYeO3cQR1g0",
+    "question": {
+      "en": "Who painted the iconic portrait known as the 'Mona Lisa'?",
+      "es": "¿Quién pintó el icónico retrato conocido como la 'Mona Lisa'?"
+    },
+    "explanation": {
+      "es": "La Mona Lisa es reconocida por su enigmática sonrisa y es una de las obras de arte más famosas del mundo, albergada en el Museo del Louvre en París.",
+      "en": "The Mona Lisa is renowned for its enigmatic smile and is one of the most famous artworks in the world, housed at the Louvre Museum in Paris."
+    },
+    "difficulty": "medium",
+    "topicValue": "FamousPaintings",
+    "hint": {
+      "en": "This Italian Renaissance polymath was also an inventor and scientist.",
+      "es": "Este polímata del Renacimiento italiano también fue un inventor y científico."
+    },
+    "createdAt": "2025-06-26T22:06:27.411Z",
+    "imagePrompt": "A high-quality, clear image of the painting 'Mona Lisa' by Leonardo da Vinci, in widescreen 16:9 aspect ratio.",
+    "imageUrl": "https://storage.googleapis.com/ai-trivia-master.firebasestorage.app/trivia_images%2F3HWMdZexDpYeO3cQR1g0.png",
+    "correctAnswer": {
+      "en": "Leonardo da Vinci",
+      "es": "Leonardo da Vinci"
+    },
+    "distractors": [
+      {
+        "es": "Miguel Ángel",
+        "en": "Michelangelo"
+      },
+      {
+        "es": "Rafael",
+        "en": "Raphael"
+      },
+      {
+        "es": "Sandro Botticelli",
+        "en": "Sandro Botticelli"
+      }
+    ]
+  },
+  {
+    "id": "KgFs3bAxCmTM4SNuSB9F",
+    "question": {
+      "es": "¿Quién pintó la compleja e icónica escena de la corte española titulada 'Las Meninas'?",
+      "en": "Who painted the complex and iconic Spanish court scene titled 'Las Meninas'?"
+    },
+    "explanation": {
+      "en": "'Las Meninas' is a complex and highly analyzed painting by Velázquez, depicting a scene from the Spanish court.",
+      "es": "'Las Meninas' es una pintura compleja y muy analizada de Velázquez, que representa una escena de la corte española."
+    },
+    "difficulty": "easy",
+    "topicValue": "FamousPaintings",
+    "hint": {
+      "en": "This Spanish Golden Age painter was the leading artist in the court of King Philip IV.",
+      "es": "Este pintor del Siglo de Oro español fue el artista principal en la corte del Rey Felipe IV."
+    },
+    "createdAt": "2025-06-26T22:05:32.494Z",
+    "imagePrompt": "A high-quality, clear image of the painting \"Las Meninas\" by Diego Velázquez.",
+    "imageUrl": "https://storage.googleapis.com/ai-trivia-master.firebasestorage.app/trivia_images%2FKgFs3bAxCmTM4SNuSB9F.png",
+    "correctAnswer": {
+      "en": "Diego Velázquez",
+      "es": "Diego Velázquez"
+    },
+    "distractors": [
+      {
+        "es": "El Greco",
+        "en": "El Greco"
+      },
+      {
+        "en": "Francisco Goya",
+        "es": "Francisco Goya"
+      },
+      {
+        "es": "Bartolomé Esteban Murillo",
+        "en": "Bartolomé Esteban Murillo"
+      }
+    ]
+  },
+  {
+    "id": "koOmNpwehnTXr01P9Hm2",
+    "question": {
+      "es": "¿Quién pintó la famosa obra de arte regionalista estadounidense \"American Gothic\", que representa a un granjero y una mujer de semblante severo?",
+      "en": "Who painted the famous American Regionalist artwork \"American Gothic,\" depicting a stern-faced farmer and a woman?"
+    },
+    "explanation": {
+      "en": "This painting, a quintessential work of American Regionalism, depicts a farmer and a woman in front of a white house with a Gothic window.",
+      "es": "Esta pintura, una obra por excelencia del Regionalismo Americano, representa a un granjero y una mujer frente a una casa blanca con una ventana gótica."
+    },
+    "difficulty": "hard",
+    "topicValue": "FamousPaintings",
+    "hint": {
+      "es": "Este pintor regionalista estadounidense se inspiró en la gente y los paisajes del Medio Oeste.",
+      "en": "This American Regionalist painter drew inspiration from the people and landscapes of the Midwest."
+    },
+    "createdAt": "2025-06-26T22:07:29.326Z",
+    "imagePrompt": "A high-quality, clear image of the painting \"American Gothic\" by Grant Wood, widescreen, 16:9 aspect ratio, landscape orientation.",
+    "imageUrl": "https://storage.googleapis.com/ai-trivia-master.firebasestorage.app/trivia_images%2FkoOmNpwehnTXr01P9Hm2.png",
+    "correctAnswer": {
+      "es": "Grant Wood",
+      "en": "Grant Wood"
+    },
+    "distractors": [
+      {
+        "en": "Edward Hopper",
+        "es": "Edward Hopper"
+      },
+      {
+        "es": "Andrew Wyeth",
+        "en": "Andrew Wyeth"
+      },
+      {
+        "es": "Thomas Hart Benton",
+        "en": "Thomas Hart Benton"
+      }
+    ]
+  },
+  {
+    "id": "bMcv9HXh51hPa3YFEVOB",
+    "question": {
+      "es": "¿Quién pintó la famosa serie de 'Los Girasoles'?",
+      "en": "Who painted the famous 'Sunflowers' series?"
+    },
+    "explanation": {
+      "es": "Van Gogh pintó varias versiones de 'Los Girasoles', celebradas por su amarillo vibrante y su impasto grueso.",
+      "en": "Van Gogh painted several versions of 'Sunflowers,' celebrated for their vibrant yellow and thick impasto."
+    },
+    "difficulty": "easy",
+    "topicValue": "FamousPaintings",
+    "hint": {
+      "en": "This Dutch Post-Impressionist artist is famously known for his intense use of color and dramatic brushwork.",
+      "es": "Este artista postimpresionista holandés es famoso por su intenso uso del color y sus pinceladas dramáticas."
+    },
+    "createdAt": "2025-06-26T22:05:32.846Z",
+    "imagePrompt": "A high-quality, clear image of the painting \"Sunflowers\" by Vincent van Gogh, specifically the vase with fifteen sunflowers.",
+    "imageUrl": "https://storage.googleapis.com/ai-trivia-master.firebasestorage.app/trivia_images%2FbMcv9HXh51hPa3YFEVOB.png",
+    "correctAnswer": {
+      "en": "Vincent van Gogh",
+      "es": "Vincent van Gogh"
+    },
+    "distractors": [
+      {
+        "es": "Paul Gauguin",
+        "en": "Paul Gauguin"
+      },
+      {
+        "en": "Georges Seurat",
+        "es": "Georges Seurat"
+      },
+      {
+        "en": "Henri Matisse",
+        "es": "Henri Matisse"
+      }
+    ]
+  },
+  {
+    "id": "oAJ4I99MEN947OOngmEV",
+    "question": {
+      "es": "¿Quién pintó la macabra e inquietante obra \"Saturno devorando a su hijo\"?",
+      "en": "Who painted the macabre and haunting work \"Saturn Devouring His Son\"?"
+    },
+    "explanation": {
+      "en": "This disturbing work is part of Goya's \"Black Paintings\" series, painted directly onto the walls of his house during a period of personal crisis.",
+      "es": "Esta inquietante obra forma parte de la serie \"Pinturas Negras\" de Goya, pintada directamente en las paredes de su casa durante un período de crisis personal."
+    },
+    "difficulty": "hard",
+    "topicValue": "FamousPaintings",
+    "hint": {
+      "en": "This Spanish Romantic painter created a series of dark, psychological works known as his 'Black Paintings'.",
+      "es": "Este pintor romántico español creó una serie de obras oscuras y psicológicas conocidas como sus 'Pinturas Negras'."
+    },
+    "createdAt": "2025-06-26T22:07:29.552Z",
+    "imagePrompt": "A high-quality, clear image of the painting \"Saturn Devouring His Son\" by Francisco Goya, widescreen, 16:9 aspect ratio, landscape orientation.",
+    "imageUrl": "",
+    "correctAnswer": {
+      "es": "Francisco Goya",
+      "en": "Francisco Goya"
+    },
+    "distractors": [
+      {
+        "en": "Diego Velázquez",
+        "es": "Diego Velázquez"
+      },
+      {
+        "en": "El Greco",
+        "es": "El Greco"
+      },
+      {
+        "es": "J.M.W. Turner",
+        "en": "J.M.W. Turner"
+      }
+    ]
+  },
+  {
+    "id": "ziFrLmRdxVkeLTYIxur9",
+    "question": {
+      "en": "Who painted many iconic self-portraits, including 'The Two Fridas'?",
+      "es": "¿Quién pintó muchos autorretratos icónicos, incluyendo 'Las dos Fridas'?"
+    },
+    "explanation": {
+      "es": "Frida Kahlo, pintora mexicana, es conocida por sus numerosos autorretratos que exploran la identidad, el dolor y el poscolonialismo.",
+      "en": "Frida Kahlo, a Mexican painter, is known for her many self-portraits that explore identity, pain, and postcolonialism."
+    },
+    "difficulty": "easy",
+    "topicValue": "FamousPaintings",
+    "hint": {
+      "en": "This Mexican artist is celebrated for her powerful self-portraits and distinctive eyebrows.",
+      "es": "Esta artista mexicana es célebre por sus poderosos autorretratos y sus distintivas cejas."
+    },
+    "createdAt": "2025-06-26T22:05:32.734Z",
+    "imagePrompt": "A high-quality, clear image of the painting \"The Two Fridas\" by Frida Kahlo.",
+    "imageUrl": "https://storage.googleapis.com/ai-trivia-master.firebasestorage.app/trivia_images%2FziFrLmRdxVkeLTYIxur9.png",
+    "correctAnswer": {
+      "en": "Frida Kahlo",
+      "es": "Frida Kahlo"
+    },
+    "distractors": [
+      {
+        "es": "Diego Rivera",
+        "en": "Diego Rivera"
+      },
+      {
+        "es": "Leonora Carrington",
+        "en": "Leonora Carrington"
+      },
+      {
+        "en": "Remedios Varo",
+        "es": "Remedios Varo"
+      }
+    ]
+  }
+]
