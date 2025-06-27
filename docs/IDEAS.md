@@ -65,6 +65,13 @@ Este documento recopila ideas para futuras mejoras de la aplicación AI Trivia M
         *   La generación de imágenes mediante IA tiene un costo de API superior al de la generación de texto puro.
         *   Sin embargo, el valor añadido en términos de atractivo visual y engagement del usuario podría justificarlo, especialmente para categorías o modos de juego premium.
 
+8.  **Optimización de Imágenes con SVG para Banderas:**
+    *   **Observación:** Wikimedia Commons ofrece las banderas de la mayoría de los países en formato **SVG (Gráficos Vectoriales Escalables)**.
+    *   **Beneficios:**
+        *   **Calidad Perfecta:** Los SVGs son vectores, lo que significa que se ven perfectamente nítidos en cualquier tamaño de pantalla, sin pixelación.
+        *   **Tamaño de Archivo Mínimo:** Para gráficos como las banderas, los SVGs son mucho más ligeros que los archivos PNG o JPG, lo que se traduce en tiempos de carga más rápidos y menores costos de almacenamiento y transferencia de datos.
+    *   **Implementación Propuesta:** Modificar el flujo `findWikimediaImages` (o crear uno nuevo para banderas) para que, al buscar una bandera, priorice obtener la URL del archivo SVG original en lugar de un thumbnail en formato de píxeles (PNG/JPG). El resto del proceso (subida a Firebase Storage y guardado en Firestore) sería similar. Next.js (`next/image`) es totalmente compatible con el uso de SVGs.
+
 ## ¿Sería fácil convertirla en una app de Android?
 
 Convertir una aplicación web Next.js directamente en una aplicación nativa de Android (escrita en Kotlin o Java) **no es un proceso directo de "un clic"**. Son tecnologías fundamentalmente diferentes. Sin embargo, hay varias estrategias para llevar tu aplicación web a Android, con diferentes niveles de esfuerzo y "nativismo":
