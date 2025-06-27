@@ -56,18 +56,26 @@ const argv = yargs(hideBin(process.argv))
 
 
 async function fetchImageFromWikimedia(question: PredefinedQuestion): Promise<string | null> {
-  const searchTerm = `${question.artworkTitle} ${question.artworkAuthor}`;
-  console.log(`  [Wikimedia] Searching for: "${searchTerm}"`);
+  if (!question.artworkTitle || !question.artworkAuthor) {
+    console.warn(`  [Wikimedia] Skipping question ID ${question.id}: Missing artworkTitle or artworkAuthor.`);
+    return null;
+  }
+  
+  // Construct a more precise search term with quotes for better accuracy
+  const searchTerm = `"${question.artworkTitle}" "${question.artworkAuthor}"`;
+  console.log(`  [Wikimedia] Searching for: ${searchTerm}`);
 
-  // 1. Find the file page using opensearch
-  const searchUrl = `https://commons.wikimedia.org/w/api.php?action=opensearch&search=${encodeURIComponent(searchTerm)}&limit=1&namespace=6&format=json`;
+  // 1. Find the file page using the more powerful 'query' action with 'list=search'
+  const searchUrl = `https://commons.wikimedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(searchTerm)}&srnamespace=6&format=json&srlimit=1&origin=*`;
+  
   const searchResponse = await fetch(searchUrl);
   if (!searchResponse.ok) {
     console.warn(`  [Wikimedia] Search request failed with status: ${searchResponse.status}`);
     return null;
   }
   const searchResult = await searchResponse.json();
-  const pageTitle = searchResult[1]?.[0];
+  const pageTitle = searchResult?.query?.search?.[0]?.title;
+
 
   if (!pageTitle) {
     console.warn(`  [Wikimedia] No file page found for search term "${searchTerm}".`);
@@ -197,7 +205,7 @@ async function populateImages() {
         } else if (question.imagePrompt) {
           publicUrl = await generateImageFromAI(question.imagePrompt, question.id);
         } else {
-          console.log(`  -> Skipping question ID ${question.id}: No imagePrompt or artworkTitle provided.`);
+          console.log(`  -> Skipping question ID ${question.id}: No imagePrompt or artworkTitle/Author provided.`);
           continue;
         }
 
