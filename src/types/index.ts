@@ -1,3 +1,4 @@
+
 // src/types/index.ts
 import { z } from 'zod';
 import type { AppLocale } from '@/lib/i18n-config';
@@ -29,7 +30,7 @@ export const GenerateTriviaQuestionOutputSchema = z.object({
   imagePrompt: z.string().optional().describe('For AI-generated images: A detailed, English-only prompt for a text-to-image model.'),
   artworkTitle: z.string().optional().describe("For real artwork: The specific title of the artwork to search for (e.g., 'Mona Lisa')."),
   artworkAuthor: z.string().optional().describe("For real artwork: The name of the artist to refine the search (e.g., 'Leonardo da Vinci')."),
-  imageUrl: z.string().url().optional().describe('The URL of the final image.'),
+  imageUrl: z.string().optional().describe('The URL of the final image.'),
 });
 
 // Wikimedia Image Search Schemas
