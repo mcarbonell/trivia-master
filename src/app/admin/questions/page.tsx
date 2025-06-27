@@ -98,7 +98,7 @@ const ImageSearchDialog: React.FC<ImageSearchDialogProps> = ({ open, onOpenChang
                   onClick={() => onImageSelect(image)}
                 >
                   <CardContent className="p-0">
-                    <div className="relative aspect-w-1 aspect-h-1">
+                    <div className="relative aspect-square">
                       <Image 
                         src={image.thumbnailUrl} 
                         alt={image.title} 
