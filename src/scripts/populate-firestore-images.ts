@@ -5,8 +5,8 @@ config(); // Load environment variables from .env file
 import admin from 'firebase-admin';
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
-import { generateImage } from '../src/ai/flows/generate-image';
 import type { PredefinedQuestion } from '../src/services/triviaService';
+import { ai } from '@/ai/genkit';
 
 // Initialize Firebase Admin SDK
 try {
@@ -101,14 +101,14 @@ async function fetchImageFromWikimedia(question: PredefinedQuestion): Promise<st
     return null;
   }
 
-  // 3. Validate license - check for public domain indicators
-  const licenseShortName = extMetadata.LicenseShortName?.value?.toLowerCase() || '';
-  const restrictions = extMetadata.Restrictions?.value?.toLowerCase() || '';
+  // 3. MORE ROBUST license validation
+  const licenseShortName = (extMetadata.LicenseShortName?.value || '').toLowerCase();
+  const licenseUrl = (extMetadata.LicenseUrl?.value || '').toLowerCase();
 
-  // Check for common Public Domain identifiers.
-  const isPublicDomain = licenseShortName.includes('public domain') || 
-                         licenseShortName.includes('pd-') ||
-                         restrictions.includes('other-pd');
+  const isPublicDomain =
+    licenseShortName === 'public domain' ||
+    licenseShortName.startsWith('pd-') || 
+    licenseUrl.includes('creativecommons.org/publicdomain/');
 
   if (!isPublicDomain) {
     console.warn(`  [Wikimedia] License for "${pageTitle}" is not confirmed as Public Domain. Skipping. License: ${extMetadata.LicenseShortName?.value || 'Unknown'}`);
