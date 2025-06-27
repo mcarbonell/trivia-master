@@ -40,7 +40,7 @@ const argv = yargs(hideBin(process.argv))
 
 const sourceFilePrefix: string = argv.source;
 const questionsJsonFileName = `${sourceFilePrefix}-questions.json`;
-const QUESTIONS_FILE_PATH = path.join(__dirname, '../src/data/', questionsJsonFileName);
+const QUESTIONS_FILE_PATH = path.join(__dirname, '../data/', questionsJsonFileName);
 
 function isValidBilingualText(obj: any): obj is BilingualText {
   return obj && typeof obj.en === 'string' && typeof obj.es === 'string';
@@ -74,31 +74,27 @@ async function importQuestions() {
     let questionsSkipped = 0;
 
     for (const question of questionsData) {
-      // Basic validation for old format
+      // Basic validation for new format
       if (
         !question.id || typeof question.id !== 'string' ||
         !question.topicValue || typeof question.topicValue !== 'string' ||
         !isValidBilingualText(question.question) ||
-        !Array.isArray(question.answers) || question.answers.length !== 4 || !question.answers.every(isValidBilingualText) ||
-        typeof question.correctAnswerIndex !== 'number' || question.correctAnswerIndex < 0 || question.correctAnswerIndex > 3 ||
+        !isValidBilingualText(question.correctAnswer) ||
+        !Array.isArray(question.distractors) || question.distractors.length !== 3 || !question.distractors.every(isValidBilingualText) ||
         !isValidBilingualText(question.explanation) ||
         !question.difficulty || !ALL_DIFFICULTY_LEVELS_CONST.includes(question.difficulty)
       ) {
-        console.warn(`Skipping question due to missing/invalid required fields in old format. ID: ${question.id || 'N/A'}, Data: ${JSON.stringify(question).substring(0, 200)}...`);
+        console.warn(`Skipping question due to missing/invalid required fields in new format. ID: ${question.id || 'N/A'}, Data: ${JSON.stringify(question).substring(0, 200)}...`);
         questionsSkipped++;
         continue;
       }
-      
-      // Convert old format to new format
-      const correctAnswer = question.answers[question.correctAnswerIndex];
-      const distractors = question.answers.filter((_: any, i: number) => i !== question.correctAnswerIndex);
       
       const questionToSave: { [key: string]: any } = {
         // id field is not stored in the document, but used for doc ID
         topicValue: question.topicValue,
         question: question.question,
-        correctAnswer: correctAnswer,
-        distractors: distractors,
+        correctAnswer: question.correctAnswer,
+        distractors: question.distractors,
         explanation: question.explanation,
         difficulty: question.difficulty,
       };
@@ -126,6 +122,13 @@ async function importQuestions() {
       if (question.status && ['accepted', 'fixed'].includes(question.status)) {
         questionToSave.status = question.status;
       }
+      if (question.imagePrompt) {
+          questionToSave.imagePrompt = question.imagePrompt;
+      }
+      if (question.imageUrl) {
+          questionToSave.imageUrl = question.imageUrl;
+      }
+
 
       const docRef = db.collection(PREDEFINED_QUESTIONS_COLLECTION).doc(question.id);
       batch.set(docRef, questionToSave, { merge: true });
@@ -147,7 +150,7 @@ async function importQuestions() {
       console.log('Final batch committed.');
     }
 
-    console.log(`Successfully imported/updated ${questionsImported} questions (converted to new format).`);
+    console.log(`Successfully imported/updated ${questionsImported} questions.`);
     if (questionsSkipped > 0) {
       console.warn(`Skipped ${questionsSkipped} questions due to validation errors.`);
     }

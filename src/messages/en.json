@@ -360,6 +360,21 @@
       "accepted": "Accepted",
       "fixed": "Fixed"
     },
+    "imageSearchDialog": {
+      "title": "Find Image on Wikimedia Commons",
+      "description": "Select the best image for this question. Only images with permissive licenses are shown.",
+      "findButton": "Find on Wikimedia",
+      "loading": "Searching for images...",
+      "noResults": "No suitable images found with a permissive license. Try adjusting the artwork title or author.",
+      "errorTitle": "Image Search Error",
+      "errorNoTitle": "Artwork title is required to perform a search.",
+      "errorApi": "Failed to search for images. Please check the console for details.",
+      "processingTitle": "Processing Image...",
+      "processingDescription": "Downloading and saving your selected image.",
+      "successTitle": "Image Set!",
+      "successDescription": "The image has been successfully set for this question.",
+      "errorProcessing": "Failed to process the selected image. Please try again."
+    },
     "form": {
       "viewDialogTitle": "View Question Details",
       "viewDialogDescription": "Viewing question details from category \"{topic}\".",
@@ -380,6 +395,10 @@
       "visualsLabel": "Visuals",
       "imagePromptLabel": "Image Prompt (for AI)",
       "imagePromptPlaceholder": "Enter a detailed, English prompt for text-to-image AI...",
+      "artworkTitleLabel": "Artwork Title (for Search)",
+      "artworkTitlePlaceholder": "e.g., The Starry Night",
+      "artworkAuthorLabel": "Artwork Author (for Search)",
+      "artworkAuthorPlaceholder": "e.g., Vincent van Gogh",
       "imageUrlLabel": "Image URL",
       "imageUrlPlaceholder": "Enter the public URL of the generated image..."
     }
@@ -474,7 +493,7 @@
     "tableLocale": "Locale",
     "tableActions": "Actions",
     "anonymousSender": "Anonymous",
-    "notAvailable": "N/A",
+    "notAvailable": "N/D",
     "errorLoading": "Error loading suggestions. Please try again.",
     "toastDeleteSuccess": "Suggestion deleted successfully.",
     "toastDeleteError": "Could not delete suggestion.",
@@ -521,12 +540,12 @@
     "reportSubmittedSuccess": "Reporte enviado correctamente. ¡Gracias!",
     "reportSubmittedError": "Error al enviar el reporte. Por favor, inténtalo de nuevo.",
     "reasons": {
-      "incorrect_info": "Incorrect Information",
-      "poorly_worded": "Poorly Worded / Confusing",
-      "typo_grammar": "Typo / Grammatical Error",
-      "duplicate_question": "Duplicate Question",
-      "offensive_content": "Offensive Content",
-      "other": "Other"
+      "incorrect_info": "Información Incorrecta",
+      "poorly_worded": "Mal Redactada / Confusa",
+      "typo_grammar": "Error Tipográfico / Gramatical",
+      "duplicate_question": "Pregunta Duplicada",
+      "offensive_content": "Contenido Ofensivo",
+      "other": "Otro"
     }
   }
 }

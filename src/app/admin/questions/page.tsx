@@ -7,6 +7,8 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { getAllPredefinedQuestionsForAdmin, deletePredefinedQuestion, updatePredefinedQuestion, type PredefinedQuestion } from '@/services/triviaService';
 import { getAppCategories } from '@/services/categoryService';
+import { findWikimediaImages, type FindWikimediaImagesOutput, type WikimediaImageCandidate } from '@/ai/flows/find-wikimedia-images';
+import { processWikimediaImage } from '@/ai/flows/process-wikimedia-image';
 import type { CategoryDefinition, DifficultyLevel, BilingualText } from '@/types';
 import type { AppLocale } from '@/lib/i18n-config';
 import { useTranslations, useLocale } from 'next-intl';
@@ -15,7 +17,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter }
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogClose } from '@/components/ui/dialog';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { Tooltip, TooltipProvider, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -23,7 +25,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Badge } from '@/components/ui/badge';
-import { Loader2, AlertTriangle, PlusCircle, Eye, Edit, Trash2, RefreshCw, Search, ArrowUpDown, Download, ClipboardCopy, Image as ImageIcon } from 'lucide-react';
+import { Loader2, AlertTriangle, PlusCircle, Eye, Edit, Trash2, RefreshCw, Search, ArrowUpDown, Download, ClipboardCopy, Image as ImageIcon, Camera } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
 import Image from 'next/image';
@@ -50,10 +52,75 @@ export const questionFormSchema = z.object({
   hintEn: z.string().optional(),
   hintEs: z.string().optional(),
   difficulty: z.enum(ALL_DIFFICULTY_LEVELS, { required_error: "Difficulty is required." }),
+  
+  artworkTitle: z.string().optional(),
+  artworkAuthor: z.string().optional(),
   imagePrompt: z.string().optional(),
   imageUrl: z.string().optional(),
 });
 export type QuestionFormData = z.infer<typeof questionFormSchema>;
+
+interface ImageSearchDialogProps {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  isLoading: boolean;
+  results: FindWikimediaImagesOutput;
+  onImageSelect: (image: WikimediaImageCandidate) => void;
+  onCancel: () => void;
+}
+
+const ImageSearchDialog: React.FC<ImageSearchDialogProps> = ({ open, onOpenChange, isLoading, results, onImageSelect, onCancel }) => {
+  const t = useTranslations('AdminQuestionsPage');
+  
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="sm:max-w-4xl max-h-[90vh]">
+        <DialogHeader>
+          <DialogTitle>{t('imageSearchDialog.title')}</DialogTitle>
+          <DialogDescription>{t('imageSearchDialog.description')}</DialogDescription>
+        </DialogHeader>
+        <ScrollArea className="max-h-[calc(90vh-200px)]">
+          {isLoading ? (
+            <div className="flex flex-col items-center justify-center p-8 space-y-4">
+              <Loader2 className="h-12 w-12 animate-spin text-primary" />
+              <p className="text-lg text-muted-foreground">{t('imageSearchDialog.loading')}</p>
+            </div>
+          ) : results.length === 0 ? (
+            <div className="text-center p-8 text-muted-foreground">{t('imageSearchDialog.noResults')}</div>
+          ) : (
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 p-4">
+              {results.map((image) => (
+                <Card 
+                  key={image.thumbnailUrl} 
+                  className="overflow-hidden cursor-pointer hover:ring-2 hover:ring-primary transition-all group"
+                  onClick={() => onImageSelect(image)}
+                >
+                  <CardContent className="p-0">
+                    <div className="relative aspect-w-1 aspect-h-1">
+                      <Image 
+                        src={image.thumbnailUrl} 
+                        alt={image.title} 
+                        fill
+                        className="object-cover transition-transform group-hover:scale-105"
+                        sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
+                      />
+                    </div>
+                  </CardContent>
+                  <CardFooter className="p-2 text-xs">
+                    <p className="truncate" title={image.title}>{image.title}</p>
+                  </CardFooter>
+                </Card>
+              ))}
+            </div>
+          )}
+        </ScrollArea>
+        <DialogFooter>
+          <Button variant="outline" onClick={onCancel}>{t('cancel')}</Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+};
 
 
 export default function AdminQuestionsPage() {
@@ -86,6 +153,12 @@ export default function AdminQuestionsPage() {
   
   const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
   const [currentQuestionToView, setCurrentQuestionToView] = useState<PredefinedQuestion | null>(null);
+
+  // State for image search dialog
+  const [isImageSearchOpen, setIsImageSearchOpen] = useState(false);
+  const [isImageSearchLoading, setIsImageSearchLoading] = useState(false);
+  const [imageSearchResults, setImageSearchResults] = useState<FindWikimediaImagesOutput>([]);
+
 
   const form = useForm<QuestionFormData>({
     resolver: zodResolver(questionFormSchema),
@@ -154,7 +227,6 @@ export default function AdminQuestionsPage() {
     const trimmedSearchQuery = searchQuery.trim();
     const lowerSearchQuery = trimmedSearchQuery.toLowerCase();
     
-    // Normalize correct answer for searching across old/new formats if necessary
     const getSearchableAnswers = (q: PredefinedQuestion): string[] => {
       const answers: string[] = [];
       if (q.correctAnswer) {
@@ -266,6 +338,8 @@ export default function AdminQuestionsPage() {
       hintEn: question.hint?.en || '',
       hintEs: question.hint?.es || '',
       difficulty: question.difficulty,
+      artworkTitle: question.artworkTitle || '',
+      artworkAuthor: question.artworkAuthor || '',
       imagePrompt: question.imagePrompt || '',
       imageUrl: question.imageUrl || '',
     });
@@ -310,6 +384,8 @@ export default function AdminQuestionsPage() {
       explanation: { en: data.explanationEn, es: data.explanationEs },
       hint: (data.hintEn || data.hintEs) ? { en: data.hintEn || '', es: data.hintEs || '' } : undefined,
       difficulty: data.difficulty,
+      artworkTitle: data.artworkTitle || undefined,
+      artworkAuthor: data.artworkAuthor || undefined,
       imagePrompt: data.imagePrompt || undefined,
       imageUrl: data.imageUrl || undefined,
     };
@@ -329,6 +405,53 @@ export default function AdminQuestionsPage() {
       toast({ variant: "destructive", title: tCommon('toastErrorTitle') as string, description: t('toastUpdateError') });
     } finally {
       setIsSubmittingQuestion(false);
+    }
+  };
+
+  const handleFindImageOnWikimedia = async () => {
+    const formData = form.getValues();
+    const { artworkTitle, artworkAuthor } = formData;
+
+    if (!artworkTitle) {
+      toast({ variant: 'destructive', title: t('imageSearchDialog.errorTitle'), description: t('imageSearchDialog.errorNoTitle') });
+      return;
+    }
+
+    setIsImageSearchLoading(true);
+    setImageSearchResults([]);
+    setIsImageSearchOpen(true);
+
+    try {
+      const results = await findWikimediaImages({ artworkTitle, artworkAuthor });
+      setImageSearchResults(results);
+    } catch (error) {
+      console.error("Error finding Wikimedia images:", error);
+      toast({ variant: 'destructive', title: t('imageSearchDialog.errorTitle'), description: t('imageSearchDialog.errorApi') });
+      setIsImageSearchOpen(false); // Close dialog on error
+    } finally {
+      setIsImageSearchLoading(false);
+    }
+  };
+
+  const handleProcessImageSelection = async (image: WikimediaImageCandidate) => {
+    if (!currentQuestionToEdit) return;
+    setIsImageSearchOpen(false); // Close the search dialog
+    
+    const { id: processingToastId } = toast({
+      title: t('imageSearchDialog.processingTitle'),
+      description: t('imageSearchDialog.processingDescription'),
+    });
+
+    try {
+      const result = await processWikimediaImage({
+        imageUrl: image.fullUrl,
+        questionId: currentQuestionToEdit.id,
+      });
+      form.setValue('imageUrl', result.publicUrl, { shouldValidate: true });
+      toast({ id: processingToastId, title: t('imageSearchDialog.successTitle'), description: t('imageSearchDialog.successDescription') });
+    } catch (error) {
+       console.error("Error processing Wikimedia image:", error);
+       toast({ id: processingToastId, variant: 'destructive', title: t('imageSearchDialog.errorTitle'), description: t('imageSearchDialog.errorProcessing') });
     }
   };
 
@@ -830,6 +953,15 @@ export default function AdminQuestionsPage() {
         </DialogContent>
       </Dialog>
 
+      <ImageSearchDialog
+        open={isImageSearchOpen}
+        onOpenChange={setIsImageSearchOpen}
+        isLoading={isImageSearchLoading}
+        results={imageSearchResults}
+        onImageSelect={handleProcessImageSelection}
+        onCancel={() => setIsImageSearchOpen(false)}
+      />
+
       <Dialog open={isQuestionDialogOpen} onOpenChange={setIsQuestionDialogOpen}>
         <DialogContent className="sm:max-w-3xl max-h-[90vh]">
           <DialogHeader>
@@ -845,7 +977,7 @@ export default function AdminQuestionsPage() {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>{tForm('difficultyLabel')}</FormLabel>
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <Select onValueChange={field.onChange} value={field.value}>
                         <FormControl>
                           <SelectTrigger>
                             <SelectValue placeholder={tForm('difficultyPlaceholder')} />
@@ -907,8 +1039,22 @@ export default function AdminQuestionsPage() {
                  <Card>
                   <CardHeader><CardTitle className="text-lg">{tForm('visualsLabel')}</CardTitle></CardHeader>
                   <CardContent className="space-y-4">
+                    <FormField control={form.control} name="artworkTitle" render={({ field }) => ( <FormItem> <FormLabel>{tForm('artworkTitleLabel')}</FormLabel> <FormControl><Input placeholder={tForm('artworkTitlePlaceholder')} {...field} /></FormControl> <FormMessage /> </FormItem> )}/>
+                    <FormField control={form.control} name="artworkAuthor" render={({ field }) => ( <FormItem> <FormLabel>{tForm('artworkAuthorLabel')}</FormLabel> <FormControl><Input placeholder={tForm('artworkAuthorPlaceholder')} {...field} /></FormControl> <FormMessage /> </FormItem> )}/>
                     <FormField control={form.control} name="imagePrompt" render={({ field }) => ( <FormItem> <FormLabel>{tForm('imagePromptLabel')}</FormLabel> <FormControl><Textarea placeholder={tForm('imagePromptPlaceholder')} {...field} rows={3} /></FormControl> <FormMessage /> </FormItem> )}/>
-                    <FormField control={form.control} name="imageUrl" render={({ field }) => ( <FormItem> <FormLabel>{tForm('imageUrlLabel')}</FormLabel> <FormControl><Input placeholder={tForm('imageUrlPlaceholder')} {...field} /></FormControl> <FormMessage /> </FormItem> )}/>
+                    <FormField control={form.control} name="imageUrl" render={({ field }) => ( 
+                      <FormItem> 
+                        <FormLabel>{tForm('imageUrlLabel')}</FormLabel>
+                        <div className="flex gap-2 items-center">
+                          <FormControl><Input placeholder={tForm('imageUrlPlaceholder')} {...field} /></FormControl> 
+                          <Button type="button" variant="outline" onClick={handleFindImageOnWikimedia}>
+                            <Camera className="mr-2 h-4 w-4" />
+                            {t('imageSearchDialog.findButton')}
+                          </Button>
+                        </div>
+                        <FormMessage /> 
+                      </FormItem> 
+                    )}/>
                   </CardContent>
                 </Card>
 

@@ -7,7 +7,7 @@ import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
 import inquirer from 'inquirer';
 import { validateSingleTriviaQuestion, type ValidateSingleQuestionInput, type ValidateSingleQuestionOutput, type QuestionData } from '../src/ai/flows/validate-single-trivia-question';
-import type { GenerateTriviaQuestionOutput, BilingualText, DifficultyLevel } from '@/ai/flows/generate-trivia-question'; // For fixedQuestionData structure
+import type { GenerateTriviaQuestionOutput, BilingualText, DifficultyLevel } from '@/types';
 
 // Initialize Firebase Admin SDK
 try {
@@ -79,7 +79,9 @@ function normalizeFirestoreDocToQuestionData(doc: admin.firestore.DocumentSnapsh
         hint: data.hint as BilingualText | undefined,
         status: data.status as 'accepted' | 'fixed' | undefined,
         source: data.source as string | undefined,
-        createdAt: data.createdAt ? (data.createdAt as admin.firestore.Timestamp).toDate().toISOString() : undefined
+        createdAt: data.createdAt ? (data.createdAt as admin.firestore.Timestamp).toDate().toISOString() : undefined,
+        imagePrompt: data.imagePrompt as string | undefined,
+        imageUrl: data.imageUrl as string | undefined,
     };
 
     // Check for new format
@@ -139,6 +141,16 @@ function formatQuestionForDisplay(label: string, qData: QuestionData | GenerateT
     console.log(`Hint EN: ${dataToDisplay.hint.en}`);
     console.log(`Hint ES: ${dataToDisplay.hint.es}`);
   }
+  
+  if (dataToDisplay.imagePrompt) {
+    console.log(`Image Prompt: ${dataToDisplay.imagePrompt}`);
+  }
+  
+  const displayableData = qData as any; // Cast to access imageUrl for both types
+  if (displayableData.imageUrl) {
+    console.log(`Image URL: ${displayableData.imageUrl}`);
+  }
+
 
   if (isFullQuestionData(qData)) {
     if (qData.status) console.log(`Status: ${qData.status}`);
@@ -192,7 +204,7 @@ async function validateQuestion() {
 
     if (validationResult.validationStatus === "Fix" && validationResult.fixedQuestionData) {
       console.log("AI has proposed a fix for the question:");
-      formatQuestionForDisplay("Fixed Question (Proposed by AI)", validationResult.fixedQuestionData as GenerateTriviaQuestionOutput, originalQuestionData.id, originalQuestionData.topicValue);
+      formatQuestionForDisplay("Fixed Question (Proposed by AI)", validationResult.fixedQuestionData, originalQuestionData.id, originalQuestionData.topicValue);
       
       let confirmFix = false;
       if (doAutoFix) {

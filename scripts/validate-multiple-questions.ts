@@ -6,7 +6,7 @@ import admin from 'firebase-admin';
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
 import { validateSingleTriviaQuestion, type ValidateSingleQuestionInput, type QuestionData } from '../src/ai/flows/validate-single-trivia-question';
-import type { DifficultyLevel, BilingualText } from '@/ai/flows/generate-trivia-question';
+import type { DifficultyLevel, BilingualText } from '@/types';
 
 // Initialize Firebase Admin SDK
 try {
@@ -97,7 +97,9 @@ function normalizeFirestoreDocToQuestionData(doc: admin.firestore.DocumentSnapsh
         hint: data.hint as BilingualText | undefined,
         status: data.status as 'accepted' | 'fixed' | undefined,
         source: data.source as string | undefined,
-        createdAt: data.createdAt ? (data.createdAt as admin.firestore.Timestamp).toDate().toISOString() : undefined
+        createdAt: data.createdAt ? (data.createdAt as admin.firestore.Timestamp).toDate().toISOString() : undefined,
+        imagePrompt: data.imagePrompt as string | undefined,
+        imageUrl: data.imageUrl as string | undefined,
     };
 
     // Check for new format

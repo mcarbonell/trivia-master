@@ -5,8 +5,8 @@ config(); // Load environment variables from .env file
 import admin from 'firebase-admin';
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
-import { generateImage } from '../src/ai/flows/generate-image';
 import type { PredefinedQuestion } from '../src/services/triviaService';
+import { ai } from '@/ai/genkit';
 
 // Initialize Firebase Admin SDK
 try {
@@ -61,11 +61,9 @@ async function fetchImageFromWikimedia(question: PredefinedQuestion): Promise<st
     return null;
   }
   
-  // Construct a more precise search term with quotes for better accuracy
   const searchTerm = `"${question.artworkTitle}" "${question.artworkAuthor}"`;
   console.log(`  [Wikimedia] Searching for: ${searchTerm}`);
 
-  // 1. Find the file page using the more powerful 'query' action with 'list=search'
   const searchUrl = `https://commons.wikimedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(searchTerm)}&srnamespace=6&format=json&srlimit=1&origin=*`;
   
   const searchResponse = await fetch(searchUrl);
@@ -76,14 +74,12 @@ async function fetchImageFromWikimedia(question: PredefinedQuestion): Promise<st
   const searchResult = await searchResponse.json();
   const pageTitle = searchResult?.query?.search?.[0]?.title;
 
-
   if (!pageTitle) {
-    console.warn(`  [Wikimedia] No file page found for search term "${searchTerm}".`);
+    console.warn(`  [Wikimedia] No file page found for search term ${searchTerm}.`);
     return null;
   }
   console.log(`  [Wikimedia] Found page: "${pageTitle}"`);
 
-  // 2. Get image info and license from the page title
   const infoUrl = `https://commons.wikimedia.org/w/api.php?action=query&titles=${encodeURIComponent(pageTitle)}&prop=imageinfo&iiprop=url|extmetadata&iiurlwidth=800&format=json&origin=*`;
   const infoResponse = await fetch(infoUrl);
   if (!infoResponse.ok) {
@@ -101,16 +97,23 @@ async function fetchImageFromWikimedia(question: PredefinedQuestion): Promise<st
     return null;
   }
 
-  // 3. Validate license - very basic check for "public domain"
-  // const licenseText = JSON.stringify(extMetadata.License).toLowerCase();
-  const licenseText = JSON.stringify(extMetadata.LicenseShortName?.value || 'Unknown').toLowerCase();
-  if (!licenseText.includes('public domain')) {
-    console.warn(`  [Wikimedia] License for "${pageTitle}" is not confirmed as Public Domain. Skipping. License: ${extMetadata.LicenseShortName?.value || 'Unknown'}`);
+  // --- Robust License Validation ---
+  const licenseShortName = (extMetadata.LicenseShortName?.value || '').toLowerCase();
+  const licenseUrl = (extMetadata.LicenseUrl?.value || '').toLowerCase();
+  
+  const isPermissiveLicense =
+    licenseShortName.includes('public domain') ||
+    licenseShortName.startsWith('pd-') ||
+    licenseShortName === 'cc0' ||
+    licenseShortName.startsWith('cc by') || // Catches CC BY, CC BY-SA etc.
+    licenseUrl.includes('creativecommons.org/publicdomain/');
+
+  if (!isPermissiveLicense) {
+    console.warn(`  [Wikimedia] License for "${pageTitle}" is not permissive enough (e.g., Public Domain, CC0, CC BY). Skipping. License found: ${extMetadata.LicenseShortName?.value || 'Unknown'}`);
     return null;
   }
-  console.log(`  [Wikimedia] License confirmed as Public Domain.`);
+  console.log(`  [Wikimedia] License confirmed as permissive: ${extMetadata.LicenseShortName?.value || 'OK'}`);
   
-  // 4. Download image buffer
   const imageUrl = imageInfo.thumburl;
   if (!imageUrl) {
     console.warn(`  [Wikimedia] No thumbnail URL found for "${pageTitle}".`);
@@ -124,7 +127,6 @@ async function fetchImageFromWikimedia(question: PredefinedQuestion): Promise<st
   }
   const imageBuffer = Buffer.from(await imageResponse.arrayBuffer());
   
-  // 5. Upload buffer to Firebase Storage
   const fileExtension = imageUrl.split('.').pop()?.split('?')[0] || 'jpg';
   const filePath = `trivia_images/${question.id}.${fileExtension}`;
   const file = bucket.file(filePath);
@@ -133,12 +135,27 @@ async function fetchImageFromWikimedia(question: PredefinedQuestion): Promise<st
     public: true,
   });
 
-  // 6. Return public URL
   return file.publicUrl();
 }
 
 async function generateImageFromAI(prompt: string, questionId: string): Promise<string | null> {
-  const imageDataUri = await generateImage(prompt);
+  const engineeredPrompt = `A widescreen, 16:9 aspect ratio, landscape-orientation image of: ${prompt}`;
+  console.log(`[generateImageFlow] Generating image with engineered prompt: "${engineeredPrompt}"`);
+
+  const { media, text } = await ai.generate({
+    model: 'googleai/gemini-2.0-flash-preview-image-generation',
+    prompt: engineeredPrompt,
+    config: {
+      responseModalities: ['TEXT', 'IMAGE'],
+    },
+  });
+    
+  if (!media || !media.url) {
+    console.error('[generateImageFlow] AI did not return image media. Text response:', text);
+    throw new Error('Image generation failed: No media returned from AI.');
+  }
+
+  const imageDataUri = media.url;
   if (!imageDataUri) return null;
 
   const mimeType = imageDataUri.substring(imageDataUri.indexOf(':') + 1, imageDataUri.indexOf(';'));

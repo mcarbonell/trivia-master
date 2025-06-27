@@ -360,6 +360,21 @@
       "accepted": "Aceptada",
       "fixed": "Corregida"
     },
+    "imageSearchDialog": {
+      "title": "Buscar Imagen en Wikimedia Commons",
+      "description": "Selecciona la mejor imagen para esta pregunta. Solo se muestran imágenes con licencias permisivas.",
+      "findButton": "Buscar en Wikimedia",
+      "loading": "Buscando imágenes...",
+      "noResults": "No se encontraron imágenes adecuadas con una licencia permisiva. Intenta ajustar el título o autor de la obra.",
+      "errorTitle": "Error de Búsqueda de Imagen",
+      "errorNoTitle": "El título de la obra es necesario para realizar la búsqueda.",
+      "errorApi": "No se pudieron buscar imágenes. Revisa la consola para más detalles.",
+      "processingTitle": "Procesando Imagen...",
+      "processingDescription": "Descargando y guardando la imagen seleccionada.",
+      "successTitle": "¡Imagen Asignada!",
+      "successDescription": "La imagen ha sido asignada a esta pregunta correctamente.",
+      "errorProcessing": "No se pudo procesar la imagen seleccionada. Por favor, inténtalo de nuevo."
+    },
     "form": {
       "viewDialogTitle": "Ver Detalles de la Pregunta",
       "viewDialogDescription": "Viendo detalles de la pregunta de la categoría \"{topic}\".",
@@ -380,6 +395,10 @@
       "visualsLabel": "Visuales",
       "imagePromptLabel": "Prompt de Imagen (para IA)",
       "imagePromptPlaceholder": "Ingresa un prompt detallado en inglés para la IA de texto a imagen...",
+      "artworkTitleLabel": "Título de la Obra (para búsqueda)",
+      "artworkTitlePlaceholder": "Ej: La Noche Estrellada",
+      "artworkAuthorLabel": "Autor de la Obra (para búsqueda)",
+      "artworkAuthorPlaceholder": "Ej: Vincent van Gogh",
       "imageUrlLabel": "URL de la Imagen",
       "imageUrlPlaceholder": "Ingresa la URL pública de la imagen generada..."
     }
