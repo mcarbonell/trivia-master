@@ -49,6 +49,15 @@ Este documento recopila ideas para futuras mejoras de la aplicación AI Trivia M
         *   Esto evita por completo los problemas de copyright, ya que somos los propietarios de las imágenes generadas.
         *   **Ejemplo para una película:** En lugar de buscar un fotograma de "Blade Runner", generaríamos una imagen con un prompt como: `"Una imagen fotorrealista y cinematográfica de una distópica y lluviosa Los Ángeles de noche, con letreros de neón reflejándose en las calles mojadas y coches voladores al estilo de la ciencia ficción de los años 80."`
         *   **Ejemplo para una ciudad:** `"Una imagen fotorrealista, representativa e icónica de la ciudad de Nueva York, EEUU, que muestre uno de sus landmarks más conocidos."`
+    *   **Alternativa con Contenido Real: Identificar Actores/Actrices:**
+        *   **Concepto:** Crear una categoría para identificar a actores, actrices, o directores a partir de su foto.
+        *   **Viabilidad en Wikimedia Commons:** A diferencia de los fotogramas, los retratos fotográficos de celebridades (especialmente los tomados en eventos públicos o por fotógrafos que liberan su trabajo) SÍ se encuentran con frecuencia en Wikimedia Commons bajo licencias libres (CC BY, CC BY-SA, etc.).
+        *   **Implementación:** El flujo sería idéntico al que ya se implementó para "Pinturas Famosas":
+            *   La pregunta diría "¿Quién es este actor/actriz?".
+            *   El administrador usaría la herramienta de búsqueda del panel, introduciendo el nombre de la persona.
+            *   Seleccionaría la mejor foto de los resultados.
+            *   Esto evita la IA de generación de imágenes y los problemas de copyright, usando contenido real y verificado.
+        *   **Ventaja:** Alta calidad de imagen y reconocimiento inmediato para los fans, lo que mejora la experiencia de juego.
     *   **Extensibilidad del Concepto:**
         *   Identificar personajes históricos o ficticios a partir de un retrato generado.
         *   Identificar especies de animales o plantas.
