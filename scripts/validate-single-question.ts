@@ -2,26 +2,14 @@
 import { config } from 'dotenv';
 config(); // Load environment variables from .env file
 
-import admin from 'firebase-admin';
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
 import inquirer from 'inquirer';
+import { adminDb } from '../src/lib/firebase-admin';
 import { validateSingleTriviaQuestion, type ValidateSingleQuestionInput, type ValidateSingleQuestionOutput, type QuestionData } from '../src/ai/flows/validate-single-trivia-question';
 import type { GenerateTriviaQuestionOutput, BilingualText, DifficultyLevel } from '@/types';
+import type { firestore } from 'firebase-admin';
 
-// Initialize Firebase Admin SDK
-try {
-  if (!admin.apps.length) {
-    admin.initializeApp({
-      credential: admin.credential.applicationDefault(), // Assumes GOOGLE_APPLICATION_CREDENTIALS is set
-    });
-  }
-} catch (error) {
-  console.error('Firebase Admin initialization error. Make sure GOOGLE_APPLICATION_CREDENTIALS is set correctly.', error);
-  process.exit(1);
-}
-
-const db = admin.firestore();
 const PREDEFINED_QUESTIONS_COLLECTION = 'predefinedTriviaQuestions';
 const DEFAULT_MODEL_FOR_VALIDATION = 'googleai/gemini-2.5-flash';
 
@@ -61,7 +49,7 @@ const argv = yargs(hideBin(process.argv))
   .parseSync();
 
 
-function normalizeFirestoreDocToQuestionData(doc: admin.firestore.DocumentSnapshot): QuestionData | null {
+function normalizeFirestoreDocToQuestionData(doc: firestore.DocumentSnapshot): QuestionData | null {
     const data = doc.data();
     if (!data) return null;
 
@@ -79,7 +67,7 @@ function normalizeFirestoreDocToQuestionData(doc: admin.firestore.DocumentSnapsh
         hint: data.hint as BilingualText | undefined,
         status: data.status as 'accepted' | 'fixed' | undefined,
         source: data.source as string | undefined,
-        createdAt: data.createdAt ? (data.createdAt as admin.firestore.Timestamp).toDate().toISOString() : undefined,
+        createdAt: data.createdAt ? (data.createdAt as firestore.Timestamp).toDate().toISOString() : undefined,
         imagePrompt: data.imagePrompt as string | undefined,
         imageUrl: data.imageUrl as string | undefined,
     };
@@ -173,7 +161,7 @@ async function validateQuestion() {
   if(doAutoDelete) console.log("Auto-delete mode enabled.");
 
   try {
-    const questionRef = db.collection(PREDEFINED_QUESTIONS_COLLECTION).doc(questionId);
+    const questionRef = adminDb.collection(PREDEFINED_QUESTIONS_COLLECTION).doc(questionId);
     const docSnap = await questionRef.get();
 
     if (!docSnap.exists) {
@@ -228,7 +216,7 @@ async function validateQuestion() {
             ...validationResult.fixedQuestionData,
             status: 'fixed'
           };
-          await db.collection(PREDEFINED_QUESTIONS_COLLECTION).doc(questionId).update(dataToUpdate);
+          await adminDb.collection(PREDEFINED_QUESTIONS_COLLECTION).doc(questionId).update(dataToUpdate);
           console.log(`Successfully applied fix and set status to 'fixed' for question ID: ${questionId}`);
         } catch (updateError) {
           console.error(`Failed to apply fix to question ID: ${questionId}`, updateError);
@@ -255,7 +243,7 @@ async function validateQuestion() {
 
         if (confirmDelete) {
             try {
-            await db.collection(PREDEFINED_QUESTIONS_COLLECTION).doc(questionId).delete();
+            await adminDb.collection(PREDEFINED_QUESTIONS_COLLECTION).doc(questionId).delete();
             console.log(`Successfully deleted rejected question ID: ${questionId}`);
             } catch (deleteError) {
             console.error(`Failed to delete rejected question ID: ${questionId}`, deleteError);
@@ -266,7 +254,7 @@ async function validateQuestion() {
     } else if (validationResult.validationStatus === "Accept") {
       console.log("AI validation passed. Updating status to 'accepted'.");
       try {
-        await db.collection(PREDEFINED_QUESTIONS_COLLECTION).doc(questionId).update({ status: 'accepted' });
+        await adminDb.collection(PREDEFINED_QUESTIONS_COLLECTION).doc(questionId).update({ status: 'accepted' });
         console.log(`Successfully set status to 'accepted' for question ID: ${questionId}.`);
       } catch (updateError) {
         console.error(`Failed to update status for question ID: ${questionId}`, updateError);

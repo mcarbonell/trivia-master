@@ -2,27 +2,15 @@
 import { config } from 'dotenv';
 config(); // Load environment variables from .env file
 
-import admin from 'firebase-admin';
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
+import { adminDb, adminStorage } from '../src/lib/firebase-admin';
 import type { PredefinedQuestion } from '../src/services/triviaService';
 import { ai } from '@/ai/genkit';
+import type { firestore } from 'firebase-admin';
 
-// Initialize Firebase Admin SDK
-try {
-  if (!admin.apps.length) {
-    admin.initializeApp({
-      credential: admin.credential.applicationDefault(),
-      storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
-    });
-  }
-} catch (error) {
-  console.error('Firebase Admin initialization error. Make sure GOOGLE_APPLICATION_CREDENTIALS is set and the storage bucket is correct.', error);
-  process.exit(1);
-}
-
-const db = admin.firestore();
-const bucket = admin.storage().bucket();
+const bucket = adminStorage.bucket();
+const db = adminDb;
 const PREDEFINED_QUESTIONS_COLLECTION = 'predefinedTriviaQuestions';
 
 // --- Argument Parsing with yargs ---
@@ -187,7 +175,7 @@ async function populateImages() {
   console.log(`---------------------`);
 
   try {
-    let query: admin.firestore.Query = db.collection(PREDEFINED_QUESTIONS_COLLECTION);
+    let query: firestore.Query = db.collection(PREDEFINED_QUESTIONS_COLLECTION);
     
     if (category) {
       query = query.where('topicValue', '==', category);

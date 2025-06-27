@@ -2,26 +2,13 @@
 import { config } from 'dotenv';
 config(); // Load environment variables from .env file
 
-import admin from 'firebase-admin';
 import fs from 'fs/promises';
 import path from 'path';
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
+import { adminDb } from '../src/lib/firebase-admin';
 import type { CategoryDefinition, DifficultyLevel } from '../src/types'; // Adjust path as necessary
 
-// Initialize Firebase Admin SDK
-try {
-  if (!admin.apps.length) {
-    admin.initializeApp({
-      credential: admin.credential.applicationDefault(),
-    });
-  }
-} catch (error) {
-  console.error('Firebase Admin initialization error. Make sure GOOGLE_APPLICATION_CREDENTIALS is set correctly.', error);
-  process.exit(1);
-}
-
-const db = admin.firestore();
 const CATEGORIES_COLLECTION = 'triviaCategories';
 
 // --- Argument Parsing with yargs ---
@@ -63,7 +50,7 @@ async function importCategories() {
 
     console.log(`Found ${categoriesData.length} categories to process from "${categoriesJsonFileName}".`);
 
-    const batch = db.batch();
+    const batch = adminDb.batch();
     let operationsCount = 0;
 
     for (const categoryData of categoriesData) {
@@ -113,7 +100,7 @@ async function importCategories() {
         }
       }
 
-      const categoryRef = db.collection(CATEGORIES_COLLECTION).doc(categoryToSave.topicValue);
+      const categoryRef = adminDb.collection(CATEGORIES_COLLECTION).doc(categoryToSave.topicValue);
       batch.set(categoryRef, categoryToSave, { merge: true });
       operationsCount++;
       console.log(`Scheduled set/update for category: "${categoryToSave.name.en}" (ID: ${categoryToSave.topicValue})`);
@@ -140,4 +127,3 @@ importCategories().catch(error => {
   console.error("Unhandled error in importCategories script:", error);
   process.exit(1);
 });
-

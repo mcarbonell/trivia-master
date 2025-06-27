@@ -2,22 +2,10 @@
 import { config } from 'dotenv';
 config(); // Load environment variables from .env file
 
-import admin from 'firebase-admin';
+import { adminDb } from '../src/lib/firebase-admin';
+import { firestore } from 'firebase-admin';
 import type { DocumentData } from 'firebase-admin/firestore';
 
-// Initialize Firebase Admin SDK
-try {
-  if (!admin.apps.length) {
-    admin.initializeApp({
-      credential: admin.credential.applicationDefault(),
-    });
-  }
-} catch (error) {
-  console.error('Firebase Admin initialization error. Make sure GOOGLE_APPLICATION_CREDENTIALS is set correctly.', error);
-  process.exit(1);
-}
-
-const db = admin.firestore();
 const PREDEFINED_QUESTIONS_COLLECTION = 'predefinedTriviaQuestions';
 const BATCH_SIZE = 400; // Firestore batch writes limit is 500
 
@@ -25,7 +13,7 @@ async function migrateQuestionsFormat() {
   console.log('Starting question format migration script...');
 
   try {
-    const questionsRef = db.collection(PREDEFINED_QUESTIONS_COLLECTION);
+    const questionsRef = adminDb.collection(PREDEFINED_QUESTIONS_COLLECTION);
     const snapshot = await questionsRef.get();
 
     if (snapshot.empty) {
@@ -53,7 +41,7 @@ async function migrateQuestionsFormat() {
 
     let migratedCount = 0;
     for (let i = 0; i < questionsToMigrate.length; i += BATCH_SIZE) {
-      const batch = db.batch();
+      const batch = adminDb.batch();
       const chunk = questionsToMigrate.slice(i, i + BATCH_SIZE);
       console.log(`Processing batch ${Math.floor(i / BATCH_SIZE) + 1} of ${Math.ceil(questionsToMigrate.length / BATCH_SIZE)}...`);
 
@@ -79,8 +67,8 @@ async function migrateQuestionsFormat() {
         const updateData = {
           correctAnswer: correctAnswer,
           distractors: distractors,
-          answers: admin.firestore.FieldValue.delete(),
-          correctAnswerIndex: admin.firestore.FieldValue.delete(),
+          answers: firestore.FieldValue.delete(),
+          correctAnswerIndex: firestore.FieldValue.delete(),
         };
 
         batch.update(docRef, updateData);

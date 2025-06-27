@@ -2,28 +2,16 @@
 import { config } from 'dotenv';
 config(); // Load environment variables from .env file
 
-import admin from 'firebase-admin';
 import fs from 'fs/promises';
 import path from 'path';
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
+import { adminDb } from '../src/lib/firebase-admin';
 import type { PredefinedQuestion } from '../src/services/triviaService'; // Using this type for structure
 import type { DifficultyLevel, BilingualText } from '../src/types';
 import type { GenerateTriviaQuestionOutput } from '@/ai/flows/generate-trivia-question';
+import { firestore } from 'firebase-admin';
 
-// Initialize Firebase Admin SDK
-try {
-  if (!admin.apps.length) {
-    admin.initializeApp({
-      credential: admin.credential.applicationDefault(),
-    });
-  }
-} catch (error) {
-  console.error('Firebase Admin initialization error. Make sure GOOGLE_APPLICATION_CREDENTIALS is set correctly.', error);
-  process.exit(1);
-}
-
-const db = admin.firestore();
 const PREDEFINED_QUESTIONS_COLLECTION = 'predefinedTriviaQuestions';
 const ALL_DIFFICULTY_LEVELS_CONST: DifficultyLevel[] = ["easy", "medium", "hard"];
 
@@ -68,7 +56,7 @@ async function importQuestions() {
 
     console.log(`Found ${questionsData.length} questions to process from "${questionsJsonFileName}".`);
 
-    let batch = db.batch();
+    let batch = adminDb.batch();
     let operationsInBatch = 0;
     let questionsImported = 0;
     let questionsSkipped = 0;
@@ -110,14 +98,14 @@ async function importQuestions() {
         try {
           const date = new Date(question.createdAt);
           if (!isNaN(date.getTime())) {
-            questionToSave.createdAt = admin.firestore.Timestamp.fromDate(date);
+            questionToSave.createdAt = firestore.Timestamp.fromDate(date);
           }
         } catch (e) {
           console.warn(`Could not parse createdAt for question ${question.id}. Skipping.`);
         }
       } else {
         // For new imports without a date, set it to now
-        questionToSave.createdAt = admin.firestore.FieldValue.serverTimestamp();
+        questionToSave.createdAt = firestore.FieldValue.serverTimestamp();
       }
       if (question.status && ['accepted', 'fixed'].includes(question.status)) {
         questionToSave.status = question.status;
@@ -130,7 +118,7 @@ async function importQuestions() {
       }
 
 
-      const docRef = db.collection(PREDEFINED_QUESTIONS_COLLECTION).doc(question.id);
+      const docRef = adminDb.collection(PREDEFINED_QUESTIONS_COLLECTION).doc(question.id);
       batch.set(docRef, questionToSave, { merge: true });
       operationsInBatch++;
       questionsImported++;
@@ -138,7 +126,7 @@ async function importQuestions() {
       if (operationsInBatch >= 499) {
         console.log(`Committing batch of ${operationsInBatch} question operations...`);
         await batch.commit();
-        batch = db.batch();
+        batch = adminDb.batch();
         operationsInBatch = 0;
         console.log('Batch committed.');
       }

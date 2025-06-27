@@ -2,25 +2,13 @@
 import { config } from 'dotenv';
 config(); // Load environment variables from .env file
 
-import admin from 'firebase-admin';
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
+import { adminDb } from '../src/lib/firebase-admin';
+import { firestore } from 'firebase-admin';
 import { generateTriviaQuestions, type GenerateTriviaQuestionsInput, type GenerateTriviaQuestionOutput, type DifficultyLevel } from '../src/ai/flows/generate-trivia-question';
 import type { CategoryDefinition, BilingualText } from '../src/types';
 
-// Initialize Firebase Admin SDK
-try {
-  if (!admin.apps.length) {
-    admin.initializeApp({
-      credential: admin.credential.applicationDefault(),
-    });
-  }
-} catch (error) {
-  console.error('Firebase Admin initialization error. Make sure GOOGLE_APPLICATION_CREDENTIALS is set correctly.', error);
-  process.exit(1);
-}
-
-const db = admin.firestore();
 const PREDEFINED_QUESTIONS_COLLECTION = 'predefinedTriviaQuestions';
 const CATEGORIES_COLLECTION = 'triviaCategories';
 
@@ -94,7 +82,7 @@ const UPDATE_EXISTING_SOURCES_MODE: boolean = argv.updateExistingSources;
 
 async function fetchCategoriesWithAdminSDK(): Promise<CategoryDefinition[]> {
   try {
-    const categoriesRef = db.collection(CATEGORIES_COLLECTION);
+    const categoriesRef = adminDb.collection(CATEGORIES_COLLECTION);
     const querySnapshot = await categoriesRef.get();
     const categories: CategoryDefinition[] = [];
     querySnapshot.forEach((doc) => {
@@ -137,10 +125,10 @@ async function fetchCategoriesWithAdminSDK(): Promise<CategoryDefinition[]> {
 
 async function updateAllExistingQuestionSources() {
   console.log('Starting update of "source" field for all existing predefined questions...');
-  const questionsRef = db.collection(PREDEFINED_QUESTIONS_COLLECTION);
+  const questionsRef = adminDb.collection(PREDEFINED_QUESTIONS_COLLECTION);
   const newSourceValue = `model:${MODEL_TO_USE},context:true,api_batch_size:N/A`; // Use MODEL_TO_USE here for consistency
   let questionsUpdated = 0;
-  let batch = db.batch();
+  let batch = adminDb.batch();
   let operationsInBatch = 0;
 
   try {
@@ -163,7 +151,7 @@ async function updateAllExistingQuestionSources() {
         if (operationsInBatch >= 499) { // Firestore batch limit is 500
           console.log(`Committing batch of ${operationsInBatch} updates...`);
           batch.commit().then(() => console.log('Batch committed.'));
-          batch = db.batch();
+          batch = adminDb.batch();
           operationsInBatch = 0;
         }
       }
@@ -230,7 +218,7 @@ async function populateQuestions() {
 
       const existingQuestionConceptTextsForDifficulty: string[] = [];
       const existingCorrectAnswerConceptTextsForDifficulty: string[] = [];
-      const questionsRef = db.collection(PREDEFINED_QUESTIONS_COLLECTION);
+      const questionsRef = adminDb.collection(PREDEFINED_QUESTIONS_COLLECTION);
 
       if (!NO_CONTEXT_MODE) {
         const difficultyContextSnapshot = await questionsRef
@@ -330,7 +318,7 @@ async function populateQuestions() {
                 const questionToSave = {
                   ...newQuestionData,
                   topicValue: category.topicValue,
-                  createdAt: admin.firestore.FieldValue.serverTimestamp(),
+                  createdAt: firestore.FieldValue.serverTimestamp(),
                   source: sourceInfo
                 };
 

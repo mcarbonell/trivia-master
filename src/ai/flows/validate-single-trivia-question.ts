@@ -11,23 +11,9 @@
 
 import { ai } from '@/ai/genkit';
 import { z } from 'genkit';
+import { adminDb } from '@/lib/firebase-admin';
 import { GenerateTriviaQuestionOutputSchema } from '@/types';
-import admin from 'firebase-admin';
 
-// Initialize Firebase Admin SDK
-try {
-  if (!admin.apps.length) {
-    admin.initializeApp({
-      credential: admin.credential.applicationDefault(),
-    });
-    console.log('[validate-single-trivia-question-flow] Firebase Admin SDK initialized.');
-  }
-} catch (error) {
-  console.error('[validate-single-trivia-question-flow] Firebase Admin initialization error.', error);
-  // We don't want to crash the whole process, so we'll just log the error.
-  // The flow will proceed without category context.
-}
-const db = admin.firestore();
 const CATEGORIES_COLLECTION = 'triviaCategories';
 
 // --- Zod Schemas ---
@@ -165,23 +151,19 @@ const validateSingleTriviaQuestionFlow = ai.defineFlow(
     let categoryInstructions: string | undefined = undefined;
 
     // Fetch category instructions to provide more context to the AI
-    if (admin.apps.length > 0) { // Check if Firebase Admin is initialized
-        try {
-            const categoryRef = db.collection(CATEGORIES_COLLECTION).doc(input.questionData.topicValue);
-            const categoryDoc = await categoryRef.get();
-            if (categoryDoc.exists) {
-                categoryInstructions = categoryDoc.data()?.detailedPromptInstructions;
-                if (categoryInstructions) {
-                  // console.log(`[validateSingleTriviaQuestionFlow] Found category instructions for topic "${input.questionData.topicValue}".`);
-                }
-            } else {
-              console.warn(`[validateSingleTriviaQuestionFlow] Category document for topic "${input.questionData.topicValue}" not found.`);
+    try {
+        const categoryRef = adminDb.collection(CATEGORIES_COLLECTION).doc(input.questionData.topicValue);
+        const categoryDoc = await categoryRef.get();
+        if (categoryDoc.exists) {
+            categoryInstructions = categoryDoc.data()?.detailedPromptInstructions;
+            if (categoryInstructions) {
+              // console.log(`[validateSingleTriviaQuestionFlow] Found category instructions for topic "${input.questionData.topicValue}".`);
             }
-        } catch (error) {
-            console.error('[validateSingleTriviaQuestionFlow] Error fetching category instructions from Firestore:', error);
+        } else {
+          console.warn(`[validateSingleTriviaQuestionFlow] Category document for topic "${input.questionData.topicValue}" not found.`);
         }
-    } else {
-        console.warn('[validateSingleTriviaQuestionFlow] Firebase Admin SDK not initialized. Proceeding without category context.');
+    } catch (error) {
+        console.error('[validateSingleTriviaQuestionFlow] Error fetching category instructions from Firestore:', error);
     }
 
     const promptInput = {

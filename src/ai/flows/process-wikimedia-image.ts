@@ -4,7 +4,7 @@
  *
  * - processWikimediaImage - A function that downloads, uploads, and updates Firestore.
  */
-import admin from 'firebase-admin';
+import { adminDb, adminStorage } from '@/lib/firebase-admin';
 import { ai } from '@/ai/genkit';
 import {
   ProcessWikimediaImageInputSchema,
@@ -12,26 +12,10 @@ import {
   type ProcessWikimediaImageInput,
   type ProcessWikimediaImageOutput
 } from '@/types';
-import { updatePredefinedQuestion } from '@/services/triviaService';
-
-// Initialize Firebase Admin SDK if not already done
-try {
-  if (!admin.apps.length) {
-    admin.initializeApp({
-      credential: admin.credential.applicationDefault(),
-      storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
-    });
-  }
-} catch (error) {
-  console.error('Firebase Admin initialization error in process-wikimedia-image flow.', error);
-}
-
-const storageBucket = admin.storage().bucket();
 
 export async function processWikimediaImage(input: ProcessWikimediaImageInput): Promise<ProcessWikimediaImageOutput> {
   return processWikimediaImageFlow(input);
 }
-
 
 const processWikimediaImageFlow = ai.defineFlow(
   {
@@ -52,6 +36,7 @@ const processWikimediaImageFlow = ai.defineFlow(
     const fileExtension = imageUrl.split('.').pop()?.split('?')[0] || 'jpg';
 
     // 2. Upload to Firebase Storage
+    const storageBucket = adminStorage.bucket();
     const filePath = `trivia_images/${questionId}.${fileExtension}`;
     const file = storageBucket.file(filePath);
 
@@ -64,7 +49,8 @@ const processWikimediaImageFlow = ai.defineFlow(
     console.log(`[processWikimediaImageFlow] Image uploaded to: ${publicUrl}`);
     
     // 3. Update the Firestore document
-    await updatePredefinedQuestion(questionId, { imageUrl: publicUrl });
+    const questionRef = adminDb.collection('predefinedTriviaQuestions').doc(questionId);
+    await questionRef.update({ imageUrl: publicUrl });
     console.log(`[processWikimediaImageFlow] Firestore document ${questionId} updated with new imageUrl.`);
 
     return { publicUrl };

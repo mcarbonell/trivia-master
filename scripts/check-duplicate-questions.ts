@@ -2,27 +2,16 @@
 import { config } from 'dotenv';
 config(); // Load environment variables from .env file
 
-import admin from 'firebase-admin';
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
 import inquirer from 'inquirer'; // Import inquirer
+import { adminDb } from '../src/lib/firebase-admin';
 import { detectDuplicateQuestions, type QuestionInput, type DetectDuplicatesInput, type DetectDuplicatesOutput } from '../src/ai/flows/detect-duplicate-questions';
 import type { PredefinedQuestion } from '../src/services/triviaService'; 
 import type { DifficultyLevel, BilingualText } from '../src/types';
+import type { firestore } from 'firebase-admin';
 
-// Initialize Firebase Admin SDK
-try {
-  if (!admin.apps.length) {
-    admin.initializeApp({
-      credential: admin.credential.applicationDefault(),
-    });
-  }
-} catch (error) {
-  console.error('Firebase Admin initialization error. Make sure GOOGLE_APPLICATION_CREDENTIALS is set correctly.', error);
-  process.exit(1);
-}
 
-const db = admin.firestore();
 const PREDEFINED_QUESTIONS_COLLECTION = 'predefinedTriviaQuestions';
 const ALL_DIFFICULTY_LEVELS_CONST: DifficultyLevel[] = ["easy", "medium", "hard"];
 const DEFAULT_MODEL_FOR_CHECK = 'googleai/gemini-1.5-flash';
@@ -51,7 +40,7 @@ const argv = yargs(hideBin(process.argv))
   .parseSync();
 
 
-function normalizeQuestionForDuplicateCheck(doc: admin.firestore.DocumentSnapshot): QuestionInput | null {
+function normalizeQuestionForDuplicateCheck(doc: firestore.DocumentSnapshot): QuestionInput | null {
     const data = doc.data();
     if (!data || !data.question || !data.question.en) {
         return null;
@@ -94,7 +83,7 @@ async function checkDuplicates() {
   console.log(`Using AI model: "${modelToUse}" for detection.`);
 
   try {
-    let firestoreQuery = db.collection(PREDEFINED_QUESTIONS_COLLECTION).where('topicValue', '==', topicValue);
+    let firestoreQuery = adminDb.collection(PREDEFINED_QUESTIONS_COLLECTION).where('topicValue', '==', topicValue);
     if (difficulty) {
       firestoreQuery = firestoreQuery.where('difficulty', '==', difficulty as DifficultyLevel);
     }
@@ -154,7 +143,7 @@ async function checkDuplicates() {
           let failCount = 0;
           for (const idToDelete of duplicateIdsToDelete) {
             try {
-              await db.collection(PREDEFINED_QUESTIONS_COLLECTION).doc(idToDelete).delete();
+              await adminDb.collection(PREDEFINED_QUESTIONS_COLLECTION).doc(idToDelete).delete();
               console.log(`  Successfully deleted question ID: ${idToDelete}`);
               successCount++;
             } catch (deleteError) {
@@ -183,4 +172,3 @@ checkDuplicates().catch(error => {
   console.error("Unhandled error in checkDuplicates script:", error);
   process.exit(1);
 });
-

@@ -2,25 +2,13 @@
 import { config } from 'dotenv';
 config(); // Load environment variables from .env file
 
-import admin from 'firebase-admin';
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
+import { adminDb } from '../src/lib/firebase-admin';
 import { validateSingleTriviaQuestion, type ValidateSingleQuestionInput, type QuestionData } from '../src/ai/flows/validate-single-trivia-question';
 import type { DifficultyLevel, BilingualText } from '@/types';
+import type { firestore } from 'firebase-admin';
 
-// Initialize Firebase Admin SDK
-try {
-  if (!admin.apps.length) {
-    admin.initializeApp({
-      credential: admin.credential.applicationDefault(),
-    });
-  }
-} catch (error) {
-  console.error('Firebase Admin initialization error. Make sure GOOGLE_APPLICATION_CREDENTIALS is set correctly.', error);
-  process.exit(1);
-}
-
-const db = admin.firestore();
 const PREDEFINED_QUESTIONS_COLLECTION = 'predefinedTriviaQuestions';
 const ALL_DIFFICULTY_LEVELS_CONST: DifficultyLevel[] = ["easy", "medium", "hard"];
 const DEFAULT_MODEL_FOR_VALIDATION = 'googleai/gemini-2.5-flash';
@@ -79,7 +67,7 @@ const argv = yargs(hideBin(process.argv))
   .parseSync();
 
 
-function normalizeFirestoreDocToQuestionData(doc: admin.firestore.DocumentSnapshot): QuestionData | null {
+function normalizeFirestoreDocToQuestionData(doc: firestore.DocumentSnapshot): QuestionData | null {
     const data = doc.data();
     if (!data) return null;
 
@@ -97,7 +85,7 @@ function normalizeFirestoreDocToQuestionData(doc: admin.firestore.DocumentSnapsh
         hint: data.hint as BilingualText | undefined,
         status: data.status as 'accepted' | 'fixed' | undefined,
         source: data.source as string | undefined,
-        createdAt: data.createdAt ? (data.createdAt as admin.firestore.Timestamp).toDate().toISOString() : undefined,
+        createdAt: data.createdAt ? (data.createdAt as firestore.Timestamp).toDate().toISOString() : undefined,
         imagePrompt: data.imagePrompt as string | undefined,
         imageUrl: data.imageUrl as string | undefined,
     };
@@ -147,7 +135,7 @@ async function validateMultipleQuestions() {
   console.log('----------------------------------------------------');
 
   try {
-    let firestoreQuery: admin.firestore.Query = db.collection(PREDEFINED_QUESTIONS_COLLECTION).where('topicValue', '==', topicValue);
+    let firestoreQuery: firestore.Query = adminDb.collection(PREDEFINED_QUESTIONS_COLLECTION).where('topicValue', '==', topicValue);
     if (difficulty) {
       firestoreQuery = firestoreQuery.where('difficulty', '==', difficulty as DifficultyLevel);
     }
@@ -205,12 +193,12 @@ async function validateMultipleQuestions() {
 
           if (validationResult.validationStatus === 'Accept') {
             acceptedCount++;
-            await db.collection(PREDEFINED_QUESTIONS_COLLECTION).doc(question.id).update({ status: 'accepted' });
+            await adminDb.collection(PREDEFINED_QUESTIONS_COLLECTION).doc(question.id).update({ status: 'accepted' });
             console.log(`  > ACTION: Question ${question.id} accepted and status updated.`);
           } else if (validationResult.validationStatus === 'Reject') {
             rejectedCount++;
             if (doAutoDelete) {
-              await db.collection(PREDEFINED_QUESTIONS_COLLECTION).doc(question.id).delete();
+              await adminDb.collection(PREDEFINED_QUESTIONS_COLLECTION).doc(question.id).delete();
               console.log(`  > ACTION: Question ${question.id} automatically DELETED.`);
               deletedCount++;
             } else {
@@ -219,7 +207,7 @@ async function validateMultipleQuestions() {
           } else if (validationResult.validationStatus === 'Fix' && validationResult.fixedQuestionData) {
             fixedCount++;
             if (doAutoFix) {
-              await db.collection(PREDEFINED_QUESTIONS_COLLECTION).doc(question.id).update({ 
+              await adminDb.collection(PREDEFINED_QUESTIONS_COLLECTION).doc(question.id).update({ 
                 ...validationResult.fixedQuestionData,
                 status: 'fixed'
               });
