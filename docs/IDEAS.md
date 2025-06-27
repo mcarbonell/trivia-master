@@ -42,13 +42,16 @@ Este documento recopila ideas para futuras mejoras de la aplicación AI Trivia M
             *   Usar un placeholder genérico o un icono basado en el tema.
 
 7.  **Trivia Visual Avanzada (Próximos Pasos):**
-    *   **Concepto Principal:** Crear modos de juego donde la imagen es la pregunta principal (ej. "¿Qué ciudad es esta?").
-    *   **Generación Automatizada:**
-        *   Utilizar IA generativa de imágenes (ej. Gemini a través de Genkit) para crear las fotografías de las ciudades, monumentos, animales, etc.
-        *   Se usarían prompts específicos para asegurar que las imágenes sean representativas e identificables, por ejemplo: `"Una imagen fotorrealista, representativa e icónica de la ciudad de Nueva York, EEUU, que muestre uno de sus landmarks más conocidos."`
-    *   **Extensibilidad del Concepto "Imagen + Pregunta":**
+    *   **Concepto Principal:** Crear modos de juego donde la imagen es la pregunta principal (ej. "¿Qué película es esta?", "¿Qué ciudad es esta?").
+    *   **Problema de Copyright:** Fotogramas de películas, imágenes de stock de ciudades, etc., están protegidos por derechos de autor y no se pueden usar libremente. Wikimedia Commons, nuestra fuente para pinturas, es muy estricta y no contiene este tipo de material.
+    *   **Solución con IA Generativa:**
+        *   Utilizar IA generativa de imágenes (ej. Gemini a través de Genkit) para crear nuestras propias imágenes originales inspiradas en el contenido.
+        *   Esto evita por completo los problemas de copyright, ya que somos los propietarios de las imágenes generadas.
+        *   **Ejemplo para una película:** En lugar de buscar un fotograma de "Blade Runner", generaríamos una imagen con un prompt como: `"Una imagen fotorrealista y cinematográfica de una distópica y lluviosa Los Ángeles de noche, con letreros de neón reflejándose en las calles mojadas y coches voladores al estilo de la ciencia ficción de los años 80."`
+        *   **Ejemplo para una ciudad:** `"Una imagen fotorrealista, representativa e icónica de la ciudad de Nueva York, EEUU, que muestre uno de sus landmarks más conocidos."`
+    *   **Extensibilidad del Concepto:**
         *   Identificar personajes históricos o ficticios a partir de un retrato generado.
-        *   Identificar obras de arte, especies de animales o plantas.
+        *   Identificar especies de animales o plantas.
     *   **Consideraciones de Costo/Beneficio:**
         *   La generación de imágenes mediante IA tiene un costo de API superior al de la generación de texto puro.
         *   Sin embargo, el valor añadido en términos de atractivo visual y engagement del usuario podría justificarlo, especialmente para categorías o modos de juego premium.
