@@ -35,9 +35,10 @@ const processWikimediaImageFlow = ai.defineFlow(
     const contentType = imageResponse.headers.get('content-type') || 'image/jpeg';
     const fileExtension = imageUrl.split('.').pop()?.split('?')[0] || 'jpg';
 
-    // 2. Upload to Firebase Storage
+    // 2. Upload to Firebase Storage with a timestamp to prevent caching issues
+    const timestamp = Date.now();
     const storageBucket = adminStorage.bucket();
-    const filePath = `trivia_images/${questionId}.${fileExtension}`;
+    const filePath = `trivia_images/${questionId}_${timestamp}.${fileExtension}`;
     const file = storageBucket.file(filePath);
 
     await file.save(imageBuffer, {
