@@ -72,6 +72,7 @@ interface ImageSearchDialogProps {
 
 const ImageSearchDialog: React.FC<ImageSearchDialogProps> = ({ open, onOpenChange, isLoading, results, onImageSelect, onCancel }) => {
   const t = useTranslations('AdminQuestionsPage');
+  const tCommon = useTranslations();
   
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -116,7 +117,7 @@ const ImageSearchDialog: React.FC<ImageSearchDialogProps> = ({ open, onOpenChang
           )}
         </ScrollArea>
         <DialogFooter>
-          <Button variant="outline" onClick={onCancel}>{t('cancel')}</Button>
+          <Button variant="outline" onClick={onCancel}>{tCommon('cancel')}</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
