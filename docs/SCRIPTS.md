@@ -73,20 +73,25 @@ These scripts leverage Genkit and AI models to generate or validate content. Rem
 
 ### 4. Populate Images (`populate:images`)
 
-- **Purpose:** Finds questions with an `imagePrompt`, generates an image using AI, uploads it to Firebase Storage, and updates the question with the public URL. By default, it only processes questions that do not already have an `imageUrl`.
+- **Purpose:** Finds questions that need an image and populates their `imageUrl` field. It has two modes of operation depending on the question's data:
+    1.  **AI Generation:** If a question has an `imagePrompt` field, it calls an AI model to generate an image from that prompt.
+    2.  **Wikimedia Fetch:** If a question has `artworkTitle` and `artworkAuthor` fields, it searches Wikimedia Commons for a suitable, permissively licensed image.
+- **Behavior:**
+    - The script uploads the final image (either AI-generated or fetched) to Firebase Storage and saves the public URL to the question document.
+    - By default, it only processes questions that do not already have an `imageUrl`.
 - **Command:** `npm run populate:images -- [options]`
 - **Arguments:**
     - `-c, --category <topicValue>`: Optional. Process only the category with this specific `topicValue`. If omitted, processes all categories.
-    - `-l, --limit <number>`: Optional. The maximum number of images to generate in a single run. Default: `10`.
-    - `-d, --delay <milliseconds>`: Optional. The delay in milliseconds between each image generation API call to respect rate limits. Default: `2000`.
-    - `-f, --force`: Optional. If passed, forces regeneration of images for all matching questions, even those that already have an `imageUrl`.
+    - `-l, --limit <number>`: Optional. The maximum number of images to process in a single run. Default: `10`.
+    - `-d, --delay <milliseconds>`: Optional. The delay in milliseconds between each image processing call to respect API rate limits. Default: `2000`.
+    - `-f, --force`: Optional. If passed, forces regeneration/re-fetching of images for all matching questions, even those that already have an `imageUrl`.
 - **Usage Examples:**
   ```bash
-  # Generate up to 5 images for the 'WorldCapitals' category
+  # Generate/fetch up to 5 images for the 'WorldCapitals' category
   npm run populate:images -- --category WorldCapitals --limit 5
 
-  # Force regeneration of 2 images for the 'AnimalIdentification' category
-  npm run populate:images -- --category AnimalIdentification --limit 2 --force
+  # Force regeneration of 2 images for the 'FamousPaintings' category
+  npm run populate:images -- --category FamousPaintings --limit 2 --force
   ```
 
 ### 5. Check for Duplicate Questions (`check:questions`)

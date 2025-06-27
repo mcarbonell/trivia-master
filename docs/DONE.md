@@ -24,6 +24,17 @@ This document outlines the key features and improvements implemented in the AI T
     *   Implemented a fixed number of questions per game session (currently 10 questions).
     *   Includes a "Game Over" screen displaying the final score and offering options to play again (same topic/difficulty) or start a completely new game.
 
+## User Profiles & Data
+
+*   **User Registration & Login**: Users can create accounts and log in using email and password via Firebase Authentication.
+*   **Player Profile Page (`/profile`)**:
+    *   Registered users have a dedicated profile page to view their performance.
+    *   **Game History**: A paginated table shows a log of all completed game sessions.
+    *   **Overall Statistics**: Displays summary stats like total games played and overall accuracy.
+    *   **Performance Highlights**: Automatically identifies and displays the user's best and worst-performing categories based on accuracy.
+    *   **Performance Chart**: A bar chart visualizes the user's accuracy across all played categories.
+*   **Game Session Tracking**: Completed games are saved to Firestore, linking scores and topics to the user's account (`gameSessionService.ts`).
+
 ## Data Model & Question Integrity
 
 *   **Robust Data Model Refactoring**:
@@ -49,7 +60,7 @@ This document outlines the key features and improvements implemented in the AI T
     *   Populates the `triviaCategories` collection in Firestore from a local JSON file (`src/data/initial-categories.json`).
     *   Allows for easy management and versioning of initial category definitions.
 
-## Predefined Questions & Offline Capabilities Potential
+## Predefined Questions & Offline Capabilities
 
 *   **Firestore for Predefined Questions**:
     *   A collection in Firestore (`predefinedTriviaQuestions`) stores pre-generated bilingual trivia questions.
@@ -59,9 +70,14 @@ This document outlines the key features and improvements implemented in the AI T
     *   Includes logic to avoid conceptual duplication by passing existing content as context to the AI.
     *   Respects API rate limits with configurable delays.
     *   Validates each question individually from AI batch responses, discarding malformed ones while keeping valid ones.
-*   **Client-Side Fetching Strategy**:
-    *   The application first attempts to fetch questions from the Firestore cache for predefined categories and the current target difficulty.
-    *   If no suitable pre-generated question is found, it falls back to dynamic AI generation using Genkit, providing the AI with detailed category and difficulty instructions.
+*   **Client-Side Caching (IndexedDB)**:
+    *   The application aggressively caches categories and predefined questions in the browser's IndexedDB.
+    *   This enables **offline play** for any category that has been downloaded.
+    *   A versioning system ensures that if the content on the server is updated, the client's cache is cleared and refreshed.
+*   **Image Generation and Caching**:
+    *   For visual categories, the app can either generate images using an AI model or fetch them from external sources like Wikimedia Commons.
+    *   Generated/fetched images are uploaded to Firebase Storage.
+    *   The public URL of the image is saved with the question, allowing it to be cached and reused.
 
 ## User Interface & Experience
 
@@ -113,6 +129,7 @@ This document outlines the key features and improvements implemented in the AI T
 *   **Firebase Authentication**:
     *   Secure admin area (`/admin/*`) accessible via email/password login.
     *   Authentication state managed via `AuthContext`.
+    *   User roles (`admin`, `user`) stored in Firestore.
 *   **Admin Layout**:
     *   Consistent layout for all admin pages with navigation sidebar.
     *   Logout functionality.
@@ -128,6 +145,7 @@ This document outlines the key features and improvements implemented in the AI T
     *   **Question Counts**: Displays the number of predefined questions available for each difficulty level (easy, medium, hard) per category.
 *   **Predefined Question Management (`/admin/questions`)**:
     *   **Updated for New Data Model**: The editor now has distinct fields for "Correct Answer" and three "Distractors", making manual editing more intuitive and aligned with the new data model.
+    *   **Semi-Automated Image Search**: The question editor includes a tool to search Wikimedia Commons for artwork images, display candidates, and assign the selected image to the question.
     *   **List Questions**: View all predefined questions in a paginated table.
     *   **Filter**: Filter questions by category and/or difficulty.
     *   **Search**: Search questions by ID, question text, or answer text.
@@ -145,6 +163,10 @@ This document outlines the key features and improvements implemented in the AI T
 *   **Suggestion Management (`/admin/suggestions`)**:
     *   New admin section to view and delete user-submitted suggestions from the "About/Contact" page.
     *   Suggestions are displayed in a paginated table with details like date, sender information (if provided), message content, and the locale of submission.
+*   **User Management (`/admin/users`)**:
+    *   Lists all registered users with their email and registration date.
+    *   Allows admins to change a user's role between 'user' and 'admin'.
+    *   Prevents an admin from changing their own role.
 
 ## Technical Stack & Setup
 
@@ -153,7 +175,7 @@ This document outlines the key features and improvements implemented in the AI T
 *   **UI Components**: ShadCN UI
 *   **Styling**: Tailwind CSS
 *   **Language**: TypeScript
-*   **Database**: Firebase Firestore (for predefined questions, category definitions, user reports, and user suggestions)
+*   **Database**: Firebase Firestore (for predefined questions, category definitions, user reports, user suggestions, and user profiles/roles)
 *   **Authentication**: Firebase Authentication
 *   **Analytics**: Firebase Analytics
 *   **Deployment**: Configured for Firebase App Hosting (`apphosting.yaml`).
@@ -166,7 +188,7 @@ This document outlines the key features and improvements implemented in the AI T
 *   **Modular Genkit Flows**: AI logic encapsulated in `src/ai/flows/`.
 *   **Client-Side State Management**: React hooks for game state and UI.
 *   **Data Seeding Scripts**: For populating categories and questions in Firestore.
-*   **Service Layer**: Dedicated service files (`categoryService.ts`, `triviaService.ts`, `reportService.ts`, `suggestionService.ts`) for Firestore interactions.
+*   **Service Layer**: Dedicated service files (`categoryService.ts`, `triviaService.ts`, `reportService.ts`, `suggestionService.ts`, `userService.ts`, `gameSessionService.ts`) for Firestore interactions.
 *   **Robust Batch Question Generation**:
     *   The `populate-firestore-questions.ts` script was enhanced to handle cases where the Genkit AI model returns a partially valid batch of questions. The script now attempts to parse and save individually valid questions even if the overall batch response has schema issues, significantly improving the yield of pre-generated questions.
     *   Resolved issue with default model usage in `populate-firestore-questions.ts`.

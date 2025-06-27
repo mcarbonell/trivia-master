@@ -1,4 +1,3 @@
-
 # AI Trivia Master
 
 Welcome to AI Trivia Master, an interactive trivia game powered by generative AI! Test your knowledge across various categories or even provide your own custom topics. The game generates questions, multiple-choice answers, and explanations on the fly, offering a unique and engaging experience every time you play.
@@ -14,12 +13,16 @@ This project is built with Next.js and leverages Genkit for its AI capabilities.
 - **Score Tracking**: Keep track of your correct and incorrect answers.
 - **Adaptive Difficulty**: The AI attempts to adjust question difficulty based on your recent performance on a topic.
 - **Internationalization (i18n)**: Supports English and Spanish, with language selection impacting UI text and AI-generated content.
+- **User Profiles & Stats**: Registered users can view their game history, overall accuracy, and performance by category.
+- **Offline Play**: Categories and their questions are cached locally, allowing you to play without an internet connection once a category has been played once.
 - **Responsive Design**: Enjoy the game on various screen sizes.
 - **Admin Panel**:
     - Secure admin area accessible via Firebase Authentication (email/password).
     - Dashboard for quick navigation within the admin panel.
+    - **User Management**: View all registered users and assign 'admin' or 'user' roles.
     - **Category Management**: Full CRUD (Create, Read, Update, Delete) capabilities for trivia categories, including defining names, icons, AI prompt instructions, and difficulty-specific guidelines. View counts of predefined questions per difficulty for each category.
-    - **Question Management**: View a paginated list of all predefined questions. Filter questions by category and difficulty. Edit existing questions (all bilingual content, difficulty, correct answer). Delete unwanted predefined questions.
+    - **Question Management**: View a paginated list of all predefined questions. Filter questions by category and difficulty. Edit existing questions, including a semi-automated tool to search for and assign artwork images from Wikimedia Commons. Delete unwanted predefined questions.
+    - **Report & Suggestion Management**: Review and act on user-submitted question reports and general feedback.
 
 ## 🛠️ Tech Stack
 
@@ -30,7 +33,7 @@ This project is built with Next.js and leverages Genkit for its AI capabilities.
 - **Language**: TypeScript
 - **Internationalization**: `next-intl`
 - **Authentication**: Firebase Authentication
-- **Database**: Firebase Firestore (for categories and predefined questions)
+- **Database**: Firebase Firestore (for categories, predefined questions, users, roles, and game sessions)
 
 ## 🚀 Getting Started
 
@@ -70,17 +73,13 @@ This project is built with Next.js and leverages Genkit for its AI capabilities.
 4.  **Firebase Setup**:
     *   In your Firebase project, enable **Firestore Database**.
     *   Enable **Firebase Authentication** with the "Email/Password" sign-in provider.
-    *   Manually create an admin user in the Firebase Authentication console to access the admin panel.
+    *   Manually create an admin user in the Firebase Authentication console to access the admin panel. After the user is created, you must manually go into the `users` collection in Firestore and set that user's `role` field to `"admin"`.
 
 ### Running the Development Server
 
 To run the Next.js app and the Genkit development server concurrently (recommended):
 
 1.  Start the Genkit development server in one terminal:
-    ```bash
-    npm run genkit:dev
-    ```
-    Or for auto-reloading on Genkit flow changes:
     ```bash
     npm run genkit:watch
     ```
@@ -111,24 +110,26 @@ npm start
 -   `src/app/`: Main application code using Next.js App Router.
     -   `src/app/page.tsx`: The main page component for the trivia game.
     -   `src/app/layout.tsx`: The root layout for the application.
-    -   `src/app/login/page.tsx`: Admin login page.
-    -   `src/app/admin/`: Contains pages for the admin panel (dashboard, categories, questions).
-        - `src/app/admin/layout.tsx`: Layout for the admin section, handles authentication.
+    -   `src/app/login/page.tsx`: User/Admin login page.
+    -   `src/app/profile/page.tsx`: User profile and statistics page.
+    -   `src/app/admin/`: Contains pages for the admin panel (dashboard, categories, questions, users, etc.).
+        - `src/app/admin/layout.tsx`: Layout for the admin section, handles authentication and role checks.
 -   `src/ai/`: Genkit related files.
-    -   `src/ai/flows/generate-trivia-question.ts`: The Genkit flow responsible for generating trivia questions.
+    -   `src/ai/flows/`: Genkit flows for generating questions, validating topics, and finding images.
     -   `src/ai/genkit.ts`: Genkit initialization and configuration.
     -   `src/ai/dev.ts`: Entry point for the Genkit development server.
 -   `src/components/`: Reusable React components.
     -   `src/components/game/`: Components specific to the trivia game interface.
     -   `src/components/ui/`: ShadCN UI components.
 -   `src/contexts/`: React Context providers.
-    -   `src/contexts/AuthContext.tsx`: Manages Firebase authentication state.
+    -   `src/contexts/AuthContext.tsx`: Manages Firebase authentication state and user profile data.
 -   `src/lib/`: Utility functions and configurations.
     -   `src/lib/i18n-config.ts`: Configuration for `next-intl`.
-    -   `src/lib/firebase.ts`: Firebase initialization.
+    -   `src/lib/firebase.ts`: Firebase client-side initialization.
+    -   `src/lib/firebase-admin.ts`: Firebase server-side (admin) initialization.
 -   `src/messages/`: JSON files for internationalization.
--   `src/services/`: Service functions for interacting with Firestore (categoryService, triviaService).
--   `src/scripts/`: Utility scripts for populating Firestore.
+-   `src/services/`: Service functions for interacting with Firestore (`categoryService.ts`, `triviaService.ts`, `userService.ts`, `gameSessionService.ts`, etc.).
+-   `src/scripts/`: Utility scripts for populating and managing Firestore content.
 
 ## 🌐 Internationalization (i18n)
 
@@ -142,6 +143,7 @@ The application uses `next-intl` for internationalization.
 
 -   Genkit is used to define and run AI flows.
 -   The primary flow, `generateTriviaQuestionsFlow` (in `src/ai/flows/generate-trivia-question.ts`), interacts with an AI model (e.g., Gemini) to produce trivia content.
+-   Other flows handle validating user topics and finding images on Wikimedia Commons.
 -   The Genkit development UI can be accessed (usually at `http://localhost:4000`) when `npm run genkit:dev` or `npm run genkit:watch` is running, allowing you to inspect flows and traces.
 
 ---

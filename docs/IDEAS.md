@@ -8,87 +8,59 @@ Este documento recopila ideas para futuras mejoras de la aplicación AI Trivia M
     *   **Rachas (Streaks):** Otorgar puntos extra por respuestas correctas consecutivas.
     *   **Bonificación por Tiempo:** Dar más puntos si se responde correctamente y rápido.
 
-2.  **Historial de Partidas y Estadísticas del Usuario:**
-    *   Guardar los resultados de las partidas (si se implementan cuentas de usuario).
-    *   Mostrar estadísticas como porcentaje de aciertos por categoría, mejor racha, etc. Esto podría usar `localStorage` para una solución sencilla o una base de datos (como Firestore) si hay usuarios.
+2.  **Historial de Partidas y Estadísticas del Usuario (¡Implementado!):**
+    *   Ya se guardan los resultados de las partidas en Firestore si el usuario está registrado.
+    *   Se ha creado la página de perfil (`/profile`) que muestra el historial de partidas, precisión por categoría, y otras estadísticas.
+    *   **Posible Mejora:** Añadir logros o insignias por hitos (ej. "Experto en Historia", "Racha de 10 aciertos").
 
-3.  **Perfiles de Usuario (Opcional, más complejo):**
-    *   Permitir a los usuarios crear cuentas (quizás con Firebase Authentication).
-    *   Esto permitiría guardar el progreso y las estadísticas de forma persistente entre dispositivos.
-
-4.  **Más Tipos de Preguntas (requeriría ajustes en el prompt de Genkit):**
+3.  **Más Tipos de Preguntas (requeriría ajustes en el prompt de Genkit):**
     *   Actualmente son de opción múltiple. Se podría explorar "Verdadero/Falso" o incluso preguntas donde el usuario tenga que escribir una respuesta corta (aunque la validación sería más compleja).
 
-5.  **Mejoras Visuales y de Audio:**
+4.  **Mejoras Visuales y de Audio:**
     *   **Sonidos:** Efectos de sonido opcionales para respuestas correctas/incorrectas, inicio de juego, etc.
     *   **Animaciones más Pulidas:** Aunque ya hay algunas, se podrían refinar las transiciones entre estados del juego.
     *   **Temas Visuales:** Permitir al usuario elegir entre diferentes paletas de colores (más allá del claro/oscuro actual).
 
-6.  **Modo "Revisión":**
+5.  **Modo "Revisión":**
     *   Al final de una partida, permitir al usuario revisar las preguntas que falló, junto con las explicaciones.
 
-7.  **Imágenes Ilustrativas para Preguntas (¡Implementado!):**
+6.  **Imágenes Ilustrativas para Preguntas (¡Implementado!):**
     *   **Concepto:** Mostrar una imagen relevante junto a cada pregunta para hacer la experiencia más visual y atractiva.
     *   **Generación de Imágenes:**
-        *   **Opción A (IA de texto genera prompt):** La misma IA que genera la pregunta también genera un prompt descriptivo para una IA de generación de imágenes (ej. "Una foto de un astronauta en la luna para una pregunta sobre el Apollo 11"). Este es el enfoque implementado.
-        *   Se usan modelos de Genkit capaces de generar imágenes (como Gemini 2.0 Flash experimental).
+        *   **Opción A (IA de texto genera prompt):** La misma IA que genera la pregunta también genera un prompt descriptivo para una IA de generación de imágenes (ej. "Una foto de un astronauta en la luna para una pregunta sobre el Apollo 11"). Este enfoque se usa para algunas categorías visuales.
+        *   **Opción B (Búsqueda semi-automatizada):** Para categorías como "Pinturas Famosas", el panel de administración ahora tiene una herramienta que busca en Wikimedia Commons basándose en el título y autor, muestra los resultados al admin, y permite seleccionar la imagen correcta.
+        *   Se usan modelos de Genkit capaces de generar imágenes (como Gemini) o la API de Wikimedia.
     *   **Almacenamiento (para preguntas predefinidas):**
-        *   Las imágenes generadas para las categorías predefinidas se almacenan en **Firebase Storage**.
+        *   Las imágenes generadas/seleccionadas para las categorías predefinidas se almacenan en **Firebase Storage**.
         *   La URL de la imagen se almacena junto con la pregunta en Firestore.
     *   **Implementación en la UI:**
         *   El componente `QuestionCard` ya muestra la imagen si existe una `imageUrl`.
     *   **Consideraciones para Temas Personalizados:**
         *   La generación de imágenes en tiempo real para temas personalizados sería más costosa y lenta. Se podría optar por:
-            *   Generarlas y que el usuario espere.
+            *   Generarlas y que el usuario espere (podría ser una característica premium).
             *   Omitir imágenes para temas personalizados.
             *   Usar un placeholder genérico o un icono basado en el tema.
-    *   **Beneficios:**
-        *   Mejora estética y de engagement.
-        *   Puede ayudar a contextualizar la pregunta.
-    *   **Desafíos:**
-        *   Costo y latencia de la generación de imágenes AI.
-        *   Necesidad de prompts de buena calidad para las IAs de arte.
-        *   Aumento del espacio de almacenamiento requerido.
 
-8.  **Nuevas Categorías Visuales (Ideas):**
-    *   **Identificar Animales (Implementado):** Mostrar una imagen y preguntar "¿Qué animal es?".
-    *   **Monumentos del Mundo:** Mostrar el Coliseo y preguntar "¿Qué monumento es este?" o "¿En qué ciudad se encuentra?".
-    *   **Banderas del Mundo:** Mostrar una bandera y preguntar por el país.
-    *   **Pinturas Famosas:** Mostrar "La Gioconda" y preguntar por el autor o el nombre de la obra.
-    *   **Platos de Comida:** Mostrar una paella y preguntar "¿Qué plato típico es?".
-
-9.  **Trivia Visual Avanzada: Identificación de Ciudades desde Imágenes Generadas por IA:**
-    *   **Concepto Principal:** Un modo de juego donde el usuario ve una imagen y debe identificar la ciudad correspondiente.
-    *   **Generación de Imágenes Automatizada:**
-        *   Utilizar IA generativa de imágenes (ej. Gemini 2.0 Flash experimental a través de Genkit) para crear las fotografías de las ciudades.
-        *   Se usarían prompts específicos para asegurar que las imágenes sean representativas e identificables, por ejemplo: `"Una imagen fotorrealista, representativa e icónica de la ciudad de Nueva York, EEUU, que muestre uno de sus landmarks más conocidos."` o `"Fotografía de un lugar emblemático fácilmente reconocible de París, Francia."`
-        *   Este proceso podría automatizar la creación de un vasto banco de imágenes para la trivia.
-    *   **Mecánica de Juego:**
-        *   Mostrar la imagen generada.
-        *   El usuario podría tener opciones múltiples (nombres de ciudades) o, para mayor dificultad, un campo de texto para escribir el nombre.
-        *   La IA que generó la imagen (o una IA de texto) podría también generar las opciones incorrectas o validar la respuesta escrita.
+7.  **Trivia Visual Avanzada (Próximos Pasos):**
+    *   **Concepto Principal:** Crear modos de juego donde la imagen es la pregunta principal (ej. "¿Qué ciudad es esta?").
+    *   **Generación Automatizada:**
+        *   Utilizar IA generativa de imágenes (ej. Gemini a través de Genkit) para crear las fotografías de las ciudades, monumentos, animales, etc.
+        *   Se usarían prompts específicos para asegurar que las imágenes sean representativas e identificables, por ejemplo: `"Una imagen fotorrealista, representativa e icónica de la ciudad de Nueva York, EEUU, que muestre uno de sus landmarks más conocidos."`
     *   **Extensibilidad del Concepto "Imagen + Pregunta":**
-        *   Esta idea se puede extender más allá de las ciudades:
-            *   Identificar monumentos famosos (ej. `"Imagen de la Torre Eiffel"` -> ¿Qué monumento es? ¿En qué ciudad está?).
-            *   Identificar personajes históricos o ficticios a partir de un retrato generado.
-            *   Identificar obras de arte.
-            *   Identificar especies de animales o plantas.
+        *   Identificar personajes históricos o ficticios a partir de un retrato generado.
+        *   Identificar obras de arte, especies de animales o plantas.
     *   **Consideraciones de Costo/Beneficio:**
         *   La generación de imágenes mediante IA tiene un costo de API superior al de la generación de texto puro.
         *   Sin embargo, el valor añadido en términos de atractivo visual y engagement del usuario podría justificarlo, especialmente para categorías o modos de juego premium.
-    *   **Almacenamiento y Optimización:**
-        *   Las imágenes generadas para categorías predefinidas (ej. "Capitales del Mundo") se podrían almacenar en Firebase Storage para reducir costos de generación repetida.
-        *   Sería importante considerar la optimización del tamaño de las imágenes generadas para no afectar los tiempos de carga.
 
 ## ¿Sería fácil convertirla en una app de Android?
 
 Convertir una aplicación web Next.js directamente en una aplicación nativa de Android (escrita en Kotlin o Java) **no es un proceso directo de "un clic"**. Son tecnologías fundamentalmente diferentes. Sin embargo, hay varias estrategias para llevar tu aplicación web a Android, con diferentes niveles de esfuerzo y "nativismo":
 
-1.  **Progressive Web App (PWA):**
-    *   **Esfuerzo:** Relativamente bajo.
-    *   **Cómo:** Mejorar tu actual aplicación Next.js con características de PWA: un Service Worker para capacidades offline y cacheo, y un Web App Manifest para permitir "instalarla" en la pantalla de inicio.
+1.  **Progressive Web App (PWA): (¡Implementado!)**
+    *   **Esfuerzo:** Relativamente bajo. Ya se ha configurado.
+    *   **Cómo:** Se ha mejorado la actual aplicación Next.js con características de PWA: un Service Worker para capacidades offline y cacheo, y un Web App Manifest para permitir "instalarla" en la pantalla de inicio.
     *   **Resultado:** Se comporta como una app, puede funcionar offline (hasta cierto punto), pero sigue siendo una aplicación web ejecutándose en el motor del navegador del dispositivo (WebView).
-    *   Next.js tiene un buen soporte para PWA.
 
 2.  **Aplicación Híbrida (WebView Wrapper):**
     *   **Esfuerzo:** Medio.
@@ -149,7 +121,7 @@ Existen varias vías para monetizar una aplicación como "AI Trivia Master":
     *   **Nivel Premium (Suscripción mensual/anual):**
         *   Sin anuncios.
         *   Acceso ilimitado a todas las categorías.
-        *   Estadísticas avanzadas.
+        *   Estadísticas avanzadas (ya implementadas para usuarios registrados, podría ser parte del premium).
         *   Acceso anticipado a nuevas funciones.
         *   Número de pistas gratuitas al mes.
         *   Acceso ilimitado a la generación de preguntas sobre temas personalizados (si se decide limitar en el nivel gratuito).
@@ -171,65 +143,21 @@ Existen varias vías para monetizar una aplicación como "AI Trivia Master":
 *   **Cumplimiento de Políticas:** Adherirse a las políticas de Google Play Store (y Apple App Store si se decide publicar allí).
 *   **Diferenciación de Costos (Temas Personalizados vs. Predefinidos):** Los temas personalizados generados por IA tienen un costo de API por cada uso, mientras que las categorías predefinidas (con preguntas pre-generadas y almacenadas) tienen un costo operativo mucho menor. Esto sugiere que la funcionalidad de **temas personalizados es ideal para un modelo premium, una suscripción, o para ofrecer un número limitado de usos gratuitos** antes de requerir un pago.
 
-## Mejora: Experiencia Offline Avanzada con Preguntas Pre-generadas
+## Experiencia Offline Avanzada (¡Implementado!)
 
-Esta es una optimización significativa que puede mejorar drásticamente el rendimiento, reducir costos de API y ofrecer una verdadera capacidad offline para las categorías predefinidas.
+Se ha optimizado significativamente el rendimiento y la capacidad offline.
 
-### Concepto General:
+### Concepto Implementado:
 
-1.  **Pre-generación de Preguntas:**
-    *   Para las categorías definidas (Ciencia, Historia, etc.), se podría crear un script o proceso (ej. Cloud Function) que utilice el flujo de Genkit `generateTriviaQuestionFlow` para generar un volumen grande de preguntas (cientos o miles por categoría e idioma).
-2.  **Almacenamiento en Backend (Firestore):**
-    *   Estas preguntas pre-generadas se almacenarían en una base de datos como Firestore.
-    *   Cada documento podría representar una pregunta e incluir: texto de la pregunta, opciones de respuesta, índice de la respuesta correcta, explicación, categoría, idioma, y opcionalmente dificultad.
-    *   Ejemplo de estructura en Firestore:
-        ```
-        predefinedQuestions/ (colección)
-          {questionId_1}:
-            category: "Science"
-            questionText: "¿Cuál es el símbolo químico del agua?"
-            answers: ["H2O", "O2", "CO2", "NaCl"]
-            correctAnswerIndex: 0
-            explanation: "El agua está compuesta por dos átomos de hidrógeno y uno de oxígeno."
-            language: "es"
-          ... (más preguntas)
-        ```
+1.  **Cacheo de Categorías:** La lista de categorías se descarga y guarda en el IndexedDB del navegador.
+2.  **Descarga Bajo Demanda de Preguntas:** Cuando un usuario elige jugar una categoría predefinida por primera vez, la aplicación descarga todas las preguntas de esa categoría de Firestore y las almacena en IndexedDB.
+3.  **Juego Offline:** En visitas posteriores, si no hay conexión o el contenido ya está en caché, el juego utiliza las preguntas guardadas en IndexedDB, permitiendo un juego rápido y sin conexión para las categorías ya jugadas.
+4.  **Versionado de Contenido:** Se ha implementado un sistema de versionado. Si se actualiza el contenido de la aplicación (añadiendo nuevas preguntas o categorías), la versión cambia, y la próxima vez que el usuario abra la app, la caché local se borra y se actualiza para asegurar que tenga los datos más recientes.
+5.  **Temas Personalizados:** Siguen requiriendo conexión a internet debido a la naturaleza dinámica de la generación de IA.
 
-### Almacenamiento y Experiencia Offline en el Cliente:
-
-1.  **IndexedDB:**
-    *   Es la API del navegador ideal para almacenar grandes cantidades de datos estructurados en el lado del cliente (mucho más que `localStorage`).
-    *   Se crearían "almacenes de objetos" (similares a tablas) para guardar las preguntas descargadas, con índices por categoría e idioma para una recuperación eficiente.
-2.  **Service Workers (Parte fundamental de una PWA):**
-    *   **Cacheo del App Shell:** Para que la estructura de la aplicación (HTML, CSS, JS, imágenes de UI) se cargue instantáneamente, incluso sin conexión.
-    *   **Interceptación de Peticiones:** Cuando la app solicite preguntas de categorías predefinidas:
-        *   Si hay conexión, el Service Worker podría permitir que la petición llegue a Firestore (o a un endpoint que sirva desde Firestore) para obtener las preguntas más recientes o verificar actualizaciones.
-        *   Si no hay conexión, el Service Worker serviría las preguntas directamente desde la copia local en IndexedDB.
-3.  **Cache API:** Utilizada por el Service Worker para almacenar las respuestas a las peticiones de red (incluyendo los archivos del app shell).
-
-### Estrategia de Sincronización de Datos:
-
-*   **Descarga Inicial:** Al primer uso o tras una actualización importante, la app podría descargar un conjunto base de preguntas para las categorías predefinidas.
-*   **Actualizaciones Incrementales:** Periódicamente, o cuando haya conexión, la app podría consultar Firestore para obtener solo las preguntas nuevas o modificadas desde la última sincronización.
-*   **Descarga Manual:** Ofrecer al usuario la opción de "Descargar categorías para jugar offline".
-*   **Gestión de Versiones/Actualizaciones:** Considerar cómo manejar actualizaciones al conjunto de preguntas (ej. si se corrige una pregunta o se añaden más).
-
-### Consideraciones para Temas Personalizados:
-
-*   Los temas personalizados, al ser generados dinámicamente por la IA, **seguirían requiriendo una conexión a internet y consumirían llamadas a la API de Genkit.** Es importante comunicar esto claramente al usuario en la interfaz cuando esté offline. Dado el costo de API asociado, esta funcionalidad es una candidata ideal para ser una característica premium o tener un uso limitado para cuentas gratuitas.
-*   Para una experiencia offline muy básica con temas personalizados, se podría considerar empaquetar un conjunto muy pequeño y genérico de preguntas que no dependan de un tema específico, pero esto limitaría mucho la naturaleza "personalizada".
-
-### Beneficios Clave:
+### Beneficios Obtenidos:
 
 *   **Rendimiento Mejorado:** Carga de preguntas casi instantánea para categorías predefinidas.
-*   **Reducción de Costos de API:** Menos llamadas al modelo de IA para contenido común.
+*   **Reducción de Costos de API:** Menos llamadas al modelo de IA y a Firestore.
 *   **Verdadera Capacidad Offline:** Jugar las categorías predefinidas sin conexión.
 *   **Mayor Resiliencia:** La app funciona mejor con conexiones intermitentes.
-
-### Desafíos:
-
-*   **Complejidad de Implementación:** Configurar Service Workers, IndexedDB y la lógica de sincronización requiere un esfuerzo de desarrollo inicial mayor.
-*   **Gestión de Datos:** Definir el proceso para generar, almacenar y actualizar las preguntas pre-generadas.
-*   **Experiencia de Usuario (UX):** Proveer feedback claro al usuario sobre el estado de la conexión, el progreso de las descargas y qué contenido está disponible offline.
-    
-    
