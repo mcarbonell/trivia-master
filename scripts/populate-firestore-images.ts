@@ -102,7 +102,8 @@ async function fetchImageFromWikimedia(question: PredefinedQuestion): Promise<st
   }
 
   // 3. Validate license - very basic check for "public domain"
-  const licenseText = JSON.stringify(extMetadata.License).toLowerCase();
+  // const licenseText = JSON.stringify(extMetadata.License).toLowerCase();
+  const licenseText = JSON.stringify(extMetadata.LicenseShortName?.value || 'Unknown').toLowerCase();
   if (!licenseText.includes('public domain')) {
     console.warn(`  [Wikimedia] License for "${pageTitle}" is not confirmed as Public Domain. Skipping. License: ${extMetadata.LicenseShortName?.value || 'Unknown'}`);
     return null;
