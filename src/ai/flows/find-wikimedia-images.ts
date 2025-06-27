@@ -3,33 +3,20 @@
  * @fileOverview A Genkit flow to find candidate images for artworks on Wikimedia Commons.
  *
  * - findWikimediaImages - A function that searches for images and returns candidates.
- * - FindWikimediaImagesInput - The input type for the findWikimediaImages function.
- * - FindWikimediaImagesOutput - The return type for the findWikimediaImages function.
  */
 
 import { ai } from '@/ai/genkit';
-import { z } from 'zod';
+import {
+  FindWikimediaImagesInputSchema,
+  FindWikimediaImagesOutputSchema,
+  type FindWikimediaImagesInput,
+  type FindWikimediaImagesOutput,
+  type WikimediaImageCandidate
+} from '@/types';
+
 
 const PERMISSIVE_LICENSES = ['public domain', 'pd-', 'cc0', 'cc by'];
 const MAX_SEARCH_RESULTS = 8; // Max number of candidates to return
-
-export const FindWikimediaImagesInputSchema = z.object({
-  artworkTitle: z.string().describe("The title of the artwork to search for."),
-  artworkAuthor: z.string().optional().describe("The author of the artwork."),
-});
-export type FindWikimediaImagesInput = z.infer<typeof FindWikimediaImagesInputSchema>;
-
-export const WikimediaImageCandidateSchema = z.object({
-  pageUrl: z.string().url().describe("The URL to the Wikimedia Commons file page."),
-  thumbnailUrl: z.string().url().describe("The URL for a thumbnail version of the image."),
-  fullUrl: z.string().url().describe("The URL for the full-sized version of the image."),
-  license: z.string().describe("The short name of the license (e.g., 'Public domain', 'CC BY-SA 4.0')."),
-  title: z.string().describe("The title of the file on Wikimedia."),
-});
-export type WikimediaImageCandidate = z.infer<typeof WikimediaImageCandidateSchema>;
-
-export const FindWikimediaImagesOutputSchema = z.array(WikimediaImageCandidateSchema);
-export type FindWikimediaImagesOutput = z.infer<typeof FindWikimediaImagesOutputSchema>;
 
 
 export async function findWikimediaImages(input: FindWikimediaImagesInput): Promise<FindWikimediaImagesOutput> {

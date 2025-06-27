@@ -3,12 +3,15 @@
  * @fileOverview A Genkit flow to process a selected Wikimedia image.
  *
  * - processWikimediaImage - A function that downloads, uploads, and updates Firestore.
- * - ProcessWikimediaImageInput - The input type.
- * - ProcessWikimediaImageOutput - The return type.
  */
 import admin from 'firebase-admin';
 import { ai } from '@/ai/genkit';
-import { z } from 'zod';
+import {
+  ProcessWikimediaImageInputSchema,
+  ProcessWikimediaImageOutputSchema,
+  type ProcessWikimediaImageInput,
+  type ProcessWikimediaImageOutput
+} from '@/types';
 import { updatePredefinedQuestion } from '@/services/triviaService';
 
 // Initialize Firebase Admin SDK if not already done
@@ -24,18 +27,6 @@ try {
 }
 
 const storageBucket = admin.storage().bucket();
-
-export const ProcessWikimediaImageInputSchema = z.object({
-  imageUrl: z.string().url().describe("The URL of the image to process from Wikimedia Commons."),
-  questionId: z.string().describe("The Firestore ID of the question to update."),
-});
-export type ProcessWikimediaImageInput = z.infer<typeof ProcessWikimediaImageInputSchema>;
-
-export const ProcessWikimediaImageOutputSchema = z.object({
-  publicUrl: z.string().url().describe("The final public URL of the image in Firebase Storage."),
-});
-export type ProcessWikimediaImageOutput = z.infer<typeof ProcessWikimediaImageOutputSchema>;
-
 
 export async function processWikimediaImage(input: ProcessWikimediaImageInput): Promise<ProcessWikimediaImageOutput> {
   return processWikimediaImageFlow(input);

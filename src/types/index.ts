@@ -32,11 +32,41 @@ export const GenerateTriviaQuestionOutputSchema = z.object({
   imageUrl: z.string().url().optional().describe('The URL of the final image.'),
 });
 
+// Wikimedia Image Search Schemas
+export const FindWikimediaImagesInputSchema = z.object({
+  artworkTitle: z.string().describe("The title of the artwork to search for."),
+  artworkAuthor: z.string().optional().describe("The author of the artwork."),
+});
+export const WikimediaImageCandidateSchema = z.object({
+  pageUrl: z.string().url().describe("The URL to the Wikimedia Commons file page."),
+  thumbnailUrl: z.string().url().describe("The URL for a thumbnail version of the image."),
+  fullUrl: z.string().url().describe("The URL for the full-sized version of the image."),
+  license: z.string().describe("The short name of the license (e.g., 'Public domain', 'CC BY-SA 4.0')."),
+  title: z.string().describe("The title of the file on Wikimedia."),
+});
+export const FindWikimediaImagesOutputSchema = z.array(WikimediaImageCandidateSchema);
+
+// Process Wikimedia Image Schemas
+export const ProcessWikimediaImageInputSchema = z.object({
+  imageUrl: z.string().url().describe("The URL of the image to process from Wikimedia Commons."),
+  questionId: z.string().describe("The Firestore ID of the question to update."),
+});
+export const ProcessWikimediaImageOutputSchema = z.object({
+  publicUrl: z.string().url().describe("The final public URL of the image in Firebase Storage."),
+});
+
 
 // TypeScript Types
 export type DifficultyLevel = z.infer<typeof DifficultyLevelSchema>;
 export type BilingualText = z.infer<typeof BilingualTextSchema>;
 export type GenerateTriviaQuestionOutput = z.infer<typeof GenerateTriviaQuestionOutputSchema>;
+
+export type FindWikimediaImagesInput = z.infer<typeof FindWikimediaImagesInputSchema>;
+export type WikimediaImageCandidate = z.infer<typeof WikimediaImageCandidateSchema>;
+export type FindWikimediaImagesOutput = z.infer<typeof FindWikimediaImagesOutputSchema>;
+
+export type ProcessWikimediaImageInput = z.infer<typeof ProcessWikimediaImageInputSchema>;
+export type ProcessWikimediaImageOutput = z.infer<typeof ProcessWikimediaImageOutputSchema>;
 
 export type CategoryDifficultyGuideline = string;
 
