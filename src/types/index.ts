@@ -1,4 +1,3 @@
-
 // src/types/index.ts
 import { z } from 'zod';
 import type { AppLocale } from '@/lib/i18n-config';
@@ -57,6 +56,27 @@ export const ProcessWikimediaImageOutputSchema = z.object({
 });
 
 
+// --- Schemas for AI-driven Question Validation ---
+export const QuestionDataSchema = GenerateTriviaQuestionOutputSchema.extend({
+  id: z.string().describe("The Firestore ID of the question being validated."),
+  topicValue: z.string().describe("The topic value associated with the question."),
+  status: z.string().optional().describe("Validation status of the question, if any (e.g., 'accepted', 'fixed')."),
+  source: z.string().optional().describe("Source information for the question, if available."),
+  createdAt: z.string().optional().describe("Creation timestamp, if available.")
+});
+export const ValidateSingleQuestionInputSchema = z.object({
+  questionData: QuestionDataSchema.describe('The full data of the trivia question to validate.'),
+  modelName: z.string().optional().describe('Optional Genkit model name to use for validation (e.g., googleai/gemini-1.5-flash).')
+});
+export const ValidateSingleQuestionOutputSchema = z.object({
+  validationStatus: z.enum(["Accept", "Reject", "Fix"])
+    .describe('Status of the validation: "Accept" if correct, "Reject" if unfixable, "Fix" if correctable.'),
+  reasoning: z.string().describe('AI\'s reasoning for the validation status. If "Fix", should explain what was fixed.'),
+  fixedQuestionData: GenerateTriviaQuestionOutputSchema.optional()
+    .describe('The corrected question data if validationStatus is "Fix". This must include all necessary fields like question, correctAnswer, distractors, explanation, difficulty, and imagePrompt if applicable.'),
+});
+
+
 // TypeScript Types
 export type DifficultyLevel = z.infer<typeof DifficultyLevelSchema>;
 export type BilingualText = z.infer<typeof BilingualTextSchema>;
@@ -68,6 +88,10 @@ export type FindWikimediaImagesOutput = z.infer<typeof FindWikimediaImagesOutput
 
 export type ProcessWikimediaImageInput = z.infer<typeof ProcessWikimediaImageInputSchema>;
 export type ProcessWikimediaImageOutput = z.infer<typeof ProcessWikimediaImageOutputSchema>;
+
+export type QuestionData = z.infer<typeof QuestionDataSchema>;
+export type ValidateSingleQuestionInput = z.infer<typeof ValidateSingleQuestionInputSchema>;
+export type ValidateSingleQuestionOutput = z.infer<typeof ValidateSingleQuestionOutputSchema>;
 
 export type CategoryDifficultyGuideline = string;
 

@@ -6,8 +6,8 @@ import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
 import inquirer from 'inquirer';
 import { adminDb } from '../src/lib/firebase-admin';
-import { validateSingleTriviaQuestion, type ValidateSingleQuestionInput, type ValidateSingleQuestionOutput, type QuestionData } from '../src/ai/flows/validate-single-trivia-question';
-import type { GenerateTriviaQuestionOutput, BilingualText, DifficultyLevel } from '@/types';
+import { validateSingleTriviaQuestion } from '../src/ai/flows/validate-single-trivia-question';
+import type { ValidateSingleQuestionInput, ValidateSingleQuestionOutput, QuestionData, GenerateTriviaQuestionOutput, BilingualText, DifficultyLevel } from '../src/types';
 import type { firestore } from 'firebase-admin';
 
 const PREDEFINED_QUESTIONS_COLLECTION = 'predefinedTriviaQuestions';

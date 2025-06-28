@@ -5,7 +5,8 @@ config(); // Load environment variables from .env file
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
 import { adminDb } from '../src/lib/firebase-admin';
-import { validateSingleTriviaQuestion, type ValidateSingleQuestionInput, type QuestionData } from '../src/ai/flows/validate-single-trivia-question';
+import { validateSingleTriviaQuestion } from '../src/ai/flows/validate-single-trivia-question';
+import type { ValidateSingleQuestionInput, QuestionData } from '../src/types';
 import type { DifficultyLevel, BilingualText } from '@/types';
 import type { firestore } from 'firebase-admin';
 

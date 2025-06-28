@@ -5,55 +5,32 @@
  * It now includes category-specific instructions to provide better context to the AI.
  *
  * - validateSingleTriviaQuestion - A function that validates a question and suggests fixes or rejection.
- * - ValidateSingleQuestionInput - The input type for the validateSingleTriviaQuestion function.
- * - ValidateSingleQuestionOutput - The return type for the validateSingleQuestionOutput function.
  */
 
 import { ai } from '@/ai/genkit';
 import { z } from 'genkit';
 import { adminDb } from '@/lib/firebase-admin';
-import { GenerateTriviaQuestionOutputSchema } from '@/types';
+import { 
+  ValidateSingleQuestionInputSchema, 
+  ValidateSingleQuestionOutputSchema,
+  type ValidateSingleQuestionInput,
+  type ValidateSingleQuestionOutput,
+} from '@/types';
+
 
 const CATEGORIES_COLLECTION = 'triviaCategories';
-
-// --- Zod Schemas ---
-
-export const QuestionDataSchema = GenerateTriviaQuestionOutputSchema.extend({
-  id: z.string().describe("The Firestore ID of the question being validated."),
-  topicValue: z.string().describe("The topic value associated with the question."),
-  status: z.string().optional().describe("Validation status of the question, if any (e.g., 'accepted', 'fixed')."),
-  source: z.string().optional().describe("Source information for the question, if available."),
-  createdAt: z.string().optional().describe("Creation timestamp, if available.")
-});
-export type QuestionData = z.infer<typeof QuestionDataSchema>;
-
-export const ValidateSingleQuestionInputSchema = z.object({
-  questionData: QuestionDataSchema.describe('The full data of the trivia question to validate.'),
-  modelName: z.string().optional().describe('Optional Genkit model name to use for validation (e.g., googleai/gemini-1.5-flash).')
-});
-export type ValidateSingleQuestionInput = z.infer<typeof ValidateSingleQuestionInputSchema>;
-
-const ValidationStatusSchema = z.enum(["Accept", "Reject", "Fix"])
-  .describe('Status of the validation: "Accept" if correct, "Reject" if unfixable, "Fix" if correctable.');
-
-export const ValidateSingleQuestionOutputSchema = z.object({
-  validationStatus: ValidationStatusSchema,
-  reasoning: z.string().describe('AI\'s reasoning for the validation status. If "Fix", should explain what was fixed.'),
-  fixedQuestionData: GenerateTriviaQuestionOutputSchema.optional()
-    .describe('The corrected question data if validationStatus is "Fix". This must include all necessary fields like question, correctAnswer, distractors, explanation, difficulty, and imagePrompt if applicable.'),
-});
-export type ValidateSingleQuestionOutput = z.infer<typeof ValidateSingleQuestionOutputSchema>;
-
-// Input schema specifically for the prompt, including the fetched context
-const PromptInputSchema = ValidateSingleQuestionInputSchema.extend({
-  categoryInstructions: z.string().optional().describe('Specific instructions for the category this question belongs to.'),
-});
 
 // --- Exported Function ---
 
 export async function validateSingleTriviaQuestion(input: ValidateSingleQuestionInput): Promise<ValidateSingleQuestionOutput> {
   return validateSingleTriviaQuestionFlow(input);
 }
+
+// Input schema specifically for the prompt, including the fetched context
+const PromptInputSchema = ValidateSingleQuestionInputSchema.extend({
+  categoryInstructions: z.string().optional().describe('Specific instructions for the category this question belongs to.'),
+});
+
 
 // --- Prompt Definition ---
 
