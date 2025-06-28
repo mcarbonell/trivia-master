@@ -4,6 +4,7 @@ config(); // Load environment variables from .env file
 
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
+import sharp from 'sharp';
 import { adminDb, adminStorage } from '../src/lib/firebase-admin';
 import type { PredefinedQuestion } from '../src/services/triviaService';
 import { getScriptSettings } from '@/services/settingsService';
@@ -13,6 +14,29 @@ import type { firestore } from 'firebase-admin';
 const bucket = adminStorage.bucket();
 const db = adminDb;
 const PREDEFINED_QUESTIONS_COLLECTION = 'predefinedTriviaQuestions';
+
+// Define the watermark
+const watermarkSvg = `
+<svg width="400" height="60" xmlns="http://www.w3.org/2000/svg">
+    <style>
+        .title { 
+            fill: rgba(255, 255, 255, 0.6); 
+            font-size: 22px; 
+            font-weight: bold; 
+            font-family: Arial, sans-serif;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+        }
+    </style>
+    <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" class="title">AI Trivia Master</text>
+</svg>
+`;
+const watermarkBuffer = Buffer.from(watermarkSvg);
+
+interface ImageResult {
+  buffer: Buffer;
+  contentType: string;
+  extension: string;
+}
 
 async function main() {
   const settings = await getScriptSettings();
@@ -55,13 +79,13 @@ async function main() {
 }
 
 
-async function fetchImageFromWikimedia(question: PredefinedQuestion): Promise<string | null> {
-  if (!question.artworkTitle || !question.artworkAuthor) {
-    console.warn(`  [Wikimedia] Skipping question ID ${question.id}: Missing artworkTitle or artworkAuthor.`);
+async function fetchImageFromWikimedia(question: PredefinedQuestion): Promise<ImageResult | null> {
+  if (!question.artworkTitle) {
+    console.warn(`  [Wikimedia] Skipping question ID ${question.id}: Missing artworkTitle.`);
     return null;
   }
   
-  const searchTerm = `"${question.artworkTitle}" "${question.artworkAuthor}"`;
+  const searchTerm = `"${question.artworkTitle}" ${question.artworkAuthor ? `"${question.artworkAuthor}"` : ''}`;
   console.log(`  [Wikimedia] Searching for: ${searchTerm}`);
 
   const searchUrl = `https://commons.wikimedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(searchTerm)}&srnamespace=6&format=json&srlimit=1&origin=*`;
@@ -99,17 +123,10 @@ async function fetchImageFromWikimedia(question: PredefinedQuestion): Promise<st
 
   // --- Robust License Validation ---
   const licenseShortName = (extMetadata.LicenseShortName?.value || '').toLowerCase();
-  const licenseUrl = (extMetadata.LicenseUrl?.value || '').toLowerCase();
-  
-  const isPermissiveLicense =
-    licenseShortName.includes('public domain') ||
-    licenseShortName.startsWith('pd-') ||
-    licenseShortName === 'cc0' ||
-    licenseShortName.startsWith('cc by') || // Catches CC BY, CC BY-SA etc.
-    licenseUrl.includes('creativecommons.org/publicdomain/');
+  const isPermissiveLicense = ['public domain', 'pd-', 'cc0', 'cc by'].some(p => licenseShortName.includes(p));
 
   if (!isPermissiveLicense) {
-    console.warn(`  [Wikimedia] License for "${pageTitle}" is not permissive enough (e.g., Public Domain, CC0, CC BY). Skipping. License found: ${extMetadata.LicenseShortName?.value || 'Unknown'}`);
+    console.warn(`  [Wikimedia] License for "${pageTitle}" is not permissive enough. Skipping. License: ${extMetadata.LicenseShortName?.value || 'Unknown'}`);
     return null;
   }
   console.log(`  [Wikimedia] License confirmed as permissive: ${extMetadata.LicenseShortName?.value || 'OK'}`);
@@ -126,46 +143,36 @@ async function fetchImageFromWikimedia(question: PredefinedQuestion): Promise<st
     return null;
   }
   const imageBuffer = Buffer.from(await imageResponse.arrayBuffer());
-  
   const fileExtension = imageUrl.split('.').pop()?.split('?')[0] || 'jpg';
-  const filePath = `trivia_images/${question.id}.${fileExtension}`;
-  const file = bucket.file(filePath);
-  await file.save(imageBuffer, {
-    metadata: { contentType: imageResponse.headers.get('content-type') || 'image/jpeg' },
-    public: true,
-  });
 
-  return file.publicUrl();
+  return {
+    buffer: imageBuffer,
+    contentType: imageResponse.headers.get('content-type') || 'image/jpeg',
+    extension: fileExtension,
+  };
 }
 
-async function generateImageFromAI(prompt: string, questionId: string, modelName: string): Promise<string | null> {
+async function generateImageFromAI(prompt: string, modelName: string): Promise<ImageResult | null> {
   console.log(`[generateImageFromAI] Generating image with prompt: "${prompt}" using model: "${modelName}"`);
 
   let mediaUrl: string | undefined;
   let textResponse: string | undefined;
 
   if (modelName.includes('imagen')) {
-    // Logic for Imagen models, which require vertexAI plugin
     const response = await ai.generate({
       model: modelName,
-      output: { format: 'media' }, // Crucial for Imagen
-      prompt: prompt, // Use raw prompt for Imagen
-      config: {
-        numberOfImages: 1, // Only generate one image per question
-        aspectRatio: '16:9', // Keep aspect ratio consistent
-      },
+      output: { format: 'media' },
+      prompt: prompt,
+      config: { numberOfImages: 1, aspectRatio: '16:9' },
     });
     mediaUrl = response.media?.url;
     textResponse = response.text;
   } else {
-    // Existing logic for Gemini models
     const engineeredPrompt = `A widescreen, 16:9 aspect ratio, landscape-orientation image of: ${prompt}`;
     const { media, text } = await ai.generate({
       model: modelName,
       prompt: engineeredPrompt,
-      config: {
-        responseModalities: ['TEXT', 'IMAGE'],
-      },
+      config: { responseModalities: ['TEXT', 'IMAGE'] },
     });
     mediaUrl = media?.url;
     textResponse = text;
@@ -173,7 +180,7 @@ async function generateImageFromAI(prompt: string, questionId: string, modelName
     
   if (!mediaUrl) {
     console.error(`[generateImageFromAI] AI did not return image media. Text response:`, textResponse);
-    throw new Error('Image generation failed: No media returned from AI.');
+    return null;
   }
 
   const imageDataUri = mediaUrl;
@@ -182,15 +189,11 @@ async function generateImageFromAI(prompt: string, questionId: string, modelName
   const imageBuffer = Buffer.from(base64Data, 'base64');
   const fileExtension = mimeType.split('/')[1] || 'png';
   
-  const filePath = `trivia_images/${questionId}.${fileExtension}`;
-  const file = bucket.file(filePath);
-
-  await file.save(imageBuffer, {
-    metadata: { contentType: mimeType },
-    public: true,
-  });
-  
-  return file.publicUrl();
+  return {
+    buffer: imageBuffer,
+    contentType: mimeType,
+    extension: fileExtension,
+  };
 }
 
 
@@ -214,9 +217,7 @@ async function populateImages(argv: any) {
     }
     
     const snapshot = await query.get();
-    
     const allQuestionsWithData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as PredefinedQuestion));
-
     const questionsToProcess = force
       ? allQuestionsWithData.filter(q => q.imagePrompt || (q.artworkTitle && q.artworkAuthor))
       : allQuestionsWithData.filter(q => !q.imageUrl && (q.imagePrompt || (q.artworkTitle && q.artworkAuthor)));
@@ -236,23 +237,41 @@ async function populateImages(argv: any) {
     for (const question of limitedQuestions) {
       console.log(`\n[${successCount + errorCount + 1}/${limitedQuestions.length}] Processing question ID: ${question.id}`);
       
-      let publicUrl: string | null = null;
+      let imageResult: ImageResult | null = null;
       try {
-        if (question.artworkTitle && question.artworkAuthor) {
-          publicUrl = await fetchImageFromWikimedia(question);
+        if (question.artworkTitle) {
+          imageResult = await fetchImageFromWikimedia(question);
         } else if (question.imagePrompt) {
-          publicUrl = await generateImageFromAI(question.imagePrompt, question.id, modelToUse);
+          imageResult = await generateImageFromAI(question.imagePrompt, modelToUse);
         } else {
-          console.log(`  -> Skipping question ID ${question.id}: No imagePrompt or artworkTitle/Author provided.`);
+          console.log(`  -> Skipping question ID ${question.id}: No imagePrompt or artworkTitle provided.`);
           continue;
         }
 
-        if (publicUrl) {
+        if (imageResult) {
+          console.log(`  -> Applying watermark...`);
+          const watermarkedBuffer = await sharp(imageResult.buffer)
+              .composite([{
+                  input: watermarkBuffer,
+                  gravity: 'southeast',
+              }])
+              .toBuffer();
+
+          console.log(`  -> Uploading watermarked image to Firebase Storage...`);
+          const filePath = `trivia_images/${question.id}.${imageResult.extension}`;
+          const file = bucket.file(filePath);
+          await file.save(watermarkedBuffer, {
+              metadata: { contentType: imageResult.contentType },
+              public: true,
+          });
+          
+          const publicUrl = file.publicUrl();
+
           await db.collection(PREDEFINED_QUESTIONS_COLLECTION).doc(question.id).update({ imageUrl: publicUrl });
           console.log(`  -> Firestore updated for question ${question.id}. URL: ${publicUrl}`);
           successCount++;
         } else {
-          console.warn(`  -> Could not obtain an image URL for question ${question.id}.`);
+          console.warn(`  -> Could not obtain an image for question ${question.id}.`);
           errorCount++;
         }
 
