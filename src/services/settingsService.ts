@@ -19,6 +19,7 @@ const DEFAULT_SETTINGS: ScriptSettings = {
   populateImages: {
     limit: 10,
     delay: 2000,
+    defaultImageModel: 'googleai/gemini-2.0-flash-preview-image-generation',
   },
 };
 

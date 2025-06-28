@@ -546,7 +546,8 @@
       "title": "Populate Images Script",
       "description": "Defaults for `populate:images` script.",
       "limitLabel": "Max Images per Run",
-      "delayLabel": "Delay Between Calls (ms)"
+      "delayLabel": "Delay Between Calls (ms)",
+      "defaultImageModelLabel": "Default Image Generation Model"
     }
   },
   "ReportDialog": {

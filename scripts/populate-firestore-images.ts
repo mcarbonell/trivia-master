@@ -41,6 +41,12 @@ async function main() {
       default: false,
       description: 'Force regeneration of images even if they already exist.',
     })
+    .option('model', {
+      alias: 'mod',
+      type: 'string',
+      description: 'Genkit image generation model to use.',
+      default: settings.populateImages.defaultImageModel,
+    })
     .help()
     .alias('help', 'h')
     .parseSync();
@@ -132,26 +138,43 @@ async function fetchImageFromWikimedia(question: PredefinedQuestion): Promise<st
   return file.publicUrl();
 }
 
-async function generateImageFromAI(prompt: string, questionId: string): Promise<string | null> {
-  const engineeredPrompt = `A widescreen, 16:9 aspect ratio, landscape-orientation image of: ${prompt}`;
-  console.log(`[generateImageFlow] Generating image with engineered prompt: "${engineeredPrompt}"`);
+async function generateImageFromAI(prompt: string, questionId: string, modelName: string): Promise<string | null> {
+  console.log(`[generateImageFromAI] Generating image with prompt: "${prompt}" using model: "${modelName}"`);
 
-  const { media, text } = await ai.generate({
-    model: 'googleai/gemini-2.0-flash-preview-image-generation',
-    prompt: engineeredPrompt,
-    config: {
-      responseModalities: ['TEXT', 'IMAGE'],
-    },
-  });
+  let mediaUrl: string | undefined;
+  let textResponse: string | undefined;
+
+  if (modelName.includes('imagen')) {
+    const { media, text } = await ai.generate({
+      model: modelName,
+      prompt: prompt, // Use raw prompt for Imagen
+      config: {
+        numberOfImages: 1, // Only generate one image per question
+        aspectRatio: '16:9', // Keep aspect ratio consistent
+      },
+    });
+    mediaUrl = media?.url;
+    textResponse = text;
+  } else {
+    // Assume Gemini call (existing logic)
+    const engineeredPrompt = `A widescreen, 16:9 aspect ratio, landscape-orientation image of: ${prompt}`;
+    const { media, text } = await ai.generate({
+      model: modelName,
+      prompt: engineeredPrompt,
+      config: {
+        responseModalities: ['TEXT', 'IMAGE'],
+      },
+    });
+    mediaUrl = media?.url;
+    textResponse = text;
+  }
     
-  if (!media || !media.url) {
-    console.error('[generateImageFlow] AI did not return image media. Text response:', text);
+  if (!mediaUrl) {
+    console.error(`[generateImageFromAI] AI did not return image media. Text response:`, textResponse);
     throw new Error('Image generation failed: No media returned from AI.');
   }
 
-  const imageDataUri = media.url;
-  if (!imageDataUri) return null;
-
+  const imageDataUri = mediaUrl;
   const mimeType = imageDataUri.substring(imageDataUri.indexOf(':') + 1, imageDataUri.indexOf(';'));
   const base64Data = imageDataUri.substring(imageDataUri.indexOf(',') + 1);
   const imageBuffer = Buffer.from(base64Data, 'base64');
@@ -170,7 +193,7 @@ async function generateImageFromAI(prompt: string, questionId: string): Promise<
 
 
 async function populateImages(argv: any) {
-  const { category, limit, delay, force } = argv;
+  const { category, limit, delay, force, model: modelToUse } = argv;
 
   console.log(`Starting image population script...`);
   console.log(`--- Configuration ---`);
@@ -178,6 +201,7 @@ async function populateImages(argv: any) {
   console.log(`Max Images to Process: ${limit}`);
   console.log(`Delay between calls: ${delay}ms`);
   console.log(`Force Regeneration: ${force}`);
+  console.log(`Image Generation Model: ${modelToUse}`);
   console.log(`---------------------`);
 
   try {
@@ -215,7 +239,7 @@ async function populateImages(argv: any) {
         if (question.artworkTitle && question.artworkAuthor) {
           publicUrl = await fetchImageFromWikimedia(question);
         } else if (question.imagePrompt) {
-          publicUrl = await generateImageFromAI(question.imagePrompt, question.id);
+          publicUrl = await generateImageFromAI(question.imagePrompt, question.id, modelToUse);
         } else {
           console.log(`  -> Skipping question ID ${question.id}: No imagePrompt or artworkTitle/Author provided.`);
           continue;

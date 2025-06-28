@@ -546,7 +546,8 @@
       "title": "Script de Poblar Imágenes",
       "description": "Valores por defecto para el script `populate:images`.",
       "limitLabel": "Máx. Imágenes por Ejecución",
-      "delayLabel": "Retardo Entre Llamadas (ms)"
+      "delayLabel": "Retardo Entre Llamadas (ms)",
+      "defaultImageModelLabel": "Modelo de Generación de Imágenes por Defecto"
     }
   },
   "ReportDialog": {

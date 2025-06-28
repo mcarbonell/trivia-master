@@ -23,6 +23,7 @@ const settingsFormSchema = z.object({
   defaultModel: z.string().min(1, 'Model name is required.'),
   imageLimit: z.number().min(1),
   imageDelay: z.number().min(0),
+  defaultImageModel: z.string().min(1, 'Image model is required.'),
 });
 type SettingsFormData = z.infer<typeof settingsFormSchema>;
 
@@ -46,6 +47,7 @@ export default function AdminSettingsPage() {
       defaultModel: 'googleai/gemini-2.5-flash',
       imageLimit: 10,
       imageDelay: 2000,
+      defaultImageModel: 'googleai/gemini-2.0-flash-preview-image-generation'
     }
   });
 
@@ -67,6 +69,7 @@ export default function AdminSettingsPage() {
         defaultModel: settings.populateQuestions.defaultModel,
         imageLimit: settings.populateImages.limit,
         imageDelay: settings.populateImages.delay,
+        defaultImageModel: settings.populateImages.defaultImageModel,
       });
 
     } catch (err) {
@@ -94,6 +97,7 @@ export default function AdminSettingsPage() {
       populateImages: {
         limit: data.imageLimit,
         delay: data.imageDelay,
+        defaultImageModel: data.defaultImageModel,
       },
     };
 
@@ -186,18 +190,34 @@ export default function AdminSettingsPage() {
             <CardTitle>{t('populateImages.title')}</CardTitle>
             <CardDescription>{t('populateImages.description')}</CardDescription>
           </CardHeader>
-          <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <FormField control={form.control} name="imageLimit" render={({ field }) => (
+          <CardContent className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <FormField control={form.control} name="imageLimit" render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{t('populateImages.limitLabel')}</FormLabel>
+                    <FormControl><Input type="number" {...field} onChange={e => field.onChange(parseInt(e.target.value, 10) || 0)} /></FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )} />
+              <FormField control={form.control} name="imageDelay" render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{t('populateImages.delayLabel')}</FormLabel>
+                    <FormControl><Input type="number" {...field} onChange={e => field.onChange(parseInt(e.target.value, 10) || 0)} /></FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )} />
+            </div>
+            <FormField control={form.control} name="defaultImageModel" render={({ field }) => (
                 <FormItem>
-                  <FormLabel>{t('populateImages.limitLabel')}</FormLabel>
-                  <FormControl><Input type="number" {...field} onChange={e => field.onChange(parseInt(e.target.value, 10) || 0)} /></FormControl>
-                  <FormMessage />
-                </FormItem>
-              )} />
-            <FormField control={form.control} name="imageDelay" render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{t('populateImages.delayLabel')}</FormLabel>
-                  <FormControl><Input type="number" {...field} onChange={e => field.onChange(parseInt(e.target.value, 10) || 0)} /></FormControl>
+                  <FormLabel>{t('populateImages.defaultImageModelLabel')}</FormLabel>
+                  <Select onValueChange={field.onChange} value={field.value}>
+                    <FormControl><SelectTrigger><SelectValue /></SelectTrigger></FormControl>
+                    <SelectContent>
+                      {availableModels?.imageModels.map(model => (
+                        <SelectItem key={model} value={model}>{model}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                   <FormMessage />
                 </FormItem>
               )} />
