@@ -21,6 +21,12 @@ const DEFAULT_SETTINGS: ScriptSettings = {
     delay: 2000,
     defaultImageModel: 'googleai/gemini-2.0-flash-preview-image-generation',
   },
+  checkDuplicates: {
+    defaultModel: 'googleai/gemini-1.5-flash',
+  },
+  validateQuestions: {
+    defaultModel: 'googleai/gemini-2.5-flash',
+  },
 };
 
 /**
@@ -39,6 +45,8 @@ export async function getScriptSettings(): Promise<ScriptSettings> {
       return {
         populateQuestions: { ...DEFAULT_SETTINGS.populateQuestions, ...data.populateQuestions },
         populateImages: { ...DEFAULT_SETTINGS.populateImages, ...data.populateImages },
+        checkDuplicates: { ...DEFAULT_SETTINGS.checkDuplicates, ...data.checkDuplicates },
+        validateQuestions: { ...DEFAULT_SETTINGS.validateQuestions, ...data.validateQuestions },
       };
     } else {
       // If no settings document exists, return the hardcoded defaults

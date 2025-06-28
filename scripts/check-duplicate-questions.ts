@@ -7,6 +7,7 @@ import { hideBin } from 'yargs/helpers';
 import inquirer from 'inquirer'; // Import inquirer
 import { adminDb } from '../src/lib/firebase-admin';
 import { detectDuplicateQuestions, type QuestionInput, type DetectDuplicatesInput, type DetectDuplicatesOutput } from '../src/ai/flows/detect-duplicate-questions';
+import { getScriptSettings } from '../src/services/settingsService';
 import type { PredefinedQuestion } from '../src/services/triviaService'; 
 import type { DifficultyLevel, BilingualText } from '../src/types';
 import type { firestore } from 'firebase-admin';
@@ -14,30 +15,35 @@ import type { firestore } from 'firebase-admin';
 
 const PREDEFINED_QUESTIONS_COLLECTION = 'predefinedTriviaQuestions';
 const ALL_DIFFICULTY_LEVELS_CONST: DifficultyLevel[] = ["easy", "medium", "hard"];
-const DEFAULT_MODEL_FOR_CHECK = 'googleai/gemini-1.5-flash';
 
-// --- Argument Parsing with yargs ---
-const argv = yargs(hideBin(process.argv))
-  .option('topicValue', {
-    alias: 't',
-    type: 'string',
-    description: 'TopicValue of the category to check for duplicate questions.',
-    demandOption: true, // Make topicValue mandatory
-  })
-  .option('difficulty', {
-    alias: 'd',
-    type: 'string',
-    choices: ALL_DIFFICULTY_LEVELS_CONST,
-    description: 'Specific difficulty level to check (easy, medium, hard). If not provided, checks all difficulties for the topic.',
-  })
-  .option('model', {
-    alias: 'm',
-    type: 'string',
-    description: `Genkit model name to use for detection (e.g., googleai/gemini-1.5-flash). Defaults to ${DEFAULT_MODEL_FOR_CHECK}.`,
-  })
-  .help()
-  .alias('help', 'h')
-  .parseSync();
+async function main() {
+    const settings = await getScriptSettings();
+
+    const argv = yargs(hideBin(process.argv))
+        .option('topicValue', {
+            alias: 't',
+            type: 'string',
+            description: 'TopicValue of the category to check for duplicate questions.',
+            demandOption: true, // Make topicValue mandatory
+        })
+        .option('difficulty', {
+            alias: 'd',
+            type: 'string',
+            choices: ALL_DIFFICULTY_LEVELS_CONST,
+            description: 'Specific difficulty level to check (easy, medium, hard). If not provided, checks all difficulties for the topic.',
+        })
+        .option('model', {
+            alias: 'm',
+            type: 'string',
+            description: `Genkit model name to use for detection. Defaults to the one set in Admin Settings.`,
+            default: settings.checkDuplicates.defaultModel,
+        })
+        .help()
+        .alias('help', 'h')
+        .parseSync();
+    
+    await checkDuplicates(argv);
+}
 
 
 function normalizeQuestionForDuplicateCheck(doc: firestore.DocumentSnapshot): QuestionInput | null {
@@ -70,9 +76,8 @@ function normalizeQuestionForDuplicateCheck(doc: firestore.DocumentSnapshot): Qu
 }
 
 
-async function checkDuplicates() {
-  const { topicValue, difficulty, model: modelName } = argv;
-  const modelToUse = modelName || DEFAULT_MODEL_FOR_CHECK;
+async function checkDuplicates(argv: any) {
+  const { topicValue, difficulty, model: modelToUse } = argv;
 
   console.log(`Starting duplicate question check for topicValue: "${topicValue}"...`);
   if (difficulty) {
@@ -168,7 +173,7 @@ async function checkDuplicates() {
   console.log('Duplicate check script finished.');
 }
 
-checkDuplicates().catch(error => {
+main().catch(error => {
   console.error("Unhandled error in checkDuplicates script:", error);
   process.exit(1);
 });

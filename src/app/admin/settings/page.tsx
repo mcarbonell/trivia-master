@@ -24,6 +24,8 @@ const settingsFormSchema = z.object({
   imageLimit: z.number().min(1),
   imageDelay: z.number().min(0),
   defaultImageModel: z.string().min(1, 'Image model is required.'),
+  checkDuplicatesModel: z.string().min(1, 'Model name is required.'),
+  validateQuestionsModel: z.string().min(1, 'Model name is required.'),
 });
 type SettingsFormData = z.infer<typeof settingsFormSchema>;
 
@@ -35,8 +37,8 @@ export default function AdminSettingsPage() {
   const [initialSettings, setInitialSettings] = useState<ScriptSettings | null>(null);
   const [availableModels, setAvailableModels] = useState<AvailableModels | null>(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const form = useForm<SettingsFormData>({
     resolver: zodResolver(settingsFormSchema),
@@ -47,7 +49,9 @@ export default function AdminSettingsPage() {
       defaultModel: 'googleai/gemini-2.5-flash',
       imageLimit: 10,
       imageDelay: 2000,
-      defaultImageModel: 'googleai/gemini-2.0-flash-preview-image-generation'
+      defaultImageModel: 'googleai/gemini-2.0-flash-preview-image-generation',
+      checkDuplicatesModel: 'googleai/gemini-1.5-flash',
+      validateQuestionsModel: 'googleai/gemini-2.5-flash',
     }
   });
 
@@ -70,6 +74,8 @@ export default function AdminSettingsPage() {
         imageLimit: settings.populateImages.limit,
         imageDelay: settings.populateImages.delay,
         defaultImageModel: settings.populateImages.defaultImageModel,
+        checkDuplicatesModel: settings.checkDuplicates.defaultModel,
+        validateQuestionsModel: settings.validateQuestions.defaultModel,
       });
 
     } catch (err) {
@@ -98,6 +104,12 @@ export default function AdminSettingsPage() {
         limit: data.imageLimit,
         delay: data.imageDelay,
         defaultImageModel: data.defaultImageModel,
+      },
+      checkDuplicates: {
+        defaultModel: data.checkDuplicatesModel,
+      },
+      validateQuestions: {
+        defaultModel: data.validateQuestionsModel,
       },
     };
 
@@ -214,6 +226,52 @@ export default function AdminSettingsPage() {
                     <FormControl><SelectTrigger><SelectValue /></SelectTrigger></FormControl>
                     <SelectContent>
                       {availableModels?.imageModels.map(model => (
+                        <SelectItem key={model} value={model}>{model}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )} />
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>{t('checkDuplicates.title')}</CardTitle>
+            <CardDescription>{t('checkDuplicates.description')}</CardDescription>
+          </CardHeader>
+          <CardContent>
+             <FormField control={form.control} name="checkDuplicatesModel" render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{t('checkDuplicates.defaultModelLabel')}</FormLabel>
+                  <Select onValueChange={field.onChange} value={field.value}>
+                    <FormControl><SelectTrigger><SelectValue /></SelectTrigger></FormControl>
+                    <SelectContent>
+                      {availableModels?.textModels.map(model => (
+                        <SelectItem key={model} value={model}>{model}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )} />
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>{t('validateQuestions.title')}</CardTitle>
+            <CardDescription>{t('validateQuestions.description')}</CardDescription>
+          </CardHeader>
+          <CardContent>
+             <FormField control={form.control} name="validateQuestionsModel" render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{t('validateQuestions.defaultModelLabel')}</FormLabel>
+                  <Select onValueChange={field.onChange} value={field.value}>
+                    <FormControl><SelectTrigger><SelectValue /></SelectTrigger></FormControl>
+                    <SelectContent>
+                      {availableModels?.textModels.map(model => (
                         <SelectItem key={model} value={model}>{model}</SelectItem>
                       ))}
                     </SelectContent>

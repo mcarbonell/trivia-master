@@ -7,46 +7,53 @@ import { hideBin } from 'yargs/helpers';
 import inquirer from 'inquirer';
 import { adminDb } from '../src/lib/firebase-admin';
 import { validateSingleTriviaQuestion } from '../src/ai/flows/validate-single-trivia-question';
+import { getScriptSettings } from '@/services/settingsService';
 import type { ValidateSingleQuestionInput, ValidateSingleQuestionOutput, QuestionData, GenerateTriviaQuestionOutput, BilingualText, DifficultyLevel } from '../src/types';
 import type { firestore } from 'firebase-admin';
 
 const PREDEFINED_QUESTIONS_COLLECTION = 'predefinedTriviaQuestions';
-const DEFAULT_MODEL_FOR_VALIDATION = 'googleai/gemini-2.5-flash';
 
-// --- Argument Parsing with yargs ---
-const argv = yargs(hideBin(process.argv))
-  .option('id', {
-    alias: 'i',
-    type: 'string',
-    description: 'Firestore document ID of the question to validate.',
-    demandOption: true,
-  })
-  .option('model', {
-    alias: 'm',
-    type: 'string',
-    description: `Genkit model name to use for validation (e.g., googleai/gemini-1.5-pro). Defaults to ${DEFAULT_MODEL_FOR_VALIDATION}.`,
-  })
-  .option('autofix', {
-    alias: 'af',
-    type: 'boolean',
-    default: false,
-    description: 'If true, automatically apply AI fixes without confirmation.',
-  })
-  .option('autodelete', {
-    alias: 'ad',
-    type: 'boolean',
-    default: false,
-    description: 'If true, automatically delete rejected questions without confirmation.',
-  })
-  .option('auto', {
-    alias: 'a',
-    type: 'boolean',
-    default: false,
-    description: 'Shorthand for --autofix and --autodelete.',
-  })
-  .help()
-  .alias('help', 'h')
-  .parseSync();
+
+async function main() {
+    const settings = await getScriptSettings();
+
+    const argv = yargs(hideBin(process.argv))
+    .option('id', {
+        alias: 'i',
+        type: 'string',
+        description: 'Firestore document ID of the question to validate.',
+        demandOption: true,
+    })
+    .option('model', {
+        alias: 'm',
+        type: 'string',
+        description: `Genkit model name to use for validation. Defaults to the one in Admin Settings.`,
+        default: settings.validateQuestions.defaultModel,
+    })
+    .option('autofix', {
+        alias: 'af',
+        type: 'boolean',
+        default: false,
+        description: 'If true, automatically apply AI fixes without confirmation.',
+    })
+    .option('autodelete', {
+        alias: 'ad',
+        type: 'boolean',
+        default: false,
+        description: 'If true, automatically delete rejected questions without confirmation.',
+    })
+    .option('auto', {
+        alias: 'a',
+        type: 'boolean',
+        default: false,
+        description: 'Shorthand for --autofix and --autodelete.',
+    })
+    .help()
+    .alias('help', 'h')
+    .parseSync();
+    
+    await validateQuestion(argv);
+}
 
 
 function normalizeFirestoreDocToQuestionData(doc: firestore.DocumentSnapshot): QuestionData | null {
@@ -150,12 +157,11 @@ function formatQuestionForDisplay(label: string, qData: QuestionData | GenerateT
 }
 
 
-async function validateQuestion() {
-  const { id: questionId, model: modelName } = argv;
+async function validateQuestion(argv: any) {
+  const { id: questionId, model: modelToUse } = argv;
   const doAutoFix = argv.autofix || argv.auto;
   const doAutoDelete = argv.autodelete || argv.auto;
-  const modelToUse = modelName || DEFAULT_MODEL_FOR_VALIDATION;
-
+  
   console.log(`Validating question with ID: "${questionId}" using model: "${modelToUse}"...`);
   if(doAutoFix) console.log("Auto-fix mode enabled.");
   if(doAutoDelete) console.log("Auto-delete mode enabled.");
@@ -270,7 +276,7 @@ async function validateQuestion() {
   console.log('Question validation script finished.');
 }
 
-validateQuestion().catch(error => {
+main().catch(error => {
   console.error("Unhandled error in validateQuestion script:", error);
   process.exit(1);
 });

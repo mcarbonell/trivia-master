@@ -548,6 +548,16 @@
       "limitLabel": "Máx. Imágenes por Ejecución",
       "delayLabel": "Retardo Entre Llamadas (ms)",
       "defaultImageModelLabel": "Modelo de Generación de Imágenes por Defecto"
+    },
+    "checkDuplicates": {
+      "title": "Script de Comprobar Duplicados",
+      "description": "Valores por defecto para el script `check:questions`.",
+      "defaultModelLabel": "Modelo de Comprobación de Duplicados por Defecto"
+    },
+    "validateQuestions": {
+      "title": "Scripts de Validar Preguntas",
+      "description": "Valores por defecto para los scripts `validate:question` y `validate:questions`.",
+      "defaultModelLabel": "Modelo de Validación por Defecto"
     }
   },
   "ReportDialog": {

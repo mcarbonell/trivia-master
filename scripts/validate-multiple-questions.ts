@@ -6,66 +6,73 @@ import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
 import { adminDb } from '../src/lib/firebase-admin';
 import { validateSingleTriviaQuestion } from '../src/ai/flows/validate-single-trivia-question';
+import { getScriptSettings } from '@/services/settingsService';
 import type { ValidateSingleQuestionInput, QuestionData } from '../src/types';
 import type { DifficultyLevel, BilingualText } from '@/types';
 import type { firestore } from 'firebase-admin';
 
 const PREDEFINED_QUESTIONS_COLLECTION = 'predefinedTriviaQuestions';
 const ALL_DIFFICULTY_LEVELS_CONST: DifficultyLevel[] = ["easy", "medium", "hard"];
-const DEFAULT_MODEL_FOR_VALIDATION = 'googleai/gemini-2.5-flash';
 
-// --- Argument Parsing with yargs ---
-const argv = yargs(hideBin(process.argv))
-  .option('topicValue', {
-    alias: 't',
-    type: 'string',
-    description: 'TopicValue of the category to validate.',
-    demandOption: true,
-  })
-  .option('difficulty', {
-    alias: 'd',
-    type: 'string',
-    choices: ALL_DIFFICULTY_LEVELS_CONST,
-    description: 'Specific difficulty level to validate. If not provided, validates all.',
-  })
-  .option('model', {
-    alias: 'm',
-    type: 'string',
-    description: `Genkit model name to use. Defaults to ${DEFAULT_MODEL_FOR_VALIDATION}.`,
-  })
-  .option('batchSize', {
-    alias: 'b',
-    type: 'number',
-    default: 1,
-    description: 'Number of questions to validate in parallel.',
-  })
-  .option('autofix', {
-    alias: 'af',
-    type: 'boolean',
-    default: false,
-    description: 'Automatically apply AI fixes.',
-  })
-  .option('autodelete', {
-    alias: 'ad',
-    type: 'boolean',
-    default: false,
-    description: 'Automatically delete rejected questions.',
-  })
-  .option('auto', {
-    alias: 'a',
-    type: 'boolean',
-    default: false,
-    description: 'Shorthand for --autofix and --autodelete.',
-  })
-  .option('force', {
-    alias: 'f',
-    type: 'boolean',
-    default: false,
-    description: "Force re-validation of all questions, ignoring their current status (e.g., 'accepted' or 'fixed').",
-  })
-  .help()
-  .alias('help', 'h')
-  .parseSync();
+
+async function main() {
+    const settings = await getScriptSettings();
+
+    const argv = yargs(hideBin(process.argv))
+    .option('topicValue', {
+        alias: 't',
+        type: 'string',
+        description: 'TopicValue of the category to validate.',
+        demandOption: true,
+    })
+    .option('difficulty', {
+        alias: 'd',
+        type: 'string',
+        choices: ALL_DIFFICULTY_LEVELS_CONST,
+        description: 'Specific difficulty level to validate. If not provided, validates all.',
+    })
+    .option('model', {
+        alias: 'm',
+        type: 'string',
+        description: `Genkit model name to use. Defaults to the one in Admin Settings.`,
+        default: settings.validateQuestions.defaultModel,
+    })
+    .option('batchSize', {
+        alias: 'b',
+        type: 'number',
+        default: 1,
+        description: 'Number of questions to validate in parallel.',
+    })
+    .option('autofix', {
+        alias: 'af',
+        type: 'boolean',
+        default: false,
+        description: 'Automatically apply AI fixes.',
+    })
+    .option('autodelete', {
+        alias: 'ad',
+        type: 'boolean',
+        default: false,
+        description: 'Automatically delete rejected questions.',
+    })
+    .option('auto', {
+        alias: 'a',
+        type: 'boolean',
+        default: false,
+        description: 'Shorthand for --autofix and --autodelete.',
+    })
+    .option('force', {
+        alias: 'f',
+        type: 'boolean',
+        default: false,
+        description: "Force re-validation of all questions, ignoring their current status (e.g., 'accepted' or 'fixed').",
+    })
+    .help()
+    .alias('help', 'h')
+    .parseSync();
+
+    await validateMultipleQuestions(argv);
+}
 
 
 function normalizeFirestoreDocToQuestionData(doc: firestore.DocumentSnapshot): QuestionData | null {
@@ -121,11 +128,10 @@ function normalizeFirestoreDocToQuestionData(doc: firestore.DocumentSnapshot): Q
     return null;
 }
 
-async function validateMultipleQuestions() {
-  const { topicValue, difficulty, model, auto, autofix, autodelete, force, batchSize } = argv;
+async function validateMultipleQuestions(argv: any) {
+  const { topicValue, difficulty, model: modelToUse, auto, autofix, autodelete, force, batchSize } = argv;
   const doAutoFix = autofix || auto;
   const doAutoDelete = autodelete || auto;
-  const modelToUse = model || DEFAULT_MODEL_FOR_VALIDATION;
 
   console.log(`Starting bulk validation for topic: "${topicValue}"...`);
   if (difficulty) console.log(`Difficulty filter: "${difficulty}"`);
@@ -238,7 +244,7 @@ async function validateMultipleQuestions() {
   }
 }
 
-validateMultipleQuestions().catch(error => {
+main().catch(error => {
   console.error("Unhandled error in validateMultipleQuestions script:", error);
   process.exit(1);
 });
