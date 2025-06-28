@@ -6,7 +6,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { Loader2, LogOut, LayoutDashboard, ListChecks, HelpCircle, ShieldAlert, MessageSquareText, Home, Users } from 'lucide-react';
+import { Loader2, LogOut, LayoutDashboard, ListChecks, HelpCircle, ShieldAlert, MessageSquareText, Home, Users, Settings } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { LanguageSwitcher } from '@/components/LanguageSwitcher';
 import { cn } from '@/lib/utils';
@@ -79,6 +79,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
     { href: '/admin/reports', label: t('navReports'), icon: ShieldAlert },
     { href: '/admin/suggestions', label: t('navSuggestions'), icon: MessageSquareText },
     { href: '/admin/users', label: t('navUsers'), icon: Users },
+    { href: '/admin/settings', label: t('navSettings'), icon: Settings },
   ];
 
   return (

@@ -211,6 +211,7 @@
     "navReports": "Reportes",
     "navSuggestions": "Sugerencias",
     "navUsers": "Usuarios",
+    "navSettings": "Configuración",
     "logoutButton": "Cerrar Sesión",
     "backToGame": "Volver al Juego",
     "loggedInAs": "Sesión iniciada como: {email}",
@@ -526,6 +527,27 @@
     "errorChangeOwnRoleDescription": "No puedes cambiar tu propio rol.",
     "copyUidTooltip": "Copiar ID de Usuario",
     "uidCopied": "ID de usuario copiado al portapapeles."
+  },
+  "AdminSettingsPage": {
+    "title": "Configuración de Scripts CLI",
+    "description": "Configura los parámetros por defecto para los scripts de la línea de comandos.",
+    "errorLoading": "Error al cargar la configuración. Por favor, inténtalo de nuevo.",
+    "toastUpdateSuccess": "Configuración actualizada correctamente.",
+    "toastUpdateError": "No se pudo actualizar la configuración. Por favor, inténtalo de nuevo.",
+    "populateQuestions": {
+      "title": "Script de Poblar Preguntas",
+      "description": "Valores por defecto para el script `populate:questions`.",
+      "targetPerDifficultyLabel": "Nº Objetivo de Preguntas por Dificultad",
+      "maxNewPerRunLabel": "Máx. Preguntas Nuevas por Ejecución",
+      "batchSizeLabel": "Preguntas por Llamada a la API (Lote)",
+      "defaultModelLabel": "Modelo de Generación por Defecto"
+    },
+    "populateImages": {
+      "title": "Script de Poblar Imágenes",
+      "description": "Valores por defecto para el script `populate:images`.",
+      "limitLabel": "Máx. Imágenes por Ejecución",
+      "delayLabel": "Retardo Entre Llamadas (ms)"
+    }
   },
   "ReportDialog": {
     "title": "Reportar Pregunta",

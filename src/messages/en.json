@@ -211,6 +211,7 @@
     "navReports": "Reports",
     "navSuggestions": "Suggestions",
     "navUsers": "Users",
+    "navSettings": "Settings",
     "logoutButton": "Logout",
     "backToGame": "Back to Game",
     "loggedInAs": "Logged in as: {email}",
@@ -394,7 +395,7 @@
       "hintPlaceholder": "Enter the hint text...",
       "visualsLabel": "Visuals",
       "imagePromptLabel": "Image Prompt (for AI)",
-      "imagePromptPlaceholder": "Enter a detailed, English prompt for text-to-image AI...",
+      "imagePromptPlaceholder": "Enter a detailed, English-only prompt for text-to-image AI...",
       "artworkTitleLabel": "Artwork Title (for Search)",
       "artworkTitlePlaceholder": "e.g., The Starry Night",
       "artworkAuthorLabel": "Artwork Author (for Search)",
@@ -526,6 +527,27 @@
     "errorChangeOwnRoleDescription": "No puedes cambiar tu propio rol.",
     "copyUidTooltip": "Copiar ID de Usuario",
     "uidCopied": "ID de usuario copiado al portapapeles."
+  },
+  "AdminSettingsPage": {
+    "title": "CLI Script Settings",
+    "description": "Configure the default parameters for the command-line scripts.",
+    "errorLoading": "Error loading settings. Please try again.",
+    "toastUpdateSuccess": "Settings updated successfully.",
+    "toastUpdateError": "Could not update settings. Please try again.",
+    "populateQuestions": {
+      "title": "Populate Questions Script",
+      "description": "Defaults for `populate:questions` script.",
+      "targetPerDifficultyLabel": "Target Questions per Difficulty",
+      "maxNewPerRunLabel": "Max New Questions per Run",
+      "batchSizeLabel": "Questions per API Call (Batch Size)",
+      "defaultModelLabel": "Default Generation Model"
+    },
+    "populateImages": {
+      "title": "Populate Images Script",
+      "description": "Defaults for `populate:images` script.",
+      "limitLabel": "Max Images per Run",
+      "delayLabel": "Delay Between Calls (ms)"
+    }
   },
   "ReportDialog": {
     "title": "Reportar Pregunta",

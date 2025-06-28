@@ -6,6 +6,7 @@ import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
 import { adminDb, adminStorage } from '../src/lib/firebase-admin';
 import type { PredefinedQuestion } from '../src/services/triviaService';
+import { getScriptSettings } from '@/services/settingsService';
 import { ai } from '@/ai/genkit';
 import type { firestore } from 'firebase-admin';
 
@@ -13,34 +14,39 @@ const bucket = adminStorage.bucket();
 const db = adminDb;
 const PREDEFINED_QUESTIONS_COLLECTION = 'predefinedTriviaQuestions';
 
-// --- Argument Parsing with yargs ---
-const argv = yargs(hideBin(process.argv))
-  .option('category', {
-    alias: 'c',
-    type: 'string',
-    description: 'TopicValue of the specific category to process.',
-  })
-  .option('limit', {
-    alias: 'l',
-    type: 'number',
-    default: 10,
-    description: 'Maximum number of images to generate in this run.',
-  })
-  .option('delay', {
-    alias: 'd',
-    type: 'number',
-    default: 2000,
-    description: 'Delay in milliseconds between API calls.',
-  })
-  .option('force', {
-    alias: 'f',
-    type: 'boolean',
-    default: false,
-    description: 'Force regeneration of images even if they already exist.',
-  })
-  .help()
-  .alias('help', 'h')
-  .parseSync();
+async function main() {
+  const settings = await getScriptSettings();
+
+  const argv = yargs(hideBin(process.argv))
+    .option('category', {
+      alias: 'c',
+      type: 'string',
+      description: 'TopicValue of the specific category to process.',
+    })
+    .option('limit', {
+      alias: 'l',
+      type: 'number',
+      default: settings.populateImages.limit,
+      description: 'Maximum number of images to generate in this run.',
+    })
+    .option('delay', {
+      alias: 'd',
+      type: 'number',
+      default: settings.populateImages.delay,
+      description: 'Delay in milliseconds between API calls.',
+    })
+    .option('force', {
+      alias: 'f',
+      type: 'boolean',
+      default: false,
+      description: 'Force regeneration of images even if they already exist.',
+    })
+    .help()
+    .alias('help', 'h')
+    .parseSync();
+  
+  await populateImages(argv);
+}
 
 
 async function fetchImageFromWikimedia(question: PredefinedQuestion): Promise<string | null> {
@@ -163,7 +169,7 @@ async function generateImageFromAI(prompt: string, questionId: string): Promise<
 }
 
 
-async function populateImages() {
+async function populateImages(argv: any) {
   const { category, limit, delay, force } = argv;
 
   console.log(`Starting image population script...`);
@@ -243,7 +249,7 @@ async function populateImages() {
   }
 }
 
-populateImages().catch(error => {
-  console.error("Unhandled fatal error in populateImages script:", error);
+main().catch(error => {
+  console.error("Unhandled fatal error in script:", error);
   process.exit(1);
 });

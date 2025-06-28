@@ -164,3 +164,21 @@ export interface GameSession {
   totalQuestions: number;
   isCustomTopic: boolean;
 }
+
+export interface ScriptSettings {
+  populateQuestions: {
+    targetPerDifficulty: number;
+    maxNewPerRun: number;
+    batchSize: number;
+    defaultModel: string;
+  };
+  populateImages: {
+    limit: number;
+    delay: number;
+  };
+}
+
+export interface AvailableModels {
+  textModels: string[];
+  imageModels: string[];
+}

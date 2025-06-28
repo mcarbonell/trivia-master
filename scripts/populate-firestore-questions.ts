@@ -7,6 +7,7 @@ import { hideBin } from 'yargs/helpers';
 import { adminDb } from '../src/lib/firebase-admin';
 import { firestore } from 'firebase-admin';
 import { generateTriviaQuestions, type GenerateTriviaQuestionsInput, type GenerateTriviaQuestionOutput, type DifficultyLevel } from '../src/ai/flows/generate-trivia-question';
+import { getScriptSettings } from '@/services/settingsService';
 import type { CategoryDefinition, BilingualText } from '../src/types';
 
 const PREDEFINED_QUESTIONS_COLLECTION = 'predefinedTriviaQuestions';
@@ -14,71 +15,63 @@ const CATEGORIES_COLLECTION = 'triviaCategories';
 
 const ALL_DIFFICULTY_LEVELS_CONST: DifficultyLevel[] = ["easy", "medium", "hard"];
 const GENKIT_API_CALL_DELAY_MS = 1000; // Delay between Genkit API calls
-const DEFAULT_MODEL_NAME = 'googleai/gemini-2.5-flash'; // Default model if not specified
 
-// --- Argument Parsing with yargs ---
-const argv = yargs(hideBin(process.argv))
-  .option('category', {
-    alias: 'c',
-    type: 'string',
-    description: 'TopicValue of the specific category to process.',
-  })
-  .option('difficulty', {
-    alias: 'd',
-    type: 'string',
-    choices: ALL_DIFFICULTY_LEVELS_CONST,
-    description: 'Specific difficulty level to process (easy, medium, hard).',
-  })
-  .option('targetPerDifficulty', {
-    alias: 't',
-    type: 'number',
-    default: 200,
-    description: 'Target total number of questions per category/difficulty combination.',
-  })
-  .option('maxNewPerRun', {
-    alias: 'm',
-    type: 'number',
-    default: 25,
-    description: 'Maximum new questions to fetch per category/difficulty in this run.',
-  })
-  .option('batchSize', {
-    alias: 'b',
-    type: 'number',
-    default: 25,
-    description: 'Number of questions to request per Genkit API call.',
-  })
-  .option('noContext', {
-    alias: 'nc',
-    type: 'boolean',
-    default: false,
-    description: 'If true, do not pass previous questions/answers as context to the AI.',
-  })
-  .option('model', {
-    alias: 'mod',
-    type: 'string',
-    description: `Genkit model name to use (e.g., googleai/gemini-1.5-flash). Defaults to ${DEFAULT_MODEL_NAME}.`,
-  })
-  .option('updateExistingSources', {
-    alias: 'ues',
-    type: 'boolean',
-    default: false,
-    description: 'If true, only update the "source" field of all existing questions and exit. Does not generate new questions.',
-  })
-  .help()
-  .alias('help', 'h')
-  .parseSync();
-
-
-// --- Use parsed arguments or defaults ---
-const TARGET_CATEGORY_TOPIC_VALUE: string | undefined = argv.category;
-const TARGET_DIFFICULTY: DifficultyLevel | undefined = argv.difficulty as DifficultyLevel | undefined;
-const TARGET_QUESTIONS_PER_CATEGORY_DIFFICULTY: number = argv.targetPerDifficulty;
-const MAX_NEW_QUESTIONS_TO_FETCH_PER_RUN_PER_DIFFICULTY_TARGET: number = argv.maxNewPerRun;
-const QUESTIONS_TO_GENERATE_PER_API_CALL: number = argv.batchSize;
-const NO_CONTEXT_MODE: boolean = argv.noContext;
-const MODEL_TO_USE: string = argv.model || DEFAULT_MODEL_NAME; // Ensure DEFAULT_MODEL_NAME is used if argv.model is undefined
-const UPDATE_EXISTING_SOURCES_MODE: boolean = argv.updateExistingSources;
-
+async function main() {
+  const settings = await getScriptSettings();
+  const argv = yargs(hideBin(process.argv))
+    .option('category', {
+      alias: 'c',
+      type: 'string',
+      description: 'TopicValue of the specific category to process.',
+    })
+    .option('difficulty', {
+      alias: 'd',
+      type: 'string',
+      choices: ALL_DIFFICULTY_LEVELS_CONST,
+      description: 'Specific difficulty level to process (easy, medium, hard).',
+    })
+    .option('targetPerDifficulty', {
+      alias: 't',
+      type: 'number',
+      default: settings.populateQuestions.targetPerDifficulty,
+      description: 'Target total number of questions per category/difficulty combination.',
+    })
+    .option('maxNewPerRun', {
+      alias: 'm',
+      type: 'number',
+      default: settings.populateQuestions.maxNewPerRun,
+      description: 'Maximum new questions to fetch per category/difficulty in this run.',
+    })
+    .option('batchSize', {
+      alias: 'b',
+      type: 'number',
+      default: settings.populateQuestions.batchSize,
+      description: 'Number of questions to request per Genkit API call.',
+    })
+    .option('noContext', {
+      alias: 'nc',
+      type: 'boolean',
+      default: false,
+      description: 'If true, do not pass previous questions/answers as context to the AI.',
+    })
+    .option('model', {
+      alias: 'mod',
+      type: 'string',
+      default: settings.populateQuestions.defaultModel,
+      description: `Genkit model name to use (e.g., googleai/gemini-1.5-flash).`,
+    })
+    .option('updateExistingSources', {
+      alias: 'ues',
+      type: 'boolean',
+      default: false,
+      description: 'If true, only update the "source" field of all existing questions and exit. Does not generate new questions.',
+    })
+    .help()
+    .alias('help', 'h')
+    .parseSync();
+    
+  await populateQuestions(argv);
+}
 
 async function fetchCategoriesWithAdminSDK(): Promise<CategoryDefinition[]> {
   try {
@@ -123,10 +116,11 @@ async function fetchCategoriesWithAdminSDK(): Promise<CategoryDefinition[]> {
   }
 }
 
-async function updateAllExistingQuestionSources() {
+async function updateAllExistingQuestionSources(argv: any) {
+  const { model: MODEL_TO_USE } = argv;
   console.log('Starting update of "source" field for all existing predefined questions...');
   const questionsRef = adminDb.collection(PREDEFINED_QUESTIONS_COLLECTION);
-  const newSourceValue = `model:${MODEL_TO_USE},context:true,api_batch_size:N/A`; // Use MODEL_TO_USE here for consistency
+  const newSourceValue = `model:${MODEL_TO_USE},context:true,api_batch_size:N/A`; 
   let questionsUpdated = 0;
   let batch = adminDb.batch();
   let operationsInBatch = 0;
@@ -142,13 +136,12 @@ async function updateAllExistingQuestionSources() {
 
     snapshot.forEach(doc => {
       const currentSource = doc.data().source;
-      // Update if source is missing or different from the target newSourceValue
       if (currentSource !== newSourceValue) {
         batch.update(doc.ref, { source: newSourceValue });
         operationsInBatch++;
         questionsUpdated++;
 
-        if (operationsInBatch >= 499) { // Firestore batch limit is 500
+        if (operationsInBatch >= 499) { 
           console.log(`Committing batch of ${operationsInBatch} updates...`);
           batch.commit().then(() => console.log('Batch committed.'));
           batch = adminDb.batch();
@@ -170,7 +163,18 @@ async function updateAllExistingQuestionSources() {
 }
 
 
-async function populateQuestions() {
+async function populateQuestions(argv: any) {
+  const {
+    category: TARGET_CATEGORY_TOPIC_VALUE,
+    difficulty: TARGET_DIFFICULTY,
+    targetPerDifficulty: TARGET_QUESTIONS_PER_CATEGORY_DIFFICULTY,
+    maxNewPerRun: MAX_NEW_QUESTIONS_TO_FETCH_PER_RUN_PER_DIFFICULTY_TARGET,
+    batchSize: QUESTIONS_TO_GENERATE_PER_API_CALL,
+    noContext: NO_CONTEXT_MODE,
+    model: MODEL_TO_USE,
+    updateExistingSources: UPDATE_EXISTING_SOURCES_MODE
+  } = argv;
+
   console.log(`Starting Firestore question population script...`);
   console.log(`--- Configuration ---`);
   console.log(`Target Category: ${TARGET_CATEGORY_TOPIC_VALUE || 'All Predefined'}`);
@@ -184,7 +188,7 @@ async function populateQuestions() {
   console.log(`---------------------`);
 
   if (UPDATE_EXISTING_SOURCES_MODE) {
-    await updateAllExistingQuestionSources();
+    await updateAllExistingQuestionSources(argv);
     console.log('Update existing sources mode finished. Exiting script.');
     return;
   }
@@ -227,14 +231,13 @@ async function populateQuestions() {
           .get();
 
         difficultyContextSnapshot.forEach(doc => {
-          const data = doc.data(); // Keep as any to check for old/new format
+          const data = doc.data(); 
             if (data.question && data.question.en) {
               existingQuestionConceptTextsForDifficulty.push(data.question.en);
             }
-            // Handle both new and old data formats for correct answer context
-            if (data.correctAnswer && data.correctAnswer.en) { // New format
+            if (data.correctAnswer && data.correctAnswer.en) { 
               existingCorrectAnswerConceptTextsForDifficulty.push(data.correctAnswer.en);
-            } else if (data.answers && typeof data.correctAnswerIndex === 'number' && data.answers[data.correctAnswerIndex]) { // Old format
+            } else if (data.answers && typeof data.correctAnswerIndex === 'number' && data.answers[data.correctAnswerIndex]) {
               const correctAnswer = data.answers[data.correctAnswerIndex]!;
               if (correctAnswer.en) {
                 existingCorrectAnswerConceptTextsForDifficulty.push(correctAnswer.en);
@@ -294,7 +297,7 @@ async function populateQuestions() {
             categoryInstructions: category.detailedPromptInstructions,
             count: questionsToRequestInThisAPICall,
             isVisual: category.isVisual,
-            modelName: MODEL_TO_USE, // Pass model name to the flow
+            modelName: MODEL_TO_USE,
           };
 
           if (category.difficultySpecificGuidelines && category.difficultySpecificGuidelines[difficulty]) {
@@ -380,7 +383,7 @@ async function populateQuestions() {
   console.log('\nBatch question population script finished.');
 }
 
-populateQuestions().catch(error => {
+main().catch(error => {
   console.error("Unhandled error in populateQuestions:", error);
   process.exit(1);
 });
