@@ -2,7 +2,6 @@
 'use server';
 
 import { adminDb } from '@/lib/firebase-admin';
-import { doc, getDoc, setDoc } from 'firebase/firestore';
 import type { AvailableModels, ScriptSettings } from '@/types';
 import fs from 'fs/promises';
 import path from 'path';
@@ -29,12 +28,13 @@ const DEFAULT_SETTINGS: ScriptSettings = {
  */
 export async function getScriptSettings(): Promise<ScriptSettings> {
   try {
-    const settingsRef = doc(adminDb, SETTINGS_COLLECTION, SCRIPT_DEFAULTS_DOC_ID);
-    const docSnap = await getDoc(settingsRef);
+    const settingsRef = adminDb.collection(SETTINGS_COLLECTION).doc(SCRIPT_DEFAULTS_DOC_ID);
+    const docSnap = await settingsRef.get();
 
-    if (docSnap.exists()) {
+    if (docSnap.exists) {
       // Merge with defaults to ensure all keys are present
       const data = docSnap.data();
+      if (!data) return DEFAULT_SETTINGS;
       return {
         populateQuestions: { ...DEFAULT_SETTINGS.populateQuestions, ...data.populateQuestions },
         populateImages: { ...DEFAULT_SETTINGS.populateImages, ...data.populateImages },
@@ -56,8 +56,8 @@ export async function getScriptSettings(): Promise<ScriptSettings> {
  */
 export async function updateScriptSettings(settings: ScriptSettings): Promise<void> {
   try {
-    const settingsRef = doc(adminDb, SETTINGS_COLLECTION, SCRIPT_DEFAULTS_DOC_ID);
-    await setDoc(settingsRef, settings, { merge: true });
+    const settingsRef = adminDb.collection(SETTINGS_COLLECTION).doc(SCRIPT_DEFAULTS_DOC_ID);
+    await settingsRef.set(settings, { merge: true });
   } catch (error) {
     console.error('[settingsService] Error updating script settings:', error);
     throw new Error('Failed to update script settings.');
