@@ -145,18 +145,20 @@ async function generateImageFromAI(prompt: string, questionId: string, modelName
   let textResponse: string | undefined;
 
   if (modelName.includes('imagen')) {
-    const { media, text } = await ai.generate({
+    // Logic for Imagen models, which require vertexAI plugin
+    const response = await ai.generate({
       model: modelName,
+      output: { format: 'media' }, // Crucial for Imagen
       prompt: prompt, // Use raw prompt for Imagen
       config: {
         numberOfImages: 1, // Only generate one image per question
         aspectRatio: '16:9', // Keep aspect ratio consistent
       },
     });
-    mediaUrl = media?.url;
-    textResponse = text;
+    mediaUrl = response.media?.url;
+    textResponse = response.text;
   } else {
-    // Assume Gemini call (existing logic)
+    // Existing logic for Gemini models
     const engineeredPrompt = `A widescreen, 16:9 aspect ratio, landscape-orientation image of: ${prompt}`;
     const { media, text } = await ai.generate({
       model: modelName,
