@@ -1,4 +1,5 @@
 // Generates an image with vertexai and Imagen
+// This is a working sample script based on the official documentation
 
 import { config } from 'dotenv';
 config(); // Load environment variables from .env file
