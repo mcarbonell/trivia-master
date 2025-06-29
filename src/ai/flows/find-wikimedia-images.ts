@@ -1,3 +1,4 @@
+
 'use server';
 /**
  * @fileOverview A Genkit flow to find candidate images for artworks on Wikimedia Commons.
@@ -68,11 +69,10 @@ const findWikimediaImagesFlow = ai.defineFlow(
     inputSchema: FindWikimediaImagesInputSchema,
     outputSchema: FindWikimediaImagesOutputSchema,
   },
-  async ({ artworkTitle, artworkAuthor }) => {
-    console.log(`[findWikimediaImagesFlow] Searching for: "${artworkTitle}" by ${artworkAuthor}`);
+  async ({ searchTerm }) => {
+    console.log(`[findWikimediaImagesFlow] Searching for: "${searchTerm}"`);
     
     const searchUrl = new URL('https://commons.wikimedia.org/w/api.php');
-    const searchTerm = `"${artworkTitle}" ${artworkAuthor ? `"${artworkAuthor}"` : ''}`;
     searchUrl.search = new URLSearchParams({
         action: 'query',
         list: 'search',

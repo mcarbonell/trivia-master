@@ -11,9 +11,8 @@ export interface PredefinedQuestion extends GenerateTriviaQuestionOutput {
   createdAt?: string; 
   status?: 'accepted' | 'fixed';
   imagePrompt?: string;
+  searchTerm?: string;
   imageUrl?: string;
-  artworkTitle?: string;
-  artworkAuthor?: string;
 }
 
 const PREDEFINED_QUESTIONS_COLLECTION = 'predefinedTriviaQuestions';
@@ -42,9 +41,8 @@ export async function normalizeQuestionData(docId: string, data: DocumentData): 
     status: data.status as 'accepted' | 'fixed' | undefined,
     createdAt: data.createdAt ? (data.createdAt as Timestamp).toDate().toISOString() : undefined,
     imagePrompt: data.imagePrompt,
+    searchTerm: data.searchTerm,
     imageUrl: data.imageUrl,
-    artworkTitle: data.artworkTitle,
-    artworkAuthor: data.artworkAuthor,
   };
 
   // Check for new format (correctAnswer + distractors)

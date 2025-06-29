@@ -27,15 +27,13 @@ export const GenerateTriviaQuestionOutputSchema = z.object({
   hint: BilingualTextSchema.describe('A concise hint (1 short sentence) to help the user deduce the answer without revealing it directly, in English and Spanish.'),
   difficulty: DifficultyLevelSchema,
   imagePrompt: z.string().optional().describe('For AI-generated images: A detailed, English-only prompt for a text-to-image model.'),
-  artworkTitle: z.string().optional().describe("For real artwork: The specific title of the artwork to search for (e.g., 'Mona Lisa')."),
-  artworkAuthor: z.string().optional().describe("For real artwork: The name of the artist to refine the search (e.g., 'Leonardo da Vinci')."),
+  searchTerm: z.string().optional().describe("A concise and effective search query in English to find a real image of the subject (e.g., 'Mona Lisa Leonardo da Vinci', 'Eiffel Tower at night')."),
   imageUrl: z.string().url().optional().describe('The URL of the final image.'),
 });
 
 // Wikimedia Image Search Schemas
 export const FindWikimediaImagesInputSchema = z.object({
-  artworkTitle: z.string().describe("The title of the artwork to search for."),
-  artworkAuthor: z.string().optional().describe("The author of the artwork."),
+  searchTerm: z.string().describe("The term to search for on Wikimedia Commons."),
 });
 export const WikimediaImageCandidateSchema = z.object({
   pageUrl: z.string().url().describe("The URL to the Wikimedia Commons file page."),

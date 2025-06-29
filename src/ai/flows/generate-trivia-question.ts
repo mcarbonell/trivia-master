@@ -60,10 +60,9 @@ These difficulty-specific instructions are very important for tailoring the ques
 {{/if}}
 
 {{#if isVisual}}
-This is a VISUAL category. The image generation method depends on the specific Category Instructions. You MUST follow them strictly.
-- If the instructions ask for an 'imagePrompt' (for AI image generation), you MUST provide a detailed, photorealistic prompt in that field. The 'artworkTitle' and 'artworkAuthor' fields MUST be omitted.
-- If the instructions ask for an 'artworkTitle' and 'artworkAuthor' (for real artwork lookup), you MUST provide those exact details. The 'imagePrompt' field MUST be omitted in this case.
-These fields are mutually exclusive.
+This is a VISUAL category. For each visual question, you MUST provide BOTH of the following fields:
+1. 'imagePrompt': A detailed, English-only prompt for a text-to-image AI model. This prompt should vividly describe the subject and be suitable for generating a photorealistic image.
+2. 'searchTerm': A concise, effective search query in English for finding a REAL image on a service like Wikimedia Commons. This should typically be the name of the subject and, if relevant, the creator or location.
 {{/if}}
 
 IMPORTANT INSTRUCTIONS FOR QUESTION VARIETY:
@@ -116,9 +115,8 @@ Each question object in the array must conform to the following structure:
   "explanation": { "en": "English Explanation", "es": "Spanish Explanation" },
   "hint": { "en": "English Hint", "es": "Spanish Hint" },
   "difficulty": "easy",
-  "imagePrompt": "(Provide ONLY for AI-generated images, otherwise omit)",
-  "artworkTitle": "(Provide ONLY for real artwork lookup, otherwise omit)",
-  "artworkAuthor": "(Provide ONLY for real artwork lookup, otherwise omit)"
+  "imagePrompt": "A detailed English-only prompt for text-to-image AI...",
+  "searchTerm": "A concise English-only search term for Wikimedia Commons..."
 }
 Ensure the entire response is a single JSON string like: "[ {question1_object}, {question2_object}, ... ]"
 

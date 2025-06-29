@@ -5,6 +5,8 @@ config(); // Load environment variables from .env file
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
 import sharp from 'sharp';
+import fs from 'fs/promises';
+import path from 'path';
 import { adminDb, adminStorage } from '../lib/firebase-admin';
 import type { PredefinedQuestion } from '../services/triviaService';
 import { getScriptSettings } from '@/services/settingsService';
@@ -14,26 +16,6 @@ import type { firestore } from 'firebase-admin';
 const bucket = adminStorage.bucket();
 const db = adminDb;
 const PREDEFINED_QUESTIONS_COLLECTION = 'predefinedTriviaQuestions';
-
-// Define the watermark
-const watermarkSvg = `
-<svg width="400" height="60" xmlns="http://www.w3.org/2000/svg">
-    <style>
-        .title { 
-            fill: rgba(255, 255, 255, 0.6); 
-            font-size: 22px; 
-            font-weight: bold; 
-            font-family: sans-serif; /* Use generic sans-serif which is more likely to be available */
-            /* text-shadow can be complex, use a stroke instead for better compatibility */
-            paint-order: stroke;
-            stroke: rgba(0, 0, 0, 0.4);
-            stroke-width: 1px;
-        }
-    </style>
-    <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" class="title">AI Trivia Master</text>
-</svg>
-`;
-const watermarkBuffer = Buffer.from(watermarkSvg);
 
 interface ImageResult {
   buffer: Buffer;
@@ -74,6 +56,19 @@ async function main() {
       description: 'Genkit image generation model to use.',
       default: settings.populateImages.defaultImageModel,
     })
+    .option('mode', {
+      alias: 'mo',
+      type: 'string',
+      choices: ['ai', 'search'],
+      demandOption: true,
+      description: "Image population mode: 'ai' to generate from imagePrompt, 'search' to find from searchTerm.",
+    })
+    .option('addWatermark', {
+      alias: 'w',
+      type: 'boolean',
+      default: false,
+      description: 'Adds a watermark to the generated images.',
+    })
     .help()
     .alias('help', 'h')
     .parseSync();
@@ -82,13 +77,12 @@ async function main() {
 }
 
 
-async function fetchImageFromWikimedia(question: PredefinedQuestion): Promise<ImageResult | null> {
-  if (!question.artworkTitle) {
-    console.warn(`  [Wikimedia] Skipping question ID ${question.id}: Missing artworkTitle.`);
+async function fetchImageFromWikimedia(searchTerm: string): Promise<ImageResult | null> {
+  if (!searchTerm) {
+    console.warn(`  [Wikimedia] Skipping: Missing searchTerm.`);
     return null;
   }
   
-  const searchTerm = `"${question.artworkTitle}" ${question.artworkAuthor ? `"${question.artworkAuthor}"` : ''}`;
   console.log(`  [Wikimedia] Searching for: ${searchTerm}`);
 
   const searchUrl = `https://commons.wikimedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(searchTerm)}&srnamespace=6&format=json&srlimit=1&origin=*`;
@@ -201,16 +195,30 @@ async function generateImageFromAI(prompt: string, modelName: string): Promise<I
 
 
 async function populateImages(argv: any) {
-  const { category, limit, delay, force, model: modelToUse } = argv;
+  const { category, limit, delay, force, model: modelToUse, mode, addWatermark } = argv;
 
   console.log(`Starting image population script...`);
   console.log(`--- Configuration ---`);
   console.log(`Target Category: ${category || 'All Categories'}`);
+  console.log(`Mode: ${mode.toUpperCase()}`);
   console.log(`Max Images to Process: ${limit}`);
   console.log(`Delay between calls: ${delay}ms`);
   console.log(`Force Regeneration: ${force}`);
   console.log(`Image Generation Model: ${modelToUse}`);
+  console.log(`Add Watermark: ${addWatermark}`);
   console.log(`---------------------`);
+
+  let watermarkBuffer: Buffer | null = null;
+  if (addWatermark) {
+    try {
+      const watermarkPath = path.join(__dirname, '../data/watermark.svg');
+      watermarkBuffer = await fs.readFile(watermarkPath);
+      console.log('Watermark enabled for this run.');
+    } catch (error) {
+      console.error('Could not read watermark file. Proceeding without watermark.', error);
+      watermarkBuffer = null;
+    }
+  }
 
   try {
     let query: firestore.Query = db.collection(PREDEFINED_QUESTIONS_COLLECTION);
@@ -221,9 +229,15 @@ async function populateImages(argv: any) {
     
     const snapshot = await query.get();
     const allQuestionsWithData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as PredefinedQuestion));
-    const questionsToProcess = force
-      ? allQuestionsWithData.filter(q => q.imagePrompt || (q.artworkTitle && q.artworkAuthor))
-      : allQuestionsWithData.filter(q => !q.imageUrl && (q.imagePrompt || (q.artworkTitle && q.artworkAuthor)));
+    
+    const questionsToProcess = allQuestionsWithData.filter(q => {
+      // If forcing, we process any question that has a valid field for the current mode.
+      if (force) {
+        return (mode === 'ai' && q.imagePrompt) || (mode === 'search' && q.searchTerm);
+      }
+      // If not forcing, we only process questions that are missing an imageUrl and have a valid field for the current mode.
+      return !q.imageUrl && ((mode === 'ai' && q.imagePrompt) || (mode === 'search' && q.searchTerm));
+    });
 
     if (questionsToProcess.length === 0) {
       console.log("No questions found needing image generation for the selected criteria.");
@@ -242,28 +256,42 @@ async function populateImages(argv: any) {
       
       let imageResult: ImageResult | null = null;
       try {
-        if (question.artworkTitle) {
-          imageResult = await fetchImageFromWikimedia(question);
-        } else if (question.imagePrompt) {
-          imageResult = await generateImageFromAI(question.imagePrompt, modelToUse);
+        if (mode === 'search') {
+          if (question.searchTerm) {
+            imageResult = await fetchImageFromWikimedia(question.searchTerm);
+          } else {
+            console.log(`  -> Skipping question ID ${question.id}: Mode is 'search' but no searchTerm provided.`);
+            continue;
+          }
+        } else if (mode === 'ai') {
+          if (question.imagePrompt) {
+            imageResult = await generateImageFromAI(question.imagePrompt, modelToUse);
+          } else {
+            console.log(`  -> Skipping question ID ${question.id}: Mode is 'ai' but no imagePrompt provided.`);
+            continue;
+          }
         } else {
-          console.log(`  -> Skipping question ID ${question.id}: No imagePrompt or artworkTitle provided.`);
+          console.log(`  -> Skipping question ID ${question.id}: Invalid mode specified.`);
           continue;
         }
 
         if (imageResult) {
-          console.log(`  -> Applying watermark...`);
-          const watermarkedBuffer = await sharp(imageResult.buffer)
-              .composite([{
-                  input: watermarkBuffer,
-                  gravity: 'southeast',
-              }])
-              .toBuffer();
+          let imageToUpload = imageResult.buffer;
+          
+          if (watermarkBuffer) {
+            console.log(`  -> Applying watermark...`);
+            imageToUpload = await sharp(imageToUpload)
+                .composite([{
+                    input: watermarkBuffer,
+                    gravity: 'southeast',
+                }])
+                .toBuffer();
+          }
 
-          console.log(`  -> Uploading watermarked image to Firebase Storage...`);
+          console.log(`  -> Uploading image to Firebase Storage...`);
           const filePath = `trivia_images/${question.id}.${imageResult.extension}`;
           const file = bucket.file(filePath);
-          await file.save(watermarkedBuffer, {
+          await file.save(imageToUpload, {
               metadata: { contentType: imageResult.contentType },
               public: true,
           });

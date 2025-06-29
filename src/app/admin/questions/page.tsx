@@ -27,7 +27,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Badge } from '@/components/ui/badge';
-import { Loader2, AlertTriangle, PlusCircle, Eye, Edit, Trash2, RefreshCw, Search, ArrowUpDown, Download, ClipboardCopy, Image as ImageIcon, Camera } from 'lucide-react';
+import { Loader2, AlertTriangle, PlusCircle, Eye, Edit, Trash2, RefreshCw, Search, ArrowUpDown, Download, ClipboardCopy, Image as ImageIcon, Camera, Sparkles } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
 import Image from 'next/image';
@@ -55,8 +55,7 @@ export const questionFormSchema = z.object({
   hintEs: z.string().optional(),
   difficulty: z.enum(ALL_DIFFICULTY_LEVELS, { required_error: "Difficulty is required." }),
   
-  artworkTitle: z.string().optional(),
-  artworkAuthor: z.string().optional(),
+  searchTerm: z.string().optional(),
   imagePrompt: z.string().optional(),
   imageUrl: z.string().optional(),
 });
@@ -341,8 +340,7 @@ export default function AdminQuestionsPage() {
       hintEn: question.hint?.en || '',
       hintEs: question.hint?.es || '',
       difficulty: question.difficulty,
-      artworkTitle: question.artworkTitle || '',
-      artworkAuthor: question.artworkAuthor || '',
+      searchTerm: question.searchTerm || '',
       imagePrompt: question.imagePrompt || '',
       imageUrl: question.imageUrl || '',
     });
@@ -387,8 +385,7 @@ export default function AdminQuestionsPage() {
       explanation: { en: data.explanationEn, es: data.explanationEs },
       hint: (data.hintEn || data.hintEs) ? { en: data.hintEn || '', es: data.hintEs || '' } : undefined,
       difficulty: data.difficulty,
-      artworkTitle: data.artworkTitle || undefined,
-      artworkAuthor: data.artworkAuthor || undefined,
+      searchTerm: data.searchTerm || undefined,
       imagePrompt: data.imagePrompt || undefined,
       imageUrl: data.imageUrl || undefined,
     };
@@ -411,12 +408,12 @@ export default function AdminQuestionsPage() {
     }
   };
 
-  const handleFindImageOnWikimedia = async () => {
+  const handleSearchWikimedia = async () => {
     const formData = form.getValues();
-    const { artworkTitle, artworkAuthor } = formData;
+    const { searchTerm } = formData;
 
-    if (!artworkTitle) {
-      toast({ variant: 'destructive', title: t('imageSearchDialog.errorTitle'), description: t('imageSearchDialog.errorNoTitle') });
+    if (!searchTerm) {
+      toast({ variant: 'destructive', title: t('imageSearchDialog.errorTitle'), description: t('imageSearchDialog.errorNoSearchTerm') });
       return;
     }
 
@@ -425,7 +422,7 @@ export default function AdminQuestionsPage() {
     setIsImageSearchOpen(true);
 
     try {
-      const results = await findWikimediaImages({ artworkTitle, artworkAuthor });
+      const results = await findWikimediaImages({ searchTerm });
       setImageSearchResults(results);
     } catch (error) {
       console.error("Error finding Wikimedia images:", error);
@@ -436,36 +433,31 @@ export default function AdminQuestionsPage() {
     }
   };
   
-  const handleRegenerateImage = async () => {
+  const handleGenerateAiImage = async () => {
     const formData = form.getValues();
-    const { artworkTitle, imagePrompt } = formData;
+    const { imagePrompt } = formData;
+    if (!imagePrompt) {
+        toast({ variant: 'destructive', title: t('toastCannotRegenerateTitle'), description: t('toastCannotRegenerateDescription') });
+        return;
+    }
+    if (!currentQuestionToEdit) return;
 
-    if (artworkTitle) {
-      // Re-run the Wikimedia search
-      await handleFindImageOnWikimedia();
-    } else if (imagePrompt) {
-      // Regenerate from AI prompt
-      if (!currentQuestionToEdit) return;
+    const { id: processingToastId } = toast({
+      title: t('toastRegeneratingTitle'),
+      description: t('toastRegeneratingDescription'),
+    });
 
-      const { id: processingToastId } = toast({
-        title: t('toastRegeneratingTitle'),
-        description: t('toastRegeneratingDescription'),
+    try {
+      const result = await generateAndStoreImage({
+        prompt: imagePrompt,
+        questionId: currentQuestionToEdit.id,
+        addWatermark: false, // Defaulting to no watermark for UI actions
       });
-
-      try {
-        const result = await generateAndStoreImage({
-          prompt: imagePrompt,
-          questionId: currentQuestionToEdit.id,
-          addWatermark: false, // Do not add watermark on UI-triggered regeneration for now
-        });
-        form.setValue('imageUrl', result.publicUrl, { shouldValidate: true });
-        toast({ id: processingToastId, title: t('toastRegenerateSuccessTitle'), description: t('toastRegenerateSuccessDescription') });
-      } catch (error) {
-         console.error("Error regenerating AI image:", error);
-         toast({ id: processingToastId, variant: 'destructive', title: t('toastRegenerateErrorTitle'), description: t('toastRegenerateErrorDescription') });
-      }
-    } else {
-      toast({ variant: 'destructive', title: t('toastCannotRegenerateTitle'), description: t('toastCannotRegenerateDescription') });
+      form.setValue('imageUrl', result.publicUrl, { shouldValidate: true });
+      toast({ id: processingToastId, title: t('toastRegenerateSuccessTitle'), description: t('toastRegenerateSuccessDescription') });
+    } catch (error) {
+       console.error("Error generating AI image:", error);
+       toast({ id: processingToastId, variant: 'destructive', title: t('toastRegenerateErrorTitle'), description: t('toastRegenerateErrorDescription') });
     }
   };
 
@@ -971,6 +963,15 @@ export default function AdminQuestionsPage() {
                   </Card>
                 )}
 
+                {currentQuestionToView.searchTerm && (
+                   <Card>
+                    <CardHeader><CardTitle className="text-base">{tForm('searchTermLabel')}</CardTitle></CardHeader>
+                    <CardContent>
+                       <p className="font-mono text-xs bg-muted p-2 rounded-md">{currentQuestionToView.searchTerm}</p>
+                    </CardContent>
+                  </Card>
+                )}
+
                  {currentQuestionToView.imageUrl && (
                    <Card>
                     <CardHeader><CardTitle className="text-base">{tForm('imageUrlLabel')}</CardTitle></CardHeader>
@@ -1076,31 +1077,25 @@ export default function AdminQuestionsPage() {
                  <Card>
                   <CardHeader><CardTitle className="text-lg">{tForm('visualsLabel')}</CardTitle></CardHeader>
                   <CardContent className="space-y-4">
-                    <FormField control={form.control} name="artworkTitle" render={({ field }) => ( <FormItem> <FormLabel>{tForm('artworkTitleLabel')}</FormLabel> <FormControl><Input placeholder={tForm('artworkTitlePlaceholder')} {...field} /></FormControl> <FormMessage /> </FormItem> )}/>
-                    <FormField control={form.control} name="artworkAuthor" render={({ field }) => ( <FormItem> <FormLabel>{tForm('artworkAuthorLabel')}</FormLabel> <FormControl><Input placeholder={tForm('artworkAuthorPlaceholder')} {...field} /></FormControl> <FormMessage /> </FormItem> )}/>
                     <FormField control={form.control} name="imagePrompt" render={({ field }) => ( <FormItem> <FormLabel>{tForm('imagePromptLabel')}</FormLabel> <FormControl><Textarea placeholder={tForm('imagePromptPlaceholder')} {...field} rows={3} /></FormControl> <FormMessage /> </FormItem> )}/>
-                    <FormField control={form.control} name="imageUrl" render={({ field }) => {
-                      const currentImageUrl = form.watch('imageUrl');
-                      return (
-                        <FormItem> 
-                          <FormLabel>{tForm('imageUrlLabel')}</FormLabel>
-                          <div className="flex gap-2 items-center">
-                            <FormControl><Input placeholder={tForm('imageUrlPlaceholder')} {...field} /></FormControl> 
-                            <Button type="button" variant="outline" onClick={handleFindImageOnWikimedia}>
-                              <Camera className="mr-2 h-4 w-4" />
-                              {t('imageSearchDialog.findButton')}
-                            </Button>
-                            {currentImageUrl && (
-                              <Button type="button" variant="secondary" onClick={handleRegenerateImage}>
-                                <RefreshCw className="mr-2 h-4 w-4" />
-                                {t('regenerateButton')}
-                              </Button>
-                            )}
-                          </div>
-                          <FormMessage /> 
-                        </FormItem> 
-                      );
-                    }}/>
+                    <FormField control={form.control} name="searchTerm" render={({ field }) => ( <FormItem> <FormLabel>{tForm('searchTermLabel')}</FormLabel> <FormControl><Input placeholder={tForm('searchTermPlaceholder')} {...field} /></FormControl> <FormMessage /> </FormItem> )}/>
+                    <FormField control={form.control} name="imageUrl" render={({ field }) => (
+                      <FormItem> 
+                        <FormLabel>{tForm('imageUrlLabel')}</FormLabel>
+                        <FormControl><Input placeholder={tForm('imageUrlPlaceholder')} {...field} /></FormControl> 
+                        <FormMessage /> 
+                      </FormItem> 
+                    )}/>
+                    <div className="flex gap-2">
+                        <Button type="button" variant="outline" onClick={handleGenerateAiImage}>
+                            <Sparkles className="mr-2 h-4 w-4" />
+                            {t('generateWithAiButton')}
+                        </Button>
+                        <Button type="button" variant="outline" onClick={handleSearchWikimedia}>
+                            <Camera className="mr-2 h-4 w-4" />
+                            {t('imageSearchDialog.findButton')}
+                        </Button>
+                    </div>
                   </CardContent>
                 </Card>
 

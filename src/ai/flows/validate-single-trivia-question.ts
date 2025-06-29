@@ -72,21 +72,22 @@ For example, if the category is about the English language, the answers should b
     *   Are all textual fields (question, answers, explanation, hint) provided and accurately translated/localized between English and Spanish?
 
 7.  **Visual Category Check (if applicable)**:
-    *   If the category is visual (instructions will mention this), an \`imagePrompt\` is **MANDATORY**.
-    *   The \`imagePrompt\` should be a detailed, English-only description suitable for a text-to-image AI. It MUST include the name of the subject to ensure accuracy.
-    *   If a question in a visual category is missing an \`imagePrompt\`, you MUST generate an appropriate one based on the question and correct answer, then choose the "Fix" status.
+    *   If the category is visual (instructions will mention this), BOTH an \`imagePrompt\` and a \`searchTerm\` are **MANDATORY**.
+    *   The \`imagePrompt\` should be a detailed, English-only description for AI generation. It MUST include the name of the subject to ensure accuracy.
+    *   The \`searchTerm\` should be a concise English-only query for finding a real image.
+    *   If a question in a visual category is missing either \`imagePrompt\` or \`searchTerm\`, you MUST generate an appropriate one based on the question and correct answer, then choose the "Fix" status.
 
 Based on your evaluation, determine a \`validationStatus\`:
 
 *   \`"Accept"\`: If the question and all its parts are excellent and meet all criteria.
 *   \`"Reject"\`: If the question has significant flaws (e.g., factually incorrect, unsolvable, offensive) and you cannot confidently fix it.
-*   \`"Fix"\`: If the question has minor to moderate issues that YOU CAN CORRECT. This includes typos, grammar, improving a distractor, adjusting difficulty, enhancing an explanation, or adding/improving an \`imagePrompt\`. IF YOU CHOOSE "Fix", YOU MUST PROVIDE THE ENTIRE CORRECTED QUESTION DATA IN THE \`fixedQuestionData\` field.
+*   \`"Fix"\`: If the question has minor to moderate issues that YOU CAN CORRECT. This includes typos, grammar, improving a distractor, adjusting difficulty, enhancing an explanation, or adding/improving an \`imagePrompt\` or \`searchTerm\`. IF YOU CHOOSE "Fix", YOU MUST PROVIDE THE ENTIRE CORRECTED QUESTION DATA IN THE \`fixedQuestionData\` field.
 
 **Output Format Rules:**
 
 *   Your response MUST be a single, valid JSON object.
 *   If \`validationStatus\` is \`"Fix"\`, the \`fixedQuestionData\` field is MANDATORY.
-    *   In \`fixedQuestionData\`, provide the COMPLETE, corrected question data. It must include all relevant fields like \`question\`, \`correctAnswer\`, \`distractors\`, \`explanation\`, \`difficulty\`, and \`imagePrompt\` if applicable.
+    *   In \`fixedQuestionData\`, provide the COMPLETE, corrected question data. It must include all relevant fields like \`question\`, \`correctAnswer\`, \`distractors\`, \`explanation\`, \`difficulty\`, and \`imagePrompt\`/\`searchTerm\` if applicable.
 *   If \`validationStatus\` is \`"Accept"\` or \`"Reject"\`, the \`fixedQuestionData\` field MUST be omitted.
 *   Your \`reasoning\` field should clearly explain your decision. If fixing, detail WHAT you fixed and WHY.
 
