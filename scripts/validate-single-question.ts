@@ -1,14 +1,12 @@
 
-'use server';
-
 import { config } from 'dotenv';
 config(); // Load environment variables from .env file
 
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
 import inquirer from 'inquirer';
-import { adminDb } from '../lib/firebase-admin';
-import { validateSingleTriviaQuestion } from '../ai/flows/validate-single-trivia-question';
+import { adminDb } from '../src/lib/firebase-admin';
+import { validateSingleTriviaQuestion } from '../src/ai/flows/validate-single-trivia-question';
 import { getScriptSettings } from '@/services/settingsService';
 import type { ValidateSingleQuestionInput, ValidateSingleQuestionOutput, QuestionData, GenerateTriviaQuestionOutput, BilingualText, DifficultyLevel } from '../types';
 import type { firestore } from 'firebase-admin';
@@ -143,7 +141,7 @@ function formatQuestionForDisplay(label: string, qData: QuestionData | GenerateT
   if (dataToDisplay.imagePrompt) {
     console.log(`Image Prompt: ${dataToDisplay.imagePrompt}`);
   }
-
+  
   if (dataToDisplay.searchTerm) {
     console.log(`Search Term: ${dataToDisplay.searchTerm}`);
   }

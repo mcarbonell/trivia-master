@@ -1,15 +1,13 @@
 
-'use server';
-
 import { config } from 'dotenv';
 config(); // Load environment variables from .env file
 
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
-import { adminDb } from '../lib/firebase-admin';
-import { validateSingleTriviaQuestion } from '../ai/flows/validate-single-trivia-question';
+import { adminDb } from '../src/lib/firebase-admin';
+import { validateSingleTriviaQuestion } from '../src/ai/flows/validate-single-trivia-question';
 import { getScriptSettings } from '@/services/settingsService';
-import type { ValidateSingleQuestionInput, QuestionData } from '../types';
+import type { ValidateSingleQuestionInput, QuestionData } from '../src/types';
 import type { DifficultyLevel, BilingualText } from '@/types';
 import type { firestore } from 'firebase-admin';
 
