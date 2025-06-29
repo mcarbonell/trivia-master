@@ -456,6 +456,7 @@ export default function AdminQuestionsPage() {
         const result = await generateAndStoreImage({
           prompt: imagePrompt,
           questionId: currentQuestionToEdit.id,
+          addWatermark: false, // Do not add watermark on UI-triggered regeneration for now
         });
         form.setValue('imageUrl', result.publicUrl, { shouldValidate: true });
         toast({ id: processingToastId, title: t('toastRegenerateSuccessTitle'), description: t('toastRegenerateSuccessDescription') });

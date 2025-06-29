@@ -9,11 +9,11 @@
     "googleai/gemini-1.5-flash-8b"
   ],
   "imageModels": [
-    "vertexai/imagen-4.0-generate-preview-06-06",
     "vertexai/imagen-4.0-ultra-generate-preview-06-06",
+    "vertexai/imagen-4.0-generate-preview-06-06",
     "vertexai/imagen-4.0-fast-generate-preview-06-06",
-    "vertexai/imagen-3.0-fast-generate-001",    	
     "vertexai/imagen-3.0-generate-002",
+    "vertexai/imagen-3.0-fast-generate-001",    	
     "googleai/gemini-2.0-flash-preview-image-generation"
   ]
 }

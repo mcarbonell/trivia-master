@@ -19,7 +19,7 @@ async function generateImage(modelName: string, prompt: string, outputPath?: str
 
     try {
         // Imagen model
-        if (modelName.includes('imagen')) {
+        if (modelName.includes('imagen-')) {
             const response = await ai.models.generateImages({
                 model: modelName,
                 prompt: prompt,
@@ -30,8 +30,12 @@ async function generateImage(modelName: string, prompt: string, outputPath?: str
             });
 
             if (response.generatedImages) { // Check if media exists
-                const generatedImage = response.generatedImages[0];
-                let imgBytes = generatedImage.image.imageBytes;
+                const generatedImage = response.generatedImages[0]; // Assuming only one image is requested
+                if (!generatedImage || !generatedImage.image || !generatedImage.image.imageBytes) {
+                    console.error('Generated image data is incomplete or missing.');
+                    return;
+                }
+                const imgBytes = generatedImage.image.imageBytes;
                 const buffer = Buffer.from(imgBytes, "base64");
                 const outputFilePath = outputPath || DEFAULT_OUTPUT_FILENAME;
                 fs.writeFileSync(outputFilePath, buffer);
@@ -49,16 +53,23 @@ async function generateImage(modelName: string, prompt: string, outputPath?: str
                     responseModalities: [Modality.TEXT, Modality.IMAGE],
                 },
             });
-            for (const part of response.candidates[0].content.parts) {
-                // Based on the part type, either show the text or save the image
-                if (part.text) {
-                    console.log(part.text);
-                } else if (part.inlineData) {
+
+            if (!response.candidates || response.candidates.length === 0 || !response.candidates[0].content || !response.candidates[0].content.parts) {
+                console.error('Invalid response structure or missing candidates/content parts.');
+                return;
+            }
+
+            const parts = response.candidates[0].content.parts;
+
+            for (const part of parts) {
+                if (part.inlineData && part.inlineData.data) {
                     const imageData = part.inlineData.data;
-                    const buffer = Buffer.from(imageData, "base64");
+                    const buffer = Buffer.from(imageData, 'base64');
                     const outputFilePath = outputPath || DEFAULT_OUTPUT_FILENAME;
-                    fs.writeFileSync(outputFilePath, buffer);
+                    fs.writeFileSync(outputFilePath, buffer); // Save the image
                     console.log(`Image from ${modelName} successfully generated and saved to ${outputFilePath}`);
+                } else if (part.text) {
+                    console.log(part.text); // Log any text parts
                 }
             }
         }
@@ -75,8 +86,8 @@ if (args.length < 1) {
 }
 
 const modelNames = [
-    "imagen-4.0-generate-preview-06-06",
     "imagen-4.0-ultra-generate-preview-06-06",
+    "imagen-4.0-generate-preview-06-06",
     "imagen-3.0-generate-002",
     "gemini-2.0-flash-preview-image-generation"
 ];
@@ -88,7 +99,7 @@ if (!modelNames.includes(modelName)) {
     process.exit(1);
 }
 
-const prompt = args[1];
+const prompt = args[1]; // Assuming prompt is the second argument
 const outputPath = args[2];
 
 generateImage(modelName, prompt, outputPath);

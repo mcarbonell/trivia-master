@@ -60,6 +60,7 @@ export const GenerateAndStoreImageInputSchema = z.object({
   prompt: z.string().describe("The text prompt to generate an image from."),
   questionId: z.string().describe("The Firestore ID of the question to update."),
   model: z.string().optional().describe("The specific image generation model to use."),
+  addWatermark: z.boolean().optional().describe("Whether to add a watermark to the image."),
 });
 export type GenerateAndStoreImageInput = z.infer<typeof GenerateAndStoreImageInputSchema>;
 

@@ -1,0 +1,15 @@
+<svg width="400" height="60" xmlns="http://www.w3.org/2000/svg">
+    <style>
+        .title { 
+            fill: rgba(255, 255, 255, 0.6); 
+            font-size: 22px; 
+            font-weight: bold; 
+            font-family: sans-serif; /* Use generic sans-serif which is more likely to be available */
+            /* text-shadow can be complex, use a stroke instead for better compatibility */
+            paint-order: stroke;
+            stroke: rgba(0, 0, 0, 0.4);
+            stroke-width: 1px;
+        }
+    </style>
+    <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" class="title">AI Trivia Master</text>
+</svg>
