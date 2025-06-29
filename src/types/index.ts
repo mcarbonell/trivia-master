@@ -67,6 +67,19 @@ export const GenerateAndStoreImageOutputSchema = z.object({
 });
 export type GenerateAndStoreImageOutput = z.infer<typeof GenerateAndStoreImageOutputSchema>;
 
+// Process Manual Upload Schemas
+export const UploadAndStoreImageInputSchema = z.object({
+  questionId: z.string().describe("The Firestore ID of the question to update."),
+  imageDataUri: z.string().describe("The image file encoded as a Base64 data URI."),
+  addWatermark: z.boolean().optional().describe("Whether to add a watermark to the image."),
+});
+export type UploadAndStoreImageInput = z.infer<typeof UploadAndStoreImageInputSchema>;
+
+export const UploadAndStoreImageOutputSchema = z.object({
+  publicUrl: z.string().url().describe("The final public URL of the image in Firebase Storage."),
+});
+export type UploadAndStoreImageOutput = z.infer<typeof UploadAndStoreImageOutputSchema>;
+
 
 // --- Schemas for AI-driven Question Validation ---
 export const QuestionDataSchema = GenerateTriviaQuestionOutputSchema.extend({

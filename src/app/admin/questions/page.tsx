@@ -1,7 +1,7 @@
 // src/app/admin/questions/page.tsx
 'use client';
 
-import { useEffect, useState, useCallback, useMemo } from 'react';
+import { useEffect, useState, useCallback, useMemo, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -9,6 +9,7 @@ import { getAllPredefinedQuestionsForAdmin, deletePredefinedQuestion, updatePred
 import { getAppCategories } from '@/services/categoryService';
 import { findWikimediaImages } from '@/ai/flows/find-wikimedia-images';
 import { generateAndStoreImage } from '@/ai/flows/generate-and-store-image';
+import { uploadAndStoreImage } from '@/ai/flows/upload-and-store-image';
 import type { FindWikimediaImagesOutput, WikimediaImageCandidate } from '@/types';
 import { processWikimediaImage } from '@/ai/flows/process-wikimedia-image';
 import type { CategoryDefinition, DifficultyLevel, BilingualText } from '@/types';
@@ -27,7 +28,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Badge } from '@/components/ui/badge';
-import { Loader2, AlertTriangle, PlusCircle, Eye, Edit, Trash2, RefreshCw, Search, ArrowUpDown, Download, ClipboardCopy, Image as ImageIcon, Camera, Sparkles } from 'lucide-react';
+import { Loader2, AlertTriangle, PlusCircle, Eye, Edit, Trash2, RefreshCw, Search, ArrowUpDown, Download, ClipboardCopy, Image as ImageIcon, Camera, Sparkles, Upload } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
 import Image from 'next/image';
@@ -160,6 +161,10 @@ export default function AdminQuestionsPage() {
   const [isImageSearchOpen, setIsImageSearchOpen] = useState(false);
   const [isImageSearchLoading, setIsImageSearchLoading] = useState(false);
   const [imageSearchResults, setImageSearchResults] = useState<FindWikimediaImagesOutput>([]);
+
+  // State for manual upload
+  const [isUploading, setIsUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
 
   const form = useForm<QuestionFormData>({
@@ -481,6 +486,42 @@ export default function AdminQuestionsPage() {
     } catch (error) {
        console.error("Error processing Wikimedia image:", error);
        toast({ id: processingToastId, variant: 'destructive', title: t('imageSearchDialog.errorTitle'), description: t('imageSearchDialog.errorProcessing') });
+    }
+  };
+  
+  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file || !currentQuestionToEdit) {
+      return;
+    }
+    
+    setIsUploading(true);
+    const { id: uploadToastId } = toast({ title: t('uploading') });
+
+    try {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = async () => {
+        const imageDataUri = reader.result as string;
+        const result = await uploadAndStoreImage({ 
+          questionId: currentQuestionToEdit!.id, 
+          imageDataUri 
+        });
+        form.setValue('imageUrl', result.publicUrl, { shouldValidate: true });
+        toast({ id: uploadToastId, title: t('uploadSuccess') });
+      };
+      reader.onerror = (error) => {
+        throw new Error('File reading failed: ' + error);
+      };
+    } catch (error) {
+      console.error("Error uploading image:", error);
+      toast({ id: uploadToastId, variant: 'destructive', title: t('uploadError') });
+    } finally {
+      setIsUploading(false);
+      // Reset file input
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
     }
   };
 
@@ -1086,15 +1127,26 @@ export default function AdminQuestionsPage() {
                         <FormMessage /> 
                       </FormItem> 
                     )}/>
-                    <div className="flex gap-2">
-                        <Button type="button" variant="outline" onClick={handleGenerateAiImage}>
+                    <div className="flex flex-wrap gap-2">
+                        <Button type="button" variant="outline" onClick={handleGenerateAiImage} disabled={isUploading}>
                             <Sparkles className="mr-2 h-4 w-4" />
                             {t('generateWithAiButton')}
                         </Button>
-                        <Button type="button" variant="outline" onClick={handleSearchWikimedia}>
+                        <Button type="button" variant="outline" onClick={handleSearchWikimedia} disabled={isUploading}>
                             <Camera className="mr-2 h-4 w-4" />
                             {t('imageSearchDialog.findButton')}
                         </Button>
+                         <Button type="button" variant="outline" onClick={() => fileInputRef.current?.click()} disabled={isUploading}>
+                            {isUploading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Upload className="mr-2 h-4 w-4" />}
+                            {t('uploadButton')}
+                        </Button>
+                        <input
+                            type="file"
+                            ref={fileInputRef}
+                            onChange={handleFileUpload}
+                            className="hidden"
+                            accept="image/png, image/jpeg, image/webp"
+                        />
                     </div>
                   </CardContent>
                 </Card>

@@ -385,6 +385,10 @@
       "successDescription": "The image has been successfully set for this question.",
       "errorProcessing": "Failed to process the selected image. Please try again."
     },
+    "uploadButton": "Upload Image",
+    "uploading": "Uploading...",
+    "uploadSuccess": "Image uploaded successfully.",
+    "uploadError": "Failed to upload image.",
     "form": {
       "viewDialogTitle": "View Question Details",
       "viewDialogDescription": "Viewing question details from category \"{topic}\".",

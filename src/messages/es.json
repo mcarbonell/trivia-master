@@ -385,6 +385,10 @@
       "successDescription": "La imagen ha sido asignada a esta pregunta correctamente.",
       "errorProcessing": "No se pudo procesar la imagen seleccionada. Por favor, inténtalo de nuevo."
     },
+    "uploadButton": "Subir Imagen",
+    "uploading": "Subiendo...",
+    "uploadSuccess": "Imagen subida correctamente.",
+    "uploadError": "Error al subir la imagen.",
     "form": {
       "viewDialogTitle": "Ver Detalles de la Pregunta",
       "viewDialogDescription": "Viendo detalles de la pregunta de la categoría \"{topic}\".",

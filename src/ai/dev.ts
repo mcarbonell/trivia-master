@@ -9,3 +9,4 @@ import '@/ai/flows/generate-image.ts';
 import '@/ai/flows/find-wikimedia-images.ts';
 import '@/ai/flows/process-wikimedia-image.ts';
 import '@/ai/flows/generate-and-store-image.ts';
+import '@/ai/flows/upload-and-store-image.ts';

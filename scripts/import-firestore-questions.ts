@@ -8,8 +8,8 @@ import fs from 'fs/promises';
 import path from 'path';
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
-import { adminDb } from '../lib/firebase-admin';
-import type { PredefinedQuestion } from '../services/triviaService'; // Using this type for structure
+import { adminDb } from '../src/lib/firebase-admin';
+import type { PredefinedQuestion } from '../src/services/triviaService'; // Using this type for structure
 import type { DifficultyLevel, BilingualText } from '@/types';
 import type { GenerateTriviaQuestionOutput } from '@/ai/flows/generate-trivia-question';
 import { firestore } from 'firebase-admin';
