@@ -4,9 +4,9 @@ Este documento recopila ideas para futuras mejoras de la aplicación AI Trivia M
 
 ## Ideas para Mejorar la App "AI Trivia Master"
 
-1.  **Sistema de Puntuación Avanzado:**
+1.  **Sistema de Puntuación Avanzado (¡Ampliación Propuesta!):**
     *   **Rachas (Streaks):** Otorgar puntos extra por respuestas correctas consecutivas.
-    *   **Bonificación por Tiempo:** Dar más puntos si se responde correctamente y rápido.
+    *   **Bonificación por Tiempo:** Dar más puntos si se responde correctamente y rápido. (Ver nueva sección de ranking).
 
 2.  **Historial de Partidas y Estadísticas del Usuario (¡Implementado!):**
     *   Ya se guardan los resultados de las partidas en Firestore si el usuario está registrado.
@@ -71,6 +71,24 @@ Este documento recopila ideas para futuras mejoras de la aplicación AI Trivia M
         *   **Calidad Perfecta:** Los SVGs son vectores, lo que significa que se ven perfectamente nítidos en cualquier tamaño de pantalla, sin pixelación.
         *   **Tamaño de Archivo Mínimo:** Para gráficos como las banderas, los SVGs son mucho más ligeros que los archivos PNG o JPG, lo que se traduce en tiempos de carga más rápidos y menores costos de almacenamiento y transferencia de datos.
     *   **Implementación Propuesta:** Modificar el flujo `findWikimediaImages` (o crear uno nuevo para banderas) para que, al buscar una bandera, priorice obtener la URL del archivo SVG original en lugar de un thumbnail en formato de píxeles (PNG/JPG). El resto del proceso (subida a Firebase Storage y guardado en Firestore) sería similar. Next.js (`next/image`) es totalmente compatible con el uso de SVGs.
+
+## Multijugador Asíncrono y Sistema de Ranking (Propuesta)
+
+*   **Enfoque:** Evitar batallas en tiempo real y la necesidad de esperar a otros jugadores, optando por un sistema de rankings y puntuaciones asíncrono.
+*   **Audiencia Objetivo:** Público adulto enfocado en el aprendizaje y el desafío intelectual, en lugar de un juego puramente casual.
+
+### Sistema de Puntuación Detallado
+*   **Puntuación Base por Tiempo:** Una fórmula como `10 puntos (base) + segundos_restantes (0-30)` podría funcionar. Esto daría un rango de 10-40 puntos por pregunta acertada.
+*   **Multiplicadores por Dificultad:**
+    *   **Fácil:** Puntuación base x1.
+    *   **Medio:** Puntuación base x2.
+    *   **Difícil:** Puntuación base x3.
+*   **Fallos:** Las preguntas falladas o no respondidas otorgan 0 puntos, manteniendo el sistema simple.
+
+### Estructura de Rankings
+*   **Mejor Puntuación Personal por Categoría:** Para cada categoría, se guarda la puntuación más alta que el usuario ha conseguido, incentivando la rejugabilidad para superar su propio récord.
+*   **Rankings Globales por Categoría:** Una tabla de clasificación pública para cada categoría, mostrando las mejores puntuaciones de todos los jugadores. La dificultad difícil, al puntuar más, naturalmente dominaría este ranking, premiando a los expertos.
+*   **Ranking Global Acumulativo:** La tabla de clasificación principal. La puntuación de un jugador aquí sería la **suma de sus mejores puntuaciones personales en cada una de las categorías**. Este es el gran motivador para que los jugadores exploren toda la app y no se especialicen solo en uno o dos temas.
 
 ## ¿Sería fácil convertirla en una app de Android?
 
@@ -180,3 +198,5 @@ Se ha optimizado significativamente el rendimiento y la capacidad offline.
 *   **Reducción de Costos de API:** Menos llamadas al modelo de IA y a Firestore.
 *   **Verdadera Capacidad Offline:** Jugar las categorías predefinidas sin conexión.
 *   **Mayor Resiliencia:** La app funciona mejor con conexiones intermitentes.
+
+    
