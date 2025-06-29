@@ -231,12 +231,13 @@ async function populateImages(argv: any) {
     const allQuestionsWithData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as PredefinedQuestion));
     
     const questionsToProcess = allQuestionsWithData.filter(q => {
-      // If forcing, we process any question that has a valid field for the current mode.
-      if (force) {
-        return (mode === 'ai' && q.imagePrompt) || (mode === 'search' && q.searchTerm);
-      }
-      // If not forcing, we only process questions that are missing an imageUrl and have a valid field for the current mode.
-      return !q.imageUrl && ((mode === 'ai' && q.imagePrompt) || (mode === 'search' && q.searchTerm));
+      const needsImage = force || !q.imageUrl;
+      if (!needsImage) return false;
+
+      if (mode === 'ai' && q.imagePrompt) return true;
+      if (mode === 'search' && q.searchTerm) return true;
+
+      return false;
     });
 
     if (questionsToProcess.length === 0) {
@@ -329,3 +330,4 @@ main().catch(error => {
   console.error("Unhandled fatal error in script:", error);
   process.exit(1);
 });
+

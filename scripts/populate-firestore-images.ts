@@ -7,8 +7,8 @@ import { hideBin } from 'yargs/helpers';
 import sharp from 'sharp';
 import fs from 'fs/promises';
 import path from 'path';
-import { adminDb, adminStorage } from '../src/lib/firebase-admin';
-import type { PredefinedQuestion } from '../src/services/triviaService';
+import { adminDb, adminStorage } from '../lib/firebase-admin';
+import type { PredefinedQuestion } from '../services/triviaService';
 import { getScriptSettings } from '@/services/settingsService';
 import { ai } from '@/ai/genkit';
 import type { firestore } from 'firebase-admin';
@@ -56,6 +56,13 @@ async function main() {
       description: 'Genkit image generation model to use.',
       default: settings.populateImages.defaultImageModel,
     })
+    .option('mode', {
+      alias: 'mo',
+      type: 'string',
+      choices: ['ai', 'search'],
+      demandOption: true,
+      description: "Image population mode: 'ai' to generate from imagePrompt, 'search' to find from searchTerm.",
+    })
     .option('addWatermark', {
       alias: 'w',
       type: 'boolean',
@@ -70,13 +77,12 @@ async function main() {
 }
 
 
-async function fetchImageFromWikimedia(question: PredefinedQuestion): Promise<ImageResult | null> {
-  if (!question.artworkTitle) {
-    console.warn(`  [Wikimedia] Skipping question ID ${question.id}: Missing artworkTitle.`);
+async function fetchImageFromWikimedia(searchTerm: string): Promise<ImageResult | null> {
+  if (!searchTerm) {
+    console.warn(`  [Wikimedia] Skipping: Missing searchTerm.`);
     return null;
   }
   
-  const searchTerm = `"${question.artworkTitle}" ${question.artworkAuthor ? `"${question.artworkAuthor}"` : ''}`;
   console.log(`  [Wikimedia] Searching for: ${searchTerm}`);
 
   const searchUrl = `https://commons.wikimedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(searchTerm)}&srnamespace=6&format=json&srlimit=1&origin=*`;
@@ -189,11 +195,12 @@ async function generateImageFromAI(prompt: string, modelName: string): Promise<I
 
 
 async function populateImages(argv: any) {
-  const { category, limit, delay, force, model: modelToUse, addWatermark } = argv;
+  const { category, limit, delay, force, model: modelToUse, mode, addWatermark } = argv;
 
   console.log(`Starting image population script...`);
   console.log(`--- Configuration ---`);
   console.log(`Target Category: ${category || 'All Categories'}`);
+  console.log(`Mode: ${mode.toUpperCase()}`);
   console.log(`Max Images to Process: ${limit}`);
   console.log(`Delay between calls: ${delay}ms`);
   console.log(`Force Regeneration: ${force}`);
@@ -204,7 +211,7 @@ async function populateImages(argv: any) {
   let watermarkBuffer: Buffer | null = null;
   if (addWatermark) {
     try {
-      const watermarkPath = path.join(__dirname, '../src/data/watermark.svg');
+      const watermarkPath = path.join(__dirname, '../data/watermark.svg');
       watermarkBuffer = await fs.readFile(watermarkPath);
       console.log('Watermark enabled for this run.');
     } catch (error) {
@@ -222,9 +229,16 @@ async function populateImages(argv: any) {
     
     const snapshot = await query.get();
     const allQuestionsWithData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as PredefinedQuestion));
-    const questionsToProcess = force
-      ? allQuestionsWithData.filter(q => q.imagePrompt || (q.artworkTitle && q.artworkAuthor))
-      : allQuestionsWithData.filter(q => !q.imageUrl && (q.imagePrompt || (q.artworkTitle && q.artworkAuthor)));
+    
+    const questionsToProcess = allQuestionsWithData.filter(q => {
+      const needsImage = force || !q.imageUrl;
+      if (!needsImage) return false;
+
+      if (mode === 'ai' && q.imagePrompt) return true;
+      if (mode === 'search' && q.searchTerm) return true;
+
+      return false;
+    });
 
     if (questionsToProcess.length === 0) {
       console.log("No questions found needing image generation for the selected criteria.");
@@ -243,12 +257,22 @@ async function populateImages(argv: any) {
       
       let imageResult: ImageResult | null = null;
       try {
-        if (question.artworkTitle) {
-          imageResult = await fetchImageFromWikimedia(question);
-        } else if (question.imagePrompt) {
-          imageResult = await generateImageFromAI(question.imagePrompt, modelToUse);
+        if (mode === 'search') {
+          if (question.searchTerm) {
+            imageResult = await fetchImageFromWikimedia(question.searchTerm);
+          } else {
+            console.log(`  -> Skipping question ID ${question.id}: Mode is 'search' but no searchTerm provided.`);
+            continue;
+          }
+        } else if (mode === 'ai') {
+          if (question.imagePrompt) {
+            imageResult = await generateImageFromAI(question.imagePrompt, modelToUse);
+          } else {
+            console.log(`  -> Skipping question ID ${question.id}: Mode is 'ai' but no imagePrompt provided.`);
+            continue;
+          }
         } else {
-          console.log(`  -> Skipping question ID ${question.id}: No imagePrompt or artworkTitle provided.`);
+          console.log(`  -> Skipping question ID ${question.id}: Invalid mode specified.`);
           continue;
         }
 
@@ -257,7 +281,7 @@ async function populateImages(argv: any) {
           
           if (watermarkBuffer) {
             console.log(`  -> Applying watermark...`);
-            imageToUpload = await sharp(imageResult.buffer)
+            imageToUpload = await sharp(imageToUpload)
                 .composite([{
                     input: watermarkBuffer,
                     gravity: 'southeast',
@@ -306,3 +330,4 @@ main().catch(error => {
   console.error("Unhandled fatal error in script:", error);
   process.exit(1);
 });
+
