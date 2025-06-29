@@ -1,5 +1,14 @@
-
 [
+  {
+    "topicValue": "AnimalIdentification",
+    "name": {
+      "en": "Identify the Animal",
+      "es": "Identifica el Animal"
+    },
+    "icon": "PawPrint",
+    "isVisual": true,
+    "detailedPromptInstructions": "Generate visual trivia questions where the user must identify an animal from an image. For each item: 1. The 'question' text should be simple, like 'What animal is shown in the image?' or 'Identify this animal.'. 2. The 'correctAnswer' must be the common name of a specific animal (e.g., 'African Elephant', 'Siberian Tiger', 'Red Panda'). 3. The 'distractors' must be three other plausible but incorrect animal names, preferably from a similar class or habitat. 4. The 'explanation' should provide a brief, interesting fact about the correct animal. 5. CRUCIAL: The 'imagePrompt' MUST be a detailed, photorealistic description of the correct animal, including its name, to ensure accurate image generation. For example, for 'Lion', a good prompt would be: 'A photorealistic, close-up shot of an African Lion in its natural habitat, resting on a rock under the sun.'. The 'serchTerm' could be 'african lion'. The 'imageUrl' field should be empty if it is a new question or be left as it is."
+  },
   {
     "topicValue": "WorldLandmarks",
     "name": {
@@ -8,7 +17,7 @@
     },
     "icon": "Landmark",
     "isVisual": true,
-    "detailedPromptInstructions": "Generate visual trivia questions where the user must identify a famous world landmark or its location from an image. For each item: 1. The 'question' text should ask something like 'What famous landmark is this?' or 'In which city is this landmark located?'. 2. The 'correctAnswer' must be the name of the landmark (e.g., 'Eiffel Tower') or its city/country (e.g., 'Paris'). 3. The 'distractors' must be three other plausible but incorrect landmark names or locations. 4. The 'explanation' should provide a brief, interesting fact about the landmark. 5. CRUCIAL: The 'imagePrompt' MUST be a detailed, photorealistic description of the landmark itself, including its name, to ensure accurate image generation. For example: 'A photorealistic, wide-angle shot of the Colosseum in Rome, Italy, during a sunny day.' The 'imageUrl' field should be left empty."
+    "detailedPromptInstructions": "Generate visual trivia questions where the user must identify a famous world landmark or its location from an image. For each item: 1. The 'question' text should ask something like 'What famous landmark is this?' or 'In which city is this landmark located?'. 2. The 'correctAnswer' must be the name of the landmark (e.g., 'Eiffel Tower') or its city/country (e.g., 'Paris'). 3. The 'distractors' must be three other plausible but incorrect landmark names or locations. 4. The 'explanation' should provide a brief, interesting fact about the landmark. 5. CRUCIAL: The 'imagePrompt' MUST be a detailed, photorealistic description of the landmark itself, including its name, to ensure accurate image generation. For example: 'A photorealistic, wide-angle shot of the Colosseum in Rome, Italy, during a sunny day.'. The 'serchTerm' could be 'Colosseum in Rome'. The 'imageUrl' field should be empty if it is a new question or be left as it is."
   },
   {
     "topicValue": "FlagsOfTheWorldVisual",
@@ -18,7 +27,7 @@
     },
     "icon": "Flag",
     "isVisual": true,
-    "detailedPromptInstructions": "Generate visual trivia questions where the user must identify the country corresponding to a flag. For each item: 1. The 'question' text should always be 'To which country does this flag belong?' or similar. 2. The 'correctAnswer' must be the name of the country. 3. The 'distractors' must be three other country names, preferably from the same continent. 4. The 'explanation' should give a brief detail about the flag's symbolism or the country itself. 5. CRUCIAL: The 'imagePrompt' MUST be a clear description of the flag. For example: 'A high-quality, photorealistic image of the national flag of Japan, waving gently in the wind against a clear blue sky.' The 'imageUrl' field should be left empty."
+    "detailedPromptInstructions": "Generate visual trivia questions where the user must identify the country corresponding to a flag. For each item: 1. The 'question' text should always be 'To which country does this flag belong?' or similar. 2. The 'correctAnswer' must be the name of the country. 3. The 'distractors' must be three other country names, preferably from the same continent. 4. The 'explanation' should give a brief detail about the flag's symbolism or the country itself. 5. CRUCIAL: The 'imagePrompt' MUST be a clear description of the flag. For example: 'A high-quality, photorealistic image of the national flag of Japan, waving gently in the wind against a clear blue sky.'. The 'serchTerm' could be 'flag of Japan'. The 'imageUrl' field should be empty if it is a new question or be left as it is."
   },
   {
     "topicValue": "FamousPaintings",
@@ -28,6 +37,6 @@
     },
     "icon": "Palette",
     "isVisual": true,
-    "detailedPromptInstructions": "Generate visual trivia questions about famous paintings. For each item: 1. The 'question' can ask for the artist's name ('Who painted this masterpiece?') or the artwork's title ('What is the name of this painting?'). The AI can choose which is more appropriate. 2. CRUCIAL: You MUST provide the exact `artworkTitle` and `artworkAuthor` in their respective fields. This data will be used to automatically find a real image of the artwork. Example: `artworkTitle: \"The Starry Night\"`, `artworkAuthor: \"Vincent van Gogh\"`. Do NOT provide an `imagePrompt` for this category. 3. The 'correctAnswer' is the artist's name or the painting's title, depending on the question. 4. The 'distractors' are other plausible artists or titles from a similar era or movement. 5. The 'explanation' should give a brief fact about the artwork or artist."
+    "detailedPromptInstructions": "Generate visual trivia questions about famous paintings. For each item: 1. The 'question' can ask for the artist's name ('Who painted this masterpiece?') or the artwork's title ('What is the name of this painting?'). The AI can choose which is more appropriate. 2. CRUCIAL: You MUST provide the exact `serchTerm`, this data will be used to automatically find a real image of the artwork. Example: `serchTerm: \"The Starry Night, Vincent van Gogh\"`. You can provide an `imagePrompt` for this category but mainly will be used the searhTerm. 3. The 'correctAnswer' is the artist's name or the painting's title, depending on the question. 4. The 'distractors' are other plausible artists or titles from a similar era or movement. 5. The 'explanation' should give a brief fact about the artwork or artist. The 'imageUrl' field should be empty if it is a new question or be left as it is."
   }
 ]

@@ -28,7 +28,7 @@ const argv = yargs(hideBin(process.argv))
 
 const sourceFilePrefix: string = argv.source;
 const questionsJsonFileName = `${sourceFilePrefix}-questions.json`;
-const QUESTIONS_FILE_PATH = path.join(__dirname, '../data/', questionsJsonFileName);
+const QUESTIONS_FILE_PATH = path.join(__dirname, '../src/data/', questionsJsonFileName);
 
 function isValidBilingualText(obj: any): obj is BilingualText {
   return obj && typeof obj.en === 'string' && typeof obj.es === 'string';
