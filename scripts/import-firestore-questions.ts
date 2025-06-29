@@ -1,4 +1,6 @@
 
+'use server';
+
 import { config } from 'dotenv';
 config(); // Load environment variables from .env file
 
@@ -6,9 +8,9 @@ import fs from 'fs/promises';
 import path from 'path';
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
-import { adminDb } from '../src/lib/firebase-admin';
-import type { PredefinedQuestion } from '../src/services/triviaService'; // Using this type for structure
-import type { DifficultyLevel, BilingualText } from '../src/types';
+import { adminDb } from '../lib/firebase-admin';
+import type { PredefinedQuestion } from '../services/triviaService'; // Using this type for structure
+import type { DifficultyLevel, BilingualText } from '@/types';
 import type { GenerateTriviaQuestionOutput } from '@/ai/flows/generate-trivia-question';
 import { firestore } from 'firebase-admin';
 
@@ -62,9 +64,8 @@ async function importQuestions() {
     let questionsSkipped = 0;
 
     for (const question of questionsData) {
-      // Basic validation for new format
+      // Basic validation for core fields. ID is now optional for creation.
       if (
-        !question.id || typeof question.id !== 'string' ||
         !question.topicValue || typeof question.topicValue !== 'string' ||
         !isValidBilingualText(question.question) ||
         !isValidBilingualText(question.correctAnswer) ||
@@ -72,13 +73,12 @@ async function importQuestions() {
         !isValidBilingualText(question.explanation) ||
         !question.difficulty || !ALL_DIFFICULTY_LEVELS_CONST.includes(question.difficulty)
       ) {
-        console.warn(`Skipping question due to missing/invalid required fields in new format. ID: ${question.id || 'N/A'}, Data: ${JSON.stringify(question).substring(0, 200)}...`);
+        console.warn(`Skipping question due to missing/invalid required fields. Data: ${JSON.stringify(question).substring(0, 200)}...`);
         questionsSkipped++;
         continue;
       }
       
       const questionToSave: { [key: string]: any } = {
-        // id field is not stored in the document, but used for doc ID
         topicValue: question.topicValue,
         question: question.question,
         correctAnswer: question.correctAnswer,
@@ -101,7 +101,7 @@ async function importQuestions() {
             questionToSave.createdAt = firestore.Timestamp.fromDate(date);
           }
         } catch (e) {
-          console.warn(`Could not parse createdAt for question ${question.id}. Skipping.`);
+          console.warn(`Could not parse createdAt for question. Skipping.`);
         }
       } else {
         // For new imports without a date, set it to now
@@ -113,12 +113,24 @@ async function importQuestions() {
       if (question.imagePrompt) {
           questionToSave.imagePrompt = question.imagePrompt;
       }
+      if (question.searchTerm) {
+          questionToSave.searchTerm = question.searchTerm;
+      }
       if (question.imageUrl) {
           questionToSave.imageUrl = question.imageUrl;
       }
 
+      let docRef;
+      if (question.id && typeof question.id === 'string') {
+        // If ID exists, we are updating/overwriting a specific document
+        docRef = adminDb.collection(PREDEFINED_QUESTIONS_COLLECTION).doc(question.id);
+        console.log(`  -> Scheduling update/set for question ID: ${question.id}`);
+      } else {
+        // If no ID, we are creating a new document with an auto-generated ID
+        docRef = adminDb.collection(PREDEFINED_QUESTIONS_COLLECTION).doc(); // This creates a reference with a new auto-ID
+        console.log(`  -> Scheduling creation of new question with auto-generated ID.`);
+      }
 
-      const docRef = adminDb.collection(PREDEFINED_QUESTIONS_COLLECTION).doc(question.id);
       batch.set(docRef, questionToSave, { merge: true });
       operationsInBatch++;
       questionsImported++;
