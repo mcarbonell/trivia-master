@@ -8,6 +8,7 @@ import * as z from 'zod';
 import { getAllPredefinedQuestionsForAdmin, deletePredefinedQuestion, updatePredefinedQuestion, type PredefinedQuestion } from '@/services/triviaService';
 import { getAppCategories } from '@/services/categoryService';
 import { findWikimediaImages } from '@/ai/flows/find-wikimedia-images';
+import { generateAndStoreImage } from '@/ai/flows/generate-and-store-image';
 import type { FindWikimediaImagesOutput, WikimediaImageCandidate } from '@/types';
 import { processWikimediaImage } from '@/ai/flows/process-wikimedia-image';
 import type { CategoryDefinition, DifficultyLevel, BilingualText } from '@/types';
@@ -434,6 +435,39 @@ export default function AdminQuestionsPage() {
       setIsImageSearchLoading(false);
     }
   };
+  
+  const handleRegenerateImage = async () => {
+    const formData = form.getValues();
+    const { artworkTitle, imagePrompt } = formData;
+
+    if (artworkTitle) {
+      // Re-run the Wikimedia search
+      await handleFindImageOnWikimedia();
+    } else if (imagePrompt) {
+      // Regenerate from AI prompt
+      if (!currentQuestionToEdit) return;
+
+      const { id: processingToastId } = toast({
+        title: t('toastRegeneratingTitle'),
+        description: t('toastRegeneratingDescription'),
+      });
+
+      try {
+        const result = await generateAndStoreImage({
+          prompt: imagePrompt,
+          questionId: currentQuestionToEdit.id,
+        });
+        form.setValue('imageUrl', result.publicUrl, { shouldValidate: true });
+        toast({ id: processingToastId, title: t('toastRegenerateSuccessTitle'), description: t('toastRegenerateSuccessDescription') });
+      } catch (error) {
+         console.error("Error regenerating AI image:", error);
+         toast({ id: processingToastId, variant: 'destructive', title: t('toastRegenerateErrorTitle'), description: t('toastRegenerateErrorDescription') });
+      }
+    } else {
+      toast({ variant: 'destructive', title: t('toastCannotRegenerateTitle'), description: t('toastCannotRegenerateDescription') });
+    }
+  };
+
 
   const handleProcessImageSelection = async (image: WikimediaImageCandidate) => {
     if (!currentQuestionToEdit) return;
@@ -1044,19 +1078,28 @@ export default function AdminQuestionsPage() {
                     <FormField control={form.control} name="artworkTitle" render={({ field }) => ( <FormItem> <FormLabel>{tForm('artworkTitleLabel')}</FormLabel> <FormControl><Input placeholder={tForm('artworkTitlePlaceholder')} {...field} /></FormControl> <FormMessage /> </FormItem> )}/>
                     <FormField control={form.control} name="artworkAuthor" render={({ field }) => ( <FormItem> <FormLabel>{tForm('artworkAuthorLabel')}</FormLabel> <FormControl><Input placeholder={tForm('artworkAuthorPlaceholder')} {...field} /></FormControl> <FormMessage /> </FormItem> )}/>
                     <FormField control={form.control} name="imagePrompt" render={({ field }) => ( <FormItem> <FormLabel>{tForm('imagePromptLabel')}</FormLabel> <FormControl><Textarea placeholder={tForm('imagePromptPlaceholder')} {...field} rows={3} /></FormControl> <FormMessage /> </FormItem> )}/>
-                    <FormField control={form.control} name="imageUrl" render={({ field }) => ( 
-                      <FormItem> 
-                        <FormLabel>{tForm('imageUrlLabel')}</FormLabel>
-                        <div className="flex gap-2 items-center">
-                          <FormControl><Input placeholder={tForm('imageUrlPlaceholder')} {...field} /></FormControl> 
-                          <Button type="button" variant="outline" onClick={handleFindImageOnWikimedia}>
-                            <Camera className="mr-2 h-4 w-4" />
-                            {t('imageSearchDialog.findButton')}
-                          </Button>
-                        </div>
-                        <FormMessage /> 
-                      </FormItem> 
-                    )}/>
+                    <FormField control={form.control} name="imageUrl" render={({ field }) => {
+                      const currentImageUrl = form.watch('imageUrl');
+                      return (
+                        <FormItem> 
+                          <FormLabel>{tForm('imageUrlLabel')}</FormLabel>
+                          <div className="flex gap-2 items-center">
+                            <FormControl><Input placeholder={tForm('imageUrlPlaceholder')} {...field} /></FormControl> 
+                            <Button type="button" variant="outline" onClick={handleFindImageOnWikimedia}>
+                              <Camera className="mr-2 h-4 w-4" />
+                              {t('imageSearchDialog.findButton')}
+                            </Button>
+                            {currentImageUrl && (
+                              <Button type="button" variant="secondary" onClick={handleRegenerateImage}>
+                                <RefreshCw className="mr-2 h-4 w-4" />
+                                {t('regenerateButton')}
+                              </Button>
+                            )}
+                          </div>
+                          <FormMessage /> 
+                        </FormItem> 
+                      );
+                    }}/>
                   </CardContent>
                 </Card>
 

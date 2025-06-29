@@ -29,7 +29,7 @@ export const GenerateTriviaQuestionOutputSchema = z.object({
   imagePrompt: z.string().optional().describe('For AI-generated images: A detailed, English-only prompt for a text-to-image model.'),
   artworkTitle: z.string().optional().describe("For real artwork: The specific title of the artwork to search for (e.g., 'Mona Lisa')."),
   artworkAuthor: z.string().optional().describe("For real artwork: The name of the artist to refine the search (e.g., 'Leonardo da Vinci')."),
-  imageUrl: z.string().optional().describe('The URL of the final image.'),
+  imageUrl: z.string().url().optional().describe('The URL of the final image.'),
 });
 
 // Wikimedia Image Search Schemas
@@ -54,6 +54,19 @@ export const ProcessWikimediaImageInputSchema = z.object({
 export const ProcessWikimediaImageOutputSchema = z.object({
   publicUrl: z.string().url().describe("The final public URL of the image in Firebase Storage."),
 });
+
+// Process AI-Generated Image Schemas
+export const GenerateAndStoreImageInputSchema = z.object({
+  prompt: z.string().describe("The text prompt to generate an image from."),
+  questionId: z.string().describe("The Firestore ID of the question to update."),
+  model: z.string().optional().describe("The specific image generation model to use."),
+});
+export type GenerateAndStoreImageInput = z.infer<typeof GenerateAndStoreImageInputSchema>;
+
+export const GenerateAndStoreImageOutputSchema = z.object({
+  publicUrl: z.string().url().describe("The final public URL of the image in Firebase Storage."),
+});
+export type GenerateAndStoreImageOutput = z.infer<typeof GenerateAndStoreImageOutputSchema>;
 
 
 // --- Schemas for AI-driven Question Validation ---

@@ -361,6 +361,15 @@
       "accepted": "Accepted",
       "fixed": "Fixed"
     },
+    "regenerateButton": "Regenerate",
+    "toastRegeneratingTitle": "Regenerating Image...",
+    "toastRegeneratingDescription": "AI is creating a new image. This may take a moment.",
+    "toastRegenerateSuccessTitle": "Image Regenerated!",
+    "toastRegenerateSuccessDescription": "The new image has been successfully set.",
+    "toastRegenerateErrorTitle": "Regeneration Failed",
+    "toastRegenerateErrorDescription": "Could not generate a new image.",
+    "toastCannotRegenerateTitle": "Cannot Regenerate",
+    "toastCannotRegenerateDescription": "No artwork title or image prompt available for this question.",
     "imageSearchDialog": {
       "title": "Find Image on Wikimedia Commons",
       "description": "Select the best image for this question. Only images with permissive licenses are shown.",

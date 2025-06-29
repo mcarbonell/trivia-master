@@ -361,6 +361,15 @@
       "accepted": "Aceptada",
       "fixed": "Corregida"
     },
+    "regenerateButton": "Regenerar",
+    "toastRegeneratingTitle": "Regenerando Imagen...",
+    "toastRegeneratingDescription": "La IA está creando una nueva imagen. Esto puede tardar un momento.",
+    "toastRegenerateSuccessTitle": "¡Imagen Regenerada!",
+    "toastRegenerateSuccessDescription": "La nueva imagen se ha establecido correctamente.",
+    "toastRegenerateErrorTitle": "Fallo en la Regeneración",
+    "toastRegenerateErrorDescription": "No se pudo generar una nueva imagen.",
+    "toastCannotRegenerateTitle": "No se puede Regenerar",
+    "toastCannotRegenerateDescription": "No hay título de obra o prompt de imagen disponible para esta pregunta.",
     "imageSearchDialog": {
       "title": "Buscar Imagen en Wikimedia Commons",
       "description": "Selecciona la mejor imagen para esta pregunta. Solo se muestran imágenes con licencias permisivas.",
