@@ -11,6 +11,7 @@ import type { AppLocale } from '@/lib/i18n-config';
 
 export default function LandingPage() {
   const t = useTranslations('LandingPage');
+  const tCommon = useTranslations();
   const locale = useLocale() as AppLocale;
 
   const features = [
@@ -60,7 +61,7 @@ export default function LandingPage() {
               </Link>
             </Button>
             <Button asChild size="lg" variant="outline">
-              <Link href="/login">{t('loginButton')}</Link>
+              <Link href="/login">{tCommon('loginButton')}</Link>
             </Button>
           </div>
         </section>
