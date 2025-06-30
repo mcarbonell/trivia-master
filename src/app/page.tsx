@@ -162,6 +162,8 @@ export default function TriviaPage() {
   } | null>(null);
 
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const correctSoundRef = useRef<HTMLAudioElement | null>(null);
+  const wrongSoundRef = useRef<HTMLAudioElement | null>(null);
 
 
   const logAnalyticsEvent = useCallback((eventName: string, eventParams?: { [key: string]: any }) => {
@@ -460,6 +462,7 @@ export default function TriviaPage() {
     if (!questionData || gameState !== 'playing') return;
 
     clearTimer();
+    wrongSoundRef.current?.play();
     setSelectedAnswerIndex(null);
     setScore(prev => ({ ...prev, incorrect: prev.incorrect + 1 }));
 
@@ -871,6 +874,7 @@ export default function TriviaPage() {
     setQuestionsAnsweredThisGame(prev => prev + 1);
 
     if (isCorrect) {
+      correctSoundRef.current?.play();
       setScore(prev => ({ ...prev, correct: prev.correct + 1 }));
       setFeedback({ message: t('correct'), isCorrect: true, explanation: explanationInLocale });
       if (selectedDifficultyMode === "adaptive" && !(currentCategoryDetails?.isCustomActive)) {
@@ -880,6 +884,7 @@ export default function TriviaPage() {
         }
       }
     } else {
+      wrongSoundRef.current?.play();
       setScore(prev => ({ ...prev, incorrect: prev.incorrect + 1 }));
       setFeedback({
         message: t('incorrect'),
@@ -1042,6 +1047,8 @@ export default function TriviaPage() {
   return (
     <div className="container mx-auto p-4 flex flex-col items-center min-h-screen text-foreground">
       <audio ref={audioRef} src="/audio/background-music.mp3" preload="auto" />
+      <audio ref={correctSoundRef} src="/audio/correct-answer.mp3" preload="auto" />
+      <audio ref={wrongSoundRef} src="/audio/wrong-answer.mp3" preload="auto" />
       <header className="my-6 sm:my-8 text-center w-full max-w-2xl">
         <div className="flex justify-between items-center w-full mb-2 sm:mb-4">
           <LanguageSwitcher />
