@@ -267,17 +267,20 @@ export default function TriviaPage() {
     const audio = audioRef.current;
     if (!audio) return;
 
-    if (gameState === 'playing') {
-      audio.loop = true;
-      audio.play().catch(error => {
-        // Autoplay can be blocked by browsers. This is a common issue.
-        // It's usually allowed after a user interaction (like clicking a button to start the game),
-        // but it's good practice to handle the potential error gracefully.
-        console.warn("Audio playback failed to start automatically:", error);
-      });
+    const isGameActive = ['loading_question', 'playing', 'showing_feedback'].includes(gameState);
+
+    if (isGameActive) {
+      if (audio.paused) { // Only play if it's not already playing
+        audio.loop = true;
+        audio.play().catch(error => {
+          console.warn("Audio playback failed to start automatically:", error);
+        });
+      }
     } else {
-      audio.pause();
-      audio.currentTime = 0; // Reset music to the beginning
+      if (!audio.paused) {
+        audio.pause();
+        audio.currentTime = 0; // Reset music to the beginning
+      }
     }
   }, [gameState]);
 
