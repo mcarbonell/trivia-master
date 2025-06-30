@@ -1049,7 +1049,7 @@ export default function TriviaPage() {
 
   return (
     <div className="container mx-auto p-4 flex flex-col items-center min-h-screen text-foreground">
-      <audio ref={audioRef} src="/audio/background-music.mp3" preload="auto" />
+      <audio ref={audioRef} src="/audio/background-music3.mp3" preload="auto" />
       <audio ref={correctSoundRef} src="/audio/correct-answer.mp3" preload="auto" />
       <audio ref={wrongSoundRef} src="/audio/wrong-answer.mp3" preload="auto" />
       <header className="my-6 sm:my-8 text-center w-full max-w-2xl">
