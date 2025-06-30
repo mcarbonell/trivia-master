@@ -72,6 +72,24 @@ Este documento recopila ideas para futuras mejoras de la aplicación AI Trivia M
         *   **Tamaño de Archivo Mínimo:** Para gráficos como las banderas, los SVGs son mucho más ligeros que los archivos PNG o JPG, lo que se traduce en tiempos de carga más rápidos y menores costos de almacenamiento y transferencia de datos.
     *   **Implementación Propuesta:** Modificar el flujo `findWikimediaImages` (o crear uno nuevo para banderas) para que, al buscar una bandera, priorice obtener la URL del archivo SVG original en lugar de un thumbnail en formato de píxeles (PNG/JPG). El resto del proceso (subida a Firebase Storage y guardado en Firestore) sería similar. Next.js (`next/image`) es totalmente compatible con el uso de SVGs.
 
+## Marketing y Crecimiento (Propuesta)
+
+### Generación Automática de Vídeos para Redes Sociales (TikTok, Reels)
+*   **Concepto:** Crear un script 100% automático que genere vídeos cortos para plataformas como TikTok, Instagram Reels o YouTube Shorts. Cada vídeo sería una pregunta de trivia completa.
+*   **Flujo del Vídeo:**
+    1.  **Selección de Pregunta:** El script elige una pregunta interesante (quizás visual) de la base de datos de Firestore.
+    2.  **Generación de Voz en Off (TTS):** Se utiliza una IA de Texto a Voz (TTS) para recitar la pregunta y las opciones. Esto es totalmente factible con las capacidades actuales de Genkit.
+    3.  **Música de Fondo (Opcional):** Se podría usar un modelo de generación de música por IA para crear una pista de fondo atractiva, aunque esto añade una capa de complejidad.
+    4.  **Composición Visual del Vídeo:**
+        *   Se muestra la pregunta en pantalla, las opciones, y una barra de progreso animada que simula los 30 segundos de la app.
+        *   Tras una pausa, se resalta la respuesta correcta.
+        *   La voz en off revela la respuesta y añade una llamada a la acción como "¿Acertaste?".
+        *   El vídeo termina con el logo de "AI Trivia Master" y una invitación a descargar la app.
+*   **Evaluación de Dificultad:**
+    *   **Alta.** Esta es una funcionalidad avanzada. La generación programática de vídeo (componer y renderizar archivos .mp4) requiere herramientas especializadas como **`ffmpeg`** en el servidor o el uso de APIs de vídeo en la nube (ej. Remotion, Mux, Cloudinary).
+    *   La sincronización de todos los elementos (visuales, animaciones, voz, música) es un reto técnico significativo.
+    *   **Conclusión:** Una idea excelente y muy potente para el marketing, pero su implementación sería un proyecto considerable por sí misma, a planificar para una fase más avanzada del desarrollo.
+
 ## Multijugador Asíncrono y Sistema de Ranking (Propuesta)
 
 *   **Enfoque:** Evitar batallas en tiempo real y la necesidad de esperar a otros jugadores, optando por un sistema de rankings y puntuaciones asíncrono.
@@ -149,7 +167,7 @@ Existen varias vías para monetizar una aplicación como "AI Trivia Master":
 2.  **Compras Dentro de la Aplicación (In-App Purchases - IAPs):**
     *   **Versión Sin Anuncios:** Un pago único para eliminar toda la publicidad.
     *   **Paquetes de Pistas:** Vender conjuntos de pistas.
-    *   **Desbloqueo de Categorías Premium:** Ofrecer categorías base gratuitas y categorías especiales de pago.
+    *   **Desbloqueo de Categorías Premium:** Ofrecer categorías base gratuitas y otras más especializadas o de nicho mediante pago.
     *   **Paquetes de Preguntas Temáticas Premium:** Generar muchas categorías de diferentes temáticas de nicho (ej. superfans de Star Wars, Harry Potter, Marvel, equipos de fútbol específicos) y vender paquetes de un gran volumen de preguntas (ej. 10,000 preguntas) por un precio fijo (ej. 1 Euro/Dólar). Esto aprovecha la capacidad de generación masiva de la IA.
     *   **Personalización (futuro):** Avatares, temas de colores, insignias (si se añaden perfiles de usuario).
 

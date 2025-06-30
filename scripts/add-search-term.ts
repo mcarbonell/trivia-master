@@ -24,7 +24,7 @@ interface Question {
 }
 
 async function addSearchTermToAnimalQuestions() {
-  const filePath = path.join(__dirname, '../src/data/AnimalIdentification-questions.json');
+  const filePath = path.join(__dirname, '../src/data/WorldLandmarks-questions.json');
 
   try {
     const data = await readFile(filePath, 'utf-8');
