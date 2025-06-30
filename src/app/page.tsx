@@ -161,6 +161,8 @@ export default function TriviaPage() {
     originalInput: string;
   } | null>(null);
 
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+
 
   const logAnalyticsEvent = useCallback((eventName: string, eventParams?: { [key: string]: any }) => {
     // logEventFromLib is async and handles checking if analytics is available.
@@ -256,6 +258,36 @@ export default function TriviaPage() {
 
     performInitialSetup();
   // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Effect to control background music
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    if (gameState === 'playing') {
+      audio.loop = true;
+      audio.play().catch(error => {
+        // Autoplay can be blocked by browsers. This is a common issue.
+        // It's usually allowed after a user interaction (like clicking a button to start the game),
+        // but it's good practice to handle the potential error gracefully.
+        console.warn("Audio playback failed to start automatically:", error);
+      });
+    } else {
+      audio.pause();
+      audio.currentTime = 0; // Reset music to the beginning
+    }
+  }, [gameState]);
+
+  // Cleanup effect to stop music when the component unmounts (e.g., navigating away)
+  useEffect(() => {
+    const audio = audioRef.current;
+    return () => {
+      if (audio) {
+        audio.pause();
+        audio.currentTime = 0;
+      }
+    };
   }, []);
 
 
@@ -1009,6 +1041,7 @@ export default function TriviaPage() {
 
   return (
     <div className="container mx-auto p-4 flex flex-col items-center min-h-screen text-foreground">
+      <audio ref={audioRef} src="/audio/background-music.mp3" preload="auto" />
       <header className="my-6 sm:my-8 text-center w-full max-w-2xl">
         <div className="flex justify-between items-center w-full mb-2 sm:mb-4">
           <LanguageSwitcher />
