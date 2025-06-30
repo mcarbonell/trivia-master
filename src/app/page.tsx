@@ -15,33 +15,34 @@ export default function LandingPage() {
   const tCommon = useTranslations();
   const locale = useLocale() as AppLocale;
 
+  // Recomended image dimensions 600x400
   const features = [
     {
       icon: BrainCircuit,
       title: t('featureEndlessTopics'),
       description: t('featureEndlessTopicsDesc'),
-      image: 'https://placehold.co/600x400.png',
+      image: '/images/endless-topics.png',
       hint: 'library knowledge'
     },
     {
       icon: Sparkles,
       title: t('featureAiPowered'),
       description: t('featureAiPoweredDesc'),
-      image: 'https://placehold.co/600x400.png',
+      image: '/images/robot-brain.png',
       hint: 'robot brain'
     },
     {
       icon: TrendingUp,
       title: t('featureAdaptive'),
       description: t('featureAdaptiveDesc'),
-      image: 'https://placehold.co/600x400.png',
+      image: '/images/staircase-mountain.png',
       hint: 'staircase mountain'
     },
     {
       icon: Languages,
       title: t('featureBilingual'),
       description: t('featureBilingualDesc'),
-      image: 'https://placehold.co/600x400.png',
+      image: '/images/bilingual.png',
       hint: 'language translation'
     },
   ];
