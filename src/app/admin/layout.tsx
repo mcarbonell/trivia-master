@@ -31,7 +31,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
         router.replace('/login');
       } else if (userProfile && userProfile.role !== 'admin') {
         // Logged in, but is not an admin, redirect to home page
-        router.replace('/');
+        router.replace('/play');
         toast({
             variant: "destructive",
             title: tCommon('toastErrorTitle') as string,
@@ -106,7 +106,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
           ))}
         </nav>
         <div className="mt-auto p-4 space-y-2">
-           <Link href="/" passHref>
+           <Link href="/play" passHref>
              <Button variant="outline" className="w-full">
               <Home className="mr-2 h-4 w-4" />
               {t('backToGame')}

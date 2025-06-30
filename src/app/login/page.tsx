@@ -25,9 +25,9 @@ export default function LoginPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
-    // If the user is logged in, redirect them away from the login page to the home page.
+    // If the user is logged in, redirect them away from the login page to the play page.
     if (!authLoading && user) {
-      router.replace('/'); 
+      router.replace('/play'); 
     }
   }, [authLoading, user, router]);
 

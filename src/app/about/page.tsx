@@ -70,7 +70,7 @@ export default function AboutPage() {
       <header className="my-6 sm:my-8 text-center w-full max-w-3xl">
         <div className="flex justify-between items-center mb-2 sm:mb-4">
           <Button variant="outline" asChild>
-            <Link href="/">{t('backToGame')}</Link>
+            <Link href="/play">{t('backToGame')}</Link>
           </Button>
           <h1 className="text-3xl sm:text-4xl font-headline font-bold text-primary">{t('title')}</h1>
           <LanguageSwitcher />

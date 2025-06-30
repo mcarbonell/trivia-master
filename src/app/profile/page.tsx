@@ -169,7 +169,7 @@ export default function ProfilePage() {
       <header className="my-6 sm:my-8 text-center w-full max-w-4xl">
         <div className="flex justify-between items-center mb-2 sm:mb-4">
           <Button variant="outline" asChild>
-            <Link href="/">
+            <Link href="/play">
               <ArrowLeft className="mr-2 h-4 w-4" />
               {t('backToGame')}
             </Link>
