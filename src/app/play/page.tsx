@@ -119,6 +119,7 @@ export default function TriviaPage() {
   const [currentBreadcrumb, setCurrentBreadcrumb] = useState<CategoryDefinition[]>([]);
   
   const [gameState, setGameState] = useState<GameState>('initial_loading');
+  const [score, setScore] = useState({ correct: 0, incorrect: 0 });
 
   // Game session state
   const [gameSessionQuestions, setGameSessionQuestions] = useState<GameQuestion[]>([]);
@@ -651,39 +652,34 @@ export default function TriviaPage() {
 
   const renderContent = () => {
     switch(gameState) {
-      case 'initial_loading':
+      case 'initial_loading': {
+        const loadingTextKey = "initialLoadingMessage";
         return (
           <div className="container mx-auto p-4 flex flex-col items-center justify-center min-h-screen text-foreground">
             <Card className="p-8 text-center shadow-xl max-w-md w-full">
               <CardContent className="flex flex-col items-center justify-center">
                 <Loader2 className="h-16 w-16 animate-spin text-primary mx-auto" />
-                <p className="mt-4 text-xl font-semibold text-muted-foreground">{t('initialLoadingMessage')}</p>
+                <p className="mt-4 text-xl font-semibold text-muted-foreground">{t(loadingTextKey)}</p>
               </CardContent>
             </Card>
           </div>
         );
-
+      }
+      
       case 'downloading_category_questions':
       case 'validating_custom_topic':
       case 'loading_custom_batch': {
         let loadingTextKey: 'downloadingCategoryQuestions' | 'validatingCustomTopic' | 'loadingCustomBatch';
-        let loadingVars: any = {};
         
         switch (gameState) {
           case 'downloading_category_questions':
             loadingTextKey = 'downloadingCategoryQuestions';
-            loadingVars = { categoryName: currentCategoryDetails?.name[locale] || '...' };
             break;
           case 'validating_custom_topic':
             loadingTextKey = 'validatingCustomTopic';
             break;
           case 'loading_custom_batch':
             loadingTextKey = 'loadingCustomBatch';
-            loadingVars = { 
-              count: CUSTOM_TOPIC_QUESTIONS_TO_GENERATE, 
-              topic: customTopicToConfirm?.name[locale] || currentCategoryDetails?.name[locale] || '...',
-              difficulty: t(`difficultyLevels.${currentDifficultyLevel}` as any) 
-            };
             break;
         }
 
@@ -692,7 +688,7 @@ export default function TriviaPage() {
             <Card className="p-8 text-center shadow-xl max-w-md w-full">
               <CardContent className="flex flex-col items-center justify-center">
                 { gameState === 'downloading_category_questions' ? <DownloadCloud className="h-16 w-16 text-primary mx-auto mb-4" /> : <Loader2 className="h-16 w-16 animate-spin text-primary mx-auto" /> }
-                <p className="mt-4 text-xl font-semibold text-muted-foreground">{t(loadingTextKey, loadingVars)}</p>
+                <p className="mt-4 text-xl font-semibold text-muted-foreground">{t(loadingTextKey, { categoryName: currentCategoryDetails?.name[locale] || '...', count: CUSTOM_TOPIC_QUESTIONS_TO_GENERATE, difficulty: t(`difficultyLevels.${currentDifficultyLevel}` as any) })}</p>
               </CardContent>
             </Card>
           </div>
