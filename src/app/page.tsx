@@ -2,6 +2,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { LanguageSwitcher } from '@/components/LanguageSwitcher';
@@ -19,21 +20,29 @@ export default function LandingPage() {
       icon: BrainCircuit,
       title: t('featureEndlessTopics'),
       description: t('featureEndlessTopicsDesc'),
+      image: 'https://placehold.co/600x400.png',
+      hint: 'library knowledge'
     },
     {
       icon: Sparkles,
       title: t('featureAiPowered'),
       description: t('featureAiPoweredDesc'),
+      image: 'https://placehold.co/600x400.png',
+      hint: 'robot brain'
     },
     {
       icon: TrendingUp,
       title: t('featureAdaptive'),
       description: t('featureAdaptiveDesc'),
+      image: 'https://placehold.co/600x400.png',
+      hint: 'staircase mountain'
     },
     {
       icon: Languages,
       title: t('featureBilingual'),
       description: t('featureBilingualDesc'),
+      image: 'https://placehold.co/600x400.png',
+      hint: 'language translation'
     },
   ];
 
@@ -76,7 +85,16 @@ export default function LandingPage() {
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
               {features.map((feature, index) => (
-                <Card key={index} className="text-center shadow-lg hover:shadow-xl transition-shadow">
+                <Card key={index} className="text-center shadow-lg hover:shadow-xl transition-shadow overflow-hidden">
+                   <div className="relative aspect-video">
+                    <Image
+                      src={feature.image}
+                      alt={feature.title}
+                      fill
+                      className="object-cover"
+                      data-ai-hint={feature.hint}
+                    />
+                  </div>
                   <CardHeader>
                     <div className="mx-auto bg-primary/10 text-primary rounded-full p-3 w-fit">
                       <feature.icon className="h-8 w-8" />
