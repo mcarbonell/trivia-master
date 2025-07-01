@@ -7,8 +7,8 @@ import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
 import sharp from 'sharp';
 import path from 'path';
-import { adminDb, adminStorage } from '../lib/firebase-admin';
-import type { PredefinedQuestion } from '../services/triviaService';
+import { adminDb, adminStorage } from '../src/lib/firebase-admin';
+import type { PredefinedQuestion } from '../src/services/triviaService';
 import type { firestore } from 'firebase-admin';
 
 const bucket = adminStorage.bucket();
