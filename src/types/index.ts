@@ -28,7 +28,7 @@ export const GenerateTriviaQuestionOutputSchema = z.object({
   difficulty: DifficultyLevelSchema,
   imagePrompt: z.string().optional().describe('For AI-generated images: A detailed, English-only prompt for a text-to-image model.'),
   searchTerm: z.string().optional().describe("A concise and effective search query in English to find a real image of the subject (e.g., 'Mona Lisa Leonardo da Vinci', 'Eiffel Tower at night')."),
-  imageUrl: z.string().url().optional().describe('The URL of the final image.'),
+  imageUrl: z.string().optional().describe('The URL of the final image. Should be a valid URL string.'),
 });
 
 // Wikimedia Image Search Schemas
