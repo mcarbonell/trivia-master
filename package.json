@@ -13,6 +13,7 @@
     "populate:questions": "tsx scripts/populate-firestore-questions.ts",
     "populate:images": "tsx scripts/populate-firestore-images.ts",
     "optimize:images": "tsx scripts/optimize-images.ts",
+    "delete:orphans": "tsx scripts/delete-orphan-images.ts",
     "import:categories": "tsx scripts/import-firestore-categories.ts",
     "import:questions": "tsx scripts/import-firestore-questions.ts",
     "check:questions": "tsx scripts/check-duplicate-questions.ts",
