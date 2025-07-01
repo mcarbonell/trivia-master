@@ -1,3 +1,4 @@
+
 // scripts/optimize-images.ts
 import { config } from 'dotenv';
 config(); // Load environment variables from .env file
@@ -97,8 +98,7 @@ async function optimizeImages(argv: any) {
 
   try {
     let query: firestore.Query = db.collection(PREDEFINED_QUESTIONS_COLLECTION)
-        .where('imageUrl', '!=', null)
-        .where('imageUrl', '!=', '');
+        .where('imageUrl', '>', ''); // This correctly finds docs where imageUrl is a non-empty string.
 
     if (category) {
       query = query.where('topicValue', '==', category);
