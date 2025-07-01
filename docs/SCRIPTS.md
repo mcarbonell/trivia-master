@@ -94,7 +94,30 @@ These scripts leverage Genkit and AI models to generate or validate content. Rem
   npm run populate:images -- --category FamousPaintings --limit 2 --force
   ```
 
-### 5. Check for Duplicate Questions (`check:questions`)
+### 5. Optimize Images (`optimize:images`)
+
+- **Purpose:** Scans all questions with images, downloads them, resizes and optimizes them to a smaller file size, re-uploads them, and updates the question's `imageUrl` in Firestore. It also deletes the original, larger image file from storage to save space.
+- **Command:** `npm run optimize:images -- [options]`
+- **Arguments:**
+    - `-c, --category <topicValue>`: Optional. Process only questions in the category with this specific `topicValue`.
+    - `-l, --limit <number>`: Optional. The maximum number of images to process in a single run. Default: `10`.
+    - `-w, --width <number>`: Optional. The target width in pixels for the resized image. Height scales proportionally. Default: `800`.
+    - `-q, --quality <number>`: Optional. The image quality (1-100) for the optimized WebP image. Default: `80`.
+    - `-f, --force`: Optional. If passed, re-optimizes images even if they appear to be optimized already (i.e., their URL contains `_optimized`).
+    - `-d, --dryRun`: Optional. If passed, the script will download and process images, and log what it *would* do, but will not actually upload new images, update Firestore, or delete original files.
+- **Usage Examples:**
+  ```bash
+  # Optimize up to 20 images from the 'WorldLandmarks' category
+  npm run optimize:images -- -c WorldLandmarks -l 20
+
+  # Do a dry run on 5 images to see the potential savings
+  npm run optimize:images -- -l 5 -d
+
+  # Force re-optimization of all images with a width of 1024px
+  npm run optimize:images -- -w 1024 -f
+  ```
+
+### 6. Check for Duplicate Questions (`check:questions`)
 
 - **Purpose:** Uses AI to analyze all questions within a category (and optionally a specific difficulty) to find conceptual duplicates, even if they are worded differently. It now considers both the question text and the correct answer for a more accurate check. It then gives an interactive prompt to delete the identified duplicates.
 - **Command:** `npm run check:questions -- --topicValue <topicValue> [options]`
@@ -109,7 +132,7 @@ These scripts leverage Genkit and AI models to generate or validate content. Rem
   ```
 - **Interaction:** The script will list the duplicate pairs found by the AI and then ask for confirmation (`Y/n`) before deleting the questions marked as duplicates.
 
-### 6. Validate a Single Question (`validate:question`)
+### 7. Validate a Single Question (`validate:question`)
 
 - **Purpose:** Uses AI to perform a detailed quality check on a single question from Firestore. The AI can accept it, reject it (and recommend deletion), or propose a fix. After validation, the question's `status` field in Firestore is updated to `'accepted'` or `'fixed'`.
 - **Command:** `npm run validate:question -- --id <firestore_id> [options]`
@@ -139,7 +162,7 @@ These scripts leverage Genkit and AI models to generate or validate content. Rem
         - Without these flags, it will always ask for confirmation to delete the question.
     - If the AI accepts the question, it will simply report that no action is needed and set the question's status to `'accepted'`.
 
-### 7. Validate Multiple Questions (`validate:questions`)
+### 8. Validate Multiple Questions (`validate:questions`)
 
 - **Purpose:** Runs the same AI quality check as `validate:question` but in bulk for all questions matching a given category and optional difficulty. By default, this script **only processes questions that have not been validated before** (i.e., do not have a `status` of 'accepted' or 'fixed').
 - **Command:** `npm run validate:questions -- --topicValue <topicValue> [options]`
@@ -173,7 +196,7 @@ These scripts leverage Genkit and AI models to generate or validate content. Rem
 
 ## Data Migration Scripts
 
-### 8. Migrate Questions Format (`migrate:questions`)
+### 9. Migrate Questions Format (`migrate:questions`)
 
 - **Purpose:** A one-time utility script to migrate all predefined questions in Firestore from the old data format (using `answers` array and `correctAnswerIndex`) to the new, more robust format (using a single `correctAnswer` object and a `distractors` array). This should be run after updating the application code to handle the new format.
 - **Command:** `npm run migrate:questions`
