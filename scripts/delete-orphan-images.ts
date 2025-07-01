@@ -4,7 +4,7 @@ config(); // Load environment variables from .env file
 
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
-import { adminDb, adminStorage } from '../lib/firebase-admin';
+import { adminDb, adminStorage } from '../src/lib/firebase-admin';
 
 const bucket = adminStorage.bucket();
 const db = adminDb;
